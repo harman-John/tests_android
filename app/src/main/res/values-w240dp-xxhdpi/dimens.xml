@@ -1,0 +1,23 @@
+<resources>
+    <dimen name="seekContainerWidth">275dp</dimen>
+    <dimen name="seekContainerHeight">275dp</dimen>
+    <dimen name="seekContainerMarginTop">20dp</dimen>
+    <dimen name="noisecontrolcircleheightHalf">122dp</dimen>
+    <dimen name="margin5dp">5dp</dimen>
+    <dimen name="seekContainerHeightHalf">137dp</dimen>
+
+    <dimen name="noisecontrolcirclewidh">257dp</dimen>
+    <dimen name="noisecontrolcircleheight">244dp</dimen>
+    <dimen name="imageContainerMarginTop">25dp</dimen>
+
+    <dimen name="switchwitdh">40dp</dimen>
+    <dimen name="switchheight">25dp</dimen>
+
+    <dimen name="thumb1Radius">35px</dimen>
+    <dimen name="thumb2Radius">35px</dimen>
+    <integer name="thumb1Angle">199</integer>
+    <integer name="thumb2Angle">160</integer>
+    <dimen name="thumb1Text">40px</dimen>
+    <dimen name="thumb2Text">40px</dimen>
+
+</resources>
