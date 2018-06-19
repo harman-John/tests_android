@@ -28,6 +28,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                output ->
+                    def SEP = "-"
+                    def buildType =
+                            variant.variantData.variantConfiguration.buildType.name
+                    def version = variant.versionName + "." + variant.versionCode
+                    def date = new Date()
+                    def formattedDate = date.format('yyyy-MM-dd')
+                    def newApkName = "JBL_HeadPhone" + SEP + version + SEP + buildType + SEP + formattedDate + ".apk"
+                    def file = new File(newApkName)
+                    output.outputFileName = file
+            }
+    }
 }
 
 dependencies {
