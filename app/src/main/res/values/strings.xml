@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">jbl-headphones2-android</string>
+    <string name="noise_cancel">NOISE CANCEL</string>
+    <string name="control_off">OFF</string>
+
+    <string name="awareness">AMBIENT AWARENESS</string>
+    <string name="highView">HIGH</string>
+    <string name="mediumView">MEDIUM</string>
+    <string name="lowView">LOW</string>
+</resources>

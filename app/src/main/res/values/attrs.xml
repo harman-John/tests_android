@@ -1,0 +1,65 @@
+<resources>
+
+    <declare-styleable name="ANCController">
+        <attr name="thumb" format="reference" />
+        <attr name="thumbOffset" format="dimension" />
+        <attr name="max" format="integer" />
+        <attr name="progressWidth" format="dimension" />
+        <attr name="arcWidth" format="dimension" />
+        <attr name="progress" format="integer" />
+        <attr name="rotation" format="integer" />
+        <attr name="startAngle" format="integer" />
+        <attr name="sweepAngle" format="integer" />
+        <attr name="arcColor" format="color" />
+        <attr name="progressColor" format="color" />
+        <attr name="roundEdges" format="boolean" />
+        <attr name="touchInside" format="boolean" />
+        <attr name="clockwise" format="boolean" />
+        <attr name="thumb1_start" format="integer" />
+        <attr name="thumb2_start" format="integer" />
+        <attr name="thumb1_radius" format="dimension"></attr>
+        <attr name="thumb2_radius" format="dimension"></attr>
+        <attr name="thumb1_text" format="dimension"></attr>
+        <attr name="thumb2_text" format="dimension"></attr>
+        <attr name="controller_width" format="dimension"></attr>
+        <attr name="controller_height" format="dimension"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="SeekArcTheme">
+        <attr name="seekArcStyle" format="reference"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="SwipeLayout">
+        <attr name="drag_edge">
+            <flag name="left" value="1" />
+            <flag name="right" value="2" />
+            <flag name="top" value="4" />
+            <flag name="bottom" value="8" />
+        </attr>
+        <attr name="leftEdgeSwipeOffset" format="dimension" />
+        <attr name="rightEdgeSwipeOffset" format="dimension" />
+        <attr name="topEdgeSwipeOffset" format="dimension" />
+        <attr name="bottomEdgeSwipeOffset" format="dimension" />
+        <attr name="show_mode" format="enum">
+            <enum name="lay_down" value="0" />
+            <enum name="pull_out" value="1" />
+        </attr>
+        <attr name="clickToClose" format="boolean" />
+    </declare-styleable>
+    <!-- Custom font-->
+    <declare-styleable name="customfont">
+        <attr name="android:fontFamily" />
+        <attr name="android:textStyle" />
+    </declare-styleable>
+    <declare-styleable name="XEditText">
+        <attr name="x_separator" format="string"/>
+        <attr name="x_customizeMarkerEnable" format="boolean"/>
+        <attr name="x_iOSStyleEnable" format="boolean"/>
+        <attr name="x_disableEmoji" format="boolean"/>
+        <attr name="x_showMarkerTime">
+            <enum name="after_input" value="0"/>
+            <enum name="before_input" value="1"/>
+            <enum name="always" value="2"/>
+        </attr>
+    </declare-styleable>
+</resources>
