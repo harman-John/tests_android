@@ -1,0 +1,853 @@
+{
+    "ModuleId": "43",
+    "ALL_COMMANDS": {
+        "COMMAND_LIST": [
+                         {
+                         "CmdName"  : "ANC",
+                         "DescCmdName": "Active Noise Cancellation command.",
+                         "DescGeneral": "These commands can be used to set or get the ANC state.",
+                         "DescSet"    : "Enable and disable ANC",
+                         "DescGet"    : "Get ANC current state",
+                         "id"         : "F085",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "Enable", "Type": "Bool", "Desc": "True = ANC Enabled"}
+                                      ],
+                         "output": [
+                                    {"Name": "ANC", "Type": "Bool", "Desc": "Current ANC Targeted State"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "ANC", "Type": "Bool", "Desc": "Current ANC Enabled State"}
+                                     ]
+                         }
+                         },
+                         {
+                          "CmdName"    : "ANCNotification",
+                          "DescCmdName": "ANC Notification.",
+                          "DescGeneral": "An asynchronous Notification sent in response to an ANC command.",
+                          "DescGet"    : "ANC Notification.",
+                          "id"         : "F0C5",
+                          "buffered"   : true,
+                          "setFormat" : {
+                            "input"   : [],
+                            "output": [
+                              {"Name": "ANCNotification", "Type": "UInt32", "Desc": "Current ANC State"}
+                            ]
+                          },
+                          "getFormat"  : {
+                            "input"    : [],
+                            "output"   : [
+                              {"Name": "ANCNotification", "Type": "UInt32", "Desc": "Current ANC State"}
+                            ]
+                          }
+                         },
+                         {
+                          "CmdName"    : "AmbientLevelingNotification",
+                          "DescCmdName": "AmbientLeveling Notification.",
+                          "DescGeneral": "An asynchronous Notification sent in response to an AmbientLeveling command.",
+                          "DescGet"    : "AmbientLeveling Notification.",
+                          "id"         : "AAC6",
+                          "buffered"   : true,
+                          "setFormat" : {
+                            "input"   : [],
+                            "output": [
+                              {"Name": "AANotification", "Type": "UInt32", "Desc": "Current AA Level"}
+                            ]
+                          },
+                          "getFormat"  : {
+                            "input"    : [],
+                            "output"   : [
+                              {"Name": "AANotification", "Type": "UInt32", "Desc": "Current AA Level"}
+                            ]
+                          }
+                         },
+                         {
+                         "CmdName"  : "ANCLevel",
+                         "DescCmdName": "ANCLevel command.",
+                         "DescGeneral": "These commands can be used to set ANCLevel.",
+                         "DescSet"    : "set ANCLevel",
+                         "id"         : "F088",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "ANCLevel", "Type": "UInt32", "Desc": "ANCLevel"}
+                                      ],
+                         "output": [
+                                    {"Name": "ANCLevel", "Type": "UInt32", "Desc": "ANCLevel"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "ANCLevel", "Type": "UInt32", "Desc": "ANCLevel"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "AmbientLeveling",
+                         "DescCmdName": "Awareness Laveling command.",
+                         "DescGeneral": "These commands can be used to set or get the Awareness Labelling.",
+                         "DescSet"    : "Setting Awareness Laveling",
+                         "DescGet"    : "Get Awareness Laveling current state",
+                         "id"         : "AA86",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "Laveling- set", "Type": "UInt32", "Desc": "Ambient Laveling"}
+                                      ],
+                         "output": [
+                                    {"Name": "Laveling", "Type": "UInt32", "Desc": "Ambient Laveling"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [
+                         
+                         ],
+                         "output"  :[
+                                     {"Name": "Laveling-get", "Type": "UInt32", "Desc": "Ambient Laveling "}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "RawLeft",
+                         "DescCmdName": "Awareness Raw Left.",
+                         "DescGeneral": "These commands can be used to set or get the Awareness Raw Left.",
+                         "DescSet"    : "Setting Awareness Raw Left",
+                         "DescGet"    : "Get Awareness Raw Left state",
+                         "id"         : "AA89",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "ARL", "Type": "UInt32", "Desc": "Awareness Raw Left"}
+                                      ],
+                         "output": [
+                                    {"Name": "ARL", "Type": "UInt32", "Desc": "Awareness Raw Left"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "ARL", "Type": "UInt32", "Desc": "Awareness Raw Left"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "RawRight",
+                         "DescCmdName": "Awareness Raw Right command.",
+                         "DescGeneral": "These commands can be used to set or get the Awareness Right state.",
+                         "DescSet"    : "Setting Awareness Raw Right",
+                         "DescGet"    : "Get Awareness Raw Right state",
+                         "id"         : "AA8A",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "ARR", "Type": "UInt32", "Desc": "Awareness Raw Right"}
+                                      ],
+                         "output": [
+                                    {"Name": "ARR", "Type": "UInt32", "Desc": "Awareness Raw Right"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "ARR", "Type": "UInt32", "Desc": "Awareness Raw RIGHT"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "RawSteps",
+                         "DescCmdName": "Awareness RawSteps command.",
+                         "DescGeneral": "These commands can be used to set or get the Awareness RawSteps.",
+                         "DescSet"    : "Setting Awareness RawSteps",
+                         "DescGet"    : "Get Awareness RawSteps current state",
+                         "id"         : "AA8B",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "RawSteps", "Type": "UInt32", "Desc": "Awareness Awareness RawSteps"}
+                                      ],
+                         "output": [
+                                    {"Name": "RawSteps", "Type": "UInt32", "Desc": "Awareness  RawSteps"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "RawSteps", "Type": "UInt32", "Desc": "Awareness  RawSteps"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "ResourceVersion",
+                         "DescCmdName": "FW  command.",
+                         "DescGeneral": "These commands can be used to set or get the FW state.",
+                         "DescSet"    : " Getting FW",
+                         "DescGet"    : "Get FW current state",
+                         "id"         : "013A",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "Resource Version", "Type": "UInt32", "Desc": "Resource Version"}
+                                      ],
+                         "output": [
+                                    {"Name": "Resource Version", "Type": "UInt32", "Desc": "Resource Version"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "ResourceVersion", "Type": "UInt32", "Desc": "Resource Version"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "FirmwareVersion",
+                         "DescCmdName": "FW  command.",
+                         "DescGeneral": "These commands can be used to set or get the FW state.",
+                         "DescSet"    : " Getting FW",
+                         "DescGet"    : "Get FW current state",
+                         "id"         : "0187",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "FW", "Type": "UInt32", "Desc": "Firmware Version"}
+                                      ],
+                         "output": [
+                                    {"Name": "FW", "Type": "UInt32", "Desc": "Firmware Version"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "FW", "Type": "UInt32", "Desc": "Firmware Version"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "BatteryLevel",
+                         "DescCmdName": "BatteryLevel command.",
+                         "DescGeneral": "These commands can be used to set or get the Awareness RawSteps.",
+                         "DescSet"    : "Setting BatteryLevel",
+                         "DescGet"    : "Get BatteryLevel current state",
+                         "id"         : "01B0",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "BL", "Type": "UInt32", "Desc": "BatteryLevel"}
+                                      ],
+                         "output": [
+                                    {"Name": "BL", "Type": "UInt32", "Desc": "BatteryLevel"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "BL", "Type": "UInt32", "Desc": "BatteryLevel"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "CalibrationStatus",
+                         "DescCmdName": "CalibrationStatus command.",
+                         "DescGeneral": "These commands can be used to get the CalibrationStatus.",
+                         "DescGet"    : "Get Calibration current state",
+                         "id"         : "01B3",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "CalibrationStatus", "Type": "UInt32", "Desc": "CalibrationStatus"}
+                                      ],
+                         "output": [
+                                    {"Name": "CalibrationStatus", "Type": "UInt32", "Desc": "CalibrationStatus"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "CalibrationStatus", "Type": "UInt32", "Desc": "CalibrationStatus"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "AutoOffEnable",
+                         "DescCmdName": "AutoOffEnable command.",
+                         "DescGeneral": "These commands can be used to set or get the AutoOffEnable.",
+                         "DescSet"    : "Enable and disable AutoOff",
+                         "DescGet"    : "Get AutoOffEnable current state",
+                         "id"         : "01B6",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "AutoOffEnable", "Type": "Bool", "Desc": "AutoOffEnable"}
+                                      ],
+                         "output": [
+                                    {"Name": "AutoOffEnable", "Type": "Bool", "Desc": "AutoOffEnable"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "AutoOffEnable", "Type": "Bool", "Desc": "AutoOffEnable"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"    : "VoicePrompt",
+                         "DescCmdName": "VoicePrompt.",
+                         "DescGeneral": "VoicePrompt command.",
+                         "DescGet"    : "VoicePrompt",
+                         "id"         : "01B7",
+                         "buffered"   : true,
+                         "setFormat"  : {
+                         "input"    : [
+                                       {"Name": "Enable", "Type": "Bool", "Desc": "True = VoicePrompt Enabled"}
+                                       ],
+                         "output"   : [
+                                       {"Name": "VoicePromptState", "Type": "Bool", "Desc": "Current VoicePrompt State"}
+                                       ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  : [
+                                      {"Name": "VoicePromptState", "Type": "Bool", "Desc": "Current VoicePrompt State"}
+                                      ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "StartAutoCalibration",
+                         "DescCmdName": "StartAutoCalibration command.",
+                         "DescGeneral": "These commands can be used to StartAutoCalibration",
+                         "DescSet"    : "StartAutoCalibration",
+                         "id"         : "FFB2",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "StartAutoCalibration", "Type": "UInt32", "Desc": "StartAutoCalibration"}
+                                      ],
+                         "output": [
+                                    {"Name": "StartAutoCalibration", "Type": "UInt32", "Desc": "StartAutoCalibration"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "StartAutoCalibration", "Type": "UInt32", "Desc": "StartAutoCalibration"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"    : "SmartButton",
+                         "DescCmdName": "SmartButton.",
+                         "DescGeneral": "SmartButton Write/Read Action for a button press type.",
+                         "DescGet"    : "SmartButton",
+                         "id"         : "B0B5",
+                         "buffered"   : true,
+                         "setFormat"  : {
+                         "input" : [
+                                    { "Name": "ButtonId",  "Type": "UInt32",  "Desc": "MFB Button Id"}
+                                    ],
+                         "output"  : [
+                                      { "Name": "ButtonId",  "Type": "UInt32",  "Desc": "MFB Button Id"}
+                                      ]
+                         },
+                         "getFormat" : {
+                         "input"   : [
+                         
+                         ],
+                         "output"  : [
+                                      { "Name": "ButtonId",  "Type": "UInt8",  "Desc": "MFB Button Id"}
+                                      ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "AppParam_AudioEQ",
+                         "DescCmdName": "AppParam_AudioEQ command.",
+                         "DescGeneral": "These commands can be used to set or get the AppParam_AudioEQ.",
+                         "DescSet"    : "Setting AppParam_AudioEQ",
+                         "DescGet"    : "Get AppParam_AudioEQ current state",
+                         "id"         : "F381",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "AudioEQ", "Type": "UInt32", "Desc": "AudioEQ"}
+                                      ],
+                         "output": [
+                                    {"Name": "AudioEQ", "Type": "UInt32", "Desc": "AudioEQ"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "AudioEQ", "Type": "UInt32", "Desc": "AudioEQ"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"    : "GraphicEqLimits",
+                         "DescCmdName": "Graphic EQ limits.",
+                         "DescGeneral": "This command retrieves the current Equalizer settings.",
+                         "DescGet"    : "Read current EQ setting.",
+                         "idName"     : "GEQ_BLOCK_CMD",
+                         "id"         : "F390",
+                         "buffered"   : true,
+                         "getFormat"  : {
+                         "input": [ ],
+                         "output":[
+                                   {"Name": "numBands",  "Type": "UInt32", "Desc": "Number of bands"},
+                                   {"Name": "numSettings", "Type": "UInt32", "Desc": "Number of presets"},
+                                   {"Name": "settingsMin", "Type": "Int32", "Desc": "Minimum level (dB)"},
+                                   {"Name": "settingsMax", "Type": "Int32", "Desc": "Maximum level (dB)"}
+                                   ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"    : "GraphicEqPresetBandSettings",
+                         "DescCmdName": "GraphicEqPresetBandSettings",
+                         "DescGeneral": "GraphicEqPresetBandSettings command set",
+                         "DescGet"    : "GraphicEqPresetBandSettings command get",
+                         "idName"     : "GEQ_GET_PRESET_GAINS",
+                         "id"         : "F394",
+                         "buffered"   : true,
+                         "setFormat"  : {
+                         "input" : [
+                                    {"Name": "PresetIndex", "Type": "Int32", "Desc": "Preset_Index"},
+                                    {"Name": "NumBands",    "Type": "Int32", "Desc": "Band_Count"},
+                                    {"Name": "Gain1",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                    {"Name": "Gain2",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                    {"Name": "Gain3",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                    {"Name": "Gain4",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                    {"Name": "Gain5",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                    {"Name": "Gain6",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                    {"Name": "Gain7",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                    {"Name": "Gain8",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                    {"Name": "Gain9",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                    {"Name": "Gain10",      "Type": "Int32", "Desc": "Current GrEqBand Gain"}
+                                    
+                                    ],
+                         "output":[
+                                   {"Name": "PresetIndex", "Type": "Int32", "Desc": "Preset_Index"},
+                                   {"Name": "NumBands",    "Type": "Int32", "Desc": "Band_Count"},
+                                   {"Name": "Gain1",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                   {"Name": "Gain2",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                   {"Name": "Gain3",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                   {"Name": "Gain4",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                   {"Name": "Gain5",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                   {"Name": "Gain6",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                   {"Name": "Gain7",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                   {"Name": "Gain8",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                   {"Name": "Gain9",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                   {"Name": "Gain10",      "Type": "Int32", "Desc": "Current GrEqBand Gain"}
+                                   ]
+                         },
+                         "getFormat" : {
+                         "input"  : [
+                                     {"Name": "Enable", "Type": "UInt32", "Desc": "Preset_Index"},
+                                     {"Name": "Enable", "Type": "UInt32", "Desc": "Band_Count"}
+                                     ],
+                         "output" : [
+                                     {"Name": "PresetIndex", "Type": "Int32", "Desc": "Preset_Index"},
+                                     {"Name": "NumBands",    "Type": "Int32", "Desc": "Band_Count"},
+                                     {"Name": "Gain1",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                     {"Name": "Gain2",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                     {"Name": "Gain3",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                     {"Name": "Gain4",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                     {"Name": "Gain5",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                     {"Name": "Gain6",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                     {"Name": "Gain7",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                     {"Name": "Gain8",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                     {"Name": "Gain9",       "Type": "Int32", "Desc": "Current GrEqBand Gain"},
+                                     {"Name": "Gain10",      "Type": "Int32", "Desc": "Current GrEqBand Gain"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"    : "GrEqBandGains",
+                         "DescCmdName": "GrEqBandGains",
+                         "DescGeneral": "GrEqBandGains command set",
+                         "DescGet"    : "GrEqBandGains command get",
+                         "idName"     : "GEQ_GET_PRESET_GAINS",
+                         "id"         : "F395",
+                         "buffered"   : true,
+                         "setFormat"  : {
+                         "input" : [
+                                    {"Name": "Enable", "Type": "UInt32", "Desc": "Preset_Index"},
+                                    {"Name": "Enable", "Type": "UInt32", "Desc": "Index_of_Bands"},
+                                    {"Name": "Enable", "Type": "UInt32", "Desc": "value"}
+                                    ],
+                         "output":[
+                                   {"Name": "PresetIndex", "Type": "Int32", "Desc": "Preset_Index"},
+                                   {"Name": "NumBands",    "Type": "Int32", "Desc": "Number_of_Bands"},
+                                   {"Name": "Gain",       "Type": "Int32", "Desc": "Current GrEqBand Gain"}
+                                   ]
+                         },
+                         "getFormat" : {
+                         "input"  : [
+                                     {"Name": "Enable", "Type": "UInt32", "Desc": "Preset_Index"},
+                                     {"Name": "Enable", "Type": "UInt32", "Desc": "Index_of_Bands"}
+                                     ],
+                         "output" : [
+                                     {"Name": "PresetIndex", "Type": "Int32", "Desc": "Preset_Index"},
+                                     {"Name": "NumBands",    "Type": "Int32", "Desc": "Number_of_Bands"},
+                                     {"Name": "Gain",       "Type": "Int32", "Desc": "Current GrEqBand Gain"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"    : "GraphicEqBandFreq",
+                         "DescCmdName": "GrEqBandFrequencies.",
+                         "DescGeneral": "GrEqBandFrequencies command.",
+                         "DescGet"    : "GrEqBandFrequencies",
+                         "idName"     : "PEQ_BAND_FREQS",
+                         "id"         : "F397",
+                         "buffered"   : true,
+                         "setFormat"  : {
+                         "input"    : [
+                                       {"Name": "Enable", "Type": "UInt32", "Desc": "Number_of_Bands"}
+                                       ],
+                         "output": [
+                                    {"Name": "NumBands",   "Type": "Int32", "Desc": "Number_of_Bands"},
+                                    {"Name": "Frequency1", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                    {"Name": "Frequency2", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                    {"Name": "Frequency3", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                    {"Name": "Frequency4", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                    {"Name": "Frequency5", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                    {"Name": "Frequency6", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                    {"Name": "Frequency7", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                    {"Name": "Frequency8", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                    {"Name": "Frequency9", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                    {"Name": "Frequency10","Type": "Int32", "Desc": "Band_Center_Frequency"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [
+                                      {"Name": "Enable", "Type": "UInt32", "Desc": "Number_of_Bands"}
+                                      ],
+                         "output"  : [
+                                      {"Name": "NumBands",   "Type": "Int32", "Desc": "Number_of_Bands"},
+                                      {"Name": "Frequency1", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                      {"Name": "Frequency2", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                      {"Name": "Frequency3", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                      {"Name": "Frequency4", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                      {"Name": "Frequency5", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                      {"Name": "Frequency6", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                      {"Name": "Frequency7", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                      {"Name": "Frequency8", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                      {"Name": "Frequency9", "Type": "Int32", "Desc": "Band_Center_Frequency"},
+                                      {"Name": "Frequency10","Type": "Int32", "Desc": "Band_Center_Frequency"}
+                                      ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"    : "GraphicEqDefaultPreset",
+                         "DescCmdName": "GrEqDefaultPreset.",
+                         "DescGeneral": "GrEqDefaultPreset command.",
+                         "DescGet"    : "GrEqDefaultPreset",
+                         "idName"     : "PRESET_DEFAULT",
+                         "id"         : "F191",
+                         "buffered"   : true,
+                         "setFormat"  : {
+                         "input"    : [
+                                       {"Name": "DefaultPresetIndex", "Type": "UInt32", "Desc": "Set GrEq default preset index"}
+                                       ],
+                         "output"   : [
+                                       {"Name": "DefaultPresetIndex", "Type": "UInt32", "Desc": "Current GrEq default preset index"}
+                                       ]
+                         },
+                         "getFormat" : {
+                         "input" : [],
+                         "output":[
+                                   {"Name": "DefaultPresetIndex", "Type": "UInt32", "Desc": "Current GrEq default preset index"}
+                                   ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"    : "Geq_Current_Preset",
+                         "DescCmdName": "GrEqCurrentPreset.",
+                         "DescGeneral": "GrEqCurrentPreset command.",
+                         "DescGet"    : "GrEqCurrentPreset",
+                         "idName"     : "GEQ_CURRENT_PRESET",
+                         "id"         : "F192",
+                         "buffered"   : true,
+                         "setFormat"  : {
+                         "input"    : [
+                                       {"Name": "PresetIndex", "Type": "UInt32", "Desc": "GrEq current preset index"}
+                                       ],
+                         "output"   : [
+                                       {"Name": "GrEqCurrentPreset", "Type": "UInt32", "Desc": "GrEq current preset index"}
+                                       ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  : [
+                                      {"Name": "GrEqCurrentPreset", "Type": "UInt32", "Desc": "GrEq current preset index"}
+                                      ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"    : "GraphicEqFactoryResetPreset",
+                         "DescCmdName": "GraphicEqFactoryResetPreset.",
+                         "DescGeneral": "GraphicEqFactoryResetPreset command.",
+                         "DescSet"    : "GraphicEqFactoryResetPreset",
+                         "idName"     : "GraphicEqFactoryResetPreset",
+                         "id"         : "F193",
+                         "buffered"   : true,
+                         "setFormat"  : {
+                         "input"    : [
+                                       {"Name": "GraphicEqFactoryResetPreset", "Type": "UInt32", "Desc": "Set GraphicEqFactoryResetPreset"}
+                                       ],
+                         "output"   : [
+                                       {"Name": "GraphicEqFactoryResetPreset", "Type": "UInt32", "Desc": "GraphicEqFactoryResetPreset"}
+                                       ]
+                         },
+                         "getFormat" : {
+                         "input" : [],
+                         "output":[
+                                   {"Name": "GraphicEqFactoryResetPreset", "Type": "UInt32", "Desc": "GraphicEqFactoryResetPreset"}
+                                   ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "Special1",
+                         "DescCmdName": "Special1 command.",
+                         "DescGeneral": "These commands can be used to set Special1.",
+                         "DescSet"    : "set Special1",
+                         "id"         : "12",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "Special1", "Type": "UInt32", "Desc": "Special1"}
+                                      ],
+                         "output": [
+                                    {"Name": "Special1", "Type": "UInt32", "Desc": "Special1"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "Special1", "Type": "UInt32", "Desc": "Special1"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "Special2",
+                         "DescCmdName": "Special2 command.",
+                         "DescGeneral": "These commands can be used to set Special2.",
+                         "DescSet"    : "set Special2",
+                         "id"         : "23",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "Special2", "Type": "UInt32", "Desc": "Special2"}
+                                      ],
+                         "output": [
+                                    {"Name": "Special2", "Type": "UInt32", "Desc": "Special2"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "Special2", "Type": "UInt32", "Desc": "Special2"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "Special3",
+                         "DescCmdName": "Special3 command.",
+                         "DescGeneral": "These commands can be used to set Special3.",
+                         "DescSet"    : "set Special3",
+                         "id"         : "17",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "Special3", "Type": "UInt32", "Desc": "Special3"}
+                                      ],
+                         "output": [
+                                    {"Name": "Special3", "Type": "UInt32", "Desc": "Special3"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "Special3", "Type": "UInt32", "Desc": "Special3"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "Special4",
+                         "DescCmdName": "Special4 command.",
+                         "DescGeneral": "These commands can be used to set Special4.",
+                         "DescSet"    : "set Special4",
+                         "id"         : "15",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "Special4", "Type": "UInt32", "Desc": "Special4"}
+                                      ],
+                         "output": [
+                                    {"Name": "Special4", "Type": "UInt32", "Desc": "Special4"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "Special4", "Type": "UInt32", "Desc": "Special4"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "Special5",
+                         "DescCmdName": "Special5 command.",
+                         "DescGeneral": "These commands can be used to set Special5.",
+                         "DescSet"    : "set Special5",
+                         "id"         : "1a",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "Special5", "Type": "UInt32", "Desc": "Special5"}
+                                      ],
+                         "output": [
+                                    {"Name": "Special5", "Type": "UInt32", "Desc": "Special5"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "Special5", "Type": "UInt32", "Desc": "Special5"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "Special6",
+                         "DescCmdName": "Special6 command.",
+                         "DescGeneral": "These commands can be used to set Special6.",
+                         "DescSet"    : "set Special6",
+                         "id"         : "1b",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "Special6", "Type": "UInt32", "Desc": "Special6"}
+                                      ],
+                         "output": [
+                                    {"Name": "Special6", "Type": "UInt32", "Desc": "Special6"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "Special6", "Type": "UInt32", "Desc": "Special6"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "Special7",
+                         "DescCmdName": "Special7 command.",
+                         "DescGeneral": "These commands can be used to set Special7.",
+                         "DescSet"    : "set Special7",
+                         "id"         : "1f",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "Special7", "Type": "UInt32", "Desc": "Special7"}
+                                      ],
+                         "output": [
+                                    {"Name": "Special7", "Type": "UInt32", "Desc": "Special7"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "Special7", "Type": "UInt32", "Desc": "Special7"}
+                                     ]
+                         }
+                         },
+                         
+                         {
+                         "CmdName"  : "Special8",
+                         "DescCmdName": "Special8 command.",
+                         "DescGeneral": "These commands can be used to set Special8.",
+                         "DescSet"    : "set Special8",
+                         "id"         : "1c",
+                         "buffered"   : true,
+                         "setFormat" : {
+                         "input"   : [
+                                      {"Name": "Special8", "Type": "UInt32", "Desc": "Special8"}
+                                      ],
+                         "output": [
+                                    {"Name": "Special8", "Type": "UInt32", "Desc": "Special8"}
+                                    ]
+                         },
+                         "getFormat" : {
+                         "input"   : [],
+                         "output"  :[
+                                     {"Name": "Special8", "Type": "UInt32", "Desc": "Special8"}
+                                     ]
+                         }
+                         },
+                         {
+                            "CmdName": "FirmwareUpdateState",
+                            "DescCmdName": "Firmware update state message.",
+                            "DescGeneral": "Send firmware update state START & COMPLETE.",
+                            "DescGet": "FirmwareUpdateState",
+                            "buffered": true,
+                            "getFormat": {
+                              "input": [],
+                              "output": [
+                                {
+                                  "Desc": "0=Unknown,1=Start,2=Complete",
+                                  "Name": "State",
+                                  "Type": "UInt32"
+                                }
+                              ]
+                            },
+                            "id": "0108",
+                            "setFormat": {
+                              "input": [
+                                {
+                                  "Desc": "0=Unknown,1=Start,2=Complete",
+                                  "Name": "State",
+                                  "Type": "UInt32"
+                                }
+                              ],
+                              "output": [
+                                {
+                                  "Desc": "0=Unknown,1=Start,2=Complete",
+                                  "Name": "State",
+                                  "Type": "UInt32"
+                                }
+                              ]
+                            }
+                         }
+                         ]
+    }
+}

@@ -1,0 +1,3 @@
+Android platform
+
+Harman application uses third-party software from Google, such as the Android OS and other software related to analytics. Outside of Google software (and any open source software that may be included in the Google software), the application does not contain any open source software.

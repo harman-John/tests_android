@@ -8,4 +8,14 @@
     <color name="white">@android:color/white</color>
     <color name="lighter_gray">#E6E6E6</color>
     <color name="background">#F06226</color>
+
+    <color name="main_color">#00ECEC</color>
+    <color name="page_bg_5B">#5B5B5B</color>
+    <color name="horizontal_progress_bg">#767676</color>
+    <color name="horizontal_progress_color_charging">@color/main_color</color>
+    <color name="horizontal_progress_color_not_charge">@color/white</color>
+    <color name="dashboard_eq_layout_bg">#3F3F3F</color>
+    <color name="divider_color">#aaaaaa</color>
+    <color name="text_white_80">#CCFFFFFF</color>
+    <color name="text_white_50">#80FFFFFF</color>
 </resources>

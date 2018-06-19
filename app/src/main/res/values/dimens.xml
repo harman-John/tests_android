@@ -19,4 +19,11 @@
     <integer name="thumb2Angle">160</integer>
     <dimen name="thumb1Text">40px</dimen>
     <dimen name="thumb2Text">40px</dimen>
+
+    <dimen name="title_bar_height">62dp</dimen>
+    <dimen name="page_padding_left">30dp</dimen>
+    <dimen name="page_padding_right">15dp</dimen>
+    <dimen name="divider_size">1dp</dimen>
+    <dimen name="image_button_width_and_height">45dp</dimen>
+    <dimen name="dashboard_talk_image_width">60dp</dimen>
 </resources>
