@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import jbl.stc.com.R;
 
 
-public class ANCFragment extends BaseFragment {
+public class EqSettingFragment extends BaseFragment {
+    private final static String TAG = EqSettingFragment.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,7 @@ public class ANCFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.anc_fragment, container, false);
+        View view = inflater.inflate(R.layout.eq_setting_fragment, container, false);
         return view;
     }
 
