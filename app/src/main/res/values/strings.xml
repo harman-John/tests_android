@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">testURLRedirect</string>
+
+    <string name="test_binder">testBinder</string>
+    <string name="test_listener">testListener</string>
+    <string name="test_show_fragment">testShowFragment</string>
+
+    <string name="test_bt_spp">testBtSpp</string>
+</resources>
