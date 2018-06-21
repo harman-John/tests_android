@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:paddingBottom="20dp">
+
+    <RelativeLayout
+        android:id="@+id/eqNameLayout"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:id="@+id/eqNameBgImage"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/shape_circle_eq_name_bg_selected" />
+
+        <jbl.stc.com.view.PoppinsRegularTextView
+            android:id="@+id/eqNameText"
+            style="@style/PoppinsRegularTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="Bass"
+            android:textColor="@color/eq_panel_name_text" />
+
+        <ImageView
+            android:id="@+id/plusImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/icon_eq_name_plus"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/removeImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/icon_remove_eq"
+            android:visibility="gone" />
+    </RelativeLayout>
+</FrameLayout>
