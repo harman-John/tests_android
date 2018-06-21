@@ -3,9 +3,11 @@ package jbl.stc.com.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -39,7 +41,9 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     private View eqDividerView;
     private ProgressBar batteryProgressBar;
     private CreateMyOwnEqDialog createMyOwnEqDialog;
-    private boolean currPageIsDashboard=true;
+    private boolean currPageIsDashboard = true;
+    private Handler mHandler = new Handler();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         eqTextView = findViewById(R.id.eqTextView);
         autoOffTextView = findViewById(R.id.autoOffTextView);
 
+        eqInfoLayout.setVisibility(View.VISIBLE);
         eqInfoLayout.setOnClickListener(this);
 
         createMyOwnEqDialog = new CreateMyOwnEqDialog(this);
@@ -80,6 +85,53 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             }
         });
 
+
+        /*eqInfoLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                createVelocityTracker(event);
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        yDown = event.getRawY();
+                        xDown = event.getRawX();
+                        yMove = yDown;
+                        xMove = xDown;
+                        mIsWaitUpEvent = true;
+                        mHandler.postDelayed(mTimerForUpEvent, MAX_INTERVAL_FOR_CLICK);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        yMove = event.getRawY();
+                        xMove = event.getRawX();
+                        if (mIsWaitUpEvent) {
+                            int distanceY = (int) (yDown - yMove);
+                            int ySpeed = getScrollVelocity();
+                            if (distanceY > Y_DISTANCE_MIN && ySpeed > Y_SPEED_MIN) {
+                                mHandler.removeCallbacks(mTimerForUpEvent);
+                                mIsWaitUpEvent = false;
+                                eqInfoLayout.performClick();
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        recycleVelocityTracker();
+                        if (Math.abs(yDown - yMove) > MAX_DISTANCE_FOR_CLICK
+                                || Math.abs(xDown - xMove) > MAX_DISTANCE_FOR_CLICK) {
+                            mHandler.removeCallbacks(mTimerForUpEvent);
+                            mIsWaitUpEvent = false;
+                        }
+                        LogUtil.d(TAG, "ACTION_UP mIsWaitUpEvent=$mIsWaitUpEvent");
+                        if (mIsWaitUpEvent) {
+                            mHandler.removeCallbacks(mTimerForUpEvent);
+                            mIsWaitUpEvent = false;
+                            eqInfoLayout.performClick();
+                        }
+
+                        break;
+                }
+                return true;
+            }
+        });*/
+
     }
 
     public void switchFragment(BaseFragment baseFragment) {
@@ -87,6 +139,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             baseFragment.setOnMainAppListener(this);
             ft.setCustomAnimations(R.anim.enter_from_down, R.anim.exit_to_up, R.anim.enter_from_up, R.anim.exit_to_down);
+            currPageIsDashboard=false;
             if (getSupportFragmentManager().findFragmentById(R.id.containerLayout) == null) {
                 ft.add(R.id.containerLayout, baseFragment);
             } else {
@@ -94,6 +147,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             }
             ft.addToBackStack(null);
             ft.commit();
+            //getSupportFragmentManager().executePendingTransactions();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,7 +155,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-    public void  onBackPressed() {
+    public void onBackPressed() {
         int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
         if (backStackEntryCount > 0) {
             currPageIsDashboard = (backStackEntryCount == 1);

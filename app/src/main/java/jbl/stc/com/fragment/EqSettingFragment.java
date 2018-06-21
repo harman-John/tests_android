@@ -48,8 +48,10 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private EQModel currSelectedEq;
     private int currSelectedEqIndex;
 
-    @Override
+
+        @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        LogUtil.d("EqSettingFragment:","onCreateView");
         rootView = inflater.inflate(R.layout.fragment_eq_settings, container, false);
         initView();
         initEvent();
@@ -57,6 +59,8 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_EQ_SETTING);
         return rootView;
     }
+
+
 
     private void initView() {
         titleBar = rootView.findViewById(R.id.titleBar);
@@ -120,10 +124,10 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private void initValue() {
         eqModelList = EQSettingManager.get().getCompleteEQList(mContext);
         currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""), mContext);
-        if (eqModelList == null || eqModelList.isEmpty()) {
+        /*if (eqModelList == null || eqModelList.isEmpty()) {
             getActivity().getSupportFragmentManager().popBackStack();
             return;
-        }
+        }*/
         LogUtil.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""));
         if (currSelectedEq != null && currSelectedEq.eqName != null) {
             if (application.deviceInfo.eqOn) {

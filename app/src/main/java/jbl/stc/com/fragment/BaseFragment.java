@@ -69,6 +69,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, audi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        LogUtil.d(TAG, "onCreateView()");
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
