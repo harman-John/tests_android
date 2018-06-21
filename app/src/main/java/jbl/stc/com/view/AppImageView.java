@@ -6,6 +6,10 @@ import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+/**
+ * AppImageView
+ * Created by darren.lu on 2017/8/26.
+ */
 
 public class AppImageView extends AppCompatImageView {
     public AppImageView(Context context) {

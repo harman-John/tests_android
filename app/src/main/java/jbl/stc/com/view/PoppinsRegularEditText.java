@@ -4,27 +4,27 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 
 /**
- * font face Poppins-Regular TextView
+ * font face Poppins-Regular EditText
  * Created by darren.lu on 2017/8/25.
  */
 
-public class PoppinsRegularTextView extends AppCompatTextView {
+public class PoppinsRegularEditText extends AppCompatEditText {
 
-    public PoppinsRegularTextView(Context context) {
+    public PoppinsRegularEditText(Context context) {
         super(context);
         init(context);
     }
 
-    public PoppinsRegularTextView(Context context, @Nullable AttributeSet attrs) {
+    public PoppinsRegularEditText(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public PoppinsRegularTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public PoppinsRegularEditText(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }

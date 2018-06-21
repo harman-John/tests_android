@@ -26,4 +26,12 @@
     <dimen name="divider_size">1dp</dimen>
     <dimen name="image_button_width_and_height">45dp</dimen>
     <dimen name="dashboard_talk_image_width">60dp</dimen>
+
+    <dimen name="equalizer_button_layout_height">34dp</dimen>
+    <dimen name="text_margin_top_small">5dp</dimen>
+    <dimen name="app_button_corner_radius">22.5dp</dimen>
+    <dimen name="app_button_height">45dp</dimen>
+    <dimen name="eq_name_edit_layout_height">140dp</dimen>
+    <dimen name="eq_name_edit_bottom_margin">34dp</dimen>
+    <dimen name="eq_name_edit_bottom_margin_show">5dp</dimen>
 </resources>
