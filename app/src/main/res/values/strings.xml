@@ -11,4 +11,9 @@
     <string name="text_smart_ambient">Smart\nAmbient</string>
     <string name="title_eq">EQ</string>
     <string name="text_auto_off">Auto-off</string>
+
+    <string name="dialog_message_create_my_own_eq">Currently no EQ created \nTap below button to create one</string>
+    <string name="title_eq_edit">Edit EQ</string>
+    <string name="eq_add_first_time_tip">Tap the line to add\nand move a knob</string>
+    <string name="create_eq_default_name">My EQ</string>
 </resources>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_dialog_bg">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/titleBar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_bar_height"
+            android:paddingLeft="@dimen/page_padding_left"
+            android:paddingRight="@dimen/page_padding_right">
+
+            <jbl.stc.com.view.PoppinsMediumTextView
+                style="@style/PoppinsMediumTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/title_eq" />
+
+            <jbl.stc.com.view.AppImageView
+                android:id="@+id/closeImageView"
+                android:layout_width="@dimen/image_button_width_and_height"
+                android:layout_height="@dimen/image_button_width_and_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/icon_close" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <jbl.stc.com.view.PoppinsMediumTextView
+                android:id="@+id/titleText"
+                style="@style/PoppinsMediumTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/text_margin_top_small"
+                android:gravity="center"
+                android:text="Start with my own EQ"
+                android:visibility="visible" />
+
+            <jbl.stc.com.view.PoppinsRegularTextView
+                android:id="@+id/messageText"
+                style="@style/PoppinsRegularTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="@string/dialog_message_create_my_own_eq"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <jbl.stc.com.view.PoppinsRegularTextView
+                    android:id="@+id/buttonCancel"
+                    style="@style/ButtonTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/app_button_height"
+                    android:layout_marginRight="10dp"
+                    android:text="Cancel"
+                    android:visibility="gone" />
+
+                <jbl.stc.com.view.PoppinsRegularTextView
+                    android:id="@+id/buttonConfirm"
+                    style="@style/ButtonTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/app_button_height"
+                    android:layout_marginLeft="10dp"
+                    android:text="Create my own EQ" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

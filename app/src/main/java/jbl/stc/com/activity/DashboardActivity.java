@@ -14,9 +14,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import jbl.stc.com.R;
+import jbl.stc.com.dialog.CreateMyOwnEqDialog;
 import jbl.stc.com.fragment.ANCFragment;
 import jbl.stc.com.fragment.BaseFragment;
+import jbl.stc.com.fragment.EqCustomFragment;
 import jbl.stc.com.fragment.EqSettingFragment;
+import jbl.stc.com.listener.OnDialogListener;
+import jbl.stc.com.utils.FastClickHelper;
+import jbl.stc.com.utils.LogUtil;
 
 public class DashboardActivity extends BaseActivity implements View.OnClickListener {
 
@@ -26,11 +31,12 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             eqSwitchImageView;
     private LinearLayout eqSwitchLayout;
     private FrameLayout eqInfoLayout;
-    private TextView eqNameText,titleEqText,
+    private TextView eqNameText, titleEqText,
             batteryLevelText, eqTextView,
             autoOffTextView;
     private View eqDividerView;
     private ProgressBar batteryProgressBar;
+    private CreateMyOwnEqDialog createMyOwnEqDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +46,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initView() {
-        logoImageView=findViewById(R.id.logoImageView);
+        logoImageView = findViewById(R.id.logoImageView);
         settingImageView = findViewById(R.id.settingImageView);
         smartAmbientImage = findViewById(R.id.smartAmbientImage);
         deviceImageView = findViewById(R.id.deviceImageView);
@@ -58,9 +64,22 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
         eqInfoLayout.setOnClickListener(this);
 
+        createMyOwnEqDialog = new CreateMyOwnEqDialog(this);
+        createMyOwnEqDialog.setOnDialogListener(new OnDialogListener() {
+            @Override
+            public void onConfirm() {
+                switchFragment(new EqCustomFragment());
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
+
     }
 
-    private void switchFragment(BaseFragment baseFragment) {
+    public void switchFragment(BaseFragment baseFragment) {
         try {
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.setCustomAnimations(R.anim.enter_from_down, R.anim.exit_to_up, R.anim.enter_from_up, R.anim.exit_to_down);
@@ -76,11 +95,52 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
+    public void  onBackPressed() {
+        /*int backStackEntryCount = supportFragmentManager.backStackEntryCount;
+        LogUtil.d(TAG, "onBackPressed BackStackEntryCount=$backStackEntryCount")
+        if (application!!.mDeviceConnected.get() && backStackEntryCount > 0) {
+            if (!application!!.isUpgradeFragment && !application!!.isSmartAmbientFragment && !application!!.isAddEqFragment) {
+                supportFragmentManager.popBackStack()
+                //runDeviceAnimation()
+
+                currPageIsDashboard = (backStackEntryCount == 1)
+                LogUtil.d(TAG, "currPageIsDashboard=" + currPageIsDashboard + ",needUpgrade="
+                        + application!!.deviceInfo.needUpgrade + ",isUpgradeAvailableShow=" + isUpgradeAvailableShow)
+                if (application!!.deviceInfo.needUpgrade && !isUpgradeAvailableShow) {
+                    mHandler.postDelayed(showUpgradeAvailableDialog, 1500)
+                }
+            } else if (application!!.isAddEqFragment) {
+
+            }
+        } else {
+            if (application!!.mDeviceConnected.get()) {
+                AppUtils.hideFromForeground(this)
+            } else {
+                finish()
+            }
+        }*/
+    }
+
+    public void refreshPage() {
+        LogUtil.d(TAG, "refreshPage()");
+        //updateAutoOffImage(false);
+        //updateEqSwitchImage(false);
+        //updateSmartAmbientImage(false);
+        //updateEqInfoLayout();
+        //updateSettingImage();
+    }
+
+
+
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
-            case  R.id.eqInfoLayout:{
-                switchFragment(new EqSettingFragment());
+        switch (v.getId()) {
+            case R.id.eqInfoLayout: {
+                if (FastClickHelper.isFastClick()) {
+                    return;
+                }
+                //switchFragment(new EqSettingFragment());
+                createMyOwnEqDialog.show();
                 break;
             }
         }
