@@ -17,4 +17,14 @@
     <string name="eq_add_first_time_tip">Tap the line to add\nand move a knob</string>
     <string name="create_eq_default_name">My EQ</string>
     <string name="eq_off_name_text">Off</string>
+
+    <string name="deviceName">JBL Device</string>
+    <string name="text_settings">Settings</string>
+    <string name="firmware">Firmware</string>
+    <string name="text_smart_button">Programmable Smart Button</string>
+    <string name="text_auto_off_feature">Auto Off Feature</string>
+    <string name="text_voice_prompt">Enable Voice Prompt</string>
+    <string name="open_source">Open Source Licenses</string>
+    <string name="eula">EULA</string>
+    <string name="harman_privacy_policy">Harman Privacy Statement</string>
 </resources>

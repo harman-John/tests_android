@@ -34,4 +34,6 @@
     <dimen name="eq_name_edit_layout_height">140dp</dimen>
     <dimen name="eq_name_edit_bottom_margin">34dp</dimen>
     <dimen name="eq_name_edit_bottom_margin_show">5dp</dimen>
+
+    <dimen name="settings_item_height">50dp</dimen>
 </resources>

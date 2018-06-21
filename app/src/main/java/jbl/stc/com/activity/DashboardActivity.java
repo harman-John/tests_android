@@ -19,6 +19,7 @@ import jbl.stc.com.fragment.ANCFragment;
 import jbl.stc.com.fragment.BaseFragment;
 import jbl.stc.com.fragment.EqCustomFragment;
 import jbl.stc.com.fragment.EqSettingFragment;
+import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.listener.OnMainAppListener;
 import jbl.stc.com.utils.AppUtils;
@@ -66,6 +67,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         autoOffTextView = findViewById(R.id.autoOffTextView);
 
         eqInfoLayout.setOnClickListener(this);
+        settingImageView.setOnClickListener(this);
 
         createMyOwnEqDialog = new CreateMyOwnEqDialog(this);
         createMyOwnEqDialog.setOnDialogListener(new OnDialogListener() {
@@ -149,6 +151,10 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 }
                 switchFragment(new EqSettingFragment());
                 //createMyOwnEqDialog.show();
+                break;
+            }
+            case R.id.settingImageView:{
+                switchFragment(new SettingsFragment());
                 break;
             }
         }
