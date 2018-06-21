@@ -16,4 +16,5 @@
     <string name="title_eq_edit">Edit EQ</string>
     <string name="eq_add_first_time_tip">Tap the line to add\nand move a knob</string>
     <string name="create_eq_default_name">My EQ</string>
+    <string name="eq_off_name_text">Off</string>
 </resources>

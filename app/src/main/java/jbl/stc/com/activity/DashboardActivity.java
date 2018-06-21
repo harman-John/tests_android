@@ -20,10 +20,12 @@ import jbl.stc.com.fragment.BaseFragment;
 import jbl.stc.com.fragment.EqCustomFragment;
 import jbl.stc.com.fragment.EqSettingFragment;
 import jbl.stc.com.listener.OnDialogListener;
+import jbl.stc.com.listener.OnMainAppListener;
+import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.FastClickHelper;
 import jbl.stc.com.utils.LogUtil;
 
-public class DashboardActivity extends BaseActivity implements View.OnClickListener {
+public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnMainAppListener {
 
     private ImageView logoImageView,
             settingImageView, smartAmbientImage,
@@ -37,6 +39,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     private View eqDividerView;
     private ProgressBar batteryProgressBar;
     private CreateMyOwnEqDialog createMyOwnEqDialog;
+    private boolean currPageIsDashboard=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     public void switchFragment(BaseFragment baseFragment) {
         try {
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            baseFragment.setOnMainAppListener(this);
             ft.setCustomAnimations(R.anim.enter_from_down, R.anim.exit_to_up, R.anim.enter_from_up, R.anim.exit_to_down);
             if (getSupportFragmentManager().findFragmentById(R.id.containerLayout) == null) {
                 ft.add(R.id.containerLayout, baseFragment);
@@ -93,32 +97,24 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
     public void  onBackPressed() {
-        /*int backStackEntryCount = supportFragmentManager.backStackEntryCount;
-        LogUtil.d(TAG, "onBackPressed BackStackEntryCount=$backStackEntryCount")
-        if (application!!.mDeviceConnected.get() && backStackEntryCount > 0) {
-            if (!application!!.isUpgradeFragment && !application!!.isSmartAmbientFragment && !application!!.isAddEqFragment) {
-                supportFragmentManager.popBackStack()
-                //runDeviceAnimation()
-
-                currPageIsDashboard = (backStackEntryCount == 1)
-                LogUtil.d(TAG, "currPageIsDashboard=" + currPageIsDashboard + ",needUpgrade="
-                        + application!!.deviceInfo.needUpgrade + ",isUpgradeAvailableShow=" + isUpgradeAvailableShow)
-                if (application!!.deviceInfo.needUpgrade && !isUpgradeAvailableShow) {
-                    mHandler.postDelayed(showUpgradeAvailableDialog, 1500)
-                }
-            } else if (application!!.isAddEqFragment) {
-
-            }
+        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+        if (backStackEntryCount > 0) {
+            currPageIsDashboard = (backStackEntryCount == 1);
+            LogUtil.d(TAG, "currPageIsDashboard=" + currPageIsDashboard);
+            getSupportFragmentManager().popBackStack();
         } else {
-            if (application!!.mDeviceConnected.get()) {
-                AppUtils.hideFromForeground(this)
-            } else {
-                finish()
-            }
-        }*/
+            finish();
+        }
+    }
+
+    @Override
+    public void backToDashboardPage() {
+
     }
 
     public void refreshPage() {
@@ -130,17 +126,29 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         //updateSettingImage();
     }
 
+    @Override
+    public DashboardActivity getMainActivity() {
+        return this;
+    }
+
+    @Override
+    public void showOrHideFragment(boolean isShow, BaseFragment baseFragment) {
+
+    }
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.eqSwitchImageView:
+
+                break;
             case R.id.eqInfoLayout: {
                 if (FastClickHelper.isFastClick()) {
                     return;
                 }
-                //switchFragment(new EqSettingFragment());
-                createMyOwnEqDialog.show();
+                switchFragment(new EqSettingFragment());
+                //createMyOwnEqDialog.show();
                 break;
             }
         }

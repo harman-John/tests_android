@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_fragment_bg"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/eq_setting_bg"
+        android:focusableInTouchMode="true"
+        android:paddingLeft="@dimen/page_padding_left"
+        android:paddingRight="@dimen/page_padding_right">
+
+        <jbl.stc.com.view.PoppinsMediumTextView
+            style="@style/PoppinsMediumTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/title_eq" />
+
+        <jbl.stc.com.view.AppImageView
+            android:id="@+id/moreImageView"
+            android:layout_width="@dimen/image_button_width_and_height"
+            android:layout_height="@dimen/image_button_width_and_height"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/closeImageView"
+            android:src="@mipmap/icon_more_eq" />
+
+        <jbl.stc.com.view.AppImageView
+            android:id="@+id/closeImageView"
+            android:layout_width="@dimen/image_button_width_and_height"
+            android:layout_height="@dimen/image_button_width_and_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_arrow_down" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/eq_setting_bg">
+
+        <jbl.stc.com.view.EqualizerShowView
+            android:id="@+id/equalizerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/eqEditLayout"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+
+        <RelativeLayout
+            android:id="@+id/eqEditLayout"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:paddingLeft="@dimen/page_padding_left"
+            android:paddingRight="@dimen/page_padding_right">
+
+            <jbl.stc.com.view.PoppinsRegularTextView
+                android:id="@+id/eqNameText"
+                style="@style/PoppinsRegularTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/image_button_width_and_height"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/create_eq_default_name"
+                android:textColor="@color/white" />
+
+            <jbl.stc.com.view.AppImageView
+                android:id="@+id/eqEditImage"
+                android:layout_width="@dimen/image_button_width_and_height"
+                android:layout_height="@dimen/image_button_width_and_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"
+                android:src="@mipmap/icon_eq_edit" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/eqRecycleView"
+        android:layout_width="240dp"
+        android:layout_height="230dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/transparent"
+        android:gravity="center_horizontal"
+        android:horizontalSpacing="20dp"
+        android:listSelector="@android:color/transparent"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+
+</LinearLayout>

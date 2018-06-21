@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_fragment_bg"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/eq_custom_bg"
+        android:paddingLeft="@dimen/page_padding_left"
+        android:paddingRight="@dimen/page_padding_right">
+
+        <jbl.stc.com.view.PoppinsMediumTextView
+            style="@style/PoppinsMediumTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/title_eq" />
+
+        <jbl.stc.com.view.AppImageView
+            android:id="@+id/closeImageView"
+            android:layout_width="@dimen/image_button_width_and_height"
+            android:layout_height="@dimen/image_button_width_and_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_close" />
+    </RelativeLayout>
+
+    <jbl.stc.com.view.DragGridView
+        android:id="@+id/eqGridView"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/transparent"
+        android:gravity="center_horizontal"
+        android:horizontalSpacing="20dp"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="2"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+</LinearLayout>

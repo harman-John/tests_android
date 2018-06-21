@@ -34,7 +34,9 @@
     <color name="eq_custom_bg">#333333</color>
     <color name="page_bg_3F">#3F3F3F</color>
     <color name="statusBarBackground">#212425</color>
-
+    <color name="app_fragment_bg">#EE5B5B5B</color><!--5B5B5B 93%-->
+    <color name="eq_setting_bg">#444444</color>
+    <color name="eq_panel_name_text">#434343</color>
 
 
 </resources>
