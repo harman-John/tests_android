@@ -2,16 +2,10 @@ package jbl.stc.com.manager;
 
 import android.util.Log;
 
-import com.avnera.audiomanager.Action;
-import com.avnera.audiomanager.ImageType;
-import com.avnera.audiomanager.Status;
 import com.avnera.smartdigitalheadset.ANCAwarenessPreset;
 import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.avnera.smartdigitalheadset.LightX;
-
-import jbl.stc.com.constant.AmCmds;
-import jbl.stc.com.utils.AmToolUtil;
 
 public class CmdSDHManager implements BaseManager {
 

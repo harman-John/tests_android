@@ -8,12 +8,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
-import com.harman.akg.headphone.interfaces.ScanListener;
 
-
-/**
- * Created by zhaowanxing on 2017/4/17.
- */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LeLollipopScanner extends BaseScanner {
 

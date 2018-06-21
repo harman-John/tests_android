@@ -4,8 +4,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 
-import com.harman.akg.headphone.interfaces.ScanListener;
-import com.harman.bluetooth.utils.BtHelper;
+import jbl.stc.com.utils.BtHelper;
+
 
 public abstract class BaseScanner implements BtScanner {
 

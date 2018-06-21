@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 
-import com.harman.akg.headphone.interfaces.ScanListener;
 
 
 public class LeJBScanner extends BaseScanner {
