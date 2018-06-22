@@ -4,10 +4,12 @@ import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.avnera.audiomanager.audioManager;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.Tracker;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.fabric.sdk.android.Fabric;
 import jbl.stc.com.BuildConfig;
 import jbl.stc.com.entity.DeviceInfo;
 import jbl.stc.com.storage.DatabaseHelper;
@@ -44,7 +46,7 @@ public class AnalyticsApplication extends Application {
             }
         }
         if (!BuildConfig.DEBUG) {
-            //Fabric.with(this, new Crashlytics());
+            Fabric.with(this, new Crashlytics());
         }
         //AnalyticsManager.getInstance(this).initTracker(getDefaultTracker());
         initDbHelper();

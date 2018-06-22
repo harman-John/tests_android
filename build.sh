@@ -3,7 +3,7 @@
 projectHome=`pwd`
 
 # Need to change appHome & apkSrcDir for your project
-appHome="$projectHome/Source"
+appHome="$projectHome/JBLHeadphone2"
 apkSrcDir="$appHome/app/build/outputs/apk"
 
 apkDstDir="$projectHome/build"
