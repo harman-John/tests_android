@@ -1,41 +1,41 @@
 #!/bin/bash
 
-# Only need to config APP_HOME dir.
-APP_HOME=`pwd`
-APK_DIST_DIR="$APP_HOME/build"
+projectHome=`pwd`
 
-echo "APP build start, app home = $APP_HOME"
-if [ ! -d $APK_DIST_DIR ]; then
-	mkdir -p $APK_DIST_DIR
+# Need to change appHome & apkSrcDir for your project
+appHome="$projectHome/Source"
+apkSrcDir="$appHome/app/build/outputs/apk"
+
+apkDstDir="$projectHome/build"
+
+if [ ! -d $apkDstDir ]; then
+	mkdir -p $apkDstDir
 fi
 
 function buildApp(){
 	buildType=$1
 	echo "buildType is " $buildType
 
+	cd $appHome
 	if [ $buildType == 'debug' ]; then
-		./gradlew clean assembleDebug &
+		./gradlew clean assembleDebug
 	else
-		./gradlew clean assembleRelease &
+		./gradlew clean assembleRelease
 	fi
 
 	wait $!
 	ret=$?
 
-	if [ $ret != 0 ]; then
-		echo "ERROR ==========> APP Build Failed  - $buildType"
-		exit 1
+	echo "build $buildType ret=" $ret
+	if [ $ret == 0 ]; then
+		echo "copy $apkSrcDir/$buildType/*.apk ----> $apkDstDir"
+		cp $apkSrcDir/$buildType/*.apk $apkDstDir
+		echo "build $buildType version APP successfully"
+	else
+		echo "build $buildType version APP failed"
+		exit 1	
 	fi
 }
 
 buildApp debug
 buildApp release
-
-echo "APP Build Successfully, then copy to $APK_DIST_DIR"
-APK_FILE=`find $APP_HOME/app/build -name *.apk`
-echo "Apk File Path = $APK_FILE"
-for element in $APK_FILE
-do
-    cp $element $APK_DIST_DIR
-done
-echo "APP Copy Over - $buildType"
