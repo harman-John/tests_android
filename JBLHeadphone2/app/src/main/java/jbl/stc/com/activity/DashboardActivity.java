@@ -23,9 +23,9 @@ import jbl.stc.com.utils.LogUtil;
 public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnMainAppListener {
 
     private ImageView imageViewSettings,
-            imageViewInfo, smartAmbientImage,
+            imageViewInfo, imageViewAmbientAware,
             deviceImageView,
-            eqSwitchImageView;
+            imageViewNoiseCancel;
     private LinearLayout eqSwitchLayout;
     private FrameLayout eqInfoLayout;
     private TextView eqNameText, titleEqText,
@@ -48,17 +48,17 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     private void initView() {
         imageViewSettings = findViewById(R.id.image_view_settings);
         imageViewInfo = findViewById(R.id.image_view_info);
-        smartAmbientImage = findViewById(R.id.smartAmbientImage);
+        imageViewAmbientAware = findViewById(R.id.image_view_ambient_aware);
         deviceImageView = findViewById(R.id.deviceImageView);
         eqSwitchLayout = findViewById(R.id.eqSwitchLayout);
         eqInfoLayout = findViewById(R.id.eqInfoLayout);
-        eqSwitchImageView = findViewById(R.id.eqSwitchImageView);
+        imageViewNoiseCancel = findViewById(R.id.image_view_noise_cancel);
         eqNameText = findViewById(R.id.eqNameText);
         titleEqText = findViewById(R.id.titleEqText);
         eqDividerView = findViewById(R.id.eqDividerView);
         batteryProgressBar = findViewById(R.id.batteryProgressBar);
         batteryLevelText = findViewById(R.id.batteryLevelText);
-        eqTextView = findViewById(R.id.eqTextView);
+        eqTextView = findViewById(R.id.text_view_ambient_aware);
 
         eqInfoLayout.setVisibility(View.VISIBLE);
         eqInfoLayout.setOnClickListener(this);
@@ -186,7 +186,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.eqSwitchImageView:
+            case R.id.image_view_ambient_aware:
 
                 break;
             case R.id.eqInfoLayout: {

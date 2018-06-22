@@ -8,7 +8,8 @@
     <string name="mediumView">MEDIUM</string>
     <string name="lowView">LOW</string>
 
-    <string name="text_smart_ambient">Smart\nAmbient</string>
+    <string name="text_noise_canceling">Noise\ncanceling</string>
+    <string name="text_ambient_aware">Ambient\nAware</string>
     <string name="title_eq">EQ</string>
     <string name="text_auto_off">Auto-off</string>
 

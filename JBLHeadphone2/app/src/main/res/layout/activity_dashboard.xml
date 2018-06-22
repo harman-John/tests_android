@@ -36,15 +36,23 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/eqInfoLayout"
         android:layout_below="@+id/titleBar"
-        android:layout_marginTop="-10dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:text="@string/deviceName"/>
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
+            android:layout_marginTop="20dp"
             android:layout_weight="10"
+            android:background="@drawable/shape_dashboard_device_circle"
             android:clickable="false">
 
             <ImageView
@@ -80,7 +88,7 @@
                 android:orientation="vertical">
 
                 <jbl.stc.com.view.AppImageView
-                    android:id="@+id/smartAmbientImage"
+                    android:id="@+id/image_view_noise_cancel"
                     android:layout_width="@dimen/dashboard_talk_image_width"
                     android:layout_height="@dimen/dashboard_talk_image_width"
                     android:scaleType="fitXY"
@@ -93,7 +101,7 @@
                     android:layout_marginTop="6dp"
                     android:gravity="center_horizontal"
                     android:lineSpacingExtra="-5dp"
-                    android:text="@string/text_smart_ambient"
+                    android:text="@string/text_noise_canceling"
                     android:textColor="@android:color/black" />
             </LinearLayout>
 
@@ -107,20 +115,20 @@
                 android:visibility="visible">
 
                 <jbl.stc.com.view.AppImageView
-                    android:id="@+id/eqSwitchImageView"
+                    android:id="@+id/image_view_ambient_aware"
                     android:layout_width="@dimen/dashboard_talk_image_width"
                     android:layout_height="@dimen/dashboard_talk_image_width"
                     android:scaleType="fitXY"
                     android:src="@mipmap/icon_eq_on" />
 
                 <jbl.stc.com.view.PoppinsRegularTextView
-                    android:id="@+id/eqTextView"
+                    android:id="@+id/text_view_ambient_aware"
                     style="@style/PoppinsRegularTextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:gravity="center_horizontal"
-                    android:text="@string/title_eq"
+                    android:text="@string/text_ambient_aware"
                     android:textColor="@android:color/black" />
             </LinearLayout>
 
@@ -158,7 +166,7 @@
                 android:layout_marginLeft="13dp"
                 android:layout_marginRight="13dp"
                 android:layout_toRightOf="@+id/titleEqText"
-                android:background="@color/divider_color" />
+                android:background="@color/white" />
 
             <jbl.stc.com.view.PoppinsRegularTextView
                 android:id="@+id/eqNameText"
