@@ -10,10 +10,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import jbl.stc.com.R;
+import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.dialog.CreateMyOwnEqDialog;
 import jbl.stc.com.fragment.BaseFragment;
 import jbl.stc.com.fragment.EqCustomFragment;
 import jbl.stc.com.fragment.EqSettingFragment;
+import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.listener.OnMainAppListener;
@@ -62,13 +64,14 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
         eqInfoLayout.setVisibility(View.VISIBLE);
         eqInfoLayout.setOnClickListener(this);
+        imageViewInfo.setOnClickListener(this);
         imageViewSettings.setOnClickListener(this);
 
         createMyOwnEqDialog = new CreateMyOwnEqDialog(this);
         createMyOwnEqDialog.setOnDialogListener(new OnDialogListener() {
             @Override
             public void onConfirm() {
-                switchFragment(new EqCustomFragment());
+                switchFragment(new EqCustomFragment(),JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
             }
 
             @Override
@@ -126,11 +129,17 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-    public void switchFragment(BaseFragment baseFragment) {
+    public void switchFragment(BaseFragment baseFragment,int type) {
         try {
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             baseFragment.setOnMainAppListener(this);
-            ft.setCustomAnimations(R.anim.enter_from_down, R.anim.exit_to_up, R.anim.enter_from_up, R.anim.exit_to_down);
+            if (type == JBLConstant.SLIDE_FROM_DOWN_TO_TOP) {
+                ft.setCustomAnimations(R.anim.enter_from_down, R.anim.exit_to_up, R.anim.enter_from_up, R.anim.exit_to_down);
+            }else if (type == JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT){
+                ft.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
+            }else if (type == JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT){
+                ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
+            }
             currPageIsDashboard=false;
             if (getSupportFragmentManager().findFragmentById(R.id.containerLayout) == null) {
                 ft.add(R.id.containerLayout, baseFragment);
@@ -193,12 +202,16 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 if (FastClickHelper.isFastClick()) {
                     return;
                 }
-                switchFragment(new EqSettingFragment());
+                switchFragment(new EqSettingFragment(),JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 //createMyOwnEqDialog.show();
                 break;
             }
+            case R.id.image_view_info:{
+                switchFragment(new InfoFragment(),JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                break;
+            }
             case R.id.image_view_settings:{
-                switchFragment(new SettingsFragment());
+                switchFragment(new SettingsFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
         }

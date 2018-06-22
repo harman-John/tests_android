@@ -15,6 +15,7 @@ import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.adapter.EqRecyclerAdapter;
+import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.controller.AnalyticsManager;
 import jbl.stc.com.controller.EQSettingManager;
 import jbl.stc.com.entity.EQModel;
@@ -203,7 +204,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             bundle.putSerializable(EqCustomFragment.EXTRA_EQ_MODEL, currSelectedEq);
         }
         fragment.setArguments(bundle);
-        getOnMainAppListener().getMainActivity().switchFragment(fragment);
+        getOnMainAppListener().getMainActivity().switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
         eqRecycleView.smoothScrollToPosition(0);
     }
 
@@ -222,7 +223,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 break;
             case R.id.moreImageView:
                 EqMoreSettingFragment fragment = new EqMoreSettingFragment();
-                getOnMainAppListener().getMainActivity().switchFragment(fragment);
+                getOnMainAppListener().getMainActivity().switchFragment(fragment,JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 break;
         }
     }

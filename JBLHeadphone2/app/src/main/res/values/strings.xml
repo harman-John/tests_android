@@ -38,4 +38,12 @@
     <string name="firmware_new_version">New software update version 2.0.0 is available</string>
     <string name="firmware_is_installed">Firmware version 2.0.0 is installed</string>
     <string name="done">Done</string>
+
+
+    <string name="text_product_help">Product help</string>
+    <string name="text_jbl_com">JBL.com</string>
+    <string name="text_open_source_license">Open source licenses</string>
+    <string name="text_eula">EULA</string>
+    <string name="text_harman_privacy_policy">Harman privacy policy</string>
+
 </resources>

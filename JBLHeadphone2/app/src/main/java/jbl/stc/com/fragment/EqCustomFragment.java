@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import jbl.stc.com.R;
+import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.controller.AnalyticsManager;
 import jbl.stc.com.controller.EQSettingManager;
 import jbl.stc.com.entity.EQModel;
@@ -283,7 +284,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             application.deviceInfo.hasEq = true;
             //CommandManager.get().setGrEqBandGains(currSelectedEq.id, eqValueArray);
             getActivity().getSupportFragmentManager().popBackStack();
-            getOnMainAppListener().getMainActivity().switchFragment(new EqSettingFragment());
+            getOnMainAppListener().getMainActivity().switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
         }
         getOnMainAppListener().refreshPage();
     }
