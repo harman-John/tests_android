@@ -24,7 +24,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     private ImageView imageViewSettings,
             imageViewInfo, smartAmbientImage,
-            deviceImageView, autoOffImage,
+            deviceImageView,
             eqSwitchImageView;
     private LinearLayout eqSwitchLayout;
     private FrameLayout eqInfoLayout;
@@ -50,7 +50,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         imageViewInfo = findViewById(R.id.image_view_info);
         smartAmbientImage = findViewById(R.id.smartAmbientImage);
         deviceImageView = findViewById(R.id.deviceImageView);
-        autoOffImage = findViewById(R.id.autoOffImage);
         eqSwitchLayout = findViewById(R.id.eqSwitchLayout);
         eqInfoLayout = findViewById(R.id.eqInfoLayout);
         eqSwitchImageView = findViewById(R.id.eqSwitchImageView);
@@ -60,7 +59,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         batteryProgressBar = findViewById(R.id.batteryProgressBar);
         batteryLevelText = findViewById(R.id.batteryLevelText);
         eqTextView = findViewById(R.id.eqTextView);
-        autoOffTextView = findViewById(R.id.autoOffTextView);
 
         eqInfoLayout.setVisibility(View.VISIBLE);
         eqInfoLayout.setOnClickListener(this);

@@ -39,8 +39,10 @@
     <color name="eq_panel_name_text">#434343</color>
 
     <color name="lighter_gray_theme">#ddd</color>
+    <color name="gray_theme">#AA828282</color>
 
     <color name="ota_text_Color">#ee3a3a</color>
 
     <color name="light_white">#88FFFFFF</color>
+    <color name="green">#00FF00</color>
 </resources>
