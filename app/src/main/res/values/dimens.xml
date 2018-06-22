@@ -38,4 +38,8 @@
     <dimen name="settings_item_height">60dp</dimen>
     <dimen name="settings_item_padding_left">40dp</dimen>
     <dimen name="settings_item_padding_right">30dp</dimen>
+
+
+    <dimen name="ota_text_size">20sp</dimen>
+    <dimen name="margin_top_10dp">10dp</dimen>
 </resources>

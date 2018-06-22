@@ -22,6 +22,7 @@ import com.avnera.audiomanager.responseResult;
 
 import java.util.ArrayList;
 
+import jbl.stc.com.R;
 import jbl.stc.com.activity.AnalyticsApplication;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.listener.OnMainAppListener;
@@ -234,4 +235,20 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, audi
         super.onDestroy();
     }
 
+
+    public void switchFragment(BaseFragment baseFragment) {
+        try {
+            android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            ft.setCustomAnimations(R.anim.enter_from_down, R.anim.exit_to_up, R.anim.enter_from_up, R.anim.exit_to_down);
+            if (getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout) == null) {
+                ft.add(R.id.containerLayout, baseFragment);
+            } else {
+                ft.replace(R.id.containerLayout, baseFragment, baseFragment.getTag());
+            }
+            ft.addToBackStack(null);
+            ft.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

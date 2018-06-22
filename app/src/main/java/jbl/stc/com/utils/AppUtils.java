@@ -1,5 +1,6 @@
 package jbl.stc.com.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -10,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -20,6 +22,8 @@ import java.io.InputStream;
 import java.util.StringTokenizer;
 
 import jbl.stc.com.BuildConfig;
+import jbl.stc.com.R;
+import jbl.stc.com.fragment.BaseFragment;
 
 /**
  * AppUtils

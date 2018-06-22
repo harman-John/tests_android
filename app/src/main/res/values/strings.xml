@@ -31,4 +31,8 @@
 
     <string name="true_note">TruNote</string>
     <string name="user_manual">User manual</string>
+    <string name="updating">Updating&#8230;</string>
+    <string name="text_ota_title">Product software update</string>
+    <string name="firmware_is_updating">Firmware is Updating...</string>
+    <string name="done">Done</string>
 </resources>

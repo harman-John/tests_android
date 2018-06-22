@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:background="@color/lighter_gray_settings">
+    android:background="@color/lighter_gray_theme">
 
     <TextView
         android:id="@+id/settings"
@@ -223,7 +223,7 @@
                 android:layout_marginEnd="30dp"
                 android:background="@android:color/white"/>
             <TextView
-                android:id="@+id/text_updateDevice"
+                android:id="@+id/text_firmware"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
                 android:layout_marginTop="@dimen/margin5dp"
