@@ -1,13 +1,7 @@
 package jbl.stc.com.activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -17,21 +11,19 @@ import android.widget.TextView;
 
 import jbl.stc.com.R;
 import jbl.stc.com.dialog.CreateMyOwnEqDialog;
-import jbl.stc.com.fragment.ANCFragment;
 import jbl.stc.com.fragment.BaseFragment;
 import jbl.stc.com.fragment.EqCustomFragment;
 import jbl.stc.com.fragment.EqSettingFragment;
 import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.listener.OnMainAppListener;
-import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.FastClickHelper;
 import jbl.stc.com.utils.LogUtil;
 
 public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnMainAppListener {
 
-    private ImageView logoImageView,
-            settingImageView, smartAmbientImage,
+    private ImageView imageViewSettings,
+            imageViewInfo, smartAmbientImage,
             deviceImageView, autoOffImage,
             eqSwitchImageView;
     private LinearLayout eqSwitchLayout;
@@ -54,8 +46,8 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initView() {
-        logoImageView = findViewById(R.id.logoImageView);
-        settingImageView = findViewById(R.id.settingImageView);
+        imageViewSettings = findViewById(R.id.image_view_settings);
+        imageViewInfo = findViewById(R.id.image_view_info);
         smartAmbientImage = findViewById(R.id.smartAmbientImage);
         deviceImageView = findViewById(R.id.deviceImageView);
         autoOffImage = findViewById(R.id.autoOffImage);
@@ -72,7 +64,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
         eqInfoLayout.setVisibility(View.VISIBLE);
         eqInfoLayout.setOnClickListener(this);
-        settingImageView.setOnClickListener(this);
+        imageViewSettings.setOnClickListener(this);
 
         createMyOwnEqDialog = new CreateMyOwnEqDialog(this);
         createMyOwnEqDialog.setOnDialogListener(new OnDialogListener() {
@@ -207,7 +199,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 //createMyOwnEqDialog.show();
                 break;
             }
-            case R.id.settingImageView:{
+            case R.id.image_view_settings:{
                 switchFragment(new SettingsFragment());
                 break;
             }

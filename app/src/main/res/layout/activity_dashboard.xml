@@ -3,7 +3,7 @@
     android:id="@+id/containerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/page_bg_5B"
+    android:background="@drawable/shape_dashboard_gradient"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -14,17 +14,18 @@
         android:paddingRight="@dimen/page_padding_right">
 
         <ImageView
-            android:id="@+id/logoImageView"
+            android:id="@+id/image_view_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/logo_agk_n70nc" />
+            android:src="@mipmap/ic_settings" />
 
         <jbl.stc.com.view.AppImageView
-            android:id="@+id/settingImageView"
+            android:id="@+id/image_view_info"
             android:layout_width="@dimen/image_button_width_and_height"
             android:layout_height="@dimen/image_button_width_and_height"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:src="@mipmap/icon_setting_normal" />
     </RelativeLayout>
@@ -92,7 +93,7 @@
                     android:gravity="center_horizontal"
                     android:lineSpacingExtra="-5dp"
                     android:text="@string/text_smart_ambient"
-                    android:textColor="@color/white" />
+                    android:textColor="@android:color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -119,7 +120,7 @@
                     android:layout_marginTop="6dp"
                     android:gravity="center_horizontal"
                     android:text="@string/title_eq"
-                    android:textColor="@color/white" />
+                    android:textColor="@android:color/black" />
             </LinearLayout>
 
             <LinearLayout
@@ -144,7 +145,7 @@
                     android:layout_marginTop="6dp"
                     android:gravity="center_horizontal"
                     android:text="@string/text_auto_off"
-                    android:textColor="@color/white" />
+                    android:textColor="@android:color/black" />
             </LinearLayout>
 
         </LinearLayout>
