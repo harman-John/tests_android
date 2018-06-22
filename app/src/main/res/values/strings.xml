@@ -27,4 +27,8 @@
     <string name="open_source">Open Source Licenses</string>
     <string name="eula">EULA</string>
     <string name="harman_privacy_policy">Harman Privacy Statement</string>
+
+
+    <string name="true_note">TruNote</string>
+    <string name="user_manual">User manual</string>
 </resources>

@@ -38,5 +38,5 @@
     <color name="eq_setting_bg">#444444</color>
     <color name="eq_panel_name_text">#434343</color>
 
-
+    <color name="lighter_gray_settings">#ddd</color>
 </resources>
