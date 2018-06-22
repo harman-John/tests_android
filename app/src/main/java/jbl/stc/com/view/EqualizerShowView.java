@@ -183,6 +183,9 @@ public class EqualizerShowView extends View {
      * Draw Curve
      */
     private void drawCurveChart(Canvas canvas) {
+        if (pointX == null || pointY == null) {
+            return;
+        }
         mCurvePaint.setColor(ContextCompat.getColor(mContext, curveColor));
         curvePath.reset();
         pointX.clear();
