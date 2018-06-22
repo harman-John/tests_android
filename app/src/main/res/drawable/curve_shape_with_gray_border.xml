@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="ring"
-    android:thicknessRatio="2"
-    android:useLevel="false">
+    android:shape="oval">
 
     <solid android:color="@color/lighter_gray_theme" />
 
     <stroke
-        android:width="2dp"
-        android:color="@android:color/black" />
-
+        android:width="3dp"
+        android:color="@android:color/background_dark" />
 </shape>

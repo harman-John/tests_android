@@ -33,6 +33,8 @@
     <string name="user_manual">User manual</string>
     <string name="updating">Updating&#8230;</string>
     <string name="text_ota_title">Product software update</string>
-    <string name="firmware_is_updating">Firmware is Updating...</string>
+    <string name="firmware_is_updating">Firmware is Updating…\n1.Please do not close the application.\n2.Keep the headset near the device.\n3.Pluggin in the headphones is recommended.</string>
+    <string name="firmware_new_version">New software update version 2.0.0 is available</string>
+    <string name="firmware_is_installed">Firmware version 2.0.0 is installed</string>
     <string name="done">Done</string>
 </resources>

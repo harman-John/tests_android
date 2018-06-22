@@ -28,7 +28,7 @@
         android:id="@+id/updateStatus"
         style="@android:style/TextAppearance.Large"
         android:layout_width="match_parent"
-        android:layout_height="124dp"
+        android:layout_height="185dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="105dp"
@@ -36,8 +36,7 @@
         android:paddingRight="40dp"
         android:text="@string/firmware_is_updating"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/ota_text_size"
-        android:textStyle="bold" />
+        android:textSize="16sp" />
 
     <LinearLayout
         android:id="@+id/startupdating"
@@ -51,13 +50,15 @@
 
         <FrameLayout
             android:id="@+id/mainCircle"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
-            android:background="@drawable/curve_shape_with_gray_border"
-            android:padding="10dp">
-
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@color/lighter_gray_theme">
             <TextView
-                android:id="@+id/txtPrecentage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/curve_shape_with_gray_border" />
+            <TextView
+                android:id="@+id/text_progress"
                 style="@android:style/TextAppearance.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
