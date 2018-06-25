@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.constant.JBLConstant;
 
 public class SettingsFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = SettingsFragment.class.getSimpleName();
@@ -36,7 +37,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.text_firmware:{
-                switchFragment(new OTAFragment());
+                switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 break;
             }
             case R.id.image_view_settings_back:{

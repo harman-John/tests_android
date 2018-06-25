@@ -229,7 +229,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                     //CommandManager.get().setGrEqBandGains(srcSelectedEq.id, eqValueArray);
                 }
                 application.isAddEqFragment = false;
-                getOnMainAppListener().getMainActivity().onBackPressed();
+                getActivity().onBackPressed();
                 break;
         }
     }
@@ -284,9 +284,8 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             application.deviceInfo.hasEq = true;
             //CommandManager.get().setGrEqBandGains(currSelectedEq.id, eqValueArray);
             getActivity().getSupportFragmentManager().popBackStack();
-            getOnMainAppListener().getMainActivity().switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+            switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
         }
-        getOnMainAppListener().refreshPage();
     }
 
 

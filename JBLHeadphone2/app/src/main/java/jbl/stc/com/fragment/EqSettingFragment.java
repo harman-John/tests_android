@@ -108,7 +108,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                             if (FastClickHelper.isFastClick()) {
                                 return true;
                             }
-                            getOnMainAppListener().getMainActivity().onBackPressed();
+                            getActivity().onBackPressed();
                         }
                         break;
                     case MotionEvent.ACTION_UP:
@@ -187,7 +187,6 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
         equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
         //CommandManager.get().setGrEqBandGains(currSelectedEq.id, eqValueArray);
-        getOnMainAppListener().refreshPage();
         AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
         if (fromUser) {
             eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
@@ -204,7 +203,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             bundle.putSerializable(EqCustomFragment.EXTRA_EQ_MODEL, currSelectedEq);
         }
         fragment.setArguments(bundle);
-        getOnMainAppListener().getMainActivity().switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+        switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
         eqRecycleView.smoothScrollToPosition(0);
     }
 
@@ -219,11 +218,11 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 }
                 break;
             case R.id.closeImageView:
-                getOnMainAppListener().getMainActivity().onBackPressed();
+                getActivity().onBackPressed();
                 break;
             case R.id.moreImageView:
                 EqMoreSettingFragment fragment = new EqMoreSettingFragment();
-                getOnMainAppListener().getMainActivity().switchFragment(fragment,JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                switchFragment(fragment,JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 break;
         }
     }

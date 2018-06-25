@@ -25,7 +25,7 @@ import jbl.stc.com.utils.LogUtil;
  * Created by darren.lu on 2017/11/27.
  */
 
-public class AnalyticsApplication extends Application {
+public class JBLApplication extends Application {
     public DeviceInfo deviceInfo;
     public audioManager mAudioManager;
     public boolean isUpgradeFragment = false;

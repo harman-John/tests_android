@@ -1,4 +1,4 @@
-package jbl.stc.com.legal
+package jbl.stc.com.dialog
 
 import android.app.Dialog
 import android.content.DialogInterface
@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.text.method.LinkMovementMethod
 import android.view.Gravity
 import android.view.KeyEvent
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import jbl.stc.com.R
+import jbl.stc.com.legal.LegalApi
 import jbl.stc.com.listener.DismissListener
 import jbl.stc.com.storage.PreferenceKeys
 import jbl.stc.com.storage.PreferenceUtils
@@ -42,11 +44,11 @@ class LegalLandingDialog : android.support.v4.app.DialogFragment() {
         view.checkboxEula!!.setOnCheckedChangeListener { _, isChecked ->
             if (view.checkboxPrivacy.isChecked && isChecked) {
                 view.txtEulaButton.setTextColor(Color.WHITE)
-                view.txtEulaButton.background = resources.getDrawable(R.drawable.rectangle_with_round_corner)
+                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner)
                 isBothChecked = true
             } else {
-                view.txtEulaButton.setTextColor(resources.getColor(R.color.light_white))
-                view.txtEulaButton.background = resources.getDrawable(R.drawable.rectangle_with_round_corner_grey)
+                view.txtEulaButton.setTextColor(ContextCompat.getColor(context,R.color.light_white))
+                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner_grey)
                 isBothChecked = false
             }
         }
@@ -57,11 +59,11 @@ class LegalLandingDialog : android.support.v4.app.DialogFragment() {
         view.checkboxPrivacy.setOnCheckedChangeListener { _, isChecked ->
             if (view.checkboxEula.isChecked && isChecked) {
                 view.txtEulaButton.setTextColor(Color.WHITE)
-                view.txtEulaButton.background = resources.getDrawable(R.drawable.rectangle_with_round_corner)
+                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner)
                 isBothChecked = true
             } else {
-                view.txtEulaButton.setTextColor(resources.getColor(R.color.light_white))
-                view.txtEulaButton.background = resources.getDrawable(R.drawable.rectangle_with_round_corner_grey)
+                view.txtEulaButton.setTextColor(ContextCompat.getColor(context,R.color.light_white))
+                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner_grey)
                 isBothChecked = false
             }
         }
@@ -98,7 +100,7 @@ class LegalLandingDialog : android.support.v4.app.DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = Dialog(activity, android.R.style.Theme_Black_NoTitleBar)
-        val d = ColorDrawable(resources.getColor(R.color.dialogBackGround))
+        val d = ColorDrawable(ContextCompat.getColor(context,R.color.dialogBackGround))
         dialog.window.setBackgroundDrawable(d)
         dialog.window.attributes.windowAnimations = R.style.DialogAnimation
         val params = dialog.window.attributes

@@ -146,8 +146,7 @@ public class EqMoreSettingFragment extends BaseFragment implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.closeImageView:
-                getOnMainAppListener().refreshPage();
-                getOnMainAppListener().getMainActivity().onBackPressed();
+                getActivity().onBackPressed();
                 break;
         }
     }
