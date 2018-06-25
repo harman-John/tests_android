@@ -19,8 +19,8 @@ import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
-import jbl.stc.com.controller.AnalyticsManager;
-import jbl.stc.com.controller.EQSettingManager;
+import jbl.stc.com.manager.AnalyticsManager;
+import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.entity.GraphicEQPreset;
 import jbl.stc.com.listener.OnCustomEqListener;
@@ -68,7 +68,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         initView();
         initEvent();
         initValue();
-        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_EQ_Edit);
+        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_CUSTOM_EQ);
         return rootView;
     }
 

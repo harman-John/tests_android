@@ -1,4 +1,4 @@
-package jbl.stc.com.controller;
+package jbl.stc.com.manager;
 
 import android.content.ContentValues;
 import android.content.Context;

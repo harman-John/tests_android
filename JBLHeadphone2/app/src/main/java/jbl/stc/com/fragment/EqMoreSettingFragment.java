@@ -13,8 +13,8 @@ import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.adapter.EqNameGridAdapter;
-import jbl.stc.com.controller.AnalyticsManager;
-import jbl.stc.com.controller.EQSettingManager;
+import jbl.stc.com.manager.AnalyticsManager;
+import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.listener.OnDeleteEqListener;
 import jbl.stc.com.listener.OnEqIndexChangeListener;
@@ -42,7 +42,7 @@ public class EqMoreSettingFragment extends BaseFragment implements View.OnClickL
         initView();
         initEvent();
         initValue();
-        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_EQ_MANAGER);
+        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_EQ_MORE);
         return rootView;
     }
 

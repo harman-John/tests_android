@@ -16,8 +16,8 @@ import java.util.List;
 import jbl.stc.com.R;
 import jbl.stc.com.adapter.EqRecyclerAdapter;
 import jbl.stc.com.constant.JBLConstant;
-import jbl.stc.com.controller.AnalyticsManager;
-import jbl.stc.com.controller.EQSettingManager;
+import jbl.stc.com.manager.AnalyticsManager;
+import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.entity.GraphicEQPreset;
 import jbl.stc.com.listener.OnCustomEqListener;
@@ -57,7 +57,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         initView();
         initEvent();
         initValue();
-        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_EQ_SETTING);
+        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_SETTINGS_PANEL);
         return rootView;
     }
 

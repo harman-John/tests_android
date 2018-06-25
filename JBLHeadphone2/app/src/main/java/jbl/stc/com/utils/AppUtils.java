@@ -23,7 +23,9 @@ import java.util.StringTokenizer;
 
 import jbl.stc.com.BuildConfig;
 import jbl.stc.com.R;
+import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.fragment.BaseFragment;
+import jbl.stc.com.storage.PreferenceUtils;
 
 /**
  * AppUtils
@@ -40,12 +42,17 @@ public class AppUtils {
     public static final String BASE_DEVICE_NAME = "N700NC";
     public static final String EQ_NAME_AND_NUM_SEPARATE = " ";
 
+    public static boolean mLegalPage = true;//是否显示Legal界面
     public static final int SEND_ORDER_TIME_DURATION = 30;
     public static final long DEVICE_VIEW_ANIMATION_TIME = 1500;
     public static final long AUDIO_MANAGER_INIT_TIME = 3000;
     public static final long GET_BATTERY_LEVEL_INTERVAL_TIME = 3 * 60 * 1000L;
     public static final int EQ_VIEW_DEFAULT_STEP = 20;
     public static final int EQ_BAND_NUMBER = 10;
+
+    public static String getJBLDeviceName(Context context){
+        return PreferenceUtils.getString(JBLConstant.JBL_DEVICE_NAME, context, "");
+    }
 
     public static boolean isMatchDeviceName(String name) {
         if (TextUtils.isEmpty(name)) {

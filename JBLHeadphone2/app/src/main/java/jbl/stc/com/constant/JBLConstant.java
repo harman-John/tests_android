@@ -26,4 +26,6 @@ public class JBLConstant {
     public static final int SLIDE_FROM_DOWN_TO_TOP = 0;
     public static final int SLIDE_FROM_LEFT_TO_RIGHT = 1;
     public static final int SLIDE_FROM_RIGHT_TO_LEFT = 2;
+
+    public static final String JBL_DEVICE_NAME = "JBL_DEVICE_NAME";
 }

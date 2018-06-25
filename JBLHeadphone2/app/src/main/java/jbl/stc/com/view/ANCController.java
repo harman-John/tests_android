@@ -18,7 +18,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 
 import jbl.stc.com.constant.JBLConstant;
-import jbl.stc.com.controller.ANCDrawManager;
+import jbl.stc.com.manager.ANCDrawManager;
 import jbl.stc.com.R;
 
 public class ANCController extends SurfaceView {

@@ -45,4 +45,8 @@
 
     <color name="light_white">#88FFFFFF</color>
     <color name="green">#00FF00</color>
+
+
+    <color name="more_semi_transparent">#99FFFFFF</color>
+    <color name="dialogBackGround">#99000000</color>
 </resources>

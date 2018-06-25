@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import jbl.stc.com.R;
+import jbl.stc.com.legal.LegalApi;
 import jbl.stc.com.utils.StatusBarUtil;
 
 public class SplashActivity extends Activity {
@@ -14,6 +15,7 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        LegalApi.INSTANCE.eulaInit(this);
         StatusBarUtil.setColor(this, getResources().getColor(R.color.background));
         new Handler().postDelayed(new Runnable() {
             @Override
