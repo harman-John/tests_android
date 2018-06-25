@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import jbl.stc.com.R;
+import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.legal.LegalApi;
 import jbl.stc.com.utils.StatusBarUtil;
+import jbl.stc.com.view.JblCircleView;
 
 public class SplashActivity extends Activity {
 
+    private JblCircleView jblCircleView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +27,9 @@ public class SplashActivity extends Activity {
                 startActivity(intent);
                 finish();
             }
-        }, 1000);
+        }, 10000);
+
+        jblCircleView=(JblCircleView)findViewById(R.id.jblCircleView);
+        jblCircleView.start();
     }
 }
