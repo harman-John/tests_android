@@ -9,13 +9,8 @@ import android.view.ViewGroup;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.Calibration;
-import jbl.stc.com.activity.DashboardActivity;
-<<<<<<< HEAD
 import jbl.stc.com.utils.LogUtil;
-import jbl.stc.com.utils.ToastUtil;
-=======
 import jbl.stc.com.constant.JBLConstant;
->>>>>>> 29de614b08d9424415664618b75e93770330c95a
 
 public class SettingsFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = SettingsFragment.class.getSimpleName();
@@ -32,11 +27,8 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         view = inflater.inflate(R.layout.fragment_settings,
                 container, false);
         view.findViewById(R.id.text_firmware).setOnClickListener(this);
-<<<<<<< HEAD
         view.findViewById(R.id.text_true_note).setOnClickListener(this);
-=======
         view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
->>>>>>> 29de614b08d9424415664618b75e93770330c95a
         return view;
     }
 
@@ -47,11 +39,6 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-<<<<<<< HEAD
-        switch (v.getId()) {
-            case R.id.text_firmware: {
-                switchFragment(new OTAFragment());
-=======
         switch (v.getId()){
             case R.id.text_firmware:{
                 switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
@@ -59,7 +46,6 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             }
             case R.id.image_view_settings_back:{
                 getActivity().onBackPressed();
->>>>>>> 29de614b08d9424415664618b75e93770330c95a
                 break;
 
             }

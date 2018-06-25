@@ -49,14 +49,10 @@
 
     <color name="more_semi_transparent">#99FFFFFF</color>
     <color name="dialogBackGround">#99000000</color>
-<<<<<<< HEAD
 
     <color name="black">@android:color/black</color>
 
-    <color name="moresemitransparent">#99FFFFFF</color>
-=======
     <color name="orange">#EE4000</color>
     <color name="orange_light">#FF7F00</color>
     <color name="white_1"> #ebebeb</color>
->>>>>>> 29de614b08d9424415664618b75e93770330c95a
 </resources>
