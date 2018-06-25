@@ -57,4 +57,15 @@
 
     <string name="eula_title">End User License Agreement</string>
 
+    <string name="start">Start</string>
+    <string name="help">1. Put on headphones \n2. Push start button</string>
+    <string name="personalizemessgae">Personalize your audio \n experience with \n TruNote Auto Calibration</string>
+    <string name="calibrating">Calibrating</string>
+    <string name="cancel">Cancel</string>
+    <string name="extrahelp">Calibrate headphones anytime in settings</string>
+    <string name="autoComplete">TruNote \n Auto Calibration Complete</string>
+    <string name="failcalibration">Calibration failed. Try again</string>
+    <string name="IE_No_calbration">Your headphones don\'t support Calibration.</string>
+    <string name="text_calibration_title">TrueNote calibration</string>
+
 </resources>

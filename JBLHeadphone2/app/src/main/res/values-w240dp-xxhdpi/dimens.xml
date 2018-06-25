@@ -20,4 +20,18 @@
     <dimen name="thumb1Text">40px</dimen>
     <dimen name="thumb2Text">40px</dimen>
 
+    <!--Text Size for Auto calibration -->
+    <dimen name="txtmainMessageHome">28sp</dimen>
+    <dimen name="txtmainMessage">20sp</dimen>
+    <dimen name="txtHelp">16sp</dimen>
+    <dimen name="txtConnecting">14sp</dimen>
+    <dimen name="txtBelowMessage">12sp</dimen>
+    <dimen name="autoCalimarginTop">60dp</dimen>
+    <dimen name="autoCalimarginTopLess">30dp</dimen>
+    <dimen name="transparentStrokeWidth">20dp</dimen>
+
+    <dimen name="whitecircle">120dp</dimen>
+    <dimen name="headerheight">55dp</dimen>
+    <dimen name="marginTop10dp">10dp</dimen>
+
 </resources>
