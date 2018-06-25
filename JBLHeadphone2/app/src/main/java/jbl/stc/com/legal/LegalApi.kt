@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import jbl.stc.com.R
+import jbl.stc.com.dialog.LegalDialog
 import jbl.stc.com.manager.AnalyticsManager
 
 /**

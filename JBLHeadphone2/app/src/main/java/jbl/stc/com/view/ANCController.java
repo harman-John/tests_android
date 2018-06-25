@@ -341,7 +341,7 @@ public class ANCController extends SurfaceView {
     }
 
     public void initializeDimensones(Context context) {
-        ANCDrawManager ancDrawManager = ANCDrawManager.getInsManager((Activity) context);
+        ANCDrawManager ancDrawManager = ANCDrawManager.getInsManager();
         if (ancDrawManager.getDeviceHeight() == -1 || ancDrawManager.getDeviceWidth() == -1 || ancDrawManager.getDesnity() == 10000) {
             Resources res = getResources();
             density = res.getDisplayMetrics().density;
@@ -366,7 +366,7 @@ public class ANCController extends SurfaceView {
      * @param context
      */
     public void initilizePaint(int arcColor, int progressColor, Context context) {
-        ANCDrawManager ancDrawManager = ANCDrawManager.getInsManager((Activity) context);
+        ANCDrawManager ancDrawManager = ANCDrawManager.getInsManager();
         if (ancDrawManager.getmArcPaint() != null) {
             mArcPaint = ancDrawManager.getmArcPaint();
         } else {

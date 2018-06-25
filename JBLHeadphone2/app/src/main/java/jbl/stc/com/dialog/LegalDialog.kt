@@ -1,4 +1,4 @@
-package jbl.stc.com.legal
+package jbl.stc.com.dialog
 
 import android.app.Dialog
 import android.graphics.drawable.ColorDrawable
@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import jbl.stc.com.R
 import jbl.stc.com.R.*
+import jbl.stc.com.legal.LegalConstants
 import jbl.stc.com.manager.AnalyticsManager
 import kotlinx.android.synthetic.main.dialog_legal.view.*
 import java.io.ByteArrayOutputStream

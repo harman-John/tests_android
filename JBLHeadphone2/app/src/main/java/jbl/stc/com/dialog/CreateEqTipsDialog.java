@@ -14,14 +14,14 @@ import jbl.stc.com.listener.OnDialogListener;
  * CreateMyOwnEqDialog
  * Created by darren.lu on 2017/11/1.
  */
-public class CreateMyOwnEqDialog extends Dialog {
+public class CreateEqTipsDialog extends Dialog {
     private OnDialogListener onDialogListener;
 
     public void setOnDialogListener(OnDialogListener onDialogListener) {
         this.onDialogListener = onDialogListener;
     }
 
-    public CreateMyOwnEqDialog(Activity context) {
+    public CreateEqTipsDialog(Activity context) {
         super(context, R.style.AppDialog);
         initUI();
     }
@@ -29,12 +29,12 @@ public class CreateMyOwnEqDialog extends Dialog {
     private void initUI() {
         setCanceledOnTouchOutside(true);
         setCancelable(true);
-        setContentView(R.layout.dialog_create_my_own_eq);
+        setContentView(R.layout.dialog_create_eq_tips);
 
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         Window window = getWindow();
-        window.setWindowAnimations(R.style.dialog_style);
+        window.setWindowAnimations(R.style.style_down_to_top);
         window.setAttributes(lp);
 
         findViewById(R.id.buttonConfirm).setOnClickListener(onClickListener);

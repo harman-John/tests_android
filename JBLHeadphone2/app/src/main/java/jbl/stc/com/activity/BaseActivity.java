@@ -8,7 +8,9 @@ import android.view.VelocityTracker;
 
 
 import jbl.stc.com.R;
+import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.EQModel;
+import jbl.stc.com.fragment.BaseFragment;
 import jbl.stc.com.utils.StatusBarUtil;
 
 /**
@@ -18,24 +20,6 @@ import jbl.stc.com.utils.StatusBarUtil;
 public class BaseActivity extends FragmentActivity {
     protected String TAG = BaseActivity.class.getSimpleName();
     protected Context mContext;
-    protected static final int Y_SPEED_MIN = 60;
-    protected static final int Y_DISTANCE_MIN = 100;
-    protected static final int MAX_DISTANCE_FOR_CLICK = 100;
-    protected static final long MAX_INTERVAL_FOR_CLICK = 300;
-
-    protected EQModel currEqModel = null;
-
-    protected boolean mIsWaitUpEvent = false;
-    protected float yDown;
-    protected float yMove;
-    protected float xDown;
-    protected float xMove;
-    protected VelocityTracker mVelocityTracker;
-    protected Runnable mTimerForUpEvent = new Runnable() {
-        public void run() {
-            mIsWaitUpEvent = false;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,22 +38,26 @@ public class BaseActivity extends FragmentActivity {
         StatusBarUtil.setColor(this, getResources().getColor(R.color.statusBarBackground));
     }
 
-    public void createVelocityTracker(MotionEvent event) {
-        if (mVelocityTracker == null) {
-            mVelocityTracker = VelocityTracker.obtain();
+    public void switchFragment(BaseFragment baseFragment, int type) {
+        try {
+            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            if (type == JBLConstant.SLIDE_FROM_DOWN_TO_TOP) {
+                ft.setCustomAnimations(R.anim.enter_from_down, R.anim.exit_to_up, R.anim.enter_from_up, R.anim.exit_to_down);
+            }else if (type == JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT){
+                ft.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
+            }else if (type == JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT){
+                ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
+            }
+            if (getSupportFragmentManager().findFragmentById(R.id.containerLayout) == null) {
+                ft.add(R.id.containerLayout, baseFragment);
+            } else {
+                ft.replace(R.id.containerLayout, baseFragment, baseFragment.getTag());
+            }
+            ft.addToBackStack(null);
+            ft.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mVelocityTracker.addMovement(event);
-    }
-
-    public void recycleVelocityTracker() {
-        mVelocityTracker.recycle();
-        mVelocityTracker = null;
-    }
-
-    public int getScrollVelocity() {
-        mVelocityTracker.computeCurrentVelocity(1000);
-        int velocity = (int) mVelocityTracker.getXVelocity();
-        return Math.abs(velocity);
     }
 
 }

@@ -10,6 +10,7 @@
 
     <string name="text_noise_canceling">Noise\ncanceling</string>
     <string name="text_ambient_aware">Ambient\nAware</string>
+    <string name="text_ambient_aware_1">Ambient Aware</string>
     <string name="title_eq">EQ</string>
     <string name="text_auto_off">Auto-off</string>
 
@@ -47,7 +48,7 @@
     <string name="text_harman_privacy_policy">Harman privacy policy</string>
 
     <string name="eula_agree_and_start">AGREE and START</string>
-    <string name="confirm_to_tips">Please confirm that you have read and agree to</string>
+    <string name="confirm_to_tips">Please confirm that you\nhave read and agree to</string>
     <string name="legal_the">The&#160;</string>
 
     <string name="agree_to_eula">End User License Agreement</string>
@@ -56,6 +57,7 @@
     <string name="start_caps">START</string>
 
     <string name="eula_title">End User License Agreement</string>
+    <string name="app_version">App version:</string>
 
     <string name="start">Start</string>
     <string name="help">1. Put on headphones \n2. Push start button</string>
