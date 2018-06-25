@@ -30,6 +30,7 @@ public class SplashActivity extends Activity {
         }, 10000);
 
         jblCircleView=(JblCircleView)findViewById(R.id.jblCircleView);
+        jblCircleView.addWave();
         jblCircleView.start();
     }
 }

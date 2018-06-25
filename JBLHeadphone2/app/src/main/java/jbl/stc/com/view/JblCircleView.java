@@ -26,7 +26,7 @@ public class JblCircleView extends View{
 
     private int mColor = getResources().getColor(R.color.white);
 
-    private int mImageRadius=50;
+    private int mImageRadius=100;
 
     private int mWidth = 3;
 
@@ -63,7 +63,7 @@ public class JblCircleView extends View{
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mAlphas.add(255);
-        mRadius.add(50);
+        mRadius.add(80);
 
     }
 
@@ -168,7 +168,7 @@ public class JblCircleView extends View{
     }
     public void addWave(){
         mAlphas.add(255);
-        mRadius.add(100);
+        mRadius.add(150);
     }
 
 }
