@@ -49,4 +49,6 @@
 
     <color name="more_semi_transparent">#99FFFFFF</color>
     <color name="dialogBackGround">#99000000</color>
+    <color name="orange">#EE4000</color>
+    <color name="orange_light">#FF7F00</color>
 </resources>

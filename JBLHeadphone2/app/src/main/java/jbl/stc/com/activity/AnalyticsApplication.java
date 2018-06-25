@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import io.fabric.sdk.android.Fabric;
 import jbl.stc.com.BuildConfig;
 import jbl.stc.com.entity.DeviceInfo;
+import jbl.stc.com.legal.LegalApi;
 import jbl.stc.com.storage.DatabaseHelper;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.DebugHelper;
@@ -37,6 +38,7 @@ public class AnalyticsApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        LegalApi.INSTANCE.eulaInit(this);
         deviceInfo = new DeviceInfo();
         if (AppUtils.IS_DEBUG) {
             new AkgCrashHandler().init(this);
