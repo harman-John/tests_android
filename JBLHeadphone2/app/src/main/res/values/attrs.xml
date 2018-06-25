@@ -62,4 +62,9 @@
             <enum name="always" value="2"/>
         </attr>
     </declare-styleable>
+    <declare-styleable name="WaveView">
+        <attr name="wave_color" format="color"/>
+        <attr name="wave_coreImageRadius" format="integer"/>
+        <attr name="wave_width" format="integer"/>
+    </declare-styleable>
 </resources>
