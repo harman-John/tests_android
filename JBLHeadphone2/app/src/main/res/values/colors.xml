@@ -51,4 +51,5 @@
     <color name="dialogBackGround">#99000000</color>
     <color name="orange">#EE4000</color>
     <color name="orange_light">#FF7F00</color>
+    <color name="white_1"> #ebebeb</color>
 </resources>

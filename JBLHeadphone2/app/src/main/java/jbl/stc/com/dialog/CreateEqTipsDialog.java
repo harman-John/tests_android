@@ -34,7 +34,7 @@ public class CreateEqTipsDialog extends Dialog {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         Window window = getWindow();
-        window.setWindowAnimations(R.style.dialog_style);
+        window.setWindowAnimations(R.style.style_down_to_top);
         window.setAttributes(lp);
 
         findViewById(R.id.buttonConfirm).setOnClickListener(onClickListener);

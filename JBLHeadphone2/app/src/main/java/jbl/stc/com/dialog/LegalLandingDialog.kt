@@ -21,7 +21,7 @@ import jbl.stc.com.storage.PreferenceKeys
 import jbl.stc.com.storage.PreferenceUtils
 import jbl.stc.com.utils.AppUtils
 
-import kotlinx.android.synthetic.main.legal_landing_dialog.view.*
+import kotlinx.android.synthetic.main.dialog_legal_landing.view.*
 
 class LegalLandingDialog : android.support.v4.app.DialogFragment() {
     private var mDismissListener: DismissListener? = null
@@ -38,7 +38,7 @@ class LegalLandingDialog : android.support.v4.app.DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.legal_landing_dialog, container, false)
+        val view = inflater.inflate(R.layout.dialog_legal_landing, container, false)
         view.background.alpha = 0xCC
         // link checkbox eula
         view.checkboxEula!!.setOnCheckedChangeListener { _, isChecked ->

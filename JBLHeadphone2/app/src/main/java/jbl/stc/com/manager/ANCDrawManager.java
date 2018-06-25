@@ -10,7 +10,7 @@ import android.graphics.Paint;
 public class ANCDrawManager {
     private static ANCDrawManager ancDrawManager;
 
-    public synchronized static ANCDrawManager getInsManager(Activity activity) {
+    public synchronized static ANCDrawManager getInsManager() {
         if (ancDrawManager == null)
             return new ANCDrawManager();
         else

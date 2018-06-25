@@ -3,13 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:splitMotionEvents="false"
+    android:background="@drawable/shape_round_corner"
     android:windowEnableSplitTouch="false">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_gravity="top"
-        android:background="@color/white" />
 
     <jbl.stc.com.view.CircularInsideLayout
         android:id="@+id/imageContainer"
@@ -137,23 +132,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/noise_cancel"
+            android:text="@string/text_ambient_aware_1"
             android:textColor="@android:color/black"
             android:textSize="10sp"
             android:textStyle="bold" />
 
-        <Switch
-            android:id="@+id/noiseCancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:switchMinWidth="0dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin5dp"
-            android:text=""
-            android:textOff=""
-            android:textOn=""
-            android:thumb="@drawable/toggle_switch_thumb"
-            android:track="@drawable/toggle_switch_track" />
     </LinearLayout>
 
     <TextView
