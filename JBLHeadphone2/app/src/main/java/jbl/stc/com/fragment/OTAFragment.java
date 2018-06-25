@@ -22,6 +22,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener {
         view = inflater.inflate(R.layout.fragment_ota,
                 container, false);
         view.setOnClickListener(this);
+        view.findViewById(R.id.image_view_ota_back).setOnClickListener(this);
         return view;
     }
 
@@ -33,7 +34,10 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-
+            case R.id.image_view_ota_back:{
+                getActivity().onBackPressed();
+                break;
+            }
         }
 
     }

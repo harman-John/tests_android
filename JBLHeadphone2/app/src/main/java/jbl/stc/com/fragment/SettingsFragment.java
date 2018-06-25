@@ -23,6 +23,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         view = inflater.inflate(R.layout.fragment_settings,
                 container, false);
         view.findViewById(R.id.text_firmware).setOnClickListener(this);
+        view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
         return view;
     }
 
@@ -36,6 +37,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         switch (v.getId()){
             case R.id.text_firmware:{
                 switchFragment(new OTAFragment());
+                break;
+            }
+            case R.id.image_view_settings_back:{
+                getActivity().onBackPressed();
                 break;
             }
         }

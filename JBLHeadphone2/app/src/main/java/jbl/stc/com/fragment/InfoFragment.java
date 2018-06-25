@@ -25,6 +25,7 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
         view.findViewById(R.id.text_view_open_source_license).setOnClickListener(this);
         view.findViewById(R.id.text_view_eula).setOnClickListener(this);
         view.findViewById(R.id.text_view_harman_privacy_policy).setOnClickListener(this);
+        view.findViewById(R.id.image_view_info_back).setOnClickListener(this);
         return view;
     }
 
@@ -46,6 +47,10 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
             }
             case R.id.text_view_harman_privacy_policy:{
                 LegalApi.INSTANCE.showPrivacyPolicy(getActivity());
+                break;
+            }
+            case R.id.image_view_info_back:{
+                getActivity().onBackPressed();
                 break;
             }
         }
