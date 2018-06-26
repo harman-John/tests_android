@@ -20,10 +20,11 @@ import android.view.SurfaceView;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.manager.ANCDrawManager;
 import jbl.stc.com.R;
+import jbl.stc.com.utils.LogUtil;
 
 public class ANCController extends SurfaceView {
     private static final String TAG = ANCController.class.getSimpleName();
-    public static boolean intialSetup = true;
+    private boolean intialSetup = true;
     public static boolean mReCalculcate = false;
     private static int INVALID_PROGRESS_VALUE = -1;
     // The initial rotational offset -90 means we start at 12 o'clock

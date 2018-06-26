@@ -207,5 +207,9 @@
                 android:src="@mipmap/icon_arrow_up" />
         </RelativeLayout>
     </FrameLayout>
-
+<View
+    android:id="@+id/blur_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"></View>
 </RelativeLayout>
