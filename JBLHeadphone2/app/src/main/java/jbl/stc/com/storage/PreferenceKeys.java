@@ -17,6 +17,7 @@ public class PreferenceKeys {
 
     public static final String ANALYTICS_TEST_URL = "ANALYTICS_TEST_URL"; // test id for analytics
 
+    public static final String OTA_TEST_URL = "OTA_TEST_URL"; //  test url for OTA
     public static final String LEGAL_TEST_URL = "LEGAL_TEST_URL";
 
     public static String TUTORIAL_PERSIST = "tutorial";

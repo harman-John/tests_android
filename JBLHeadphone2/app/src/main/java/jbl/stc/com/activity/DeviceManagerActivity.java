@@ -37,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -82,6 +83,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG,"onCreate");
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_USB_PERMISSION);
@@ -90,11 +92,11 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mBluetoothStateChange, intentFilter);
         usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        if (TextUtils.isEmpty(action)) {
-            initUSB();
-        }
+//        Intent intent = getIntent();
+//        String action = intent.getAction();
+//        if (TextUtils.isEmpty(action)) {
+//            initUSB();
+//        }
     }
 
     @Override
@@ -107,15 +109,15 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     protected void onResume() {
         super.onResume();
         try {
-            Intent intent = getIntent();
-            String action = intent.getAction();
-            if (!TextUtils.isEmpty(action) && "android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action)) {
+//            Intent intent = getIntent();
+//            String action = intent.getAction();
+//            if (!TextUtils.isEmpty(action) && "android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action)) {
                 synchronized (this) {
                     if (!FirmwareUtil.isUpdatingFirmWare.get()) {
                         initUSB();
                     }
                 }
-            }
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
