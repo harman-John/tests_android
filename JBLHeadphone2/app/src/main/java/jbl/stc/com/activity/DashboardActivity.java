@@ -33,11 +33,11 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         dashboardActivity = this;
-        initview();
+        initView();
         dashboardHandler.sendEmptyMessageDelayed(SHOW_UNDISCOVERY_TIPS,10000);
     }
 
-    private void initview() {
+    private void initView() {
         jblCircleView = (JblCircleView) findViewById(R.id.jblCircleView);
         jblCircleView.addWave();
         jblCircleView.start();
