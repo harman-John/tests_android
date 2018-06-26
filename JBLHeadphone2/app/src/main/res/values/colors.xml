@@ -49,6 +49,7 @@
 
     <color name="more_semi_transparent">#99FFFFFF</color>
     <color name="dialogBackGround">#99000000</color>
+    <color name="gray_aa_bg">#D7DBDF</color>
 
     <color name="black">@android:color/black</color>
 

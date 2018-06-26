@@ -30,6 +30,7 @@ import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.CreateEqTipsDialog;
+import jbl.stc.com.listener.AwarenessChangeListener;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
@@ -38,14 +39,19 @@ import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.BlurBuilder;
+import jbl.stc.com.view.ANCController;
+import jbl.stc.com.view.CircularInsideLayout;
+
 import jbl.stc.com.utils.FirmwareUtil;
 
 import static java.lang.Integer.valueOf;
 
-public class HomeFragment extends BaseFragment implements View.OnClickListener {
+
+public class HomeFragment extends BaseFragment implements View.OnClickListener,AwarenessChangeListener, ANCController.OnSeekArcChangeListener{
     private static final String TAG = HomeFragment.class.getSimpleName();
-    private View view;
+    private View view, mBlurView;
     private CreateEqTipsDialog createEqTipsDialog;
+
     private HomeHandler homeHandler = new HomeHandler(Looper.getMainLooper());
     private final static int MSG_ANC = 0;
     private final static int MSG_BATTERY = 1;
@@ -57,6 +63,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private final long timeInterval = 30 * 1000L, pollingTime = 1000L;
     private ProgressBar progressBarBattery;
     private TextView textViewBattery;
+
     private PopupWindow popupWindow;
     private LightX lightX;
     @Override
@@ -158,13 +165,23 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     protected void showAncPopupWindow() {
         View popupWindow_view = getLayoutInflater().inflate(R.layout.popup_window_anc, null,
                 false);
+        final ANCController ancController = popupWindow_view.findViewById(R.id.circularSeekBar);
+        CircularInsideLayout circularInsideLayout = popupWindow_view.findViewById(R.id.imageContainer);
+        circularInsideLayout.setonAwarenesChangeListener(this);
+        ancController.setCircularInsideLayout(circularInsideLayout);
+        ancController.setOnSeekArcChangeListener(this);
         DisplayMetrics dm = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
         popupWindow = new PopupWindow(popupWindow_view, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT, true);
 
-        Bitmap image = BlurBuilder.blur(view);
-        popupWindow_view.findViewById(R.id.linear_layout_blur).setBackground(new BitmapDrawable(getActivity().getResources(), image));
+        if(mBlurView == null){
+            //generate blur view
+            mBlurView = view.findViewById(R.id.blur_view);
+            Bitmap image = BlurBuilder.blur(view);
+            mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
+        }
+        mBlurView.setVisibility(View.VISIBLE);
         // set animation effect
         popupWindow.setAnimationStyle(R.style.style_down_to_top);
         popupWindow_view.setOnTouchListener(new View.OnTouchListener() {
@@ -178,7 +195,55 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
         });
         popupWindow.showAsDropDown(view);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                //dismiss blur view
+                if(mBlurView != null){
+                    mBlurView.setVisibility(View.GONE);
+                }
+            }
+        });
+        popupWindow_view.findViewById(R.id.noiseText).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ancController.setSwitchOff(false);
+            }
+        });
+
     }
+
+    @Override
+    public void onMedium() {
+        //on AA medium checked
+    }
+
+    @Override
+    public void onLow() {
+       //on AA low checked
+    }
+
+    @Override
+    public void onHigh() {
+      //on AA high checked
+    }
+
+    @Override
+    public void onProgressChanged(ANCController ANCController, int leftProgress, int rightProgress, boolean fromUser) {
+       //controller progress
+    }
+
+
+    @Override
+    public void onStartTrackingTouch(ANCController ANCController) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(ANCController ANCController) {
+
+    }
+
 
     private class HomeHandler extends Handler {
 
@@ -302,5 +367,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 Log.d(TAG, "FirmwareUtil.currentFirmware =" + FirmwareUtil.currentFirmware);
                 break;
         }
+
     }
 }
