@@ -2,38 +2,38 @@ package jbl.stc.com.manager;
 
 public interface BaseManager {
 
-    void getANC();
+    void getANC(Object object);
 
-    void setANC(boolean anc);
+    void setANC(Object object,boolean anc);
 
-    void getAmbientLeveling();
+    void getAmbientLeveling(Object object);
 
-    void getANCLeft();
+    void getANCLeft(Object object);
 
-    void getANCRight();
+    void getANCRight(Object object);
 
-    void setANCLeft(int ancLeft);
+    void setANCLeft(Object object,int ancLeft);
 
-    void setANCRight(int ancRight);
+    void setANCRight(Object object,int ancRight);
 
-    void getBatteryLevel();
+    void getBatteryLevel(Object object);
 
-    void getFirmwareVersion();
+    void getFirmwareVersion(Object object);
 
-    void getAutoOff();
+    void getAutoOff(Object object);
 
-    void setAutoOff(boolean autoOff);
+    void setAutoOff(Object object,boolean autoOff);
 
-    void getVoicePrompt();
+    void getVoicePrompt(Object object);
 
-    void setVoicePrompt(boolean voicePrompt);
+    void setVoicePrompt(Object object,boolean voicePrompt);
 
-    void getSmartButtion();
+    void getSmartButtion(Object object);
 
-    void setSmartButton(boolean smartButton);
+    void setSmartButton(Object object,boolean smartButton);
 
-    void getGeqCurrentPreset();
+    void getGeqCurrentPreset(Object object);
 
-    void getGeqBandFreq(int preset, int band);
+    void getGeqBandFreq(Object object,int preset, int band);
 
 }

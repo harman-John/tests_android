@@ -21,4 +21,12 @@ public class PreferenceKeys {
 
     public static String TUTORIAL_PERSIST = "tutorial";
     public static final String LEGAL_PERSIST = "legal_persist";
+    public static final String JBL_HEADSET_MAC_ADDRESS = "com.jbl.headset.mac_address";
+    public static final String JBL_HEADSET_NAME = "com.jbl.headset.name";
+    public static final String JBL_DEVICE_NAME = "JBL_DEVICE_NAME";
+    public static final String MODEL = "MODEL";
+    public static final String RECEIVEPUSH = "RECEIVEPUSH";
+    public static final String RECEIVE_READY = "RECEIVE_READY";
+    public static final String AWARENESS = "AWARENESS";
+    public static final String ANC_VALUE = "ANC_VALUE";
 }

@@ -1,27 +1,24 @@
 package jbl.stc.com.fragment;
 
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.PopupWindow;
+
+import com.avnera.audiomanager.AdminEvent;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.dialog.CreateEqTipsDialog;
 import jbl.stc.com.listener.OnDialogListener;
+import jbl.stc.com.storage.PreferenceKeys;
+import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.BlurBuilder;
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener {

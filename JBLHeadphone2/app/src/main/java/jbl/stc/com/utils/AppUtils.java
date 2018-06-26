@@ -25,6 +25,7 @@ import jbl.stc.com.BuildConfig;
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.fragment.BaseFragment;
+import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 
 /**
@@ -35,7 +36,9 @@ import jbl.stc.com.storage.PreferenceUtils;
 public class AppUtils {
     private static final String TAG = AppUtils.class.getSimpleName();
     public static boolean IS_DEBUG = BuildConfig.DEBUG ? true : false;
+    public static boolean mTutorial = true;//是否显示Tutorial界面
 
+    public static final String IsNeedToRefreshCommandRead = "IsNeedToRefreshCommandRead";
     public static final String APP_PATH = Environment
             .getExternalStorageDirectory().toString() + "/AKG_N700";
 
@@ -235,4 +238,41 @@ public class AppUtils {
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeResource(res, resId, options);
     }
+
+    public static boolean is150NC(Context context) {
+        return getModelNumber(context).contains("150");
+    }
+
+    public static String getModelNumber(Context context) {
+        String modelNumber = PreferenceUtils.getString(PreferenceKeys.MODEL, context, "");
+        if (TextUtils.isEmpty(modelNumber)) {
+            modelNumber = getJBLDeviceName(context);
+        }
+        return modelNumber;
+    }
+    public static void setJBLDeviceName(Context context, String value){
+        PreferenceUtils.setString(PreferenceKeys.JBL_DEVICE_NAME, value, context);
+    }
+    public static boolean is750Device(Context context) {
+        return getModelNumber(context).contains("750");
+    }
+
+    public static int levelTransfer(int ambLevel150) {
+        switch (ambLevel150) {
+            case 0: {
+                return 0;
+            }
+            case 2: {
+                return 1;
+            }
+            case 4: {
+                return 2;
+            }
+            case 6: {
+                return 3;
+            }
+        }
+        return 0;
+    }
 }
+
