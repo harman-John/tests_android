@@ -4,29 +4,61 @@ package jbl.stc.com.fragment;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.avnera.audiomanager.AdminEvent;
+import com.avnera.audiomanager.AccessoryInfo;
+import com.avnera.audiomanager.Status;
+import com.avnera.audiomanager.responseResult;
+import com.avnera.smartdigitalheadset.LightX;
+
+import java.util.ArrayList;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.CreateEqTipsDialog;
 import jbl.stc.com.listener.OnDialogListener;
+import jbl.stc.com.manager.ANCControlManager;
+import jbl.stc.com.manager.AnalyticsManager;
+import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.BlurBuilder;
+import jbl.stc.com.utils.FirmwareUtil;
+
+import static java.lang.Integer.valueOf;
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
     private View view;
     private CreateEqTipsDialog createEqTipsDialog;
-
+    private HomeHandler homeHandler = new HomeHandler(Looper.getMainLooper());
+    private final static int MSG_ANC = 0;
+    private final static int MSG_BATTERY = 1;
+    private final static int MSG_FIRMWARE_VERSION = 2;
+    private final static int MSG_CURRENT_PRESET = 3;
+    private final static int MSG_RAW_STEP = 4;
+    private final static int MSG_AMBIENT_LEVEL = 5;
+    private final static int MSG_READ_BATTERY_INTERVAL = 6;
+    private final long timeInterval = 30 * 1000L, pollingTime = 1000L;
+    private ProgressBar progressBarBattery;
+    private TextView textViewBattery;
     private PopupWindow popupWindow;
+    private LightX lightX;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +69,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home,
                 container, false);
+        Log.i(TAG,"onCreateView");
+        lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         view.findViewById(R.id.image_view_settings).setOnClickListener(this);
         view.findViewById(R.id.image_view_info).setOnClickListener(this);
         view.findViewById(R.id.image_view_ambient_aware).setOnClickListener(this);
@@ -48,8 +82,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         view.findViewById(R.id.eqNameText);
         view.findViewById(R.id.titleEqText);
         view.findViewById(R.id.eqDividerView);
-        view.findViewById(R.id.batteryProgressBar);
-        view.findViewById(R.id.batteryLevelText);
+        progressBarBattery = view.findViewById(R.id.batteryProgressBar);
+        textViewBattery = view.findViewById(R.id.batteryLevelText);
         view.findViewById(R.id.text_view_ambient_aware);
         createEqTipsDialog = new CreateEqTipsDialog(getActivity());
         createEqTipsDialog.setOnDialogListener(new OnDialogListener() {
@@ -69,6 +103,34 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
+        ANCControlManager.getANCManager(getActivity()).getBatterLeverl(lightX);
+        homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL,timeInterval);
+        Log.d(TAG, "onResume" + DeviceConnectionManager.getInstance().getCurrentDevice());
+        switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
+            case NONE:
+                break;
+            case Connected_USBDevice:
+                break;
+            case Connected_BluetoothDevice:
+                if (AppUtils.is150NC(getActivity())) {
+                    if (PreferenceUtils.getBoolean(PreferenceKeys.RECEIVE_READY,getActivity())){
+                        Log.d(TAG, "onResume send msg GET_ANC");
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        ANCControlManager.getANCManager(getContext()).getANCValue(lightX);
+                        PreferenceUtils.setBoolean(PreferenceKeys.RECEIVE_READY,false,getActivity());
+                    } else{
+                        Log.d(TAG, "onResume update");
+//                        updateANC(JBLPreferenceUtil.getInt(JBLPreferenceKeys.ANC_VALUE, getAppActivity()) != 0);
+//                        updateAmbientLevel(JBLPreferenceUtil.getInt(JBLPreferenceKeys.AWARENESS, getAppActivity()));
+                    }
+                }
+                break;
+        }
     }
 
     @Override
@@ -94,8 +156,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     protected void showAncPopupWindow() {
-
-
         View popupWindow_view = getLayoutInflater().inflate(R.layout.popup_window_anc, null,
                 false);
         DisplayMetrics dm = new DisplayMetrics();
@@ -120,4 +180,127 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         popupWindow.showAsDropDown(view);
     }
 
+    private class HomeHandler extends Handler {
+
+        public HomeHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            switch (msg.what) {
+                case MSG_READ_BATTERY_INTERVAL:{
+                    homeHandler.removeMessages(MSG_READ_BATTERY_INTERVAL);
+                    ANCControlManager.getANCManager(getActivity()).getBatterLeverl(lightX);
+                    homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL,timeInterval);
+                    break;
+                }
+                case MSG_BATTERY:{
+                    updateBattery(msg.arg1);
+                    break;
+                }
+                case MSG_ANC: {
+                    break;
+                }
+                case MSG_FIRMWARE_VERSION:{
+                    updateFirmwareVersion();
+                    break;
+                }
+                case MSG_AMBIENT_LEVEL:{
+                    break;
+                }
+                case MSG_CURRENT_PRESET:{
+                    break;
+                }
+                case MSG_RAW_STEP:{
+                    break;
+                }
+            }
+        }
+    }
+
+    private void updateBattery(int value) {
+        Log.d(TAG, "battery value = " + value);
+        PreferenceUtils.setInt(PreferenceKeys.BATTERY_VALUE, value, getActivity());
+        if (value == 255) {
+            progressBarBattery.setProgress(100);
+            textViewBattery.setText("100%");
+        } else {
+            progressBarBattery.setProgress(value);
+            textViewBattery.setText(String.format("%s%%", String.valueOf(value)));
+        }
+    }
+
+    private void updateFirmwareVersion() {
+        AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager(getActivity()).getAudioManager().getAccessoryStatus();
+        PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), getActivity());
+        AppUtils.setModelNumber(getActivity(), accessoryInfo.getModelNumber());
+        String version = accessoryInfo.getFirmwareRev();
+        if (version.length() >= 5) {
+            Log.d(TAG, "currentVersion : " + version);
+            PreferenceUtils.setString(AppUtils.getModelNumber(getActivity()), PreferenceKeys.APP_VERSION, version, getActivity());
+        }
+        String hardVersion = accessoryInfo.getHardwareRev();
+        if (hardVersion.length() >= 5) {
+            Log.d(TAG, "hardVersion : " + hardVersion);
+//                JBLPreferenceUtil.setString(AppUtils.RSRC_VERSION, fwVersion, getActivity());
+            PreferenceUtils.setString(AppUtils.getModelNumber(getActivity()), PreferenceKeys.RSRC_VERSION, hardVersion, getActivity());
+        }
+        AnalyticsManager.getInstance(getActivity()).reportFirmwareVersion(hardVersion);
+        DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
+    }
+
+    private void sendMessageTo(int command, String arg1) {
+        Message msg = new Message();
+        msg.what = command;
+        if (arg1 != null)
+            msg.arg1 = valueOf(arg1);
+        homeHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
+        super.receivedResponse(command, values, status);
+        Log.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
+        switch (command) {
+            case AmCmds.CMD_ANC: {
+                String value = values.iterator().next().getValue().toString();
+                String tmp = "0";
+                if (value.equalsIgnoreCase("true")
+                        || value.equalsIgnoreCase("1")) {
+                    tmp = "1";
+                }
+                sendMessageTo(MSG_ANC, tmp);
+                break;
+            }
+            case AmCmds.CMD_AmbientLeveling: {
+                sendMessageTo(MSG_AMBIENT_LEVEL, values.iterator().next().getValue().toString());
+                break;
+            }
+            case AmCmds.CMD_RawSteps: {
+                sendMessageTo(MSG_RAW_STEP, values.iterator().next().getValue().toString());
+                break;
+            }
+            case AmCmds.CMD_BatteryLevel: {
+                String bl = values.iterator().next().getValue().toString();
+                //batteryValue = valueOf(bl);
+                sendMessageTo(MSG_BATTERY, bl);
+                break;
+            }
+            case AmCmds.CMD_Geq_Current_Preset: {
+                sendMessageTo(MSG_CURRENT_PRESET, values.iterator().next().getValue().toString());
+                break;
+            }
+            case AmCmds.CMD_FirmwareVersion: {
+                sendMessageTo(MSG_FIRMWARE_VERSION, null);
+                break;
+            }
+            case AmCmds.CMD_FWInfo:
+                FirmwareUtil.currentFirmware = Integer.valueOf(values.get(3).getValue().toString());
+                Log.d(TAG, "FirmwareUtil.currentFirmware =" + FirmwareUtil.currentFirmware);
+                break;
+        }
+    }
 }

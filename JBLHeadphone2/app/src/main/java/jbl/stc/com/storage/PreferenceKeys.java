@@ -30,4 +30,9 @@ public class PreferenceKeys {
     public static final String RECEIVE_READY = "RECEIVE_READY";
     public static final String AWARENESS = "AWARENESS";
     public static final String ANC_VALUE = "ANC_VALUE";
+    public static final String BATTERY_VALUE = "BATTERY_VALUE";
+
+    public static final String PRODUCT = "PRODUCT";
+    public static final String APP_VERSION = "APP_VERSION";
+    public static final String RSRC_VERSION = "RSRC_VERSION";
 }
