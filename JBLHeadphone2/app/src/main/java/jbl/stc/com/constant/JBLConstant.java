@@ -28,4 +28,17 @@ public class JBLConstant {
     public static final int SLIDE_FROM_RIGHT_TO_LEFT = 2;
 
     public static final String JBL_DEVICE_NAME = "JBL_DEVICE_NAME";
+
+    public static final int USB_VENDOR_ID = 5901;
+    public static final int USB_PRODUCT_ID = 1315;
+    public static final int USB_VENDOR_ID3 = 3787;
+    public static final int USB_PRODUCT_ID3 = 7883;
+    public static final int USB_PRODUCT_ID_BOOT3 = 1318;
+    public static final int USB_PRODUCT_ID2 = 1316;
+
+    public static final String ACTION_USB_PERMISSION = "com.stc.USB_PERMISSION";
+
+
+    public static final String DEVICE_150NC = "150NC";
+    public static boolean USB_PERMISSION_CHECK;
 }

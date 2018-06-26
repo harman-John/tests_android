@@ -69,6 +69,7 @@
     <string name="failcalibration">Calibration failed. Try again</string>
     <string name="IE_No_calbration">Your headphones don\'t support Calibration.</string>
     <string name="text_calibration_title">TrueNote calibration</string>
+    <string name="TrueNote">TruNote</string>
 
     <string name="not_found_title">Cannot see a product?</string>
     <string name="advice_one">1. Please make sure what you have one of the supported by app headphones models:</string>
@@ -79,4 +80,11 @@
 
 
 
+
+    <string name="OK">OK</string>
+    <string name="exit">Exit</string>
+
+    <string name="plsConnect">Please connect\n headphones.</string>
+    <string name="taking_longer_time">Connecting with headphone is taking time. Please wait&#8230;</string>
+    <string name="timeout">Headphone is not responding because of slow phone, Please wait&#8230;</string>
 </resources>

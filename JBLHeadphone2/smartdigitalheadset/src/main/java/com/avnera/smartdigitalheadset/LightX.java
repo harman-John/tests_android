@@ -406,7 +406,7 @@ public final class LightX {
         int dataRemaining, from, to;
         Packet packet;
 
-//		Logger.d( "consume received " + data.length + " bytes from socket:\n" + Debug.hexify( data ) );
+//		Log.d( "consume received " + data.length + " bytes from socket:\n" + Debug.hexify( data ) );
 
         from = 0;
         dataRemaining = to = data.length;
@@ -873,7 +873,7 @@ public final class LightX {
 
     private void write(Packet packet) {
         try {
-            //Logger.d(TAG, "LightX write command is " + packet.command());
+            //Log.d(TAG, "LightX write command is " + packet.command());
             mWriteThread.write(packet);
         } catch (IOException e) {
             mDelegate.lightXError(this, e);
@@ -1359,7 +1359,7 @@ public final class LightX {
             // there is currently no method for tracking which block was successfully
             // erased, so just assume success and move on to the next one.
             ++mFirmwareBlockCurrent;
-            // Logger.d(TAG, "firmwareEraseNextBlock, mFirmwareBlockCurrent=" + mFirmwareBlockCurrent + ",mFirmwareBlockLast=" + mFirmwareBlockLast);
+            // Log.d(TAG, "firmwareEraseNextBlock, mFirmwareBlockCurrent=" + mFirmwareBlockCurrent + ",mFirmwareBlockLast=" + mFirmwareBlockLast);
             progress = (double) mFirmwareBlockCurrent / mFirmwareBlockLast;
 
             if (!(complete = mDelegate.lightXFirmwareWriteStatus(this, mFirmwareRegion, FirmwareWriteOperation.Erase, progress, null))) {
@@ -1562,7 +1562,7 @@ public final class LightX {
             // written, so just assume success and move on to the next one.
             ++mFirmwareBlockCurrent;
 
-            //Logger.d(TAG, "firmwareWriteNextBlock, mFirmwareBlockCurrent " + mFirmwareBlockCurrent + ",mFirmwareBlockLast=" + mFirmwareBlockLast);
+            //Log.d(TAG, "firmwareWriteNextBlock, mFirmwareBlockCurrent " + mFirmwareBlockCurrent + ",mFirmwareBlockLast=" + mFirmwareBlockLast);
 
             progress = (double) mFirmwareBlockCurrent / mFirmwareBlockLast;
 
@@ -1798,7 +1798,7 @@ public final class LightX {
 			String					password;
 			byte[]					passwordHash;
 
-//			Logger.d( "Challenge:\n" + Debug.hexify( challenge, 0, 16 ) );
+//			Log.d( "Challenge:\n" + Debug.hexify( challenge, 0, 16 ) );
 
 			if ( ( password = mDelegate.lightXGetAuthenticationPassword( this ) ) != null ) {
 				try {
@@ -1834,7 +1834,7 @@ public final class LightX {
 					// COMMENT OUT THIS LOOP BEFORE SHIPPING!
 //					for ( int i = 0; i < 16; ++i ) {
 //						result[ i ] = (byte)(challenge[ i ] ^ 0x5d);
-//						Logger.d( String.format( "result[ %d ] = (byte)(passwordHash[ %d ] + (byte)0x%02x);",
+//						Log.d( String.format( "result[ %d ] = (byte)(passwordHash[ %d ] + (byte)0x%02x);",
 //							i, i, (byte)(result[ i ] - passwordHash[ i ])
 //						));
 //					}
@@ -2045,7 +2045,7 @@ public final class LightX {
                                     Logger.w(TAG, "timeout waiting for reply, retransmitting " + packet.command() + " packet (retransmit #" + sendCount + ")");
                                 }
 
-                                //Logger.d(TAG, "mOutputStream.write() command is " + packet.command());
+                                //Log.d(TAG, "mOutputStream.write() command is " + packet.command());
                                 mOutputStream.write(buffer);
 
                                 if (sEnablePacketDumps) {
