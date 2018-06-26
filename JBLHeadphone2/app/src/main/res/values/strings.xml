@@ -70,4 +70,13 @@
     <string name="IE_No_calbration">Your headphones don\'t support Calibration.</string>
     <string name="text_calibration_title">TrueNote calibration</string>
 
+    <string name="not_found_title">Cannot see a product?</string>
+    <string name="advice_one">1. Please make sure what you have one of the supported by app headphones models:</string>
+    <string name="advice_two">2. Power off and then on your product</string>
+    <string name="advice_three">3. Make sure your product is within the range of 5m</string>
+    <string name="advice_four">4. Disconnect your product from other JBL app</string>
+    <string name="need_more_tips">Need more help?</string>
+
+
+
 </resources>
