@@ -274,5 +274,9 @@ public class AppUtils {
         }
         return 0;
     }
+
+    public static void setModelNumber(Context context,String value){
+        PreferenceUtils.setString(PreferenceKeys.MODEL, value, context);
+    }
 }
 
