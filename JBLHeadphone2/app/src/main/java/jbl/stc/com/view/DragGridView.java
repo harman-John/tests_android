@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +20,6 @@ import android.widget.ListAdapter;
 
 import jbl.stc.com.adapter.EqNameGridAdapter;
 import jbl.stc.com.listener.OnEqIndexChangeListener;
-import jbl.stc.com.utils.LogUtil;
 
 public class DragGridView extends GridView {
     private static final int DRAG_IMG_SHOW = 1;
@@ -164,14 +164,14 @@ public class DragGridView extends GridView {
 
     private void itemMove(int dropPosition) {
         TranslateAnimation translateAnimation;
-        LogUtil.d(TAG, "itemMove preDraggedOverPosition=" + preDraggedOverPosition + ",dropPosition=" + dropPosition);
+        Log.d(TAG, "itemMove preDraggedOverPosition=" + preDraggedOverPosition + ",dropPosition=" + dropPosition);
         if (dropPosition < preDraggedOverPosition) {
             for (int i = dropPosition; i < preDraggedOverPosition; i++) {
                 View view = getChildAt(i - getFirstVisiblePosition());
                 View nextView = getChildAt(i + 1 - getFirstVisiblePosition());
-                LogUtil.d(TAG, "itemMove i1=" + i + ",nextView=" + nextView);
+                Log.d(TAG, "itemMove i1=" + i + ",nextView=" + nextView);
                 if (view != null && nextView != null) {
-                    LogUtil.d(TAG, "itemMove i2=" + i);
+                    Log.d(TAG, "itemMove i2=" + i);
                     float xValue = (nextView.getLeft() - view.getLeft()) * 1f / view.getWidth();
                     float yValue = (nextView.getTop() - view.getTop()) * 1f / view.getHeight();
                     translateAnimation =
@@ -189,7 +189,7 @@ public class DragGridView extends GridView {
             for (int i = preDraggedOverPosition + 1; i <= dropPosition; i++) {
                 View view = getChildAt(i - getFirstVisiblePosition());
                 View prevView = getChildAt(i - 1 - getFirstVisiblePosition());
-                LogUtil.d(TAG, "itemMove i3=" + i + ",prevView=" + prevView + ",view=" + view);
+                Log.d(TAG, "itemMove i3=" + i + ",prevView=" + prevView + ",view=" + view);
                 if (view != null && prevView != null) {
                     float xValue = (prevView.getLeft() - view.getLeft()) * 1f / view.getWidth();
                     float yValue = (prevView.getTop() - view.getTop()) * 1f / view.getHeight();

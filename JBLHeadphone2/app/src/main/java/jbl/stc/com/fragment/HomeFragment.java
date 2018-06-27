@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.Status;
 import com.avnera.audiomanager.responseResult;
+import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
 
 import java.util.ArrayList;
@@ -265,7 +267,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
 
     private void getDeviceInfo(){
         ANCControlManager.getANCManager(getContext()).getANCValue(lightX);
-        updateFirmwareVersion();
+        if (AppUtils.is150NC(getActivity())) {
+            updateFirmwareVersion();
+        }else{
+            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
+        }
         ANCControlManager.getANCManager(getContext()).getCurrentPreset(lightX);
     }
 
@@ -437,4 +443,140 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
         }
 
     }
+
+    @Override
+    public void lightXReadBootResult(final LightX lightX, final Command command, final boolean success, final int i, final byte[] buffer) {
+        if (getActivity() == null){
+            Log.d(TAG,"Activity is null");
+            return;
+        }
+        if (!isAdded()){
+            Log.d(TAG,"This fragment is null");
+            return;
+        }
+        Log.d(TAG, "lightXReadBootResult command is " + command + " result is " + success);
+        if (success) {
+            switch (command) {
+                case BootReadVersionFile: {
+                    int result[] = AppUtils.parseVersionFromASCIIbuffer(buffer);
+                    int major = result[0];
+                    int minor = result[1];
+                    int revision = result[2];
+                    String rsrcSavedVersion = major + "." + minor + "." + revision;
+                    PreferenceUtils.setString(AppUtils.getModelNumber(getActivity()), PreferenceKeys.RSRC_VERSION, rsrcSavedVersion, getActivity());
+                    Log.d(TAG, "rsrcSavedVersion=" + rsrcSavedVersion);
+                    DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable(); /** Now start checking for update to show red bubble on setting icon*/
+                }
+                break;
+            }
+        } else {
+            DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
+        }
+    }
+
+    @Override
+    public void lightXAppReceivedPush(LightX var1, Command command, byte[] var4) {
+        super.lightXAppReceivedPush(var1, command, var4);
+        switch (command) {
+            case AppPushANCEnable:
+                ANCControlManager.getANCManager(mContext).getANCValue(lightX);
+                break;
+            case AppPushANCAwarenessPreset: {
+                ANCControlManager.getANCManager(mContext).getAmbientLeveling(lightX);
+            }
+            break;
+        }
+    }
+
+    @Override
+    public void lightXReadConfigResult(LightX var1, Command command, boolean success, String var4) {
+        super.lightXReadConfigResult(var1, command, success, var4);
+        if (success) {
+            switch (command) {
+                case ConfigProductName:
+                    PreferenceUtils.setString(PreferenceKeys.PRODUCT, var4, getActivity());
+                    break;
+                case ConfigModelNumber:
+                    AppUtils.setModelNumber(getActivity(), var4);
+                    switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
+                        case Connected_USBDevice:
+                            break;
+                        case Connected_BluetoothDevice:
+                            try {
+                                if (AppUtils.is100(getActivity())
+                                        || AppUtils.is150NC(getContext())) {
+//                                    getAppActivity().rightBtnText.setVisibility(View.INVISIBLE);
+//                                    imgHPicon.setImageResource(R.drawable.aware_icon_100);
+                                } else {
+//                                    getAppActivity().rightBtnText.setVisibility(View.VISIBLE);
+//                                    getAppActivity().rightBtnText.setText(Html.fromHtml(getResources().getString(R.string.TrueNote)));
+//                                    getAppActivity().rightBtnText.setOnClickListener(new View.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(View v) {
+//                                            getAppActivity().startCalibration();
+//                                        }
+//                                    });
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                    }
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void lightXAppWriteResult(LightX var1, Command var2, boolean var3) {
+        super.lightXAppWriteResult(var1, var2, var3);
+        if (var3) {
+            switch (var2) {
+                case App_0xB3:
+//                    if (Calibration.getCalibration() != null)
+//                        Calibration.getCalibration().setIsCalibrationComplete(true);
+                    break;
+                case AppANCAwarenessPreset:
+//                    avneraGetters();
+                    break;
+            }
+        } else {
+            switch (var2) {
+                case App_0xB2:
+//                    if (Calibration.getCalibration() != null)
+//                        Calibration.getCalibration().calibrationFailed();
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void lightXIsInBootloader(LightX var1, boolean isInBootloaderMode) {
+        super.lightXIsInBootloader(var1, isInBootloaderMode);
+        Log.d(TAG, "lightXIsInBootloader =" + isInBootloaderMode);
+        if (isInBootloaderMode) {
+            switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
+                case NONE:
+                    break;
+                case Connected_USBDevice:
+                case Connected_BluetoothDevice:
+                    if (getActivity().getSupportFragmentManager().findFragmentByTag(OTAFragment.TAG) != null) {
+                        Log.d(TAG, "OTA is not finish, so call OTAFragment to continue");
+                        return;
+                    }
+                    try {
+                        Log.d(TAG, "Enter OTAFragment page");
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean("lightXIsInBootloader", true);
+                        switchFragment(new OTAFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    } catch (Exception e) {
+                        e.getMessage();
+                    }
+                    break;
+            }
+        } else {
+            getDeviceInfo();
+        }
+    }
+
 }

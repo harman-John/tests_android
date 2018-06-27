@@ -6,6 +6,7 @@ import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -36,7 +37,6 @@ import jbl.stc.com.listener.OnMainAppListener;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.utils.LogUtil;
 
 public class BaseFragment extends Fragment implements View.OnTouchListener, AppLightXDelegate, AppUSBDelegate {
     protected String TAG;
@@ -68,13 +68,13 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogUtil.d(TAG, "onCreate()");
+        Log.d(TAG, "onCreate()");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        LogUtil.d(TAG, "onCreateView()");
+        Log.d(TAG, "onCreateView()");
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -89,7 +89,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     @Override
     public void onResume() {
         super.onResume();
-        LogUtil.d(TAG, "onResume()");
+        Log.d(TAG, "onResume()");
 
         DashboardActivity.getDashboardActivity().setAppLightXDelegate(this);
     }
@@ -97,7 +97,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        LogUtil.d(TAG, "onDestroyView()");
+        Log.d(TAG, "onDestroyView()");
     }
 
     protected void hideSoftKeyBoard() {

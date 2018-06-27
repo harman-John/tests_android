@@ -20,7 +20,6 @@ import android.view.SurfaceView;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.manager.ANCDrawManager;
 import jbl.stc.com.R;
-import jbl.stc.com.utils.LogUtil;
 
 public class ANCController extends SurfaceView {
     private static final String TAG = ANCController.class.getSimpleName();

@@ -220,7 +220,7 @@ public class AppUtils {
 //                }
 //                frame.setCallback(null);
 //            }
-//            LogUtil.d(TAG, "tryRecycleAnimationDrawable()");
+//            Log.d(TAG, "tryRecycleAnimationDrawable()");
 //            animationDrawable.setCallback(null);
 //        }
 //    }
@@ -277,6 +277,51 @@ public class AppUtils {
 
     public static void setModelNumber(Context context,String value){
         PreferenceUtils.setString(PreferenceKeys.MODEL, value, context);
+    }
+
+    public static int[] parseVersionFromASCIIbuffer(byte[] bytes) {
+        int[] result = new int[3];
+        String major = "0", minor = "0", revision = "0";
+
+        int count = 0;
+        try {
+            for (byte bx : bytes) {
+                switch (count) {
+                    case 0:
+                        if (bx == 46) {
+                            result[0] = (Integer.valueOf(major));
+                            count++;
+                        } else if (bx >= 48 && bx <= 57) {
+                            major += Character.getNumericValue(bx);
+                        }
+                        break;
+                    case 1:
+                        if (bx == 46) {
+                            result[1] = Integer.valueOf(minor);
+                            count++;
+                        } else if (bx >= 48 && bx <= 57) {
+                            minor += Character.getNumericValue(bx);
+                        }
+                        break;
+                    case 2:
+                        if (bx == 0) {
+                            result[2] = Integer.valueOf(revision);
+                            return result;
+                        } else if (bx >= 48 && bx <= 57) {
+                            revision += Character.getNumericValue(bx);
+                        }
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public static boolean is100(Context context) {
+        return getModelNumber(context).contains("100");
     }
 }
 

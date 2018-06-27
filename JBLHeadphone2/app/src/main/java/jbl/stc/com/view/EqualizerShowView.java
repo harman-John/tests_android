@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,14 +21,9 @@ import java.util.List;
 import jbl.stc.com.R;
 import jbl.stc.com.entity.CircleModel;
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.utils.LogUtil;
 import jbl.stc.com.utils.UiUtils;
 
-/**
- * EqualizerView
- * <p>
- * Created by darren.lu on 08/09/2017.
- */
+
 public class EqualizerShowView extends View {
     private static final String TAG = EqualizerShowView.class.getSimpleName();
     private Context mContext;
@@ -111,7 +107,7 @@ public class EqualizerShowView extends View {
     }
 
     public void setCurveData(float[] eqPointX, float[] eqPointY, int curveColor) {
-        LogUtil.d(TAG, "setCurveData size=" + eqPointX.length + ",pointX=" + Arrays.toString(eqPointX) + ",pointY=" + Arrays.toString(eqPointY));
+        Log.d(TAG, "setCurveData size=" + eqPointX.length + ",pointX=" + Arrays.toString(eqPointX) + ",pointY=" + Arrays.toString(eqPointY));
         this.curveColor = curveColor;
         pointX = new ArrayList<>();
         pointY = new ArrayList<>();
@@ -380,7 +376,7 @@ public class EqualizerShowView extends View {
                 nearIndex = i;
             }
         }
-        //LogUtil.d(TAG, "freq=" + freq + ",ReX=" + relativelyX + ",nearIndex=" + nearIndex + ",XX=" + allPointCircles.get(nearIndex).getX());
+        //Log.d(TAG, "freq=" + freq + ",ReX=" + relativelyX + ",nearIndex=" + nearIndex + ",XX=" + allPointCircles.get(nearIndex).getX());
         return getValueFromY(allPointCircles.get(nearIndex).getY());
     }
 
