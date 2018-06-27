@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -68,6 +69,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     private final static int MSG_RAW_STEP = 4;
     private final static int MSG_AMBIENT_LEVEL = 5;
     private final static int MSG_READ_BATTERY_INTERVAL = 6;
+    private final static int MSG_SEND_CMD_GET_FIRMWARE = 7;
     private final long timeInterval = 30 * 1000L, pollingTime = 1000L;
     private ProgressBar progressBarBattery;
     private TextView textViewBattery;
@@ -76,6 +78,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     private PopupWindow popupWindow;
     private ImageView imageViewDevice;
     private CheckBox checkBoxNoiseCancel;
+    private LinearLayout linearLayoutBattery;
     private LightX lightX;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +105,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
         textViewCurrentEQ = view.findViewById(R.id.eqNameText);
         view.findViewById(R.id.titleEqText);
         view.findViewById(R.id.eqDividerView);
+        linearLayoutBattery = view.findViewById(R.id.linear_layout_battery);
         progressBarBattery = view.findViewById(R.id.batteryProgressBar);
         textViewBattery = view.findViewById(R.id.batteryLevelText);
         view.findViewById(R.id.text_view_ambient_aware);
@@ -130,11 +134,15 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
             case NONE:
                 break;
             case Connected_USBDevice:
+                linearLayoutBattery.setVisibility(View.INVISIBLE);
                 break;
             case Connected_BluetoothDevice:
-                getDeviceInfo();
+                linearLayoutBattery.setVisibility(View.VISIBLE);
+                ANCControlManager.getANCManager(getActivity()).getBatterLeverl(lightX);
+                homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL,timeInterval);
                 break;
         }
+        getDeviceInfo();
     }
 
     @Override
@@ -251,8 +259,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
 
 
     private void getDeviceInfo(){
-        ANCControlManager.getANCManager(getActivity()).getBatterLeverl(lightX);
-        homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL,timeInterval);
 
         ANCControlManager.getANCManager(getContext()).getANCValue(lightX);
         updateFirmwareVersion();
@@ -260,7 +266,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
 
         if (lightX != null) {
             Log.i(TAG,"getDeviceInfo");
-            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
             lightX.readConfigModelNumber();
             lightX.readConfigProductName();
             lightX.readBootVersionFileResource();
@@ -304,6 +309,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
                     break;
                 }
                 case MSG_RAW_STEP:{
+                    break;
+                }
+                case MSG_SEND_CMD_GET_FIRMWARE:{
+                    ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
                     break;
                 }
             }
@@ -366,6 +375,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
             progressBarBattery.setProgress(value);
             textViewBattery.setText(String.format("%s%%", String.valueOf(value)));
         }
+    }
+
+    private void updateUSBBattery(){
+        progressBarBattery.setVisibility(View.INVISIBLE);
+        textViewBattery.setVisibility(View.INVISIBLE);
+        textViewBattery.setVisibility(View.INVISIBLE);
     }
 
     private void updateFirmwareVersion() {
@@ -443,10 +458,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
                 sendMessageTo(MSG_FIRMWARE_VERSION, null);
                 break;
             }
-            case AmCmds.CMD_FWInfo:
+            case AmCmds.CMD_FWInfo: {
                 FirmwareUtil.currentFirmware = Integer.valueOf(values.get(3).getValue().toString());
                 Log.d(TAG, "FirmwareUtil.currentFirmware =" + FirmwareUtil.currentFirmware);
                 break;
+            }
         }
 
     }
@@ -571,6 +587,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
                 case ConfigModelNumber:
                     AppUtils.setModelNumber(getActivity(), var4);
                     updateDeviceName();
+                    homeHandler.sendEmptyMessageDelayed(MSG_SEND_CMD_GET_FIRMWARE,200);
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                         case Connected_USBDevice:
                             break;
@@ -649,8 +666,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
                     }
                     break;
             }
-        } else {
-            getDeviceInfo();
         }
     }
 

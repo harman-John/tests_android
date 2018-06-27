@@ -1,9 +1,12 @@
 package jbl.stc.com.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +41,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private final static int SHOW_UN_FOUND_TIPS = 0;
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
     private final static int MSG_SHOW_DISCOVERY = 2;
+    private final static int REQUEST_CODE = 0;
 
     private DashboardHandler dashboardHandler = new DashboardHandler();
 
@@ -46,9 +50,26 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
+
         dashboardActivity = this;
         initView();
         dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,10000);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+                }
+                return;
+            }
+        }
     }
 
     private void initView() {

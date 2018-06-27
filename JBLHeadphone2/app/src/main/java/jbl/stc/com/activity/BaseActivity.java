@@ -46,7 +46,6 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
     public static final String JBL_HEADSET_MAC_ADDRESS = "com.jbl.headset.mac_address";
     public static final String JBL_HEADSET_NAME = "com.jbl.headset.name";
     public static final String ACTION_USB_PERMISSION = "com.stc.USB_PERMISSION";
-    public int vendorID, productIDAPPMode, productIDBootMode, vendorID3, productIDBootMode3, productIDAPPMode3;
     public LightX mLightX;
     public boolean isConnected = false;
     protected boolean isNeedShowDashboard;
