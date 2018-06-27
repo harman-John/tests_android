@@ -460,10 +460,11 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     @Override
     public void bluetoothAdapterChangedState(Bluetooth bluetooth, int currentState,
                                              int previousState) {
+        Log.d(TAG,"bluetoothAdapterChangedState");
         if (currentState != BluetoothAdapter.STATE_ON) {
             Log.e(TAG, "The Bluetooth adapter is not enabled, cannot communicate with LightX device");
             // Could ask the user if it's ok to call bluetooth.enableBluetoothAdapter() here, otherwise abort
-            if (AppUtils.is150NC(getApplicationContext()) && !disconnected) {
+            if (specifiedDevice.getName().equalsIgnoreCase("150NC") && !disconnected) {
 
                 Message message = new Message();
                 message.what = MSG_DISCONNECTED;
@@ -481,20 +482,13 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     @Override
     public void bluetoothDeviceBondStateChanged(Bluetooth bluetooth, BluetoothDevice
             bluetoothDevice, int currentState, int previousState) {
-        if (bluetoothDevice != null && AppUtils.isMatchDeviceName(bluetoothDevice.getName())
-                && !bluetoothDevice.getName().contains(JBLConstant.DEVICE_150NC)
-                && specifiedDevice != null
-                && specifiedDevice.getAddress().equalsIgnoreCase(bluetoothDevice.getAddress())) {
-//            if (!bluetooth.isDiscovering()) {
-            Log.d(TAG, "bluetoothDeviceBondStateChanged");
-//                connect(bluetoothDevice);
-//            }
-        }
+        Log.d(TAG,"bluetoothDeviceBondStateChanged");
     }
 
     @Override
     public void bluetoothDeviceConnected(Bluetooth bluetooth, BluetoothDevice
             bluetoothDevice, BluetoothSocket bluetoothSocket) {
+        Log.d(TAG,"bluetoothDeviceConnected");
 		if (bluetoothDevice != null && AppUtils.isMatchDeviceName(bluetoothDevice.getName())
 				&& !bluetoothDevice.getName().contains(JBLConstant.DEVICE_150NC)
                 && specifiedDevice != null
@@ -555,6 +549,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     @Override
     public void bluetoothDeviceDisconnected(Bluetooth bluetooth, BluetoothDevice
             bluetoothDevice) {
+        Log.d(TAG,"bluetoothDeviceDisconnected");
         if (bluetoothDevice != null
                 && AppUtils.isMatchDeviceName(bluetoothDevice.getName())
                 && !AppUtils.is150NC(getApplicationContext())
@@ -615,11 +610,12 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     @Override
     public void bluetoothDeviceDiscovered(Bluetooth bluetooth, BluetoothDevice bluetoothDevice) {
+        Log.d(TAG,"bluetoothDeviceDiscovered "+bluetoothDevice.getName() +", "+specifiedDevice.getName() + ","+AppUtils.isMatchDeviceName(bluetoothDevice.getName()));
         if (bluetoothDevice != null && AppUtils.isMatchDeviceName(bluetoothDevice.getName())
 				&& !bluetoothDevice.getName().contains(JBLConstant.DEVICE_150NC)
                 && specifiedDevice != null
                 && specifiedDevice.getAddress().equalsIgnoreCase(bluetoothDevice.getAddress())) {
-            Log.d(TAG,"bluetoothDeviceDiscovered");
+            Log.d(TAG,"bluetoothDeviceDiscovered connect");
             connect(bluetoothDevice);
         }
     }

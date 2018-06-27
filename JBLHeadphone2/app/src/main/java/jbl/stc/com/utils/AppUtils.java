@@ -52,6 +52,7 @@ public class AppUtils {
     public static final long GET_BATTERY_LEVEL_INTERVAL_TIME = 3 * 60 * 1000L;
     public static final int EQ_VIEW_DEFAULT_STEP = 20;
     public static final int EQ_BAND_NUMBER = 10;
+    private static final String DEVICE_NAME_PREFIX = "JBL Everest";
 
     public static String getJBLDeviceName(Context context){
         return PreferenceUtils.getString(JBLConstant.JBL_DEVICE_NAME, context, "");
@@ -61,7 +62,7 @@ public class AppUtils {
         if (TextUtils.isEmpty(name)) {
             return false;
         }
-        return name.toUpperCase().contains(BASE_DEVICE_NAME.toUpperCase());
+        return name.toUpperCase().contains(DEVICE_NAME_PREFIX.toUpperCase());
     }
 
     public static void hideFromForeground(Context context) {
@@ -239,6 +240,13 @@ public class AppUtils {
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
+    /**
+     * This function called must after HomeFragment showed.
+     * Because not prepare to set Mode is in HomeFragment.
+     * So before HomeFragment showed must not use this function.
+     * @param context
+     * @return
+     */
     public static boolean is150NC(Context context) {
         return getModelNumber(context).contains("150");
     }

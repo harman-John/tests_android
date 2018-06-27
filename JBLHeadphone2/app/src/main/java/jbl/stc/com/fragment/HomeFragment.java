@@ -2,6 +2,7 @@ package jbl.stc.com.fragment;
 
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,9 +24,11 @@ import android.widget.TextView;
 
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.Status;
+import com.avnera.audiomanager.audioManager;
 import com.avnera.audiomanager.responseResult;
 import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
+import com.avnera.smartdigitalheadset.Utility;
 
 import java.util.ArrayList;
 
@@ -90,7 +93,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
         view.findViewById(R.id.image_view_info).setOnClickListener(this);
         view.findViewById(R.id.image_view_ambient_aware).setOnClickListener(this);
         textViewDeviceName = view.findViewById(R.id.text_view_home_device_name);
-        textViewDeviceName.setText(PreferenceUtils.getString(PreferenceKeys.MODEL,mContext,""));
         imageViewDevice = view.findViewById(R.id.deviceImageView);
         view.findViewById(R.id.eqSwitchLayout);
         view.findViewById(R.id.eqInfoLayout).setVisibility(View.VISIBLE);
@@ -115,6 +117,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
 
             }
         });
+        updateDeviceName();
         return view;
     }
 
@@ -122,8 +125,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     public void onResume() {
         super.onResume();
         AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
-        ANCControlManager.getANCManager(getActivity()).getBatterLeverl(lightX);
-        homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL,timeInterval);
         Log.d(TAG, "onResume" + DeviceConnectionManager.getInstance().getCurrentDevice());
         switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
             case NONE:
@@ -131,23 +132,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
             case Connected_USBDevice:
                 break;
             case Connected_BluetoothDevice:
-                if (AppUtils.is150NC(getActivity())) {
-                    if (PreferenceUtils.getBoolean(PreferenceKeys.RECEIVE_READY,getActivity())){
-                        Log.d(TAG, "onResume send msg GET_ANC");
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        ANCControlManager.getANCManager(getContext()).getANCValue(lightX);
-                        PreferenceUtils.setBoolean(PreferenceKeys.RECEIVE_READY,false,getActivity());
-                    } else{
-                        Log.d(TAG, "onResume update");
-                        getDeviceInfo();
-//                        updateANC(JBLPreferenceUtil.getInt(JBLPreferenceKeys.ANC_VALUE, getAppActivity()) != 0);
-//                        updateAmbientLevel(JBLPreferenceUtil.getInt(JBLPreferenceKeys.AWARENESS, getAppActivity()));
-                    }
-                }
+                getDeviceInfo();
                 break;
         }
     }
@@ -173,7 +158,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
             }
             case R.id.image_view_noise_cancel:{
                 if (checkBoxNoiseCancel.isChecked()){
-                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,false);
+                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,true);
                 }else{
                     ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,false);
                 }
@@ -266,13 +251,20 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
 
 
     private void getDeviceInfo(){
+        ANCControlManager.getANCManager(getActivity()).getBatterLeverl(lightX);
+        homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL,timeInterval);
+
         ANCControlManager.getANCManager(getContext()).getANCValue(lightX);
-        if (AppUtils.is150NC(getActivity())) {
-            updateFirmwareVersion();
-        }else{
-            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
-        }
+        updateFirmwareVersion();
         ANCControlManager.getANCManager(getContext()).getCurrentPreset(lightX);
+
+        if (lightX != null) {
+            Log.i(TAG,"getDeviceInfo");
+            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
+            lightX.readConfigModelNumber();
+            lightX.readConfigProductName();
+            lightX.readBootVersionFileResource();
+        }
     }
 
     private class HomeHandler extends Handler {
@@ -318,6 +310,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
         }
     }
 
+    private void updateDeviceName(){
+        textViewDeviceName.setText(PreferenceUtils.getString(PreferenceKeys.MODEL,mContext,""));
+    }
+
     private void updateANC(boolean onOff){
         checkBoxNoiseCancel.setChecked(onOff);
     }
@@ -353,6 +349,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
                 }
                 break;
             }
+            default:
+                String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(), null);
+                textViewCurrentEQ.setText( name != null ? name :getString(R.string.off));
+                break;
         }
     }
 
@@ -369,9 +369,16 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     }
 
     private void updateFirmwareVersion() {
-        AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager(getActivity()).getAudioManager().getAccessoryStatus();
+        audioManager am =  AvneraManager.getAvenraManager(getActivity()).getAudioManager();
+        if (am == null){
+            Log.i(TAG, "am is null, not 150NC device");
+            return;
+        }
+        AccessoryInfo accessoryInfo = am.getAccessoryStatus();
         PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), getActivity());
         AppUtils.setModelNumber(getActivity(), accessoryInfo.getModelNumber());
+        Log.d(TAG, "modelName : " + accessoryInfo.getModelNumber());
+        updateDeviceName();
         String version = accessoryInfo.getFirmwareRev();
         if (version.length() >= 5) {
             Log.d(TAG, "currentVersion : " + version);
@@ -445,7 +452,71 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     }
 
     @Override
+    public void lightXAppReadResult(LightX var1, Command command, boolean success, byte[] var4) {
+        super.lightXAppReadResult(var1, command, success, var4);
+        if (success) {
+            switch (command) {
+                case App_0xB3:
+//                    if (Calibration.getCalibration() != null)
+//                        Calibration.getCalibration().setIsCalibrationComplete(Utility.getBoolean(var4, 0));
+                    break;
+                case AppANCAwarenessPreset:
+                    Log.d(TAG, "AppANCAwarenessPreset");
+//                    int intValue = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0);
+//                    update(intValue);
+                    break;
+                case AppANCEnable:
+                    if (var4 != null) {
+                        boolean ancResult = Utility.getBoolean(var4, 0);
+                        updateANC(ancResult);
+                    }
+                    break;
+                case AppAwarenessRawLeft:
+//                    readAppReturn = Utility.getUnsignedInt(var4, 0);
+                    break;
+                case AppAwarenessRawRight:
+//                    readAppReturn = Utility.getUnsignedInt(var4, 0);
+                    break;
+                case AppAwarenessRawSteps:
+//                    readAppReturn = Utility.getUnsignedInt(var4, 0);
+                    break;
+                case AppGraphicEQCurrentPreset:
+                    long currentPreset = Utility.getUnsignedInt(var4, 0);
+                    Log.d(TAG, command + " is " + currentPreset);
+                    updateCurrentEQ((int) currentPreset);
+                    break;
+                case AppGraphicEQBandFreq:
+//                    readAppReturn = Utility.getUnsignedInt(var4, 0);
+                    break;
+                case AppBatteryLevel:
+                    long batteryValue = Utility.getUnsignedInt(var4, 0);
+                    Log.d(TAG, command + " is " + batteryValue);
+                    updateBattery((int) batteryValue);
+                    break;
+                case AppFirmwareVersion:
+                    int major = var4[0];
+                    int minor = var4[1];
+                    int revision = var4[2];
+                    Log.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision);
+                    PreferenceUtils.setString(AppUtils.getModelNumber(getActivity()), PreferenceKeys.APP_VERSION, major + "." + minor + "." + revision, getActivity());
+                    break;
+            }
+        } else {
+            switch (command) {
+                case AppGraphicEQCurrentPreset:
+                    updateCurrentEQ(8);
+                    break;
+                case AppANCEnable:
+                    boolean anc = Utility.getBoolean(var4, 0);
+                    updateANC(anc);
+                    break;
+            }
+        }
+    }
+
+    @Override
     public void lightXReadBootResult(final LightX lightX, final Command command, final boolean success, final int i, final byte[] buffer) {
+        Log.d(TAG, "lightXReadBootResult command is " + command + " result is " + success);
         if (getActivity() == null){
             Log.d(TAG,"Activity is null");
             return;
@@ -454,7 +525,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
             Log.d(TAG,"This fragment is null");
             return;
         }
-        Log.d(TAG, "lightXReadBootResult command is " + command + " result is " + success);
         if (success) {
             switch (command) {
                 case BootReadVersionFile: {
@@ -477,6 +547,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     @Override
     public void lightXAppReceivedPush(LightX var1, Command command, byte[] var4) {
         super.lightXAppReceivedPush(var1, command, var4);
+        Log.d(TAG, "lightXAppReceivedPush command is " + command);
         switch (command) {
             case AppPushANCEnable:
                 ANCControlManager.getANCManager(mContext).getANCValue(lightX);
@@ -491,6 +562,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     @Override
     public void lightXReadConfigResult(LightX var1, Command command, boolean success, String var4) {
         super.lightXReadConfigResult(var1, command, success, var4);
+        Log.i(TAG,"lightXReadConfigResult");
         if (success) {
             switch (command) {
                 case ConfigProductName:
@@ -498,6 +570,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
                     break;
                 case ConfigModelNumber:
                     AppUtils.setModelNumber(getActivity(), var4);
+                    updateDeviceName();
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                         case Connected_USBDevice:
                             break;
@@ -507,6 +580,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
                                         || AppUtils.is150NC(getContext())) {
 //                                    getAppActivity().rightBtnText.setVisibility(View.INVISIBLE);
 //                                    imgHPicon.setImageResource(R.drawable.aware_icon_100);
+
                                 } else {
 //                                    getAppActivity().rightBtnText.setVisibility(View.VISIBLE);
 //                                    getAppActivity().rightBtnText.setText(Html.fromHtml(getResources().getString(R.string.TrueNote)));
@@ -530,6 +604,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     @Override
     public void lightXAppWriteResult(LightX var1, Command var2, boolean var3) {
         super.lightXAppWriteResult(var1, var2, var3);
+        Log.i(TAG,"lightXAppWriteResult");
         if (var3) {
             switch (var2) {
                 case App_0xB3:
