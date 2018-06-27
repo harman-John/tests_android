@@ -61,6 +61,9 @@
         <item name="android:scaleY">0.5
         </item>
     </style>
+    <style name="CustomCheckboxThemeAnc" parent="@android:style/Widget.Holo.CheckedTextView">
+        <item name="android:button">@drawable/checkbox_anc_selector</item>
+    </style>
     <style name="DialogAnimation">
         <item name="android:windowExitAnimation">@anim/fadeout</item>
     </style>

@@ -38,7 +38,7 @@ public class Cmd150Manager implements BaseManager {
             Log.i(TAG,"object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_ANC,(anc ==false )? 0 : 1);
+        ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_ANC,anc);
     }
 
     @Override

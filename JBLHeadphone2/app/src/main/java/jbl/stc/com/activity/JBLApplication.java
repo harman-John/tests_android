@@ -41,7 +41,6 @@ public class JBLApplication extends Application {
         LegalApi.INSTANCE.eulaInit(this);
         deviceInfo = new DeviceInfo();
         if (AppUtils.IS_DEBUG) {
-            new AkgCrashHandler().init(this);
             DebugHelper.init();
             if (BuildConfig.DEBUG) {
                 //LeakCanary.install(this);

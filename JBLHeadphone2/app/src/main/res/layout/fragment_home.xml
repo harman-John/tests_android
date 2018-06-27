@@ -100,11 +100,12 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <jbl.stc.com.view.AppImageView
+                    <CheckBox
                         android:id="@+id/image_view_noise_cancel"
                         android:layout_width="@dimen/dashboard_talk_image_width"
                         android:layout_height="@dimen/dashboard_talk_image_width"
                         android:scaleType="fitXY"
+                        style="@style/CustomCheckboxThemeAnc"
                         android:src="@mipmap/icon_talk_through_on" />
 
                     <jbl.stc.com.view.PoppinsRegularTextView
