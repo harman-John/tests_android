@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -58,6 +61,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private ProgressBar progressBarBattery;
     private TextView textViewBattery;
     private PopupWindow popupWindow;
+    private CheckBox checkBoxNoiseCancel;
     private LightX lightX;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +82,18 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         view.findViewById(R.id.eqSwitchLayout);
         view.findViewById(R.id.eqInfoLayout).setVisibility(View.VISIBLE);
         view.findViewById(R.id.eqInfoLayout).setOnClickListener(this);
-        view.findViewById(R.id.image_view_noise_cancel);
+        checkBoxNoiseCancel = view.findViewById(R.id.image_view_noise_cancel);
+        checkBoxNoiseCancel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked){
+//                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,true);
+//                }else{
+//                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,false);
+//                }
+            }
+        });
+        checkBoxNoiseCancel.setOnClickListener(this);
         view.findViewById(R.id.eqNameText);
         view.findViewById(R.id.titleEqText);
         view.findViewById(R.id.eqDividerView);
@@ -125,6 +140,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         PreferenceUtils.setBoolean(PreferenceKeys.RECEIVE_READY,false,getActivity());
                     } else{
                         Log.d(TAG, "onResume update");
+                        getDeviceInfo();
 //                        updateANC(JBLPreferenceUtil.getInt(JBLPreferenceKeys.ANC_VALUE, getAppActivity()) != 0);
 //                        updateAmbientLevel(JBLPreferenceUtil.getInt(JBLPreferenceKeys.AWARENESS, getAppActivity()));
                     }
@@ -150,6 +166,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case R.id.image_view_settings:{
                 switchFragment(new SettingsFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                break;
+            }
+            case R.id.image_view_noise_cancel:{
+                if (checkBoxNoiseCancel.isChecked()){
+                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,false);
+                }else{
+                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,false);
+                }
                 break;
             }
         }
@@ -180,6 +204,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         popupWindow.showAsDropDown(view);
     }
 
+    private void getDeviceInfo(){
+        ANCControlManager.getANCManager(getContext()).getANCValue(lightX);
+//        ANCControlManager.getANCManager(getContext()).getAmbientLeveling(lightX);
+//        ANCControlManager.getANCManager(getContext()).getFirmwareInfo(lightX);
+//        ANCControlManager.getANCManager(getContext()).getCurrentPreset(lightX);
+    }
+
     private class HomeHandler extends Handler {
 
         public HomeHandler(Looper looper) {
@@ -202,6 +233,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 }
                 case MSG_ANC: {
+                    updateANC(msg.arg1 == 1);
                     break;
                 }
                 case MSG_FIRMWARE_VERSION:{
@@ -219,6 +251,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 }
             }
         }
+    }
+
+    private void updateANC(boolean onOff){
+        checkBoxNoiseCancel.setChecked(onOff);
     }
 
     private void updateBattery(int value) {
@@ -264,6 +300,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
         super.receivedResponse(command, values, status);
         Log.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
+        if (values.size() <= 0){
+            Log.d(TAG, "return, values size is " + values.size());
+            return;
+        }
         switch (command) {
             case AmCmds.CMD_ANC: {
                 String value = values.iterator().next().getValue().toString();

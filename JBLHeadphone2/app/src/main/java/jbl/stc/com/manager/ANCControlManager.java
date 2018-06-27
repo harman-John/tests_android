@@ -52,7 +52,7 @@ public class ANCControlManager {
      * @param ancValue boolean anc value, true for ANC ON and false for ANC Off.
      * @param lightX   object.
      */
-    public void setANCValue(boolean ancValue, LightX lightX) {
+    public void setANCValue( LightX lightX,boolean ancValue) {
         if (lightX != null) {
             lightX.writeAppANCEnable(ancValue);
         } else {
@@ -295,4 +295,14 @@ public class ANCControlManager {
             lightX.readBootImageType();
         }
     }
+
+    public void getCurrentPreset(LightX lightX) {
+        if (lightX != null)
+            lightX.readAppGraphicEQCurrentPreset();
+        else {
+            Cmd150Manager.getInstance().getGeqCurrentPreset(AvneraManager.getAvenraManager(context).getAudioManager());
+        }
+    }
+
+
 }
