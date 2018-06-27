@@ -367,6 +367,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
 
     private void updateBattery(int value) {
         Log.d(TAG, "battery value = " + value);
+        if (getActivity() == null){
+            return;
+        }
         PreferenceUtils.setInt(PreferenceKeys.BATTERY_VALUE, value, getActivity());
         if (value == 255) {
             progressBarBattery.setProgress(100);

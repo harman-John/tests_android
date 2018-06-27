@@ -185,7 +185,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
                 ft.replace(R.id.containerLayout, baseFragment, baseFragment.getTag());
             }
             ft.addToBackStack(null);
-            ft.commit();
+            ft.commitAllowingStateLoss();
         } catch (Exception e) {
             e.printStackTrace();
         }

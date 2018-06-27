@@ -610,7 +610,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     @Override
     public void bluetoothDeviceDiscovered(Bluetooth bluetooth, BluetoothDevice bluetoothDevice) {
-        Logger.d(TAG,"bluetoothDeviceDiscovered "+bluetoothDevice.getName() +", "+specifiedDevice.getName() + ","+AppUtils.isMatchDeviceName(bluetoothDevice.getName()));
+        Logger.d(TAG,"bluetoothDeviceDiscovered ");
         if (bluetoothDevice != null && AppUtils.isMatchDeviceName(bluetoothDevice.getName())
 				&& !bluetoothDevice.getName().contains(JBLConstant.DEVICE_150NC)
                 && specifiedDevice != null

@@ -30,6 +30,7 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.dialog.AlertsDialog;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.fragment.BaseFragment;
+import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.listener.AppUSBDelegate;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -98,7 +99,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
                 ft.replace(R.id.containerLayout, baseFragment, baseFragment.getTag());
             }
             ft.addToBackStack(null);
-            ft.commit();
+            ft.commitAllowingStateLoss();
         } catch (Exception e) {
             e.printStackTrace();
         }
