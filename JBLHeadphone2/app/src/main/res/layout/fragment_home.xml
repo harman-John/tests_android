@@ -196,7 +196,7 @@
                 android:layout_toRightOf="@+id/eqDividerView"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="Bass"
+                android:text="@string/off"
                 android:textColor="@color/white" />
 
             <ImageView

@@ -66,7 +66,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     private final long timeInterval = 30 * 1000L, pollingTime = 1000L;
     private ProgressBar progressBarBattery;
     private TextView textViewBattery;
-
+    private TextView textViewCurrentEQ;
     private PopupWindow popupWindow;
     private CheckBox checkBoxNoiseCancel;
     private LightX lightX;
@@ -90,18 +90,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
         view.findViewById(R.id.eqInfoLayout).setVisibility(View.VISIBLE);
         view.findViewById(R.id.eqInfoLayout).setOnClickListener(this);
         checkBoxNoiseCancel = view.findViewById(R.id.image_view_noise_cancel);
-        checkBoxNoiseCancel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked){
-//                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,true);
-//                }else{
-//                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,false);
-//                }
-            }
-        });
         checkBoxNoiseCancel.setOnClickListener(this);
-        view.findViewById(R.id.eqNameText);
+        textViewCurrentEQ = view.findViewById(R.id.eqNameText);
         view.findViewById(R.id.titleEqText);
         view.findViewById(R.id.eqDividerView);
         progressBarBattery = view.findViewById(R.id.batteryProgressBar);
@@ -271,9 +261,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
 
     private void getDeviceInfo(){
         ANCControlManager.getANCManager(getContext()).getANCValue(lightX);
-//        ANCControlManager.getANCManager(getContext()).getAmbientLeveling(lightX);
-//        ANCControlManager.getANCManager(getContext()).getFirmwareInfo(lightX);
-//        ANCControlManager.getANCManager(getContext()).getCurrentPreset(lightX);
+        updateFirmwareVersion();
+        ANCControlManager.getANCManager(getContext()).getCurrentPreset(lightX);
     }
 
     private class HomeHandler extends Handler {
@@ -309,6 +298,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
                     break;
                 }
                 case MSG_CURRENT_PRESET:{
+                    updateCurrentEQ(msg.arg1);
                     break;
                 }
                 case MSG_RAW_STEP:{
@@ -320,6 +310,40 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
 
     private void updateANC(boolean onOff){
         checkBoxNoiseCancel.setChecked(onOff);
+    }
+
+    private void updateCurrentEQ(int index){
+        switch (index) {
+            case 0:{
+                textViewCurrentEQ.setText(getString(R.string.off));
+                break;
+            }
+            case 1:{
+                textViewCurrentEQ.setText(getString(R.string.jazz));
+                break;
+            }
+            case 2:{
+                textViewCurrentEQ.setText(getString(R.string.vocal));
+                break;
+            }
+            case 3:{
+                textViewCurrentEQ.setText(getString(R.string.bass));
+                break;
+            }
+            case 4:{
+                String name = PreferenceUtils.getString(PreferenceKeys.EQKeyNAME, getActivity(), null);
+                if (name != null) {
+                    textViewCurrentEQ.setText(name);
+                    if (textViewCurrentEQ.getText().length() >= JBLConstant.MAX_MARQUEE_LEN) {
+                        textViewCurrentEQ.setSelected(true);
+                        textViewCurrentEQ.setMarqueeRepeatLimit(-1);
+                    }
+                }else{
+                    textViewCurrentEQ.setText(getString(R.string.custom_eq));
+                }
+                break;
+            }
+        }
     }
 
     private void updateBattery(int value) {
