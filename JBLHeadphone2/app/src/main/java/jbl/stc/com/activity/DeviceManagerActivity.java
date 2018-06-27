@@ -124,6 +124,10 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         donSendCallback = false;
     }
 
+    public void connectDeviceStatus(boolean isConnected){
+        Log.i(TAG, "connectDeviceStatus isConnected = "+isConnected);
+    }
+
     protected synchronized void initUSB() {
         Log.d(TAG, "Initializing USB first");
         UsbDevice device = null;
@@ -367,7 +371,10 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         @Override
         public void run() {
             if (DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.Connected_USBDevice && appLightXDelegate != null) {
-                appLightXDelegate.headPhoneStatus(isConnected);   //Commented as lightXisInBootloader was getting called twice. Bug 64495
+                if (appLightXDelegate != null) {
+                    appLightXDelegate.headPhoneStatus(isConnected);   //Commented as lightXisInBootloader was getting called twice. Bug 64495
+                }
+                connectDeviceStatus(isConnected);
             }
         }
     };
@@ -537,6 +544,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                         appLightXDelegate.headPhoneStatus(true);
                         appLightXDelegate.isLightXintialize();
                     }
+                    connectDeviceStatus(true);
                 }
             });
             isConnected = true;
@@ -574,6 +582,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     if (appLightXDelegate != null) {
                         appLightXDelegate.headPhoneStatus(false);
                     }
+                    connectDeviceStatus(false);
                 }
             });
             if (Calibration.getCalibration() != null) {
@@ -933,6 +942,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             if (appLightXDelegate != null) {
                 appLightXDelegate.headPhoneStatus(false);
             }
+            connectDeviceStatus(false);
             isConnected = false;
             disconnected = true;
             Log.d(TAGReconnect, "USB disconnected");
@@ -1063,9 +1073,9 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     AvneraManager.getAvenraManager(this).setLightX(mLightX);
                     if (appLightXDelegate != null) {
                         appLightXDelegate.isLightXintialize();
-                        appLightXDelegate.headPhoneStatus(true);
                     }
                     isConnected = true;
+                    connectDeviceStatus(isConnected);
                     Log.d(TAGReconnect, "USB connected");
                     isNeedShowDashboard = true;
                 }
@@ -1298,6 +1308,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                         appLightXDelegate.headPhoneStatus(true);
                         appLightXDelegate.receivedAdminEvent(AdminEvent.AccessoryReady, value);
                     }
+                    connectDeviceStatus(true);
                 }
             });
             isConnected = true;

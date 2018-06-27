@@ -38,11 +38,6 @@ import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.LogUtil;
 
-/**
- * BaseFragment
- * <p>
- * Created by darren.lu on 08/06/2017.
- */
 public class BaseFragment extends Fragment implements View.OnTouchListener, AppLightXDelegate, AppUSBDelegate {
     protected String TAG;
     protected Context mContext = null;

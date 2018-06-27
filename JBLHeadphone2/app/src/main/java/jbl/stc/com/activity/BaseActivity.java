@@ -9,7 +9,9 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -100,6 +102,16 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
             ft.commit();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void removeAllFragment() {
+        FragmentManager manager = getSupportFragmentManager();
+        int count = manager.getBackStackEntryCount();
+        while (count > 0) {
+            getSupportFragmentManager().popBackStackImmediate();
+            manager = getSupportFragmentManager();
+            count = manager.getBackStackEntryCount();
         }
     }
 

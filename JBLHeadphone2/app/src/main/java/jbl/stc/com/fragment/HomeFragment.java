@@ -51,7 +51,7 @@ import static java.lang.Integer.valueOf;
 
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener,AwarenessChangeListener, ANCController.OnSeekArcChangeListener{
-    private static final String TAG = HomeFragment.class.getSimpleName();
+    public static final String TAG = HomeFragment.class.getSimpleName();
     private View view, mBlurView;
     private CreateEqTipsDialog createEqTipsDialog;
 
@@ -331,7 +331,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
                 break;
             }
             case 4:{
-                String name = PreferenceUtils.getString(PreferenceKeys.EQKeyNAME, getActivity(), null);
+                String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(), null);
                 if (name != null) {
                     textViewCurrentEQ.setText(name);
                     if (textViewCurrentEQ.getText().length() >= JBLConstant.MAX_MARQUEE_LEN) {

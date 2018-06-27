@@ -11,9 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.avnera.audiomanager.AdminEvent;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -40,6 +37,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private TextView txtTips;
     private final static int SHOW_UN_FOUND_TIPS = 0;
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
+    private final static int MSG_SHOW_DISCOVERY = 2;
+
     private DashboardHandler dashboardHandler = new DashboardHandler();
 
     private CheckUpdateAvailable checkUpdateAvailable;
@@ -79,15 +78,16 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         super.onDestroy();
     }
 
-    public void receivedAdminEvent(@NotNull AdminEvent event, Object value) {
-        super.receivedAdminEvent(event, value);
-        switch (event) {
-            case AccessoryReady: {
-                Log.d(TAG, " ========> AccessoryReady <======== ");
-                dashboardHandler.removeMessages(SHOW_UN_FOUND_TIPS);
-                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT,200);
-                break;
-            }
+    @Override
+    public void connectDeviceStatus(boolean isConnected){
+        super.connectDeviceStatus(isConnected);
+        Log.d(TAG, " connectDeviceStatus isConnected = "+isConnected);
+        if(isConnected){
+            dashboardHandler.removeMessages(SHOW_UN_FOUND_TIPS);
+            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT,200);
+        }else{
+            dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
+            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY,200);
         }
     }
 
@@ -107,6 +107,15 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 }
                 case MSG_SHOW_HOME_FRAGMENT:{
                     switchFragment(new HomeFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    break;
+                }
+                case MSG_SHOW_DISCOVERY:{
+                    removeAllFragment();
+                    jblCircleView.setVisibility(View.VISIBLE);
+                    jblCircleView.start();
+                    image_view_logo.setVisibility(View.VISIBLE);
+                    ll_cannot_see.setVisibility(View.INVISIBLE);
+                    txtTips.setVisibility(View.VISIBLE);
                     break;
                 }
             }
