@@ -67,7 +67,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     private ProgressBar progressBarBattery;
     private TextView textViewBattery;
     private TextView textViewCurrentEQ;
+    private TextView textViewDeviceName;
     private PopupWindow popupWindow;
+    private ImageView imageViewDevice;
     private CheckBox checkBoxNoiseCancel;
     private LightX lightX;
     @Override
@@ -85,7 +87,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
         view.findViewById(R.id.image_view_settings).setOnClickListener(this);
         view.findViewById(R.id.image_view_info).setOnClickListener(this);
         view.findViewById(R.id.image_view_ambient_aware).setOnClickListener(this);
-        view.findViewById(R.id.deviceImageView);
+        textViewDeviceName = view.findViewById(R.id.text_view_home_device_name);
+        textViewDeviceName.setText(PreferenceUtils.getString(PreferenceKeys.MODEL,mContext,""));
+        imageViewDevice = view.findViewById(R.id.deviceImageView);
         view.findViewById(R.id.eqSwitchLayout);
         view.findViewById(R.id.eqInfoLayout).setVisibility(View.VISIBLE);
         view.findViewById(R.id.eqInfoLayout).setOnClickListener(this);

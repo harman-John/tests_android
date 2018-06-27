@@ -46,6 +46,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/text_view_home_device_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
