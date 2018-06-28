@@ -1,6 +1,8 @@
 package jbl.stc.com.fragment;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -208,6 +210,16 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             });
         }
         mBlurView.setVisibility(View.VISIBLE);
+        mBlurView.setAlpha(0f);
+        mBlurView.animate().alpha(1f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mBlurView.setVisibility(View.VISIBLE);
+                //OR
+                mBlurView.setAlpha(1f);
+            }
+        });
 
         aaPopupwindow.showAsDropDown(view);
 
