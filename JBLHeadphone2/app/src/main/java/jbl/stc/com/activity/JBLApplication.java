@@ -1,6 +1,7 @@
 package jbl.stc.com.activity;
 
 import android.app.Application;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.avnera.audiomanager.audioManager;
@@ -34,10 +35,15 @@ public class JBLApplication extends Application {
     public boolean isUpgradeSuccessful = false;
     public boolean isUpgrading = false;
     public AtomicBoolean mDeviceConnected = new AtomicBoolean(false);
+    private static Context context;
 
+    public static Context getJBLApplicationContext() {
+        return context;
+    }
     @Override
     public void onCreate() {
         super.onCreate();
+        context = this;
         LegalApi.INSTANCE.eulaInit(this);
         deviceInfo = new DeviceInfo();
         if (AppUtils.IS_DEBUG) {

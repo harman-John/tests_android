@@ -17,9 +17,11 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.manager.ANCDrawManager;
 import jbl.stc.com.R;
+import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.LogUtil;
 
 public class ANCController extends SurfaceView {
@@ -782,13 +784,21 @@ public class ANCController extends SurfaceView {
         mHandler1.postDelayed(runnable, 10);
     }
 
-    public void initLeftProgress(int leftFactor){
-        this.leftFactor = leftFactor;
+    public void initLeftProgress(int leftDeviceRaw){
+        this.leftFactor = leftDeviceRaw;
+        this.leftProgress = convertRawValueToProgressValue(leftDeviceRaw);
         mHandler1.postDelayed(runnable, 10);
     }
-    public void initRightProgress(int rightFactor){
-        this.rightFactor = rightFactor;
+    public void initRightProgress(int rightDeviceRaw){
+        this.rightFactor = rightDeviceRaw;
+        this.rightProgress = convertRawValueToProgressValue(rightDeviceRaw);
         mHandler1.postDelayed(runnable, 10);
+    }
+    private int convertRawValueToProgressValue(int rawValue){
+        if(AppUtils.is150NC(JBLApplication.getJBLApplicationContext())){
+            return rawValue / 7 * 100;
+        }
+        return rawValue /8 * 100;
     }
     public int getTouchRectIdDown() {
         return touchRectIdDown;
