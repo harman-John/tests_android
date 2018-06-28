@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -32,11 +33,12 @@ import jbl.stc.com.utils.OTAUtil;
 import jbl.stc.com.view.JblCircleView;
 
 public class DashboardActivity extends DeviceManagerActivity implements View.OnClickListener,OnDownloadedListener {
-    private static final String TAG = DashboardActivity.class.getSimpleName();
+    private static final String TAG = DashboardActivity.class.getSimpleName() + "aa";
     private JblCircleView jblCircleView;
     private static DashboardActivity dashboardActivity;
     private ImageView image_view_logo;
     private LinearLayout ll_cannot_see;
+    private RelativeLayout relativeLayoutDiscovery;
     private TextView txtTips;
     private final static int SHOW_UN_FOUND_TIPS = 0;
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
@@ -49,6 +51,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG,"onCreate");
         setContentView(R.layout.activity_dashboard);
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
@@ -58,44 +61,30 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,10000);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                }
-                return;
-            }
-        }
-    }
-
     private void initView() {
-        jblCircleView = (JblCircleView) findViewById(R.id.jblCircleView);
-        jblCircleView.addWave();
-        jblCircleView.start();
+        startCircle();
+        relativeLayoutDiscovery = findViewById(R.id.containerLayoutDiscovery);
         image_view_logo = (ImageView) findViewById(R.id.image_view_logo);
         ll_cannot_see = (LinearLayout) findViewById(R.id.ll_cannot_see);
         txtTips = (TextView) findViewById(R.id.txtTips);
     }
 
-
-    public static DashboardActivity getDashboardActivity() {
-        return dashboardActivity;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG,"onResume");
     }
 
     @Override
-    public void onClick(View v) {
-
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG,"onPause");
     }
 
     @Override
     protected void onDestroy() {
-        if (jblCircleView != null)
-            jblCircleView.stop();
-
+        Log.i(TAG,"onDestroy");
+        stopCircle();
         super.onDestroy();
     }
 
@@ -112,6 +101,47 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+                }
+                return;
+            }
+        }
+    }
+
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    private void startCircle(){
+        if (jblCircleView == null) {
+            jblCircleView = (JblCircleView) findViewById(R.id.jblCircleView);
+            jblCircleView.setVisibility(View.VISIBLE);
+            jblCircleView.addWave();
+            jblCircleView.start();
+        }
+    }
+
+    private void stopCircle(){
+        if (jblCircleView != null) {
+            jblCircleView.setVisibility(View.GONE);
+            jblCircleView.stop();
+            jblCircleView = null;
+        }
+    }
+
+    public static DashboardActivity getDashboardActivity() {
+        return dashboardActivity;
+    }
+
     private class DashboardHandler extends Handler {
 
         @Override
@@ -119,21 +149,26 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             super.handleMessage(msg);
             switch (msg.what) {
                 case SHOW_UN_FOUND_TIPS: {
-                    jblCircleView.setVisibility(View.GONE);
-                    jblCircleView.stop();
+                    Log.i(TAG,"show tips");
+                    relativeLayoutDiscovery.setVisibility(View.VISIBLE);
+                    stopCircle();
                     image_view_logo.setVisibility(View.GONE);
                     ll_cannot_see.setVisibility(View.VISIBLE);
                     txtTips.setVisibility(View.VISIBLE);
                     break;
                 }
                 case MSG_SHOW_HOME_FRAGMENT:{
+                    Log.i(TAG,"show homeFragment");
+                    stopCircle();
+                    relativeLayoutDiscovery.setVisibility(View.GONE);
                     switchFragment(new HomeFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     break;
                 }
                 case MSG_SHOW_DISCOVERY:{
+                    Log.i(TAG,"show discovery page");
+                    relativeLayoutDiscovery.setVisibility(View.VISIBLE);
                     removeAllFragment();
-                    jblCircleView.setVisibility(View.VISIBLE);
-                    jblCircleView.start();
+                    startCircle();
                     image_view_logo.setVisibility(View.VISIBLE);
                     ll_cannot_see.setVisibility(View.INVISIBLE);
                     txtTips.setVisibility(View.VISIBLE);

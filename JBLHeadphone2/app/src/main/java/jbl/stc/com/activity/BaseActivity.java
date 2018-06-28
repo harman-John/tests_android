@@ -48,7 +48,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
     public static final String JBL_HEADSET_NAME = "com.jbl.headset.name";
     public static final String ACTION_USB_PERMISSION = "com.stc.USB_PERMISSION";
     public LightX mLightX;
-    public boolean isConnected = false;
+    public static boolean isConnected = false;
     protected boolean isNeedShowDashboard;
     protected boolean disconnected;
     // Bluetooth Delegate
@@ -106,12 +106,19 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
     }
 
     public void removeAllFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        int count = manager.getBackStackEntryCount();
-        while (count > 0) {
-            getSupportFragmentManager().popBackStackImmediate();
-            manager = getSupportFragmentManager();
-            count = manager.getBackStackEntryCount();
+
+        try {
+            FragmentManager manager = getSupportFragmentManager();
+            int count = manager.getBackStackEntryCount();
+            Log.i(TAG, "count = " + count);
+            while (count > 0) {
+                getSupportFragmentManager().popBackStackImmediate();
+                manager = getSupportFragmentManager();
+                count = manager.getBackStackEntryCount();
+                Log.i(TAG, "back stack count = " + count);
+            }
+        }catch (Exception e){
+            Log.e(TAG,"Fragment is not shown, then popBack will have exception ");
         }
     }
 

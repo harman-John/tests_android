@@ -19,14 +19,21 @@
         android:supportsRtl="true"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".activity.DashboardActivity"
+            android:name=".activity.SplashActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.DashboardActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
