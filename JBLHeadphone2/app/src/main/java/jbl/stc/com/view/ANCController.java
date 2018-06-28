@@ -17,9 +17,14 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCDrawManager;
 import jbl.stc.com.R;
+
+import jbl.stc.com.utils.AppUtils;
+
 
 public class ANCController extends SurfaceView {
     private static final String TAG = ANCController.class.getSimpleName();
@@ -114,7 +119,7 @@ public class ANCController extends SurfaceView {
 //    private int mThumb1TutoriaRadius;
 //    private int mThumb2TutoriaRadius;
 
-//    private ANCFragment ancAwarehome;
+    //    private ANCFragment ancAwarehome;
     private boolean mClockwise = true;
 
     private int mThumb2XPos;
@@ -182,18 +187,35 @@ public class ANCController extends SurfaceView {
                     }
                     break;
                 case 3:
-                    leftProgress += 2;
-                    rightProgress += 2;
+//                    leftProgress += 2;
+//                    rightProgress += 2;
+//
+////                    boolean is150NC = AppUtils.is150NC(getAppActivity());
+//                    setProgress(leftProgress, true);
+//                    setProgress(rightProgress, false);
+//                    int maxProgress = 85;
+//                    if (leftProgress >= maxProgress && rightProgress >= maxProgress) {
+//                        mIsClicked = false;
+//                        //Don't forget to turn isAnimationRunning = false before return;
+//                        isAnimationRunning = false;
+//                        return;
+//                    }
+                    if (leftProgress < 85) {
+                        setProgress(++leftProgress, true);
+                    } else if (leftProgress > 85) {
+                        setProgress(--leftProgress, true);
+                    }
 
-//                    boolean is150NC = AppUtils.is150NC(getAppActivity());
-                    setProgress(leftProgress, true);
-                    setProgress(rightProgress, false);
-                    int maxProgress = 100;
-                    if (leftProgress >= maxProgress && rightProgress >= maxProgress) {
+                    if (rightProgress < 85) {
+                        setProgress(++rightProgress, false);
+                    } else if (rightProgress > 85) {
+                        setProgress(--rightProgress, false);
+                    } else if (leftProgress == 85 && rightProgress == 85) {
                         mIsClicked = false;
                         //Don't forget to turn isAnimationRunning = false before return;
                         isAnimationRunning = false;
                         return;
+
                     }
                     break;
                 case -1:
@@ -779,6 +801,37 @@ public class ANCController extends SurfaceView {
         }
         mHandler1.removeCallbacks(runnable);
         mHandler1.postDelayed(runnable, 10);
+    }
+
+    public void initLeftProgress(int leftDeviceRaw) {
+//        this.leftFactor = leftDeviceRaw;
+        mViewPosition = -1;
+        this.leftFactor = convertRawValueToProgressValue(leftDeviceRaw);
+        Logger.d(TAG, "do left progress leftRaw = " + leftDeviceRaw + "calculated left progress = " + leftFactor);
+        mHandler1.postDelayed(runnable, 10);
+    }
+
+    public void initRightProgress(int rightDeviceRaw) {
+//        this.rightFactor = rightDeviceRaw;
+        mViewPosition = -1;
+        this.rightFactor = convertRawValueToProgressValue(rightDeviceRaw);
+        Logger.d(TAG, "do right progress rightRaw = " + rightDeviceRaw + "calculated right progress = " + rightFactor);
+        mHandler1.postDelayed(runnable, 10);
+    }
+
+    private int convertRawValueToProgressValue(int rawValue) {
+        int offset = 0;
+        int rawSteps;
+
+        if (AppUtils.is150NC(JBLApplication.getJBLApplicationContext())) {
+            rawSteps = 7;
+        } else {
+            rawSteps = 8;
+        }
+//        if (rawValue > 0 && rawValue < 7) {
+//            offset += (100 / rawSteps / 2);
+//        }
+        return Math.round(rawValue * 100 / rawSteps) ;//+ offset;
     }
 
     public int getTouchRectIdDown() {

@@ -7,7 +7,9 @@ import com.avnera.smartdigitalheadset.ANCAwarenessPreset;
 import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
 
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.utils.AppUtils;
 
 /**
  * ANCControlManager
@@ -69,6 +71,7 @@ public class ANCControlManager {
      */
     public void setLeftAwarenessPresetValue(LightX lightX, int leftANCvalue) {
         int rawSteps = ancValueConverter(lightX,leftANCvalue);
+        Log.d(TAG, "Send left rawstep = " + rawSteps);
         if (lightX != null) {
             lightX.writeAppWithUInt32Argument(Command.AppAwarenessRawLeft, (long) rawSteps);
             PreferenceUtils.setInt(LEFTANC, leftANCvalue, context);
@@ -86,6 +89,7 @@ public class ANCControlManager {
      */
     public void setRightAwarenessPresetValue(LightX lightX, int rightANCvalue) {
         int rawSteps = ancValueConverter(lightX,rightANCvalue);
+        Log.d(TAG, "Send right rawstep = " + rawSteps);
         if (lightX != null) {
             lightX.writeAppWithUInt32Argument(Command.AppAwarenessRawRight, (long) rawSteps);
             PreferenceUtils.setInt(RIGHTANC, rightANCvalue, context);
@@ -103,11 +107,20 @@ public class ANCControlManager {
      * @return ANC steps
      */
     private int ancValueConverter(LightX lightX, int ancValue) {
-        if (lightX != null) {
-            return (ancValue * 7) / 100;
+//        if (lightX != null) {
+//            return (ancValue * 7) / 100;
+//        }else{
+//            return (ancValue * mRawsteps) /100;
+//        }
+        if(AppUtils.is150NC(JBLApplication.getJBLApplicationContext())){
+            mRawsteps = 7;
         }else{
-            return (ancValue * mRawsteps) /100;
+            mRawsteps = 8;
         }
+        if(ancValue > 95){
+            return mRawsteps;
+        }
+        return (ancValue * mRawsteps) /100;
     }
 
     /**

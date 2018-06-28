@@ -27,7 +27,11 @@ import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.Status;
 import com.avnera.audiomanager.audioManager;
 import com.avnera.audiomanager.responseResult;
+
+import com.avnera.smartdigitalheadset.ANCAwarenessPreset;
+
 import com.avnera.smartdigitalheadset.Command;
+
 import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Utility;
 
@@ -69,7 +73,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     private final static int MSG_RAW_STEP = 4;
     private final static int MSG_AMBIENT_LEVEL = 5;
     private final static int MSG_READ_BATTERY_INTERVAL = 6;
+
+    private final static int MSG_AA_LEFT = 32;
+    private final static int MSG_AA_RIGHT = 33;
+
     private final static int MSG_SEND_CMD_GET_FIRMWARE = 7;
+
     private final long timeInterval = 30 * 1000L, pollingTime = 1000L;
     private ProgressBar progressBarBattery;
     private TextView textViewBattery;
@@ -80,6 +89,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     private CheckBox checkBoxNoiseCancel;
     private LinearLayout linearLayoutBattery;
     private LightX lightX;
+    private ANCAwarenessPreset awarenessPreset, lastsavedAwarenessState;
+    private ANCController ancController;
+    private boolean isRequestingLeftANC, isRequestingRightANC;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,7 +190,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     protected void showAncPopupWindow() {
         View popupWindow_view = getLayoutInflater().inflate(R.layout.popup_window_anc, null,
                 false);
-        final ANCController ancController = popupWindow_view.findViewById(R.id.circularSeekBar);
+        ancController = popupWindow_view.findViewById(R.id.circularSeekBar);
         CircularInsideLayout circularInsideLayout = popupWindow_view.findViewById(R.id.imageContainer);
         circularInsideLayout.setonAwarenesChangeListener(this);
         ancController.setCircularInsideLayout(circularInsideLayout);
@@ -197,16 +209,16 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
         mBlurView.setVisibility(View.VISIBLE);
         // set animation effect
         popupWindow.setAnimationStyle(R.style.style_down_to_top);
-        popupWindow_view.setOnTouchListener(new View.OnTouchListener() {
+        popupWindow_view.findViewById(R.id.aa_popup_close_arrow).setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View view) {
                 if (popupWindow != null && popupWindow.isShowing()) {
                     popupWindow.dismiss();
                     popupWindow = null;
                 }
-                return false;
             }
         });
+
         popupWindow.showAsDropDown(view);
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -221,29 +233,53 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
             @Override
             public void onClick(View view) {
                 ancController.setSwitchOff(false);
+                ANCControlManager.getANCManager(getActivity()).setAmbientLeveling(lightX, ANCAwarenessPreset.None);
             }
         });
-
+        getAAValue();
     }
 
     @Override
     public void onMedium() {
         //on AA medium checked
+        ANCControlManager.getANCManager(getActivity()).setAmbientLeveling(lightX, ANCAwarenessPreset.Medium);
     }
 
     @Override
     public void onLow() {
        //on AA low checked
+        ANCControlManager.getANCManager(getActivity()).setAmbientLeveling(lightX, ANCAwarenessPreset.Low);
     }
 
     @Override
     public void onHigh() {
       //on AA high checked
+        ANCControlManager.getANCManager(getActivity()).setAmbientLeveling(lightX, ANCAwarenessPreset.High);
     }
 
     @Override
     public void onProgressChanged(ANCController ANCController, int leftProgress, int rightProgress, boolean fromUser) {
-       //controller progress
+
+        if (fromUser) {
+            // Check added to fix Bug :Bug 64517 - Sometimes Awareness adjustment is disordered when left and right AA have different level.
+            //Set animation to false and presetValue to -1
+            int savedLeft = PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, getActivity());
+            int savedRight = PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, getActivity());
+
+            PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, leftProgress, getActivity());
+            PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, rightProgress, getActivity());
+//            AnalyticsManager.getInstance(getActivity()).reportAwarenessLevelChanged(mLeftProgress, true);
+//            AnalyticsManager.getInstance(getActivity()).reportAwarenessLevelChanged(mRightProgress, false);
+            lastsavedAwarenessState = null;
+//            promptSeekAbuse.removeCallbacks(runnablepromptSeekAbuse);
+//            promptSeekAbuse.postDelayed(runnablepromptSeekAbuse, 300);
+            if (leftProgress != savedLeft) {
+                ANCControlManager.getANCManager(getActivity()).setLeftAwarenessPresetValue(lightX, leftProgress);
+            }
+            if (rightProgress != savedRight) {
+                ANCControlManager.getANCManager(getActivity()).setRightAwarenessPresetValue(lightX, rightProgress);
+            }
+        }
     }
 
 
@@ -272,6 +308,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
         }
     }
 
+    private void getAAValue(){
+        ANCControlManager.getANCManager(getContext()).getAmbientLeveling(lightX);
+    }
     private class HomeHandler extends Handler {
 
         public HomeHandler(Looper looper) {
@@ -302,8 +341,15 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
                     break;
                 }
                 case MSG_AMBIENT_LEVEL:{
+                    updateAAUI(AppUtils.levelTransfer(msg.arg1));
                     break;
                 }
+                case MSG_AA_LEFT:
+                    updateAALeft(msg.arg1);
+                    break;
+                case MSG_AA_RIGHT:
+                    updateAARight(msg.arg1);
+                    break;
                 case MSG_CURRENT_PRESET:{
                     updateCurrentEQ(msg.arg1);
                     break;
@@ -412,6 +458,59 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
         DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
     }
 
+    private void updateAALeft(int value){
+        PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, value ,getActivity());
+        isRequestingLeftANC = false;
+        if(!isRequestingLeftANC && !isRequestingRightANC){
+//            ancController.initProgress();
+        }
+        ancController.initLeftProgress(value);
+
+//        ancController.initProgress(value, PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, getActivity()), value);
+    }
+    private void updateAARight(int value){
+        PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, value ,getActivity());
+        isRequestingRightANC = false;
+        if(!isRequestingLeftANC && !isRequestingRightANC){
+
+        }
+        ancController.initRightProgress(value);
+//        ancController.initProgress(PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, getActivity()), value, value);
+    }
+    private void updateAAUI(int aaLevelingValue){
+            boolean is150NC = AppUtils.is150NC(getActivity());
+        Log.d(TAG, "updateAmbientLevel: " + aaLevelingValue + "," + PreferenceUtils.getInt(PreferenceKeys.AWARENESS, getActivity()) + ",is150NC=" + is150NC);
+            switch (aaLevelingValue) {
+                case 0:
+                    PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, 0, getActivity());
+                    PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, 0, getActivity());
+                    lastsavedAwarenessState = ANCAwarenessPreset.None;
+                    break;
+                case 1: //ANCAwarenessPreset.Low
+                    PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, is150NC ? 28 : 25, getActivity());
+                    PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, is150NC ? 28 : 25, getActivity());
+                    lastsavedAwarenessState = ANCAwarenessPreset.Low;
+                    break;
+                case 2: //ANCAwarenessPreset.Medium
+                    PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, is150NC ? 58 : 55, getActivity());
+                    PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, is150NC ? 58 : 55, getActivity());
+                    lastsavedAwarenessState = ANCAwarenessPreset.Medium;
+                    break;
+                case 3://ANCAwarenessPreset.High
+                    PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, is150NC ? 86 : 100, getActivity());
+                    PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, is150NC ? 86 : 100, getActivity());
+                    lastsavedAwarenessState = ANCAwarenessPreset.High;
+                    break;
+            }
+        ancController.initProgress(PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, getActivity()),
+                PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, getActivity()), aaLevelingValue);
+        PreferenceUtils.setInt(PreferenceKeys.AWARENESS, aaLevelingValue, getActivity());
+
+        isRequestingLeftANC = true;
+        isRequestingRightANC = true;
+        ANCControlManager.getANCManager(getContext()).getLeftANCvalue(lightX);
+        ANCControlManager.getANCManager(getContext()).getRightANCvalue(lightX);
+    }
     private void sendMessageTo(int command, String arg1) {
         Message msg = new Message();
         msg.what = command;
@@ -419,6 +518,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
             msg.arg1 = valueOf(arg1);
         homeHandler.sendMessage(msg);
     }
+
 
     @Override
     public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
@@ -466,7 +566,16 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
                 Log.d(TAG, "FirmwareUtil.currentFirmware =" + FirmwareUtil.currentFirmware);
                 break;
             }
-        }
+            case AmCmds.CMD_RawLeft:
+                Log.d(TAG, "CMD_RawLeft =" + values.iterator().next().getValue().toString());
+                sendMessageTo(MSG_AA_LEFT, values.iterator().next().getValue().toString());
+                break;
+            case AmCmds.CMD_RawRight:
+                Log.d(TAG, "CMD_RawRight =" + values.iterator().next().getValue().toString());
+                sendMessageTo(MSG_AA_RIGHT, values.iterator().next().getValue().toString());
+                break;
+
+            }
 
     }
 
@@ -642,6 +751,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
 //                        Calibration.getCalibration().calibrationFailed();
                     break;
             }
+
         }
     }
 
