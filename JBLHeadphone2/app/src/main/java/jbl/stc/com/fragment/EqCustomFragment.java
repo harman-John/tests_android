@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,6 @@ import jbl.stc.com.listener.OnCustomEqListener;
 import jbl.stc.com.listener.OnEqChangeListener;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
-import jbl.stc.com.utils.LogUtil;
 import jbl.stc.com.utils.ToastUtil;
 import jbl.stc.com.view.EqualizerAddView;
 import jbl.stc.com.view.KeyboardLayout;
@@ -94,7 +94,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             public void onEqValueChanged(int eqIndex, float value) {
                 if (eqIndex >= 0 && eqIndex < eqValueArray.length) {
                     eqValueArray[eqIndex] = (int)value;
-                    LogUtil.d(TAG, "onEqValueChanged eqIndex=" + eqIndex + ",value=" + value);
+                    Log.d(TAG, "onEqValueChanged eqIndex=" + eqIndex + ",value=" + value);
                     if (firstTimeAddEqTipText.getVisibility() == View.VISIBLE) {
                         firstTimeAddEqTipText.setVisibility(View.GONE);
                         mHandler.removeCallbacks(textUpRunnable);
@@ -105,7 +105,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
 
             @Override
             public void onEqDragFinished(float[] pointX, float[] pointY) {
-                LogUtil.d(TAG, "onEqDragFinished pointX=" + Arrays.toString(pointX) + ",pointY=" + Arrays.toString(pointY));
+                Log.d(TAG, "onEqDragFinished pointX=" + Arrays.toString(pointX) + ",pointY=" + Arrays.toString(pointY));
                 currSelectedEq.setPointX(pointX);
                 currSelectedEq.setPointY(pointY);
                 //CommandManager.get().setGrEqBandGains(currSelectedEq.id, eqValueArray);
@@ -126,7 +126,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                 currSelectedEq = (EQModel) bundle.getSerializable(EXTRA_EQ_MODEL);
             }
         }
-        LogUtil.d(TAG, "isAddOperate=" + isAddOperate + ",currSelectedEq=" + currSelectedEq);
+        Log.d(TAG, "isAddOperate=" + isAddOperate + ",currSelectedEq=" + currSelectedEq);
         if (currSelectedEq == null) {
             currSelectedEq = new EQModel();
             currSelectedEq.eqType = GraphicEQPreset.User.value();
@@ -163,19 +163,19 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                             + equalizerView.getMarginTop() + equalizerView.getMarginBottom()));
                     equalizerParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             eqViewHeight);
-                    LogUtil.d(TAG, "KEYBOARD_STATE_INIT:height=" + eqViewHeight);
+                    Log.d(TAG, "KEYBOARD_STATE_INIT:height=" + eqViewHeight);
                     equalizerLayout.setLayoutParams(equalizerParams);
                     equalizerView.setCustomHeight(eqViewHeight);
                     break;
                 case KeyboardLayout.KEYBOARD_STATE_HIDE:
-                    LogUtil.d(TAG, "KEYBOARD_STATE_HIDE");
+                    Log.d(TAG, "KEYBOARD_STATE_HIDE");
                     eqEditLayoutParams.bottomMargin = getResources().getDimensionPixelSize(R.dimen.eq_name_edit_bottom_margin);
                     equalizerLayout.setLayoutParams(equalizerParams);
                     equalizerView.setSupportDrag(true);
                     viewKeyboardLayout.setBackgroundResource(R.color.transparent);
                     break;
                 case KeyboardLayout.KEYBOARD_STATE_SHOW:
-                    LogUtil.d(TAG, "KEYBOARD_STATE_SHOW");
+                    Log.d(TAG, "KEYBOARD_STATE_SHOW");
                     eqEditLayoutParams.bottomMargin = getResources().getDimensionPixelSize(R.dimen.eq_name_edit_bottom_margin_show);
                     equalizerLayout.setLayoutParams(equalizerParams);
                     equalizerView.setSupportDrag(false);

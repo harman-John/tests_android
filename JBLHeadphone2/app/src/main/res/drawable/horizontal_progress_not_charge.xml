@@ -4,8 +4,8 @@
         <shape>
             <corners android:radius="4dp" />
             <gradient
-                android:endColor="@color/green"
-                android:startColor="@color/green" />
+                android:endColor="@color/horizontal_progress_color_not_charge"
+                android:startColor="@color/horizontal_progress_color_not_charge" />
         </shape>
     </item>
 
@@ -14,8 +14,8 @@
             <shape>
                 <corners android:radius="4dp" />
                 <gradient
-                    android:endColor="@color/horizontal_progress_color_not_charge"
-                    android:startColor="@color/horizontal_progress_color_not_charge" />
+                    android:endColor="@color/green"
+                    android:startColor="@color/green" />
             </shape>
         </clip>
     </item>
@@ -24,8 +24,8 @@
             <shape>
                 <corners android:radius="4dp" />
                 <gradient
-                    android:endColor="@color/horizontal_progress_color_not_charge"
-                    android:startColor="@color/horizontal_progress_color_not_charge" />
+                    android:endColor="@color/green"
+                    android:startColor="@color/green" />
             </shape>
         </clip>
     </item>

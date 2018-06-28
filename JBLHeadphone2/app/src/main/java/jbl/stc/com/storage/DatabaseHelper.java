@@ -3,19 +3,13 @@ package jbl.stc.com.storage;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 
 import java.util.ArrayList;
 
 import jbl.stc.com.constant.EqDbKey;
 import jbl.stc.com.entity.GraphicEQPreset;
-import jbl.stc.com.utils.LogUtil;
-
-import static jbl.stc.com.constant.EqDbKey.AKG_EQ;
-import static jbl.stc.com.constant.EqDbKey.ID;
-import static jbl.stc.com.constant.EqDbKey.INDEX;
-import static jbl.stc.com.constant.EqDbKey.POINT_X;
-import static jbl.stc.com.constant.EqDbKey.POINT_Y;
 
 
 /**
@@ -72,13 +66,13 @@ public class DatabaseHelper extends SQLiteOpenHelper implements EqDbKey {
      * <p>Creates table named AKG_EQ </p>
      */
     private void createTableEqSettings(SQLiteDatabase db) {
-        LogUtil.d(TAG, "createTableEqSettings");
+        Log.d(TAG, "createTableEqSettings");
         db.execSQL(CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        LogUtil.d(TAG, "onUpgrade newVersion=" + newVersion + ",oldVersion=" + oldVersion);
+        Log.d(TAG, "onUpgrade newVersion=" + newVersion + ",oldVersion=" + oldVersion);
         if (oldVersion < newVersion) {
             String deleteSql = "drop table " + AKG_EQ;
             db.execSQL(deleteSql);

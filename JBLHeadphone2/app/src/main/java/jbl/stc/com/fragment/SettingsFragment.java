@@ -3,13 +3,13 @@ package jbl.stc.com.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.Calibration;
-import jbl.stc.com.utils.LogUtil;
 import jbl.stc.com.constant.JBLConstant;
 
 public class SettingsFragment extends BaseFragment implements View.OnClickListener {
@@ -50,7 +50,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
 
             }
             case R.id.text_true_note: {
-                LogUtil.d(TAG, "truenote clicked");
+                Log.d(TAG, "truenote clicked");
                 Intent intent = new Intent(getActivity(), Calibration.class);
                 intent.putExtra(Calibration.TAG, GlobalCalibration.class.getSimpleName());
                 startActivity(intent);

@@ -46,6 +46,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/text_view_home_device_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -100,11 +101,12 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <jbl.stc.com.view.AppImageView
+                    <CheckBox
                         android:id="@+id/image_view_noise_cancel"
                         android:layout_width="@dimen/dashboard_talk_image_width"
                         android:layout_height="@dimen/dashboard_talk_image_width"
                         android:scaleType="fitXY"
+                        style="@style/CustomCheckboxThemeAnc"
                         android:src="@mipmap/icon_talk_through_on" />
 
                     <jbl.stc.com.view.PoppinsRegularTextView
@@ -195,7 +197,7 @@
                 android:layout_toRightOf="@+id/eqDividerView"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="Bass"
+                android:text="@string/off"
                 android:textColor="@color/white" />
 
             <ImageView
@@ -207,5 +209,9 @@
                 android:src="@mipmap/icon_arrow_up" />
         </RelativeLayout>
     </FrameLayout>
-
+<View
+    android:id="@+id/blur_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"></View>
 </RelativeLayout>

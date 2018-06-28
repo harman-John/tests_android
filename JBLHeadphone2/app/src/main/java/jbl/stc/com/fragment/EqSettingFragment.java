@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,7 +28,6 @@ import jbl.stc.com.listener.OnEqItemSelectedListener;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.FastClickHelper;
-import jbl.stc.com.utils.LogUtil;
 import jbl.stc.com.utils.ToastUtil;
 import jbl.stc.com.view.EqualizerShowView;
 import jbl.stc.com.view.MyGridLayoutManager;
@@ -57,7 +57,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
         @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        LogUtil.d("EqSettingFragment:","onCreateView");
+        Log.d("EqSettingFragment:","onCreateView");
         rootView = inflater.inflate(R.layout.fragment_eq_settings, container, false);
         initView();
         initEvent();
@@ -136,7 +136,14 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         eqModelList.addAll(eqModels);
         currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""), mContext);
 
-        LogUtil.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""));
+
+        //LogUtil.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""));
+
+        /*if (eqModelList == null || eqModelList.isEmpty()) {
+            getActivity().getSupportFragmentManager().popBackStack();
+            return;
+        }*/
+        Log.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""));
         if (currSelectedEq != null && currSelectedEq.eqName != null) {
                 if (application.deviceInfo.eqOn) {
                     for (int i = 0; i < eqModelList.size(); i++) {
@@ -157,12 +164,15 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.text_white_50));
             }
         }else{
-            eqNameText.setText("OFF");
-            eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+            eqNameText.setText(R.string.eq_off_name_text);
+            eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.text_white_50));
             for (EQModel model : eqModelList) {
                 model.isSelected = false;
             }
             eqModelList.get(0).isSelected=true;
+        }
+        for (int i = 0; i < eqModelList.size(); i++) {
+            Log.d(TAG, "i=" + i + "," + eqModelList.get(i));
         }
 
 
@@ -170,7 +180,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
         //float[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
         if (currSelectedEq!=null){
-            LogUtil.d("TAG","setCurveData");
+           // LogUtil.d("TAG","setCurveData");
             equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
         }
         smoothToPosition();
@@ -178,14 +188,15 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
     private void smoothToPosition() {
         if (currSelectedEqIndex > 1) {
-            LogUtil.d(TAG, "smoothToPosition currSelectedEqIndex=" + currSelectedEqIndex);
+            Log.d(TAG, "smoothToPosition currSelectedEqIndex=" + currSelectedEqIndex);
             eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
         }
     }
 
     private void onEqNameSelected(int eqIndex, boolean fromUser) {
+
         if (eqIndex>3) {
-            LogUtil.d(TAG, "onEqNameSelected eqIndex is " + eqIndex);
+            //LogUtil.d(TAG, "onEqNameSelected eqIndex is " + eqIndex);
             currSelectedEq = eqModelList.get(eqIndex);
             currSelectedEqIndex = eqIndex;
             eqNameText.setText(currSelectedEq.eqName);
@@ -204,9 +215,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             if (fromUser) {
                 eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
             }
-        }else{
+        }else {
             //select eqType
-            eqType=eqIndex;
+            eqType = eqIndex;
             if (eqIndex == 0) {
                 eqNameText.setText("OFF");
             } else if (eqIndex == 1) {
@@ -220,14 +231,33 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             for (EQModel model : eqModelList) {
                 model.isSelected = false;
             }
-            eqModelList.get(eqIndex).isSelected=true;
+            eqModelList.get(eqIndex).isSelected = true;
             eqAdapter.setEqModels(eqModelList);
+        }
+        Log.d(TAG, "onEqNameSelected eqIndex is " + eqIndex);
+        currSelectedEq = eqModelList.get(eqIndex);
+        currSelectedEqIndex = eqIndex;
+        eqNameText.setText(currSelectedEq.eqName);
+        eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+        application.deviceInfo.eqOn = true;
+        for (EQModel model : eqModelList) {
+            model.isSelected = false;
+        }
+        currSelectedEq.isSelected = true;
+        eqAdapter.setEqModels(eqModelList);
+        PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, currSelectedEq.eqName, mContext);
+        int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
+        equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
+        //CommandManager.get().setGrEqBandGains(currSelectedEq.id, eqValueArray);
+        AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
+        if (fromUser) {
+            eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
         }
 
     }
 
     private void onAddCustomEq(boolean isAdd) {
-        LogUtil.d(TAG, "onAddCustomEq()");
+        Log.d(TAG, "onAddCustomEq()");
         EqCustomFragment fragment = new EqCustomFragment();
         fragment.setOnCustomEqListener(onCustomEqListener);
         Bundle bundle = new Bundle();
