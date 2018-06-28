@@ -261,7 +261,7 @@ public class EqualizerAddView extends View {
     }
 
     private void drawLine(Canvas canvas) {
-        LogUtil.d(TAG,"CenterHeight:"+String.valueOf((mHeight- marginTop-marginBottom)/2));
+        Log.d(TAG,"CenterHeight:"+String.valueOf((mHeight- marginTop-marginBottom)/2));
         //draw center horizontal line
         mLinePaint.reset();
         mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
@@ -324,7 +324,7 @@ public class EqualizerAddView extends View {
      * Draw Curve
      */
     private void drawCurveChart(Canvas canvas) {
-        LogUtil.d(TAG,"drawCurve");
+        Log.d(TAG,"drawCurve");
         mCurvePaint.setColor(ContextCompat.getColor(mContext, curveColor));
         curvePath.reset();
         pointX.clear();
@@ -333,14 +333,14 @@ public class EqualizerAddView extends View {
             pointX.add(controlCircles.get(i).getX());
             pointY.add(controlCircles.get(i).getY());
         }
-        LogUtil.d(TAG,"controlCircles size"+String.valueOf(controlCircles.size()));
+        Log.d(TAG,"controlCircles size"+String.valueOf(controlCircles.size()));
         if (controlCircles.size() > 2) {
             STEP = (8 * AppUtils.EQ_VIEW_DEFAULT_STEP) / (controlCircles.size() - 1);
         }
 
         List<Cubic> calculate_x = calculateCurve(pointX);
         List<Cubic> calculate_y = calculateCurve(pointY);
-        LogUtil.d(TAG,"calculate_x size"+String.valueOf(calculate_x.size()));
+        Log.d(TAG,"calculate_x size"+String.valueOf(calculate_x.size()));
         float nearX;
         float lastX;
         float lastY;
@@ -461,7 +461,7 @@ public class EqualizerAddView extends View {
     private float getDbValueFromY(float Y) {
         //get one point float
         float value = (maxValue - (Y - marginTop) / getViewHeight() * (maxValue - minValue));
-        LogUtil.d(TAG,"Y:"+String.valueOf(Y)+"ViewHeight:"+String.valueOf(getViewHeight())+"value:"+String.valueOf(value));
+        Log.d(TAG,"Y:"+String.valueOf(Y)+"ViewHeight:"+String.valueOf(getViewHeight())+"value:"+String.valueOf(value));
         return Float.valueOf(StringUtils.getOnePointFloat(value));
     }
 
@@ -550,11 +550,8 @@ public class EqualizerAddView extends View {
                     if (supportDrag && where >= 0 && where < controlCircles.size()) {
                         float value = getDbValueFromY(event.getY());
                         int freq = getFreqFromX(event.getX());
-<<<<<<< HEAD
-                        LogUtil.d(TAG, "ACTION_MOVE touchX=" + event.getX() + ",touchY=" + event.getY() + ",freq=" + freq + ",where=" + where + ",size=" + controlCircles.size());
-=======
                         //Log.d(TAG, "ACTION_MOVE touchX=" + event.getX() + ",touchY=" + event.getY() + ",freq=" + freq + ",where=" + where + ",size=" + controlCircles.size());
->>>>>>> 87e21b4b90350be1a10ab86bcdc0c905c3af2910
+
                         if (freq > maxFrequency) {
                             freq = maxFrequency;
                         }

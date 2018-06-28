@@ -174,7 +174,7 @@ public class EqualizerShowView extends View {
     }
 
     private void drawLine(Canvas canvas) {
-        LogUtil.d(TAG,"CenterHeight:"+String.valueOf((mHeight- marginTop-marginBottom)/2));
+        Log.d(TAG,"CenterHeight:"+String.valueOf((mHeight- marginTop-marginBottom)/2));
         //draw center horizontal line
         mLinePaint.reset();
         mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
