@@ -1,110 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/containerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
 
 
-    <jbl.stc.com.view.JblCircleView
-        android:id="@+id/jblCircleView"
+    <RelativeLayout
+        android:id="@+id/containerLayoutDiscovery"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <jbl.stc.com.view.JblCircleView
+            android:id="@+id/jblCircleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/image_view_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ab_logo" />
+
+        <LinearLayout
+            android:id="@+id/ll_cannot_see"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/autoCalimarginTop"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txtMessage"
+                style="@android:style/TextAppearance.Large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="@string/not_found_title"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/txtHelp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtAdviceOne"
+                style="@android:style/TextAppearance.Large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/settings_item_padding_left"
+                android:gravity="left"
+                android:text="@string/advice_one"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/txtHelp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtAdviceTwo"
+                style="@android:style/TextAppearance.Large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/transparentStrokeWidth"
+                android:gravity="left"
+                android:text="@string/advice_two"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/txtHelp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtAdviceThree"
+                style="@android:style/TextAppearance.Large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/transparentStrokeWidth"
+                android:gravity="left"
+                android:text="@string/advice_three"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/txtHelp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtAdviceFour"
+                style="@android:style/TextAppearance.Large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/transparentStrokeWidth"
+                android:gravity="left"
+                android:text="@string/advice_four"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/txtHelp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/txtTips"
+            style="@android:style/TextAppearance.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/page_padding_right"
+            android:layout_marginTop="@dimen/transparentStrokeWidth"
+            android:gravity="left"
+            android:text="@string/need_more_tips"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/txtConnecting"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/containerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <ImageView
-        android:id="@+id/image_view_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:src="@drawable/ab_logo" />
-
-    <LinearLayout
-        android:id="@+id/ll_cannot_see"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="@dimen/autoCalimarginTop"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/txtMessage"
-            style="@android:style/TextAppearance.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="@string/not_found_title"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/txtHelp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtAdviceOne"
-            style="@android:style/TextAppearance.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/settings_item_padding_left"
-            android:gravity="left"
-            android:text="@string/advice_one"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/txtHelp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtAdviceTwo"
-            style="@android:style/TextAppearance.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/transparentStrokeWidth"
-            android:gravity="left"
-            android:text="@string/advice_two"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/txtHelp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtAdviceThree"
-            style="@android:style/TextAppearance.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/transparentStrokeWidth"
-            android:gravity="left"
-            android:text="@string/advice_three"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/txtHelp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtAdviceFour"
-            style="@android:style/TextAppearance.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/transparentStrokeWidth"
-            android:gravity="left"
-            android:text="@string/advice_four"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/txtHelp"
-            android:textStyle="bold" />
-
-
-    </LinearLayout>
-
-
-    <TextView
-        android:id="@+id/txtTips"
-        android:visibility="gone"
-        style="@android:style/TextAppearance.Large"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/page_padding_right"
-        android:layout_marginTop="@dimen/transparentStrokeWidth"
-        android:gravity="left"
-        android:text="@string/need_more_tips"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/txtConnecting"
-        android:textStyle="bold" />
-
-
 </RelativeLayout>
