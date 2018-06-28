@@ -79,6 +79,12 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
         setStatusBar();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(usbReceiver);
+    }
+
     protected void setStatusBar() {
         StatusBarUtil.setColor(this, getResources().getColor(R.color.statusBarBackground));
     }

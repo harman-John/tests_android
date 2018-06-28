@@ -121,6 +121,20 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     }
 
+    @Override
+    public void onBackPressed() {
+        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+        if (isConnected && backStackEntryCount > 1) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            if (isConnected) {
+                AppUtils.hideFromForeground(this);
+            } else {
+                finish();
+            }
+        }
+    }
+
     private void startCircle(){
         if (jblCircleView == null) {
             jblCircleView = (JblCircleView) findViewById(R.id.jblCircleView);
