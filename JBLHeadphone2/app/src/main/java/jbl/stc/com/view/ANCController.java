@@ -782,6 +782,14 @@ public class ANCController extends SurfaceView {
         mHandler1.postDelayed(runnable, 10);
     }
 
+    public void initLeftProgress(int leftFactor){
+        this.leftFactor = leftFactor;
+        mHandler1.postDelayed(runnable, 10);
+    }
+    public void initRightProgress(int rightFactor){
+        this.rightFactor = rightFactor;
+        mHandler1.postDelayed(runnable, 10);
+    }
     public int getTouchRectIdDown() {
         return touchRectIdDown;
     }
