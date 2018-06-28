@@ -19,10 +19,12 @@ import android.view.SurfaceView;
 
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCDrawManager;
 import jbl.stc.com.R;
+
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.utils.LogUtil;
+
 
 public class ANCController extends SurfaceView {
     private static final String TAG = ANCController.class.getSimpleName();
@@ -805,7 +807,7 @@ public class ANCController extends SurfaceView {
 //        this.leftFactor = leftDeviceRaw;
         mViewPosition = -1;
         this.leftFactor = convertRawValueToProgressValue(leftDeviceRaw);
-        LogUtil.d(TAG, "do left progress leftRaw = " + leftDeviceRaw + "calculated left progress = " + leftFactor);
+        Logger.d(TAG, "do left progress leftRaw = " + leftDeviceRaw + "calculated left progress = " + leftFactor);
         mHandler1.postDelayed(runnable, 10);
     }
 
@@ -813,7 +815,7 @@ public class ANCController extends SurfaceView {
 //        this.rightFactor = rightDeviceRaw;
         mViewPosition = -1;
         this.rightFactor = convertRawValueToProgressValue(rightDeviceRaw);
-        LogUtil.d(TAG, "do right progress rightRaw = " + rightDeviceRaw + "calculated right progress = " + rightFactor);
+        Logger.d(TAG, "do right progress rightRaw = " + rightDeviceRaw + "calculated right progress = " + rightFactor);
         mHandler1.postDelayed(runnable, 10);
     }
 

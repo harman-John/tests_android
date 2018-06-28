@@ -9,7 +9,9 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -28,6 +30,7 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.dialog.AlertsDialog;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.fragment.BaseFragment;
+import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.listener.AppUSBDelegate;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -44,7 +47,6 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
     public static final String JBL_HEADSET_MAC_ADDRESS = "com.jbl.headset.mac_address";
     public static final String JBL_HEADSET_NAME = "com.jbl.headset.name";
     public static final String ACTION_USB_PERMISSION = "com.stc.USB_PERMISSION";
-    public int vendorID, productIDAPPMode, productIDBootMode, vendorID3, productIDBootMode3, productIDAPPMode3;
     public LightX mLightX;
     public boolean isConnected = false;
     protected boolean isNeedShowDashboard;
@@ -97,9 +99,19 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
                 ft.replace(R.id.containerLayout, baseFragment, baseFragment.getTag());
             }
             ft.addToBackStack(null);
-            ft.commit();
+            ft.commitAllowingStateLoss();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void removeAllFragment() {
+        FragmentManager manager = getSupportFragmentManager();
+        int count = manager.getBackStackEntryCount();
+        while (count > 0) {
+            getSupportFragmentManager().popBackStackImmediate();
+            manager = getSupportFragmentManager();
+            count = manager.getBackStackEntryCount();
         }
     }
 

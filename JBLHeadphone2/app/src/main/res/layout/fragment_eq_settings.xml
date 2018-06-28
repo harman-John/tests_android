@@ -2,24 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_fragment_bg"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_bar_height"
-        android:background="@color/eq_setting_bg"
+        android:background="@color/orange"
         android:focusableInTouchMode="true"
         android:paddingLeft="@dimen/page_padding_left"
         android:paddingRight="@dimen/page_padding_right">
 
-        <jbl.stc.com.view.PoppinsMediumTextView
-            style="@style/PoppinsMediumTextStyle"
+        <jbl.stc.com.view.AppImageView
+            android:id="@+id/addImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="@string/title_eq" />
+            android:src="@mipmap/icon_eq_name_plus" />
 
         <jbl.stc.com.view.AppImageView
             android:id="@+id/moreImageView"
@@ -42,15 +42,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/eq_setting_bg">
+        android:background="@drawable/shape_legal_gradient">
 
         <jbl.stc.com.view.EqualizerShowView
             android:id="@+id/equalizerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/eqEditLayout"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" />
+            />
 
         <RelativeLayout
             android:id="@+id/eqEditLayout"

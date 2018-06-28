@@ -46,6 +46,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/text_view_home_device_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -196,7 +197,7 @@
                 android:layout_toRightOf="@+id/eqDividerView"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="Bass"
+                android:text="@string/off"
                 android:textColor="@color/white" />
 
             <ImageView

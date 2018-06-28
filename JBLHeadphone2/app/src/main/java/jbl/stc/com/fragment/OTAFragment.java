@@ -14,7 +14,7 @@ import jbl.stc.com.R;
 import jbl.stc.com.entity.FirmwareModel;
 
 public class OTAFragment extends BaseFragment implements View.OnClickListener {
-    private static final String TAG = OTAFragment.class.getSimpleName();
+    public static final String TAG = OTAFragment.class.getSimpleName();
     private View view;
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -1,9 +1,12 @@
 package jbl.stc.com.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -11,9 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.avnera.audiomanager.AdminEvent;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -40,6 +40,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private TextView txtTips;
     private final static int SHOW_UN_FOUND_TIPS = 0;
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
+    private final static int MSG_SHOW_DISCOVERY = 2;
+    private final static int REQUEST_CODE = 0;
+
     private DashboardHandler dashboardHandler = new DashboardHandler();
 
     private CheckUpdateAvailable checkUpdateAvailable;
@@ -47,9 +50,26 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
+
         dashboardActivity = this;
         initView();
         dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,10000);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+                }
+                return;
+            }
+        }
     }
 
     private void initView() {
@@ -79,15 +99,16 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         super.onDestroy();
     }
 
-    public void receivedAdminEvent(@NotNull AdminEvent event, Object value) {
-        super.receivedAdminEvent(event, value);
-        switch (event) {
-            case AccessoryReady: {
-                Log.d(TAG, " ========> AccessoryReady <======== ");
-                dashboardHandler.removeMessages(SHOW_UN_FOUND_TIPS);
-                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT,200);
-                break;
-            }
+    @Override
+    public void connectDeviceStatus(boolean isConnected){
+        super.connectDeviceStatus(isConnected);
+        Log.d(TAG, " connectDeviceStatus isConnected = "+isConnected);
+        if(isConnected){
+            dashboardHandler.removeMessages(SHOW_UN_FOUND_TIPS);
+            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT,200);
+        }else{
+            dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
+            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY,200);
         }
     }
 
@@ -107,6 +128,15 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 }
                 case MSG_SHOW_HOME_FRAGMENT:{
                     switchFragment(new HomeFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    break;
+                }
+                case MSG_SHOW_DISCOVERY:{
+                    removeAllFragment();
+                    jblCircleView.setVisibility(View.VISIBLE);
+                    jblCircleView.start();
+                    image_view_logo.setVisibility(View.VISIBLE);
+                    ll_cannot_see.setVisibility(View.INVISIBLE);
+                    txtTips.setVisibility(View.VISIBLE);
                     break;
                 }
             }

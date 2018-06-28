@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,14 +21,9 @@ import java.util.List;
 import jbl.stc.com.R;
 import jbl.stc.com.entity.CircleModel;
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.utils.LogUtil;
 import jbl.stc.com.utils.UiUtils;
 
-/**
- * EqualizerView
- * <p>
- * Created by darren.lu on 08/09/2017.
- */
+
 public class EqualizerShowView extends View {
     private static final String TAG = EqualizerShowView.class.getSimpleName();
     private Context mContext;
@@ -39,7 +35,7 @@ public class EqualizerShowView extends View {
     private int mWidth, mHeight;
     private int[] mEqFreqArray = new int[]{32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000};
     //private int[] mHorizontalName = new int[]{20, 10, 0, -10, -20};
-    private int[] mVerticalLineArray = new int[]{32, 250, 2000, 16000};
+    private int[] mVerticalLineArray = new int[]{32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000};
 
     private float[] mEqPointX, mEqPointY;
 
@@ -83,7 +79,7 @@ public class EqualizerShowView extends View {
     public void initView(Context context) {
         mContext = context;
 
-        mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_80));
+        mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.white));
         mTextPaint.setAntiAlias(true);
         mTextPaint.setTextSize(UiUtils.dip2px(mContext, 11));
 
@@ -97,21 +93,21 @@ public class EqualizerShowView extends View {
         mCurvePaint.setStrokeCap(Paint.Cap.ROUND);
         mCurvePaint.setStrokeWidth(dp2px(2));
 
-        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.equalizer_view_dash_line));
+        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.white));
         mLinePaint.setAntiAlias(true);
         mLinePaint.setStyle(Paint.Style.FILL);
-        mLinePaint.setPathEffect(new DashPathEffect(new float[]{6, 6}, 0));
+        //mLinePaint.setPathEffect(new DashPathEffect(new float[]{6, 6}, 0));
         mLinePaint.setStrokeWidth(dp2px(1));
 
-        marginTop = UiUtils.dip2px(mContext, 15);
-        marginBottom = UiUtils.dip2px(mContext, 30);
+        marginTop = UiUtils.dip2px(mContext, 10);
+        marginBottom = UiUtils.dip2px(mContext, 45);
         marginLeft = UiUtils.dip2px(context, 15);
         marginRight = UiUtils.dip2px(context, 15);
         textMarginBottom = UiUtils.dip2px(context, 15);
     }
 
     public void setCurveData(float[] eqPointX, float[] eqPointY, int curveColor) {
-        LogUtil.d(TAG, "setCurveData size=" + eqPointX.length + ",pointX=" + Arrays.toString(eqPointX) + ",pointY=" + Arrays.toString(eqPointY));
+        Log.d(TAG, "setCurveData size=" + eqPointX.length + ",pointX=" + Arrays.toString(eqPointX) + ",pointY=" + Arrays.toString(eqPointY));
         this.curveColor = curveColor;
         pointX = new ArrayList<>();
         pointY = new ArrayList<>();
@@ -151,7 +147,7 @@ public class EqualizerShowView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //drawText(canvas);
+        drawText(canvas);
         drawLine(canvas);
         //画当前的曲线
         if (controlCircles == null) return;
@@ -161,22 +157,54 @@ public class EqualizerShowView extends View {
     }
 
     private void drawText(Canvas canvas) {
+
+        mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_80));
+
+        //draw text
         for (int i = 0; i < mEqFreqArray.length; i++) {
             float startVerticalX = getRelativelyX(mEqFreqArray[i]);
-            //canvas.drawLine(startVerticalX, marginTop, startVerticalX, mHeight - marginBottom, mBoxPaint);
-            canvas.drawText(getShowName(i), startVerticalX - UiUtils.dip2px(mContext, 6), mHeight - marginBottom + textMarginBottom, mTextPaint);
+            //canvas.drawText(getShowName(i), startVerticalX - dp2px(6), dp2px(20), mTextPaint);
+            if (i==mEqFreqArray.length-1){
+                canvas.drawText(getShowName(i), startVerticalX - dp2px(20), mHeight-marginBottom/2, mTextPaint);
+            }else{
+                canvas.drawText(getShowName(i), startVerticalX - dp2px(6), mHeight-marginBottom/2, mTextPaint);
+            }
+
         }
     }
 
     private void drawLine(Canvas canvas) {
+        Log.d(TAG,"CenterHeight:"+String.valueOf((mHeight- marginTop-marginBottom)/2));
+        //draw center horizontal line
+        mLinePaint.reset();
+        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
+        mLinePaint.setAntiAlias(true);
+        mLinePaint.setStyle(Paint.Style.FILL);
+        mLinePaint.setPathEffect(new DashPathEffect(new float[]{dp2px(5), dp2px(5)}, 0));
+        mLinePaint.setStrokeWidth(dp2px(1));
         float startHorizontalY = getRelativelyY((maxValue + minValue) / 2);
-        canvas.drawLine(marginLeft - 6, startHorizontalY, mWidth - marginRight, startHorizontalY, mLinePaint);
+        //canvas.drawLine(0, startHorizontalY- marginBottom/2, mWidth, startHorizontalY- marginBottom/2, mLinePaint);
+        canvas.drawLine(0, (mHeight-marginBottom+marginTop)/2, mWidth, (mHeight-marginBottom+marginTop)/2, mLinePaint);
 
         //draw vertical line
+        mLinePaint.reset();
+        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
+        mLinePaint.setAntiAlias(true);
+        mLinePaint.setStyle(Paint.Style.FILL);
+        mLinePaint.setStrokeWidth(1);
         for (int i = 0; i < mVerticalLineArray.length; i++) {
             float startVerticalX = getRelativelyX(mVerticalLineArray[i]);
-            canvas.drawLine(startVerticalX, 0, startVerticalX, mHeight - marginBottom + textMarginBottom, mLinePaint);
+            canvas.drawLine(startVerticalX, marginTop, startVerticalX, mHeight - marginBottom, mLinePaint);
         }
+
+        //draw horizontal line
+        mLinePaint.reset();
+        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
+        mLinePaint.setAntiAlias(true);
+        mLinePaint.setStyle(Paint.Style.FILL);
+        mLinePaint.setStrokeWidth(dp2px(1));
+        canvas.drawLine(0, marginTop, mWidth, marginTop, mLinePaint);
+        canvas.drawLine(0, mHeight -marginBottom, mWidth, mHeight - marginBottom, mLinePaint);
     }
 
     /**
@@ -314,7 +342,12 @@ public class EqualizerShowView extends View {
     private String getShowName(int point) {
         int value = mEqFreqArray[point];
         if (value >= 1000) {
-            return String.valueOf(value).substring(0, String.valueOf(value).length() - 3) + "k";
+            if (value>=16000){
+                return String.valueOf(value).substring(0, String.valueOf(value).length() - 3) + "k HZ";
+            }else{
+                return String.valueOf(value).substring(0, String.valueOf(value).length() - 3) + "k";
+            }
+
         }
         return String.valueOf(value);
     }
@@ -380,7 +413,7 @@ public class EqualizerShowView extends View {
                 nearIndex = i;
             }
         }
-        //LogUtil.d(TAG, "freq=" + freq + ",ReX=" + relativelyX + ",nearIndex=" + nearIndex + ",XX=" + allPointCircles.get(nearIndex).getX());
+        //Log.d(TAG, "freq=" + freq + ",ReX=" + relativelyX + ",nearIndex=" + nearIndex + ",XX=" + allPointCircles.get(nearIndex).getX());
         return getValueFromY(allPointCircles.get(nearIndex).getY());
     }
 

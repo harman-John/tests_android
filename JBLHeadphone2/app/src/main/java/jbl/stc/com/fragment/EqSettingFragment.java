@@ -1,9 +1,11 @@
 package jbl.stc.com.fragment;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jbl.stc.com.R;
@@ -25,7 +28,7 @@ import jbl.stc.com.listener.OnEqItemSelectedListener;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.FastClickHelper;
-import jbl.stc.com.utils.LogUtil;
+import jbl.stc.com.utils.ToastUtil;
 import jbl.stc.com.view.EqualizerShowView;
 import jbl.stc.com.view.MyGridLayoutManager;
 
@@ -42,17 +45,19 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private TextView eqNameText;
     private ImageView closeImageView;
     private ImageView moreImageView;
+    private ImageView addImageView;
     private RecyclerView eqRecycleView;
     private EqRecyclerAdapter eqAdapter;
 
-    private List<EQModel> eqModelList;
+    private List<EQModel> eqModelList=new ArrayList<>();
     private EQModel currSelectedEq;
     private int currSelectedEqIndex;
+    private int eqType;
 
 
         @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        LogUtil.d("EqSettingFragment:","onCreateView");
+        Log.d("EqSettingFragment:","onCreateView");
         rootView = inflater.inflate(R.layout.fragment_eq_settings, container, false);
         initView();
         initEvent();
@@ -69,6 +74,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         eqEditImage = rootView.findViewById(R.id.eqEditImage);
         closeImageView = rootView.findViewById(R.id.closeImageView);
         moreImageView = rootView.findViewById(R.id.moreImageView);
+        addImageView=rootView.findViewById(R.id.addImageView);
         eqNameText = rootView.findViewById(R.id.eqNameText);
         eqRecycleView = rootView.findViewById(R.id.eqRecycleView);
         eqRecycleView.setLayoutManager(new MyGridLayoutManager(getActivity(), 2));
@@ -80,16 +86,11 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         eqEditImage.setOnClickListener(this);
         closeImageView.setOnClickListener(this);
         moreImageView.setOnClickListener(this);
+        addImageView.setOnClickListener(this);
         eqAdapter.setOnEqSelectedListener(new OnEqItemSelectedListener() {
             @Override
             public void onSelected(int position) {
-                if (position < eqModelList.size()) {
-                    if (eqModelList.get(position).isPlusItem) {//last item is plus button
-                        onAddCustomEq(true);
-                    } else {
-                        onEqNameSelected(position, true);
-                    }
-                }
+                onEqNameSelected(position, true);
             }
         });
         titleBar.setOnTouchListener(new View.OnTouchListener() {
@@ -123,56 +124,117 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void initValue() {
-        eqModelList = EQSettingManager.get().getCompleteEQList(mContext);
+        List<EQModel> eqTypeModels=new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            EQModel eqModel = new EQModel();
+            eqModel.eqType = i;
+            eqTypeModels.add(eqModel);
+        }
+        List<EQModel> eqModels=EQSettingManager.get().getCompleteEQList(mContext);
+        eqModelList.clear();
+        eqModelList.addAll(eqTypeModels);
+        eqModelList.addAll(eqModels);
         currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""), mContext);
+
+
+        //LogUtil.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""));
+
         /*if (eqModelList == null || eqModelList.isEmpty()) {
             getActivity().getSupportFragmentManager().popBackStack();
             return;
         }*/
-        LogUtil.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""));
+        Log.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""));
         if (currSelectedEq != null && currSelectedEq.eqName != null) {
-            if (application.deviceInfo.eqOn) {
-                for (int i = 0; i < eqModelList.size(); i++) {
-                    if (currSelectedEq.eqName.equals(eqModelList.get(i).eqName)) {
-                        eqModelList.get(i).isSelected = true;
-                        currSelectedEqIndex = i;
-                    } else {
-                        eqModelList.get(i).isSelected = false;
+                if (application.deviceInfo.eqOn) {
+                    for (int i = 0; i < eqModelList.size(); i++) {
+                        if (currSelectedEq.eqName.equals(eqModelList.get(i).eqName)) {
+                            eqModelList.get(i).isSelected = true;
+                            currSelectedEqIndex = i;
+                        } else {
+                            eqModelList.get(i).isSelected = false;
+                        }
                     }
                 }
+
+            if (application.deviceInfo.eqOn) {
+                eqNameText.setText(currSelectedEq.eqName);
+                eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.white));
             } else {
-                currSelectedEq = new EQModel(GraphicEQPreset.Off);
+                eqNameText.setText(R.string.eq_off_name_text);
+                eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.text_white_50));
             }
-        } else {
-            currSelectedEq = new EQModel(GraphicEQPreset.Off);
-        }
-        if (application.deviceInfo.eqOn) {
-            eqNameText.setText(currSelectedEq.eqName);
-            eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-        } else {
+        }else{
             eqNameText.setText(R.string.eq_off_name_text);
             eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.text_white_50));
+            for (EQModel model : eqModelList) {
+                model.isSelected = false;
+            }
+            eqModelList.get(0).isSelected=true;
         }
         for (int i = 0; i < eqModelList.size(); i++) {
-            LogUtil.d(TAG, "i=" + i + "," + eqModelList.get(i));
+            Log.d(TAG, "i=" + i + "," + eqModelList.get(i));
         }
-        eqModelList.add(new EQModel(true));
+
+
         eqAdapter.setEqModels(eqModelList);
 
         //float[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
-        equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
+        if (currSelectedEq!=null){
+           // LogUtil.d("TAG","setCurveData");
+            equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
+        }
         smoothToPosition();
     }
 
     private void smoothToPosition() {
         if (currSelectedEqIndex > 1) {
-            LogUtil.d(TAG, "smoothToPosition currSelectedEqIndex=" + currSelectedEqIndex);
+            Log.d(TAG, "smoothToPosition currSelectedEqIndex=" + currSelectedEqIndex);
             eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
         }
     }
 
     private void onEqNameSelected(int eqIndex, boolean fromUser) {
-        LogUtil.d(TAG, "onEqNameSelected eqIndex is " + eqIndex);
+
+        if (eqIndex>3) {
+            //LogUtil.d(TAG, "onEqNameSelected eqIndex is " + eqIndex);
+            currSelectedEq = eqModelList.get(eqIndex);
+            currSelectedEqIndex = eqIndex;
+            eqNameText.setText(currSelectedEq.eqName);
+            eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+            application.deviceInfo.eqOn = true;
+            for (EQModel model : eqModelList) {
+                model.isSelected = false;
+            }
+            currSelectedEq.isSelected = true;
+            eqAdapter.setEqModels(eqModelList);
+            PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, currSelectedEq.eqName, mContext);
+            int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
+            equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
+            //CommandManager.get().setGrEqBandGains(currSelectedEq.id, eqValueArray);
+            AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
+            if (fromUser) {
+                eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
+            }
+        }else {
+            //select eqType
+            eqType = eqIndex;
+            if (eqIndex == 0) {
+                eqNameText.setText("OFF");
+            } else if (eqIndex == 1) {
+                eqNameText.setText("JAZZ");
+            } else if (eqIndex == 2) {
+                eqNameText.setText("VOCAL");
+            } else if (eqIndex == 3) {
+                eqNameText.setText("BASS");
+            }
+            eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.white));
+            for (EQModel model : eqModelList) {
+                model.isSelected = false;
+            }
+            eqModelList.get(eqIndex).isSelected = true;
+            eqAdapter.setEqModels(eqModelList);
+        }
+        Log.d(TAG, "onEqNameSelected eqIndex is " + eqIndex);
         currSelectedEq = eqModelList.get(eqIndex);
         currSelectedEqIndex = eqIndex;
         eqNameText.setText(currSelectedEq.eqName);
@@ -191,10 +253,11 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         if (fromUser) {
             eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
         }
+
     }
 
     private void onAddCustomEq(boolean isAdd) {
-        LogUtil.d(TAG, "onAddCustomEq()");
+        Log.d(TAG, "onAddCustomEq()");
         EqCustomFragment fragment = new EqCustomFragment();
         fragment.setOnCustomEqListener(onCustomEqListener);
         Bundle bundle = new Bundle();
@@ -211,11 +274,19 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.eqEditImage:
-                if (currSelectedEq.eqType != GraphicEQPreset.Off.value()) {
-                    onAddCustomEq(false);
-                } else {
-                    onAddCustomEq(true);
+                List<EQModel> eqModels=EQSettingManager.get().getCompleteEQList(mContext);
+                if (eqModels!=null&&eqModels.size()>0){
+                    if (eqNameText.getText().equals("OFF")||eqNameText.getText().equals("JAZZ")
+                            ||eqNameText.getText().equals("VOCAL")||eqNameText.getText().equals("BASS")){
+                        ToastUtil.ToastLong(getActivity(),"Please select a EQ first.");
+                        return;
+                    }
+                }else{
+                    ToastUtil.ToastLong(getActivity(),"Please add a EQ first.");
+                    return;
                 }
+
+                onAddCustomEq(false);
                 break;
             case R.id.closeImageView:
                 getActivity().onBackPressed();
@@ -223,6 +294,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             case R.id.moreImageView:
                 EqMoreSettingFragment fragment = new EqMoreSettingFragment();
                 switchFragment(fragment,JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                break;
+            case R.id.addImageView:
+                onAddCustomEq(true);
                 break;
         }
     }

@@ -52,6 +52,7 @@ public class AppUtils {
     public static final long GET_BATTERY_LEVEL_INTERVAL_TIME = 3 * 60 * 1000L;
     public static final int EQ_VIEW_DEFAULT_STEP = 20;
     public static final int EQ_BAND_NUMBER = 10;
+    private static final String DEVICE_NAME_PREFIX = "JBL Everest";
 
     public static String getJBLDeviceName(Context context){
         return PreferenceUtils.getString(JBLConstant.JBL_DEVICE_NAME, context, "");
@@ -61,7 +62,7 @@ public class AppUtils {
         if (TextUtils.isEmpty(name)) {
             return false;
         }
-        return name.toUpperCase().contains(BASE_DEVICE_NAME.toUpperCase());
+        return name.toUpperCase().contains(DEVICE_NAME_PREFIX.toUpperCase());
     }
 
     public static void hideFromForeground(Context context) {
@@ -220,7 +221,7 @@ public class AppUtils {
 //                }
 //                frame.setCallback(null);
 //            }
-//            LogUtil.d(TAG, "tryRecycleAnimationDrawable()");
+//            Log.d(TAG, "tryRecycleAnimationDrawable()");
 //            animationDrawable.setCallback(null);
 //        }
 //    }
@@ -239,6 +240,13 @@ public class AppUtils {
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
+    /**
+     * This function called must after HomeFragment showed.
+     * Because not prepare to set Mode is in HomeFragment.
+     * So before HomeFragment showed must not use this function.
+     * @param context
+     * @return
+     */
     public static boolean is150NC(Context context) {
         return getModelNumber(context).contains("150");
     }
@@ -277,6 +285,51 @@ public class AppUtils {
 
     public static void setModelNumber(Context context,String value){
         PreferenceUtils.setString(PreferenceKeys.MODEL, value, context);
+    }
+
+    public static int[] parseVersionFromASCIIbuffer(byte[] bytes) {
+        int[] result = new int[3];
+        String major = "0", minor = "0", revision = "0";
+
+        int count = 0;
+        try {
+            for (byte bx : bytes) {
+                switch (count) {
+                    case 0:
+                        if (bx == 46) {
+                            result[0] = (Integer.valueOf(major));
+                            count++;
+                        } else if (bx >= 48 && bx <= 57) {
+                            major += Character.getNumericValue(bx);
+                        }
+                        break;
+                    case 1:
+                        if (bx == 46) {
+                            result[1] = Integer.valueOf(minor);
+                            count++;
+                        } else if (bx >= 48 && bx <= 57) {
+                            minor += Character.getNumericValue(bx);
+                        }
+                        break;
+                    case 2:
+                        if (bx == 0) {
+                            result[2] = Integer.valueOf(revision);
+                            return result;
+                        } else if (bx >= 48 && bx <= 57) {
+                            revision += Character.getNumericValue(bx);
+                        }
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public static boolean is100(Context context) {
+        return getModelNumber(context).contains("100");
     }
 }
 

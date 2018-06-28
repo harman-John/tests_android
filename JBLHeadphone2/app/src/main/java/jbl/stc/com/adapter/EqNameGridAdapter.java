@@ -2,6 +2,7 @@ package jbl.stc.com.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -17,13 +18,7 @@ import java.util.List;
 import jbl.stc.com.R;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.listener.OnDeleteEqListener;
-import jbl.stc.com.utils.LogUtil;
 import jbl.stc.com.utils.UiUtils;
-
-/**
- * EqNameGridAdapter
- * Created by darren.lu on 2017/9/28.
- */
 
 public class EqNameGridAdapter extends BaseAdapter {
     private static final String TAG = EqNameGridAdapter.class.getSimpleName();
@@ -109,7 +104,7 @@ public class EqNameGridAdapter extends BaseAdapter {
         } else {
             viewHolder.removeImageView.setVisibility(View.GONE);
         }
-        //LogUtil.d(TAG, "getView position=" + position + "," + eqModel);
+        //Log.d(TAG, "getView position=" + position + "," + eqModel);
         if (position == hidePosition) {
             convertView.setVisibility(View.INVISIBLE);
         } else {
@@ -141,7 +136,7 @@ public class EqNameGridAdapter extends BaseAdapter {
 
     //更新拖动时的gridView
     public void swapView(int originalPosition, int nowPosition) {
-        LogUtil.d(TAG, "swapView originalPosition=" + originalPosition + ",nowPosition=" + nowPosition);
+        Log.d(TAG, "swapView originalPosition=" + originalPosition + ",nowPosition=" + nowPosition);
         //从前向后拖动，其他item依次前移
         if (originalPosition < nowPosition) {
             eqModels.add(nowPosition + 1, getItem(originalPosition));
@@ -157,13 +152,13 @@ public class EqNameGridAdapter extends BaseAdapter {
     }
 
     public void exchangePosition(int originalPosition, int nowPosition, boolean isMove) {
-        LogUtil.d(TAG, "exchangePosition originalPosition=" + originalPosition + ",nowPosition=" + nowPosition);
+        Log.d(TAG, "exchangePosition originalPosition=" + originalPosition + ",nowPosition=" + nowPosition);
         EQModel t = eqModels.get(originalPosition);
         eqModels.remove(originalPosition);
         eqModels.add(nowPosition, t);
         hidePosition = nowPosition;
         for (int i = 0; i < eqModels.size(); i++) {
-            LogUtil.d(TAG, "i=" + i + "," + eqModels.get(i));
+            Log.d(TAG, "i=" + i + "," + eqModels.get(i));
         }
         notifyDataSetChanged();
     }

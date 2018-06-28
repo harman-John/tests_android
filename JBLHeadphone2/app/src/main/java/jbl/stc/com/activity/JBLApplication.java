@@ -3,6 +3,7 @@ package jbl.stc.com.activity;
 import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.avnera.audiomanager.audioManager;
 import com.crashlytics.android.Crashlytics;
@@ -16,15 +17,7 @@ import jbl.stc.com.entity.DeviceInfo;
 import jbl.stc.com.legal.LegalApi;
 import jbl.stc.com.storage.DatabaseHelper;
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.utils.DebugHelper;
-import jbl.stc.com.utils.LogUtil;
 
-/**
- * /**
- * This is a subclass of {@link Application} used to provide shared objects for this app, such as
- * {@link Tracker}.
- * Created by darren.lu on 2017/11/27.
- */
 
 public class JBLApplication extends Application {
     public DeviceInfo deviceInfo;
@@ -47,7 +40,6 @@ public class JBLApplication extends Application {
         LegalApi.INSTANCE.eulaInit(this);
         deviceInfo = new DeviceInfo();
         if (AppUtils.IS_DEBUG) {
-            DebugHelper.init();
             if (BuildConfig.DEBUG) {
                 //LeakCanary.install(this);
             }
@@ -64,7 +56,7 @@ public class JBLApplication extends Application {
         try {
             db = new DatabaseHelper(getApplicationContext()).getReadableDatabase();
         } catch (Exception e) {
-            LogUtil.e("AnalyticsApplication", e.getMessage(), e);
+            Log.e("AnalyticsApplication", e.getMessage(), e);
         } finally {
             if (db != null) {
                 db.close();

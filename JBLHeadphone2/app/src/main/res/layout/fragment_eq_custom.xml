@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/eq_custom_bg"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_bar_height"
-        android:background="@color/page_bg_3F"
+        android:background="@color/orange"
         android:paddingLeft="@dimen/page_padding_left"
         android:paddingRight="@dimen/page_padding_right">
 
@@ -39,14 +39,14 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/eq_name_edit_layout_height"
             android:layout_alignParentBottom="true"
-            android:background="@color/page_bg_3F"
+            android:background="@color/white"
             android:visibility="visible" />
 
         <FrameLayout
             android:id="@+id/equalizerLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/eq_custom_bg">
+            android:background="@drawable/shape_legal_gradient">
 
             <jbl.stc.com.view.EqualizerAddView
                 android:id="@+id/equalizerView"
@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="70dp"
                 android:background="@drawable/first_time_add_eq_bg"
                 android:paddingBottom="12dp"
                 android:paddingLeft="10dp"

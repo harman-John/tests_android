@@ -87,7 +87,17 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
                 eqNameText.setVisibility(View.GONE);
                 plusImageView.setVisibility(View.VISIBLE);
             } else {
-                eqNameText.setText(eqModel.eqName);
+                if (position == 0) {
+                    eqNameText.setText("OFF");
+                } else if (position == 1) {
+                    eqNameText.setText("JAZZ");
+                } else if (position == 2) {
+                    eqNameText.setText("VOCAL");
+                } else if (position == 3) {
+                    eqNameText.setText("BASS");
+                }else{
+                    eqNameText.setText(eqModel.eqName);
+                }
                 eqNameText.setVisibility(View.VISIBLE);
                 plusImageView.setVisibility(View.GONE);
                 if (eqModel.isSelected) {

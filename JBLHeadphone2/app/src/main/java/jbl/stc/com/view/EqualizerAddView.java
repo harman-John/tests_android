@@ -10,6 +10,7 @@ import android.graphics.Path;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,15 +25,10 @@ import jbl.stc.com.R;
 import jbl.stc.com.entity.CircleModel;
 import jbl.stc.com.listener.OnEqChangeListener;
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.utils.LogUtil;
 import jbl.stc.com.utils.StringUtils;
 import jbl.stc.com.utils.UiUtils;
 
-/**
- * EqualizerView
- * <p>
- * Created by darren.lu on 08/09/2017.
- */
+
 public class EqualizerAddView extends View {
     private static final String TAG = EqualizerAddView.class.getSimpleName();
     private Context mContext;
@@ -45,7 +41,7 @@ public class EqualizerAddView extends View {
     private int mWidth, mHeight;
     private int customHeight = 0;
     private int[] mEqFreqArray = new int[]{32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000};
-    private int[] mVerticalLineArray = new int[]{32, 250, 2000, 16000};
+    private int[] mVerticalLineArray = new int[]{32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000};
     private int lowTextStart = 80;
     private int midTextStart = 600;
     private int highTextStart = 5000;
@@ -121,25 +117,25 @@ public class EqualizerAddView extends View {
         controlBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.eq_control_point);
         controlBitmapCurr = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.eq_control_point_curr);
 
-        mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_80));
+        mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.white));
         mTextPaint.setAntiAlias(true);
         mTextPaint.setTextSize(UiUtils.dip2px(mContext, 11));
 
         mPointPaint.setColor(ContextCompat.getColor(mContext, R.color.main_color));
         mPointPaint.setAntiAlias(true);
 
-        curveColor = R.color.main_color;
+        curveColor = R.color.text_white_80;
         mCurvePaint.setColor(ContextCompat.getColor(mContext, curveColor));
         mCurvePaint.setAntiAlias(true);
         mCurvePaint.setStyle(Paint.Style.STROKE);
         mCurvePaint.setStrokeCap(Paint.Cap.ROUND);
         mCurvePaint.setStrokeWidth(dp2px(2));
 
-        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.equalizer_view_dash_line));
+        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
         mLinePaint.setAntiAlias(true);
         mLinePaint.setStyle(Paint.Style.FILL);
-        mLinePaint.setPathEffect(new DashPathEffect(new float[]{6, 6}, 0));
-        mLinePaint.setStrokeWidth(dp2px(1));
+        //mLinePaint.setPathEffect(new DashPathEffect(new float[]{6, 6}, 0));
+        mLinePaint.setStrokeWidth(1);
 
         touchLineWidth = dp2px(45);
         touchLinePaint.setColor(ContextCompat.getColor(mContext, R.color.equalizer_view_touch_line));
@@ -147,11 +143,11 @@ public class EqualizerAddView extends View {
         touchLinePaint.setStyle(Paint.Style.STROKE);
         touchLinePaint.setStrokeWidth(touchLineWidth);
 
-        marginTop = dp2px(30);
-        marginBottom = dp2px(30);
+        marginTop = dp2px(10);
+        marginBottom = dp2px(45);
         marginLeft = dp2px(20);
         marginRight = dp2px(20);
-        textMarginBottom = dp2px(15);
+        textMarginBottom = dp2px(45);
         nearPointFreqX = dp2px(15);
         setSupportDrag(true);
     }
@@ -178,7 +174,7 @@ public class EqualizerAddView extends View {
     }
 
     public void setCurveData(float[] eqPointX, float[] eqPointY, int curveColor) {
-        LogUtil.d(TAG, "setCurveData size=" + eqPointX.length + ",pointX=" + Arrays.toString(eqPointX) + ",pointY=" + Arrays.toString(eqPointY));
+        Log.d(TAG, "setCurveData size=" + eqPointX.length + ",pointX=" + Arrays.toString(eqPointX) + ",pointY=" + Arrays.toString(eqPointY));
         this.curveColor = curveColor;
         pointX.clear();
         pointY.clear();
@@ -265,14 +261,37 @@ public class EqualizerAddView extends View {
     }
 
     private void drawLine(Canvas canvas) {
+        Log.d(TAG,"CenterHeight:"+String.valueOf((mHeight- marginTop-marginBottom)/2));
+        //draw center horizontal line
+        mLinePaint.reset();
+        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
+        mLinePaint.setAntiAlias(true);
+        mLinePaint.setStyle(Paint.Style.FILL);
+        mLinePaint.setPathEffect(new DashPathEffect(new float[]{dp2px(5), dp2px(5)}, 0));
+        mLinePaint.setStrokeWidth(dp2px(1));
         float startHorizontalY = getRelativelyY((maxValue + minValue) / 2);
-        canvas.drawLine(marginLeft - 6, startHorizontalY, mWidth - marginRight, startHorizontalY, mLinePaint);
+        //canvas.drawLine(0, startHorizontalY- marginBottom/2, mWidth, startHorizontalY- marginBottom/2, mLinePaint);
+        canvas.drawLine(0, (mHeight-marginBottom+marginTop)/2, mWidth, (mHeight-marginBottom+marginTop)/2, mLinePaint);
 
         //draw vertical line
+        mLinePaint.reset();
+        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
+        mLinePaint.setAntiAlias(true);
+        mLinePaint.setStyle(Paint.Style.FILL);
+        mLinePaint.setStrokeWidth(1);
         for (int i = 0; i < mVerticalLineArray.length; i++) {
             float startVerticalX = getRelativelyX(mVerticalLineArray[i]);
-            canvas.drawLine(startVerticalX, marginTop, startVerticalX, mHeight - textMarginBottom, mLinePaint);
+            canvas.drawLine(startVerticalX, marginTop, startVerticalX, mHeight - marginBottom, mLinePaint);
         }
+
+        //draw horizontal line
+        mLinePaint.reset();
+        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
+        mLinePaint.setAntiAlias(true);
+        mLinePaint.setStyle(Paint.Style.FILL);
+        mLinePaint.setStrokeWidth(dp2px(1));
+        canvas.drawLine(0, marginTop, mWidth, marginTop, mLinePaint);
+        canvas.drawLine(0, mHeight -marginBottom, mWidth, mHeight - marginBottom, mLinePaint);
     }
 
     private void drawText(Canvas canvas) {
@@ -284,22 +303,28 @@ public class EqualizerAddView extends View {
         //draw text
         for (int i = 0; i < mEqFreqArray.length; i++) {
             float startVerticalX = getRelativelyX(mEqFreqArray[i]);
-            canvas.drawText(getShowName(i), startVerticalX - dp2px(6), dp2px(20), mTextPaint);
+            //canvas.drawText(getShowName(i), startVerticalX - dp2px(6), dp2px(20), mTextPaint);
+            if (i==mEqFreqArray.length-1){
+                canvas.drawText(getShowName(i), startVerticalX - dp2px(20), mHeight-marginBottom/2, mTextPaint);
+            }else{
+                canvas.drawText(getShowName(i), startVerticalX - dp2px(6), mHeight-marginBottom/2, mTextPaint);
+            }
         }
 
-        mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_80));
+        /*mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_80));
         float lowStartX = getRelativelyX(lowTextStart);
         canvas.drawText("LOW", lowStartX, mHeight - textMarginBottom, mTextPaint);
         float midStartX = getRelativelyX(midTextStart);
         canvas.drawText("MID", midStartX, mHeight - textMarginBottom, mTextPaint);
         float highStartX = getRelativelyX(highTextStart);
-        canvas.drawText("HIGH", highStartX, mHeight - textMarginBottom, mTextPaint);
+        canvas.drawText("HIGH", highStartX, mHeight - textMarginBottom, mTextPaint);*/
     }
 
     /**
      * Draw Curve
      */
     private void drawCurveChart(Canvas canvas) {
+        Log.d(TAG,"drawCurve");
         mCurvePaint.setColor(ContextCompat.getColor(mContext, curveColor));
         curvePath.reset();
         pointX.clear();
@@ -308,20 +333,24 @@ public class EqualizerAddView extends View {
             pointX.add(controlCircles.get(i).getX());
             pointY.add(controlCircles.get(i).getY());
         }
+        Log.d(TAG,"controlCircles size"+String.valueOf(controlCircles.size()));
         if (controlCircles.size() > 2) {
             STEP = (8 * AppUtils.EQ_VIEW_DEFAULT_STEP) / (controlCircles.size() - 1);
         }
 
         List<Cubic> calculate_x = calculateCurve(pointX);
         List<Cubic> calculate_y = calculateCurve(pointY);
+        Log.d(TAG,"calculate_x size"+String.valueOf(calculate_x.size()));
         float nearX;
         float lastX;
+        float lastY;
         if (calculate_x != null && calculate_y != null && calculate_y.size() >= calculate_x.size()) {
             curvePath.moveTo(calculate_x.get(0).evaluate(0), calculate_y.get(0).evaluate(0));
             allPointCircles.add(produceCirce(calculate_x.get(0).evaluate(0), calculate_y.get(0).evaluate(0), CIRCLE_R));
             nearX = calculate_x.get(0).evaluate(0);
             for (int i = 0; i < calculate_x.size(); i++) {
                 lastX = calculate_x.get(i).evaluate(1);
+                lastY=calculate_y.get(i).evaluate(1);
                 for (int j = 1; j <= STEP; j++) {
                     float u = j / (float) STEP;
                     float lineToX = calculate_x.get(i).evaluate(u);
@@ -342,10 +371,13 @@ public class EqualizerAddView extends View {
                     if (lineToX > lastX - 5f) {
                         lineToX = lastX - 5f;
                     }
+                    if (lineToX > lastX) {
+                        lineToX = lastX;
+                    }
                     if (lineToX < nearX) {
                         lineToX = nearX + 0.5f + (j - STEP / 2 + 1) * 0.02f;
                     }
-                    //LogUtil.d(TAG, "moreHalf=" + moreHalf + ",j=" + j + ",STEP=" + STEP + ",lastX=" + lastX);
+                    //Log.d(TAG, "moreHalf=" + moreHalf + ",j=" + j + ",STEP=" + STEP + ",lastX=" + lastX);
                     curvePath.lineTo(lineToX, lineToY);
                     allPointCircles.add(produceCirce(lineToX, lineToY, CIRCLE_R));
                     nearX = lineToX;
@@ -429,13 +461,19 @@ public class EqualizerAddView extends View {
     private float getDbValueFromY(float Y) {
         //get one point float
         float value = (maxValue - (Y - marginTop) / getViewHeight() * (maxValue - minValue));
+        Log.d(TAG,"Y:"+String.valueOf(Y)+"ViewHeight:"+String.valueOf(getViewHeight())+"value:"+String.valueOf(value));
         return Float.valueOf(StringUtils.getOnePointFloat(value));
     }
 
     private String getShowName(int point) {
         int value = mEqFreqArray[point];
         if (value >= 1000) {
-            return String.valueOf(value).substring(0, String.valueOf(value).length() - 3) + "k";
+            if (value>=16000){
+                return String.valueOf(value).substring(0, String.valueOf(value).length() - 3) + "k HZ";
+            }else{
+                return String.valueOf(value).substring(0, String.valueOf(value).length() - 3) + "k";
+            }
+
         }
         return String.valueOf(value);
     }
@@ -456,7 +494,7 @@ public class EqualizerAddView extends View {
             mWidth = width;
             mHeight = height;
         }
-        //LogUtil.d(TAG, "onMeasure mWidth=" + mWidth + ",mHeight=" + mHeight + ",hasDrag=" + hasDrag);
+        //Log.d(TAG, "onMeasure mWidth=" + mWidth + ",mHeight=" + mHeight + ",hasDrag=" + hasDrag);
         if (!hasDrag) {
             if (mEqPointX != null) {
                 controlCircles.clear();
@@ -501,7 +539,7 @@ public class EqualizerAddView extends View {
                         touchX = event.getX();
                         touchY = event.getY();
                         where = touchWhere(touchX, touchY);
-                        LogUtil.d(TAG, "ACTION_DOWN touchWhere = " + where + " touchX=" + touchX + ",touchY=" + touchY + ",STEP=" + STEP);
+                        Log.d(TAG, "ACTION_DOWN touchWhere = " + where + " touchX=" + touchX + ",touchY=" + touchY + ",STEP=" + STEP);
                         hasDrag = true;
                         if (where == -1) {
                             where = handleAddPoint(touchX, touchY);
@@ -512,7 +550,8 @@ public class EqualizerAddView extends View {
                     if (supportDrag && where >= 0 && where < controlCircles.size()) {
                         float value = getDbValueFromY(event.getY());
                         int freq = getFreqFromX(event.getX());
-                        //LogUtil.d(TAG, "ACTION_MOVE touchX=" + event.getX() + ",touchY=" + event.getY() + ",freq=" + freq + ",where=" + where + ",size=" + controlCircles.size());
+                        //Log.d(TAG, "ACTION_MOVE touchX=" + event.getX() + ",touchY=" + event.getY() + ",freq=" + freq + ",where=" + where + ",size=" + controlCircles.size());
+
                         if (freq > maxFrequency) {
                             freq = maxFrequency;
                         }
@@ -575,7 +614,7 @@ public class EqualizerAddView extends View {
             if (currIndex > 0 && currIndex < size - 1) {
                 float preX = controlCircles.get(currIndex - 1).getX();
                 float nextX = controlCircles.get(currIndex + 1).getX();
-                //LogUtil.d(TAG,"currX="+currX+",preX="+preX+",rearX="+rearX);
+                //Log.d(TAG,"currX="+currX+",preX="+preX+",rearX="+rearX);
                 if (currX <= preX + nearPointFreqX || currX >= nextX - nearPointFreqX) {
                     controlCircles.remove(currIndex);
                     where = -1;
@@ -608,7 +647,7 @@ public class EqualizerAddView extends View {
                 controlCircles.add(addWhere, produceCirce(addCirce.getX(), addCirce.getY(), CIRCLE_R));
             }
         }
-        //LogUtil.d(TAG, "handleAddPoint addIndex=" + addIndex + ",addWhere=" + addWhere + ",SIZE=" + controlCircles.size());
+        //Log.d(TAG, "handleAddPoint addIndex=" + addIndex + ",addWhere=" + addWhere + ",SIZE=" + controlCircles.size());
         return addWhere;
     }
 
@@ -639,7 +678,7 @@ public class EqualizerAddView extends View {
             }
         }
         float dbValue = getDbValueFromY(allPointCircles.get(nearIndex).getY());
-        //LogUtil.d(TAG, "freq=" + freq + ",ReX=" + relativelyX +
+        //Log.d(TAG, "freq=" + freq + ",ReX=" + relativelyX +
         //        ",nearX=" + allPointCircles.get(nearIndex).getX() + ",nearY=" + allPointCircles.get(nearIndex).getY() + ",dbValue=" + dbValue);
         return dbValue;
     }

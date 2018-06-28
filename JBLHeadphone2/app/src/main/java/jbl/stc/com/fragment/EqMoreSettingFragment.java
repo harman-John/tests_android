@@ -2,6 +2,7 @@ package jbl.stc.com.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +21,10 @@ import jbl.stc.com.listener.OnDeleteEqListener;
 import jbl.stc.com.listener.OnEqIndexChangeListener;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
-import jbl.stc.com.utils.LogUtil;
 import jbl.stc.com.view.DragGridView;
 
 
-/**
- * Eq more setting screen
- * Created by darren.lu on 2017/9/28.
- */
+
 public class EqMoreSettingFragment extends BaseFragment implements View.OnClickListener {
     private ImageView closeImageView;
     private DragGridView eqGridView;
@@ -59,7 +56,7 @@ public class EqMoreSettingFragment extends BaseFragment implements View.OnClickL
 
             @Override
             public void onIndexChange(int originalPosition, int nowPosition) {
-                LogUtil.d(TAG, "onIndexChange originalPosition=" + originalPosition + ",nowPosition=" + nowPosition);
+                Log.d(TAG, "onIndexChange originalPosition=" + originalPosition + ",nowPosition=" + nowPosition);
                 //从前向后拖动，其他item依次前移
                 if (originalPosition < nowPosition) {
                     eqModelList.add(nowPosition + 1, eqModelList.get(originalPosition));
@@ -106,7 +103,7 @@ public class EqMoreSettingFragment extends BaseFragment implements View.OnClickL
                             //CommandManager.get().setGrEqBandGains(tempEqModel.id, EQSettingManager.get().getValuesFromEQModel(tempEqModel));
                         }
                     }
-                    LogUtil.d(TAG, "onDeleted successful removeEq=" + removeEq.eqName);
+                    Log.d(TAG, "onDeleted successful removeEq=" + removeEq.eqName);
                 } else {
                     //delete failed
                     eqModelList.add(index, removeEq);
@@ -135,7 +132,7 @@ public class EqMoreSettingFragment extends BaseFragment implements View.OnClickL
             }
         }
         for (int i = 0; i < eqModelList.size(); i++) {
-            LogUtil.d(TAG, "i=" + i + "," + eqModelList.get(i));
+            Log.d(TAG, "i=" + i + "," + eqModelList.get(i));
         }
         eqNameGridAdapter.setCanRemove(true);
         eqNameGridAdapter.setEqModels(eqModelList);
