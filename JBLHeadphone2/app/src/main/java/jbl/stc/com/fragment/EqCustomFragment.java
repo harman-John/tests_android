@@ -150,7 +150,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         }
 
         eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
-        equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.main_color);
+        equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.white);
 
     }
 
@@ -275,17 +275,11 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         if (isAddOperate) {
             application.deviceInfo.eqOn = true;
         }
-        if (application.deviceInfo.hasEq) {
-            if (onCustomEqListener != null) {
-                onCustomEqListener.onCustomEqResult(currSelectedEq, isAddOperate);
-            }
-            getActivity().getSupportFragmentManager().popBackStack();
-        } else {
-            application.deviceInfo.hasEq = true;
-            //CommandManager.get().setGrEqBandGains(currSelectedEq.id, eqValueArray);
-            getActivity().getSupportFragmentManager().popBackStack();
-            switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+        if (onCustomEqListener != null) {
+            onCustomEqListener.onCustomEqResult(currSelectedEq, isAddOperate);
         }
+        getActivity().getSupportFragmentManager().popBackStack();
+
     }
 
 
