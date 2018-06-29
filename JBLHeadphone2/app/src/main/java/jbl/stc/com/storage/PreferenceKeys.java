@@ -37,4 +37,7 @@ public class PreferenceKeys {
     public static final String PRODUCT = "PRODUCT";
     public static final String APP_VERSION = "APP_VERSION";
     public static final String RSRC_VERSION = "RSRC_VERSION";
+
+
+    public static final String FirmVersion = "FirmVersion";
 }
