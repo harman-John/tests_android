@@ -95,4 +95,9 @@
     <string name="bass">Bass</string>
     <string name="custom_eq">Custom EQ</string>
 
+
+
+    <string name="unplug_plug_while_update_error">"Update process interrupted. \nPress OK to restart the process"</string>
+
+
 </resources>
