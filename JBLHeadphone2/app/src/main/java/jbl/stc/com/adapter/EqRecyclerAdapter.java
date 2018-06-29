@@ -91,11 +91,20 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
                 eqNameText.setVisibility(View.VISIBLE);
                 plusImageView.setVisibility(View.GONE);
                 if (eqModel.isSelected) {
-                    eqNameBgImage.setImageResource(R.drawable.shape_circle_eq_name_bg_selected);
-                    eqNameText.setTextColor(ContextCompat.getColor(context, R.color.eq_panel_name_text));
-                } else {
-                    eqNameBgImage.setImageResource(R.drawable.shape_circle_eq_name_bg_normal);
+                    if (eqModel.eqName.equals(context.getResources().getString(R.string.off))){
+                        eqNameBgImage.setImageResource(R.drawable.shape_circle_off_eq_name_bg_selected);
+                    }else{
+                        eqNameBgImage.setImageResource(R.drawable.shape_circle_eq_name_bg_selected);
+                    }
                     eqNameText.setTextColor(ContextCompat.getColor(context, R.color.white));
+
+                } else {
+                    if (eqModel.eqName.equals(context.getResources().getString(R.string.off))){
+                        eqNameBgImage.setImageResource(R.drawable.shape_circle_off_eq_name_bg_normal);
+                    }else{
+                        eqNameBgImage.setImageResource(R.drawable.shape_circle_eq_name_bg_normal);
+                    }
+                    eqNameText.setTextColor(ContextCompat.getColor(context, R.color.statusBarBackground));
                 }
             }
             if (position < 2) {//0 or 1 ,row one

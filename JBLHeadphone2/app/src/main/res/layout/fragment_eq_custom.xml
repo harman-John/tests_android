@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/shape_legal_gradient"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -17,7 +17,7 @@
             style="@style/PoppinsMediumTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
             android:text="@string/title_eq_edit" />
 
         <jbl.stc.com.view.AppImageView
@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/eq_name_edit_layout_height"
             android:layout_alignParentBottom="true"
-            android:background="@color/white"
+            android:background="@color/orange_light"
             android:visibility="visible" />
 
         <FrameLayout

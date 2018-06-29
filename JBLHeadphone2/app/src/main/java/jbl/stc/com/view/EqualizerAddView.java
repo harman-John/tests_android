@@ -41,7 +41,7 @@ public class EqualizerAddView extends View {
     private int mWidth, mHeight;
     private int customHeight = 0;
     private int[] mEqFreqArray = new int[]{32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000};
-    private int[] mVerticalLineArray = new int[]{32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000};
+    private int[] mVerticalLineArray = new int[]{32, 250, 2000, 16000};
     private int lowTextStart = 80;
     private int midTextStart = 600;
     private int highTextStart = 5000;
@@ -147,7 +147,7 @@ public class EqualizerAddView extends View {
         marginBottom = dp2px(45);
         marginLeft = dp2px(20);
         marginRight = dp2px(20);
-        textMarginBottom = dp2px(45);
+        textMarginBottom = dp2px(35);
         nearPointFreqX = dp2px(15);
         setSupportDrag(true);
     }
@@ -261,7 +261,7 @@ public class EqualizerAddView extends View {
     }
 
     private void drawLine(Canvas canvas) {
-        Log.d(TAG,"CenterHeight:"+String.valueOf((mHeight- marginTop-marginBottom)/2));
+        Log.d(TAG, "CenterHeight:" + String.valueOf((mHeight - marginTop - marginBottom) / 2));
         //draw center horizontal line
         mLinePaint.reset();
         mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
@@ -271,7 +271,7 @@ public class EqualizerAddView extends View {
         mLinePaint.setStrokeWidth(dp2px(1));
         float startHorizontalY = getRelativelyY((maxValue + minValue) / 2);
         //canvas.drawLine(0, startHorizontalY- marginBottom/2, mWidth, startHorizontalY- marginBottom/2, mLinePaint);
-        canvas.drawLine(0, (mHeight-marginBottom+marginTop)/2, mWidth, (mHeight-marginBottom+marginTop)/2, mLinePaint);
+        canvas.drawLine(marginLeft, (mHeight - marginBottom + marginTop) / 2, mWidth-marginRight, (mHeight - marginBottom + marginTop) / 2, mLinePaint);
 
         //draw vertical line
         mLinePaint.reset();
@@ -291,7 +291,7 @@ public class EqualizerAddView extends View {
         mLinePaint.setStyle(Paint.Style.FILL);
         mLinePaint.setStrokeWidth(dp2px(1));
         canvas.drawLine(0, marginTop, mWidth, marginTop, mLinePaint);
-        canvas.drawLine(0, mHeight -marginBottom, mWidth, mHeight - marginBottom, mLinePaint);
+        canvas.drawLine(0, mHeight - marginBottom, mWidth, mHeight - marginBottom, mLinePaint);
     }
 
     private void drawText(Canvas canvas) {
@@ -304,27 +304,27 @@ public class EqualizerAddView extends View {
         for (int i = 0; i < mEqFreqArray.length; i++) {
             float startVerticalX = getRelativelyX(mEqFreqArray[i]);
             //canvas.drawText(getShowName(i), startVerticalX - dp2px(6), dp2px(20), mTextPaint);
-            if (i==mEqFreqArray.length-1){
-                canvas.drawText(getShowName(i), startVerticalX - dp2px(20), mHeight-marginBottom/2, mTextPaint);
-            }else{
-                canvas.drawText(getShowName(i), startVerticalX - dp2px(6), mHeight-marginBottom/2, mTextPaint);
+            if (i == mEqFreqArray.length - 1) {
+                canvas.drawText(getShowName(i), startVerticalX - dp2px(20), mHeight - marginBottom / 2, mTextPaint);
+            } else {
+                canvas.drawText(getShowName(i), startVerticalX - dp2px(6), mHeight - marginBottom / 2, mTextPaint);
             }
         }
 
-        /*mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_80));
+        mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_80));
         float lowStartX = getRelativelyX(lowTextStart);
-        canvas.drawText("LOW", lowStartX, mHeight - textMarginBottom, mTextPaint);
+        canvas.drawText("LOW", lowStartX, textMarginBottom, mTextPaint);
         float midStartX = getRelativelyX(midTextStart);
-        canvas.drawText("MID", midStartX, mHeight - textMarginBottom, mTextPaint);
+        canvas.drawText("MID", midStartX, textMarginBottom, mTextPaint);
         float highStartX = getRelativelyX(highTextStart);
-        canvas.drawText("HIGH", highStartX, mHeight - textMarginBottom, mTextPaint);*/
+        canvas.drawText("HIGH", highStartX, textMarginBottom, mTextPaint);
     }
 
     /**
      * Draw Curve
      */
     private void drawCurveChart(Canvas canvas) {
-        Log.d(TAG,"drawCurve");
+        Log.d(TAG, "drawCurve");
         mCurvePaint.setColor(ContextCompat.getColor(mContext, curveColor));
         curvePath.reset();
         pointX.clear();
@@ -333,14 +333,14 @@ public class EqualizerAddView extends View {
             pointX.add(controlCircles.get(i).getX());
             pointY.add(controlCircles.get(i).getY());
         }
-        Log.d(TAG,"controlCircles size"+String.valueOf(controlCircles.size()));
+        Log.d(TAG, "controlCircles size" + String.valueOf(controlCircles.size()));
         if (controlCircles.size() > 2) {
             STEP = (8 * AppUtils.EQ_VIEW_DEFAULT_STEP) / (controlCircles.size() - 1);
         }
 
         List<Cubic> calculate_x = calculateCurve(pointX);
         List<Cubic> calculate_y = calculateCurve(pointY);
-        Log.d(TAG,"calculate_x size"+String.valueOf(calculate_x.size()));
+        Log.d(TAG, "calculate_x size" + String.valueOf(calculate_x.size()));
         float nearX;
         float lastX;
         float lastY;
@@ -350,7 +350,7 @@ public class EqualizerAddView extends View {
             nearX = calculate_x.get(0).evaluate(0);
             for (int i = 0; i < calculate_x.size(); i++) {
                 lastX = calculate_x.get(i).evaluate(1);
-                lastY=calculate_y.get(i).evaluate(1);
+                lastY = calculate_y.get(i).evaluate(1);
                 for (int j = 1; j <= STEP; j++) {
                     float u = j / (float) STEP;
                     float lineToX = calculate_x.get(i).evaluate(u);
@@ -461,16 +461,16 @@ public class EqualizerAddView extends View {
     private float getDbValueFromY(float Y) {
         //get one point float
         float value = (maxValue - (Y - marginTop) / getViewHeight() * (maxValue - minValue));
-        Log.d(TAG,"Y:"+String.valueOf(Y)+"ViewHeight:"+String.valueOf(getViewHeight())+"value:"+String.valueOf(value));
+        Log.d(TAG, "Y:" + String.valueOf(Y) + "ViewHeight:" + String.valueOf(getViewHeight()) + "value:" + String.valueOf(value));
         return Float.valueOf(StringUtils.getOnePointFloat(value));
     }
 
     private String getShowName(int point) {
         int value = mEqFreqArray[point];
         if (value >= 1000) {
-            if (value>=16000){
+            if (value >= 16000) {
                 return String.valueOf(value).substring(0, String.valueOf(value).length() - 3) + "k HZ";
-            }else{
+            } else {
                 return String.valueOf(value).substring(0, String.valueOf(value).length() - 3) + "k";
             }
 

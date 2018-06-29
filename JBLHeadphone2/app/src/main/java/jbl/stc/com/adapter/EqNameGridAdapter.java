@@ -88,7 +88,7 @@ public class EqNameGridAdapter extends BaseAdapter {
                 viewHolder.eqNameText.setTextColor(ContextCompat.getColor(context, R.color.eq_panel_name_text));
             } else {
                 viewHolder.eqNameBgImage.setImageResource(R.drawable.shape_circle_eq_name_bg_normal);
-                viewHolder.eqNameText.setTextColor(ContextCompat.getColor(context, R.color.white));
+                viewHolder.eqNameText.setTextColor(ContextCompat.getColor(context, R.color.statusBarBackground));
             }
         }
         if (position < 2) {//0 or 1 ,row one

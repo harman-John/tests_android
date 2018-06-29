@@ -1,18 +1,26 @@
 package jbl.stc.com.fragment;
 
+import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +36,7 @@ import jbl.stc.com.listener.OnEqItemSelectedListener;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.FastClickHelper;
+import jbl.stc.com.utils.FileUtils;
 import jbl.stc.com.utils.ToastUtil;
 import jbl.stc.com.view.EqualizerShowView;
 import jbl.stc.com.view.MyGridLayoutManager;
@@ -48,6 +57,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private ImageView addImageView;
     private RecyclerView eqRecycleView;
     private EqRecyclerAdapter eqAdapter;
+    private RelativeLayout rl_eq_view;
 
     private List<EQModel> eqModelList = new ArrayList<>();
     private EQModel currSelectedEq;
@@ -79,6 +89,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         eqRecycleView.setLayoutManager(new MyGridLayoutManager(getActivity(), 2));
         eqAdapter = new EqRecyclerAdapter();
         eqRecycleView.setAdapter(eqAdapter);
+        rl_eq_view = (RelativeLayout) rootView.findViewById(R.id.rl_eq_view);
     }
 
     private void initEvent() {
@@ -123,23 +134,8 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void initValue() {
-        List<EQModel> eqTypeModels = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            EQModel eqModel = new EQModel();
-            if (i == 0) {
-                eqModel.eqName = getString(R.string.off);
-            } else if (i == 1) {
-                eqModel.eqName = getString(R.string.jazz);
-            } else if (i == 2) {
-                eqModel.eqName = getString(R.string.vocal);
-            } else if (i == 3) {
-                eqModel.eqName = getString(R.string.bass);
-            }
-            eqTypeModels.add(eqModel);
-        }
         List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
         eqModelList.clear();
-        eqModelList.addAll(eqTypeModels);
         eqModelList.addAll(eqModels);
         currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""), mContext);
         //LogUtil.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""));
@@ -148,7 +144,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             getActivity().getSupportFragmentManager().popBackStack();
             return;
         }*/
-        Log.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""));
+        Log.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, getResources().getString(R.string.off)));
         if (currSelectedEq != null && currSelectedEq.eqName != null) {
             if (application.deviceInfo.eqOn) {
                 for (int i = 0; i < eqModelList.size(); i++) {
@@ -186,6 +182,15 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             // LogUtil.d("TAG","setCurveData");
             equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
         }
+        if (currSelectedEqIndex == 0) {
+            titleBar.setBackgroundColor(getActivity().getResources().getColor(R.color.gray_aa_bg));
+            rl_eq_view.setBackgroundColor(getActivity().getResources().getColor(R.color.gray_aa_bg));
+            eqEditImage.setClickable(false);
+        } else {
+            titleBar.setBackgroundColor(getActivity().getResources().getColor(R.color.orange));
+            rl_eq_view.setBackgroundResource(R.drawable.shape_legal_gradient);
+            eqEditImage.setClickable(true);
+        }
         smoothToPosition();
     }
 
@@ -197,46 +202,6 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void onEqNameSelected(int eqIndex, boolean fromUser) {
-
-        /*if (eqIndex > 3) {
-            //LogUtil.d(TAG, "onEqNameSelected eqIndex is " + eqIndex);
-            currSelectedEq = eqModelList.get(eqIndex);
-            currSelectedEqIndex = eqIndex;
-            eqNameText.setText(currSelectedEq.eqName);
-            eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-            application.deviceInfo.eqOn = true;
-            for (EQModel model : eqModelList) {
-                model.isSelected = false;
-            }
-            currSelectedEq.isSelected = true;
-            eqAdapter.setEqModels(eqModelList);
-            PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, currSelectedEq.eqName, mContext);
-            int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
-            equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
-            //CommandManager.get().setGrEqBandGains(currSelectedEq.id, eqValueArray);
-            AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
-            if (fromUser) {
-                eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
-            }
-        } else {
-            //select eqType
-            eqType = eqIndex;
-            if (eqIndex == 0) {
-                eqNameText.setText("OFF");
-            } else if (eqIndex == 1) {
-                eqNameText.setText("JAZZ");
-            } else if (eqIndex == 2) {
-                eqNameText.setText("VOCAL");
-            } else if (eqIndex == 3) {
-                eqNameText.setText("BASS");
-            }
-            eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-            for (EQModel model : eqModelList) {
-                model.isSelected = false;
-            }
-            eqModelList.get(eqIndex).isSelected = true;
-            eqAdapter.setEqModels(eqModelList);
-        }*/
         Log.d(TAG, "onEqNameSelected eqIndex is " + eqIndex);
         currSelectedEq = eqModelList.get(eqIndex);
         currSelectedEqIndex = eqIndex;
@@ -255,8 +220,15 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
         if (fromUser) {
             eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
-
-
+        }
+        if (eqIndex == 0) {
+            titleBar.setBackgroundColor(getActivity().getResources().getColor(R.color.gray_aa_bg));
+            rl_eq_view.setBackgroundColor(getActivity().getResources().getColor(R.color.gray_aa_bg));
+            eqEditImage.setClickable(false);
+        } else {
+            titleBar.setBackgroundColor(getActivity().getResources().getColor(R.color.orange));
+            rl_eq_view.setBackgroundResource(R.drawable.shape_legal_gradient);
+            eqEditImage.setClickable(true);
         }
     }
 

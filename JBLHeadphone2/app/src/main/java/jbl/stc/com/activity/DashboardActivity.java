@@ -28,10 +28,11 @@ import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.FirmwareUtil;
+import jbl.stc.com.utils.InsertPredefinePreset;
 import jbl.stc.com.utils.OTAUtil;
 import jbl.stc.com.view.JblCircleView;
 
-public class DashboardActivity extends DeviceManagerActivity implements View.OnClickListener,OnDownloadedListener {
+public class DashboardActivity extends DeviceManagerActivity implements View.OnClickListener, OnDownloadedListener {
     private static final String TAG = DashboardActivity.class.getSimpleName();
     private JblCircleView jblCircleView;
     private static DashboardActivity dashboardActivity;
@@ -46,6 +47,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private DashboardHandler dashboardHandler = new DashboardHandler();
 
     private CheckUpdateAvailable checkUpdateAvailable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +58,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         dashboardActivity = this;
         initView();
         dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,10000);
+        //load the presetEQ
+        InsertPredefinePreset insertdefaultValueTask = new InsertPredefinePreset();
+        insertdefaultValueTask.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
     }
 
     @Override
@@ -100,15 +105,15 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     @Override
-    public void connectDeviceStatus(boolean isConnected){
+    public void connectDeviceStatus(boolean isConnected) {
         super.connectDeviceStatus(isConnected);
-        Log.d(TAG, " connectDeviceStatus isConnected = "+isConnected);
-        if(isConnected){
+        Log.d(TAG, " connectDeviceStatus isConnected = " + isConnected);
+        if (isConnected) {
             dashboardHandler.removeMessages(SHOW_UN_FOUND_TIPS);
-            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT,200);
-        }else{
+            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT, 200);
+        } else {
             dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
-            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY,200);
+            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 200);
         }
     }
 
@@ -126,11 +131,11 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     txtTips.setVisibility(View.VISIBLE);
                     break;
                 }
-                case MSG_SHOW_HOME_FRAGMENT:{
-                    switchFragment(new HomeFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                case MSG_SHOW_HOME_FRAGMENT: {
+                    switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     break;
                 }
-                case MSG_SHOW_DISCOVERY:{
+                case MSG_SHOW_DISCOVERY: {
                     removeAllFragment();
                     jblCircleView.setVisibility(View.VISIBLE);
                     jblCircleView.start();
