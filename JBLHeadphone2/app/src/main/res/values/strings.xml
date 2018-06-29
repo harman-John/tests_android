@@ -4,6 +4,7 @@
     <string name="control_off">OFF</string>
 
     <string name="awareness">AMBIENT AWARENESS</string>
+    <string name="ambient_awareness">Ambient awareness</string>
     <string name="highView">HIGH</string>
     <string name="mediumView">MEDIUM</string>
     <string name="lowView">LOW</string>
@@ -94,5 +95,10 @@
     <string name="vocal">Vocal</string>
     <string name="bass">Bass</string>
     <string name="custom_eq">Custom EQ</string>
+
+
+
+    <string name="unplug_plug_while_update_error">"Update process interrupted. \nPress OK to restart the process"</string>
+
 
 </resources>

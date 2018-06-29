@@ -1,6 +1,8 @@
 package jbl.stc.com.fragment;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -8,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -45,6 +48,7 @@ import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.CreateEqTipsDialog;
 import jbl.stc.com.listener.AwarenessChangeListener;
 import jbl.stc.com.listener.OnDialogListener;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
@@ -52,15 +56,14 @@ import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.BlurBuilder;
-import jbl.stc.com.view.ANCController;
-import jbl.stc.com.view.CircularInsideLayout;
+import jbl.stc.com.view.AAPopupwindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
 
 import static java.lang.Integer.valueOf;
 
 
-public class HomeFragment extends BaseFragment implements View.OnClickListener,AwarenessChangeListener, ANCController.OnSeekArcChangeListener{
+public class HomeFragment extends BaseFragment implements View.OnClickListener{
     public static final String TAG = HomeFragment.class.getSimpleName();
     private View view, mBlurView;
     private CreateEqTipsDialog createEqTipsDialog;
@@ -84,14 +87,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     private TextView textViewBattery;
     private TextView textViewCurrentEQ;
     private TextView textViewDeviceName;
-    private PopupWindow popupWindow;
     private ImageView imageViewDevice;
     private CheckBox checkBoxNoiseCancel;
     private LinearLayout linearLayoutBattery;
     private LightX lightX;
-    private ANCAwarenessPreset awarenessPreset, lastsavedAwarenessState;
-    private ANCController ancController;
-    private boolean isRequestingLeftANC, isRequestingRightANC;
+    private AAPopupwindow aaPopupwindow;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,6 +121,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
         progressBarBattery = view.findViewById(R.id.batteryProgressBar);
         textViewBattery = view.findViewById(R.id.batteryLevelText);
         view.findViewById(R.id.text_view_ambient_aware);
+        mBlurView = view.findViewById(R.id.blur_view);
         createEqTipsDialog = new CreateEqTipsDialog(getActivity());
         createEqTipsDialog.setOnDialogListener(new OnDialogListener() {
             @Override
@@ -133,9 +134,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
 
             }
         });
+
+
         updateDeviceName();
         return view;
     }
+
 
     @Override
     public void onResume() {
@@ -188,109 +192,38 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
     }
 
     protected void showAncPopupWindow() {
-        View popupWindow_view = getLayoutInflater().inflate(R.layout.popup_window_anc, null,
-                false);
-        ancController = popupWindow_view.findViewById(R.id.circularSeekBar);
-        CircularInsideLayout circularInsideLayout = popupWindow_view.findViewById(R.id.imageContainer);
-        circularInsideLayout.setonAwarenesChangeListener(this);
-        ancController.setCircularInsideLayout(circularInsideLayout);
-        ancController.setOnSeekArcChangeListener(this);
-        DisplayMetrics dm = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-        popupWindow = new PopupWindow(popupWindow_view, ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT, true);
-
-        if(mBlurView == null){
-            //generate blur view
-            mBlurView = view.findViewById(R.id.blur_view);
+        if(mBlurView.getBackground() == null) {
             Bitmap image = BlurBuilder.blur(view);
             mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
         }
-        mBlurView.setVisibility(View.VISIBLE);
-        // set animation effect
-        popupWindow.setAnimationStyle(R.style.style_down_to_top);
-        popupWindow_view.findViewById(R.id.aa_popup_close_arrow).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (popupWindow != null && popupWindow.isShowing()) {
-                    popupWindow.dismiss();
-                    popupWindow = null;
+        if(aaPopupwindow == null){
+            aaPopupwindow = new AAPopupwindow(getActivity(),lightX);
+            aaPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    //dismiss blur view
+                    aaPopupwindow.setAAOff();
+                    if(mBlurView != null){
+                        mBlurView.setVisibility(View.GONE);
+                    }
                 }
-            }
-        });
-
-        popupWindow.showAsDropDown(view);
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                //dismiss blur view
-                if(mBlurView != null){
-                    mBlurView.setVisibility(View.GONE);
-                }
-            }
-        });
-        popupWindow_view.findViewById(R.id.noiseText).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ancController.setSwitchOff(false);
-                ANCControlManager.getANCManager(getActivity()).setAmbientLeveling(lightX, ANCAwarenessPreset.None);
-            }
-        });
-        getAAValue();
-    }
-
-    @Override
-    public void onMedium() {
-        //on AA medium checked
-        ANCControlManager.getANCManager(getActivity()).setAmbientLeveling(lightX, ANCAwarenessPreset.Medium);
-    }
-
-    @Override
-    public void onLow() {
-       //on AA low checked
-        ANCControlManager.getANCManager(getActivity()).setAmbientLeveling(lightX, ANCAwarenessPreset.Low);
-    }
-
-    @Override
-    public void onHigh() {
-      //on AA high checked
-        ANCControlManager.getANCManager(getActivity()).setAmbientLeveling(lightX, ANCAwarenessPreset.High);
-    }
-
-    @Override
-    public void onProgressChanged(ANCController ANCController, int leftProgress, int rightProgress, boolean fromUser) {
-
-        if (fromUser) {
-            // Check added to fix Bug :Bug 64517 - Sometimes Awareness adjustment is disordered when left and right AA have different level.
-            //Set animation to false and presetValue to -1
-            int savedLeft = PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, getActivity());
-            int savedRight = PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, getActivity());
-
-            PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, leftProgress, getActivity());
-            PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, rightProgress, getActivity());
-//            AnalyticsManager.getInstance(getActivity()).reportAwarenessLevelChanged(mLeftProgress, true);
-//            AnalyticsManager.getInstance(getActivity()).reportAwarenessLevelChanged(mRightProgress, false);
-            lastsavedAwarenessState = null;
-//            promptSeekAbuse.removeCallbacks(runnablepromptSeekAbuse);
-//            promptSeekAbuse.postDelayed(runnablepromptSeekAbuse, 300);
-            if (leftProgress != savedLeft) {
-                ANCControlManager.getANCManager(getActivity()).setLeftAwarenessPresetValue(lightX, leftProgress);
-            }
-            if (rightProgress != savedRight) {
-                ANCControlManager.getANCManager(getActivity()).setRightAwarenessPresetValue(lightX, rightProgress);
-            }
+            });
         }
-    }
+        mBlurView.setVisibility(View.VISIBLE);
+        mBlurView.setAlpha(0f);
+        mBlurView.animate().alpha(1f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mBlurView.setVisibility(View.VISIBLE);
+                //OR
+                mBlurView.setAlpha(1f);
+            }
+        });
 
+        aaPopupwindow.showAsDropDown(view);
 
-    @Override
-    public void onStartTrackingTouch(ANCController ANCController) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(ANCController ANCController) {
-
+        getAAValue();
     }
 
 
@@ -341,14 +274,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
                     break;
                 }
                 case MSG_AMBIENT_LEVEL:{
-                    updateAAUI(AppUtils.levelTransfer(msg.arg1));
+                    aaPopupwindow.updateAAUI(AppUtils.levelTransfer(msg.arg1));
                     break;
                 }
                 case MSG_AA_LEFT:
-                    updateAALeft(msg.arg1);
+                    aaPopupwindow.updateAALeft(msg.arg1);
                     break;
                 case MSG_AA_RIGHT:
-                    updateAARight(msg.arg1);
+                    aaPopupwindow.updateAARight(msg.arg1);
                     break;
                 case MSG_CURRENT_PRESET:{
                     updateCurrentEQ(msg.arg1);
@@ -458,59 +391,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener,A
         DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
     }
 
-    private void updateAALeft(int value){
-        PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, value ,getActivity());
-        isRequestingLeftANC = false;
-        if(!isRequestingLeftANC && !isRequestingRightANC){
-//            ancController.initProgress();
-        }
-        ancController.initLeftProgress(value);
-
-//        ancController.initProgress(value, PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, getActivity()), value);
-    }
-    private void updateAARight(int value){
-        PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, value ,getActivity());
-        isRequestingRightANC = false;
-        if(!isRequestingLeftANC && !isRequestingRightANC){
-
-        }
-        ancController.initRightProgress(value);
-//        ancController.initProgress(PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, getActivity()), value, value);
-    }
-    private void updateAAUI(int aaLevelingValue){
-            boolean is150NC = AppUtils.is150NC(getActivity());
-        Log.d(TAG, "updateAmbientLevel: " + aaLevelingValue + "," + PreferenceUtils.getInt(PreferenceKeys.AWARENESS, getActivity()) + ",is150NC=" + is150NC);
-            switch (aaLevelingValue) {
-                case 0:
-                    PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, 0, getActivity());
-                    PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, 0, getActivity());
-                    lastsavedAwarenessState = ANCAwarenessPreset.None;
-                    break;
-                case 1: //ANCAwarenessPreset.Low
-                    PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, is150NC ? 28 : 25, getActivity());
-                    PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, is150NC ? 28 : 25, getActivity());
-                    lastsavedAwarenessState = ANCAwarenessPreset.Low;
-                    break;
-                case 2: //ANCAwarenessPreset.Medium
-                    PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, is150NC ? 58 : 55, getActivity());
-                    PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, is150NC ? 58 : 55, getActivity());
-                    lastsavedAwarenessState = ANCAwarenessPreset.Medium;
-                    break;
-                case 3://ANCAwarenessPreset.High
-                    PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, is150NC ? 86 : 100, getActivity());
-                    PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, is150NC ? 86 : 100, getActivity());
-                    lastsavedAwarenessState = ANCAwarenessPreset.High;
-                    break;
-            }
-        ancController.initProgress(PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, getActivity()),
-                PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, getActivity()), aaLevelingValue);
-        PreferenceUtils.setInt(PreferenceKeys.AWARENESS, aaLevelingValue, getActivity());
-
-        isRequestingLeftANC = true;
-        isRequestingRightANC = true;
-        ANCControlManager.getANCManager(getContext()).getLeftANCvalue(lightX);
-        ANCControlManager.getANCManager(getContext()).getRightANCvalue(lightX);
-    }
     private void sendMessageTo(int command, String arg1) {
         Message msg = new Message();
         msg.what = command;
