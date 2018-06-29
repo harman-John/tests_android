@@ -153,7 +153,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 //                    AlertsDialog.showSimpleDialogWithOKButtonWithBack(null, getString(R.string.battery_alert), getActivity());
 //                    AnalyticsManager.getInstance(getActivity()).reportUsbUpdateAlert(getString(R.string.battery_alert));
                 } else {
-                    FirmwareUtil.disconnectHeadphoneText = getActivity().getResources().getString(R.string.pls_Connect_while_upgrade);
+//                    FirmwareUtil.disconnectHeadphoneText = getActivity().getResources().getString(R.string.pls_Connect_while_upgrade);
 //                    txtConnectMessage.setText(FirmwareUtil.disconnectHeadphoneText);
                     startDownloadFirmwareImage();
                     v.setOnClickListener(null);
@@ -379,7 +379,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         }
 //        mProgressBar.setVisibility(View.GONE);
 //        AlertsDialog.showToast(getAppActivity(), getAppActivity().getString(R.string.download_failed));
-        AlertsDialog.showSimpleDialogWithOKButtonWithRelaunch("Update Interrupted", getString(R.string.unplug_plug_while_update_error), getAppActivity());
+        AlertsDialog.showSimpleDialogWithOKButtonWithRelaunch("Update Interrupted", getString(R.string.unplug_plug_while_update_error), getActivity());
         AnalyticsManager.getInstance(getActivity()).reportUsbUpdateAlert(getString(R.string.unplug_plug_while_update_error));
     }
 
@@ -1038,9 +1038,9 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 //should check null because in air plan mode it will be null
                 if (netInfo != null && netInfo.isConnected()) {
                     /**Hide the TXT is VISIBLE **/
-                    if (txtdownloading.getVisibility() == View.VISIBLE) {
-                        txtdownloading.setVisibility(View.INVISIBLE);
-                    }
+//                    if (txtdownloading.getVisibility() == View.VISIBLE) {
+//                        txtdownloading.setVisibility(View.INVISIBLE);
+//                    }
 
                     if (FirmwareUtil.isUpdatingFirmWare.get()) {
                         Logger.d(TAG, "Already updating");
@@ -1049,7 +1049,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     if (isUpdateAvailable && checkUpdateAvailable != null && checkUpdateAvailable.getStatus() == AsyncTask.Status.FINISHED) {
                         if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == AsyncTask.Status.FINISHED)
                             startDownloadFirmwareImage();
-                    } else if (checkUpdateAvailable == null || linearLayout.getTag().toString().equalsIgnoreCase(CHECKINGFOR_UPDATE)) { // In case of failure retry for server update
+                    } else if (checkUpdateAvailable == null) { // In case of failure retry for server update
                         startCheckingIfUpdateIsAvailable();
                     }
                 } else {
@@ -1072,7 +1072,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                             }
                         }
                         if (isSuccessFulDownload) {
-                            txtdownloading.setText("");
+//                            txtdownloading.setText("");
                             Logger.d(TAG, "No Internet No impact as data downloaded.");
                         }
                     } else if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == AsyncTask.Status.RUNNING) {
@@ -1082,7 +1082,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                         checkUpdateAvailable.cancel(true);
                         Logger.d(TAG, "No Internet checkUpdateAvailable.cancel");
                     }
-                    mProgressBar.setVisibility(View.GONE);
+//                    mProgressBar.setVisibility(View.GONE);
                 }
             }
         }
