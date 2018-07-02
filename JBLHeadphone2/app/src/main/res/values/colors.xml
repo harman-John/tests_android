@@ -57,4 +57,7 @@
     <color name="orange_light">#FF7F00</color>
     <color name="white_1"> #ebebeb</color>
     <color name="text_color_1">#333333</color>
+
+
+    <color name="outerCircle">#b2b0b2</color>
 </resources>

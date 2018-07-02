@@ -23,9 +23,4 @@ object AmToolUtil {
         }
         return bytes
     }
-
-    fun transferCurrentVersion(version: String): String {
-        val tempString = version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        return String.format("%02x%02x%02x", Integer.valueOf(tempString[0]), Integer.valueOf(tempString[1]), Integer.valueOf(tempString[2]))
-    }
 }

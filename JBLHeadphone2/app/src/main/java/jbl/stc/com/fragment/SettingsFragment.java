@@ -41,7 +41,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.text_firmware:{
-                switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
             case R.id.image_view_settings_back:{
@@ -56,7 +56,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 startActivity(intent);
                 break;
             }
-
+            case R.id.text_smartButton:{
+                switchFragment(new SmartButtonFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                break;
+            }
 
         }
 

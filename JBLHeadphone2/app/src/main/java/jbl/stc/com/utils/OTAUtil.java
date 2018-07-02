@@ -1,6 +1,7 @@
 package jbl.stc.com.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import jbl.stc.com.data.ConnectedDeviceType;
 import jbl.stc.com.data.DeviceConnectionManager;
@@ -25,6 +26,7 @@ public class OTAUtil {
     private final static String OTA_RELEASE_URL_300 = OTA_URL_HEAD + "Everest/Android/V300NXT_Upgrade_Index.xml";
     private final static String OTA_RELEASE_URL_100 = OTA_URL_HEAD + "Everest/Android/V100NXT_Upgrade_Index.xml";
     private final static String OTA_RELEASE_URL_AWARE = OTA_URL_HEAD + "Aware/Android/Aware_Android_Upgrade_Index.xml";
+    private static String TAG  = OTAUtil.class.getSimpleName();
 
     /**
      * Decide which Resource to be downloaded.
@@ -32,7 +34,7 @@ public class OTAUtil {
      * @return URL
      */
     public static String getURL(Context context) {
-        String url = null;
+        String url;
         if (DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.Connected_USBDevice) {
             url = getAwareUrl(context);
         }
@@ -50,6 +52,7 @@ public class OTAUtil {
         } else {
             url = getAwareUrl(context);
         }
+        Log.i(TAG,"OTA url = "+ url);
         return url;
     }
 

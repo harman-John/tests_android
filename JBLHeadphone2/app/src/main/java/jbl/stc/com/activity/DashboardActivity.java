@@ -23,6 +23,7 @@ import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.HomeFragment;
+import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
@@ -43,11 +44,17 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private final static int SHOW_UN_FOUND_TIPS = 0;
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
     private final static int MSG_SHOW_DISCOVERY = 2;
+    private final static int MSG_SHOW_OTA_FRAGMENT = 3;
     private final static int REQUEST_CODE = 0;
 
     private DashboardHandler dashboardHandler = new DashboardHandler();
 
     private CheckUpdateAvailable checkUpdateAvailable;
+
+    public static boolean isUpdatingFirmware = false;
+    public static CopyOnWriteArrayList<FirmwareModel> mFwlist = new CopyOnWriteArrayList<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +101,11 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         Log.d(TAG, " connectDeviceStatus isConnected = "+isConnected);
         if(isConnected){
             dashboardHandler.removeMessages(SHOW_UN_FOUND_TIPS);
-            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT,200);
+            if (!isUpdatingFirmware) {
+                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT, 200);
+            }else{
+                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_OTA_FRAGMENT,200);
+            }
         }else{
             dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
             dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY,200);
@@ -188,6 +199,13 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     txtTips.setVisibility(View.VISIBLE);
                     break;
                 }
+                case MSG_SHOW_OTA_FRAGMENT:{
+                    Log.i(TAG,"show OTAFragment");
+                    stopCircle();
+                    relativeLayoutDiscovery.setVisibility(View.GONE);
+                    switchFragment(new OTAFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    break;
+                }
             }
         }
     }
@@ -231,4 +249,5 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     public void onUpgradeUpdate(String liveVersion, String title) {
 
     }
+
 }

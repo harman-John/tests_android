@@ -162,6 +162,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        homeHandler.removeMessages(MSG_READ_BATTERY_INTERVAL);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_ambient_aware: {
@@ -232,7 +238,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         ANCControlManager.getANCManager(getContext()).getANCValue(lightX);
         updateFirmwareVersion();
         ANCControlManager.getANCManager(getContext()).getCurrentPreset(lightX);
-
+        ANCControlManager.getANCManager(getContext()).getFirmwareInfo(lightX);
         if (lightX != null) {
             Log.i(TAG,"getDeviceInfo");
             lightX.readConfigModelNumber();

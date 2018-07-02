@@ -1,0 +1,104 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lighter_gray_theme">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#000000"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/ambientLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textOptions"
+            android:background="@color/cell_background"
+            android:padding="@dimen/marginTop10dp"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_available_update_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ambientAware"
+                    android:focusable="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txtmainMessage" />
+
+                <TextView
+                    android:id="@+id/txt_on_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/marginTop10dp"
+                    android:focusable="false"
+                    android:text="@string/amibient"
+                    android:textSize="@dimen/txtBelowMessage"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/noiceCancelling"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textOptions"
+            android:background="@color/cell_background"
+            android:padding="@dimen/marginTop10dp"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin5dp"
+                android:gravity="center_vertical"
+                android:focusable="false"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/text_noiceCancelling"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@string/noise_cancelling"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txtmainMessage" />
+
+                <TextView
+                    android:id="@+id/txt_on_off_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/marginTop10dp"
+                    android:focusable="false"
+                    android:textSize="@dimen/txtBelowMessage"
+                    android:text="@string/noise_cancel_tip"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</FrameLayout>
