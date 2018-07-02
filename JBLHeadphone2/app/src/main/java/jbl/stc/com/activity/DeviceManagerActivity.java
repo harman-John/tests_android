@@ -1179,9 +1179,9 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-            if (appLightXDelegate != null) {
-                appLightXDelegate.receivedResponse(command, values, status);
-            }
+                if (appLightXDelegate != null) {
+                    appLightXDelegate.receivedResponse(command, values, status);
+                }
             }
         });
     }

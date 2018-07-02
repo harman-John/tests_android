@@ -11,16 +11,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
+import android.text.TextPaint;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
+import android.widget.TextView;
 
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.AdminEvent;
@@ -34,11 +30,13 @@ import com.avnera.smartdigitalheadset.LightX;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
@@ -59,16 +57,15 @@ import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.utils.OTAUtil;
 
-import static jbl.stc.com.data.ConnectedDeviceType.Connected_BluetoothDevice;
+import static jbl.stc.com.activity.DashboardActivity.*;
 
 public class OTAFragment extends BaseFragment implements View.OnClickListener,OnDownloadedListener {
     public static final String TAG = OTAFragment.class.getSimpleName();
 
     private long batteryLevel;
-    private String mLiveFirmware = "UNKNOWN";
-    private String currentVersion = "0.0.0";
-    private String rsrcSavedVersion = "0.0.0";
-    private String rsrcVersion = "0.0.0";
+    private String mOnLineFirmware = "UNKNOWN";
+    private String onLineFwVersion = "0.0.0";
+    private String deviceFwVersion = "0.0.0";
     private ProgressInfo progressInfo = null;
     private class ProgressInfo{
         public double paramLen;
@@ -81,15 +78,16 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
     private boolean isUpdateAvailable;
     private NetworkChangeReceiver networkChangeReceiver;
     private float progressFactor = 0.0f, divideFactor = 2;
-    public static boolean isUpdatingFrameWork;
     private CheckUpdateAvailable checkUpdateAvailable;
     public static boolean USB_PERMISSION_CHECK;
 
     private DownloadProgrammingFile downloadProgrammingFile;
-    private CopyOnWriteArrayList<FirmwareModel> fwlist = new CopyOnWriteArrayList<>();
 
     private View view;
     private Bundle args;
+    private TextView textViewUpdateStatus;
+    private TextView textViewProgress;
+    private TextView textViewButtonDone;
 
     @Override
     public void setArguments(Bundle args) {
@@ -102,6 +100,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         super.onCreate(savedInstanceState);
         currentFW = FirmwareUtil.currentFirmware;
         batteryLevel = PreferenceUtils.getInt(PreferenceKeys.BATTERY_VALUE, getActivity());
+
     }
 
     @Override
@@ -111,6 +110,12 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 container, false);
         view.setOnClickListener(this);
         view.findViewById(R.id.image_view_ota_back).setOnClickListener(this);
+        textViewUpdateStatus = view.findViewById(R.id.updateStatus);
+        textViewUpdateStatus.setVisibility(View.GONE);
+        textViewProgress = view.findViewById(R.id.text_progress);
+        textViewProgress.setOnClickListener(this);
+        textViewButtonDone = view.findViewById(R.id.button_done);
+        textViewButtonDone.setOnClickListener(this);
         return view;
     }
 
@@ -126,8 +131,6 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             }
             startCheckingIfUpdateIsAvailable();
             registerConnectivity();
-        } else {
-            readBasicInformation();
         }
     }
 
@@ -136,6 +139,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         super.onResume();
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_UPDATE_DEVICE);
+
+        readBasicInformation();
     }
 
     @Override
@@ -145,19 +150,24 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 getActivity().onBackPressed();
                 break;
             }
-            case R.id.aa_popup_close_arrow:{
+            case R.id.text_progress:{
                 if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == DownloadProgrammingFile.Status.RUNNING) {
 //                    AlertsDialog.showSimpleDialogWithOKButton(null, getString(R.string.please_wait), getActivity());
 //                    AnalyticsManager.getInstance(getActivity()).reportUsbUpdateAlert(getString(R.string.please_wait));
-                } else if (batteryLevel < 50) {
-//                    AlertsDialog.showSimpleDialogWithOKButtonWithBack(null, getString(R.string.battery_alert), getActivity());
+                } else if (batteryLevel < 30) {
+                    AlertsDialog.showSimpleDialogWithOKButtonWithBack(null, getString(R.string.battery_alert), getActivity());
 //                    AnalyticsManager.getInstance(getActivity()).reportUsbUpdateAlert(getString(R.string.battery_alert));
                 } else {
 //                    FirmwareUtil.disconnectHeadphoneText = getActivity().getResources().getString(R.string.pls_Connect_while_upgrade);
 //                    txtConnectMessage.setText(FirmwareUtil.disconnectHeadphoneText);
                     startDownloadFirmwareImage();
                     v.setOnClickListener(null);
+                    textViewProgress.setText("0%");
                 }
+                break;
+            }
+            case R.id.button_done:{
+                getDashboardActivity().onBackPressed();
                 break;
             }
         }
@@ -183,18 +193,41 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Logger.d(TAG,"getFirmwareVersion 33");
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Logger.d(TAG,"getFirmwareInfo");
                 ANCControlManager.getANCManager(getActivity()).getFirmwareInfo(lightX);
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+                Logger.d(TAG,"getFirmwareVersion");
                 ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
                 if (lightX!= null) {
                     lightX.readBootVersionFileResource();
                 }
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+                Logger.d(TAG,"getBatterLeverl");
                 ANCControlManager.getANCManager(getActivity()).getBatterLeverl(lightX);
+
+                Log.i(TAG,"isUpdatingFrameWork "+DashboardActivity.isUpdatingFirmware);
+                if (DashboardActivity.isUpdatingFirmware){
+                    if (lightX != null) {
+                        lightX.readBootImageType();
+                    }
+                }
             }
         }).start();
     }
@@ -232,7 +265,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == DownloadProgrammingFile.Status.RUNNING) {
                 return;
             }
-            downloadProgrammingFile = new DownloadProgrammingFile(getActivity(), this, fwlist);
+            downloadProgrammingFile = new DownloadProgrammingFile(getActivity(), this, DashboardActivity.mFwlist);
             try {
                 downloadProgrammingFile.executeOnExecutor(DownloadProgrammingFile.THREAD_POOL_EXECUTOR, OTAUtil.getURL(getActivity()));
             } catch (Exception e) {
@@ -258,27 +291,30 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         Logger.d(TAG,"setIsUpdateAvailable isUpdateAvailable="+isUpdateAvailable);
         if (isUpdateAvailable) {
             String liveAppVersion = null;
-            this.fwlist = fwList;
-            divideFactor = 2 * fwlist.size();
+            DashboardActivity.mFwlist = fwList;
+            divideFactor = 2 * DashboardActivity.mFwlist.size();
 //            linearLayout.setTag(DOWNLOAD);
-            for (FirmwareModel model : fwlist) {
+            for (FirmwareModel model : DashboardActivity.mFwlist) {
                 /**
                  * reorder here so in case of any changed at server
                  */
                 switch (model.getFwtype()) {
-                    case APP:
-                        liveAppVersion = model.getVersion();
-                        break;
                     case RSRC:
-                        rsrcVersion = model.getVersion();
+                        Logger.i(TAG,"onLineFwVersion is "+model.getVersion() );
+                        textViewUpdateStatus.setText("New software update version "+ model.getVersion() +" is available");
                         break;
                     case BOOT:
                         break;
+                    case APP:
                     case PARAM:
-                        liveAppVersion = model.getVersion();
+                        Logger.i(TAG,"onLineFwVersion is "+model.getVersion());
+                        textViewUpdateStatus.setText("New software update version "+ model.getVersion() +" is available");
                         break;
                 }
             }
+            textViewUpdateStatus.setVisibility(View.VISIBLE);
+            textViewProgress.setText("INSTALL");
+            textViewButtonDone.setVisibility(View.GONE);
 //            txtProgressVersion.setVisibility(View.GONE);
 //            iconCloud.setVisibility(View.VISIBLE);
 //            txtUpdating.setVisibility(View.VISIBLE);
@@ -305,14 +341,14 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
     }
 
     @Override
-    public void onDownloadedFirmware(CopyOnWriteArrayList<FirmwareModel> fwlist) throws FileNotFoundException {
+    public void onDownloadedFirmware(CopyOnWriteArrayList<FirmwareModel> fwList) throws FileNotFoundException {
         USB_PERMISSION_CHECK = true;
-        this.fwlist = fwlist;
 //        mProgressBar.setVisibility(View.GONE);
 //        updateStatus.setVisibility(View.VISIBLE);
-        if (fwlist.size() != 0) {
+        DashboardActivity.mFwlist = fwList;
+        if (fwList.size() != 0) {
             boolean isSuccessFulDownload = true;
-            for (FirmwareModel model : fwlist) {
+            for (FirmwareModel model : fwList) {
                 Logger.d(TAG,"onDownloadedFirmware version = "+model.getVersion());
                 if (!model.isSuccess()) {
                     isSuccessFulDownload = false;
@@ -335,19 +371,21 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             if (isSuccessFulDownload) {
 //                txtdownloading.setText("");
 //                lightX.readBootImageType();
+
+                DashboardActivity.isUpdatingFirmware = true;
                 if (lightX == null) {
                     startUpdate();
-                    if (fwlist.size() <= 0) {
-                        isUpdatingFrameWork = false;
+                    if (fwList.size() <= 0) {
+                        DashboardActivity.isUpdatingFirmware = false;
                         return;
                     }
                     index =0;
                     FirmwareUtil.isUpdatingFirmWare.set(true);
-                    AnalyticsManager.getInstance(getActivity()).reportFirmwareUpdateStarted(mLiveFirmware);
+                    AnalyticsManager.getInstance(getActivity()).reportFirmwareUpdateStarted(mOnLineFirmware);
                     if (progressInfo == null) {
                         progressInfo = new ProgressInfo();
                     }
-                    for (FirmwareModel model : fwlist) {
+                    for (FirmwareModel model : fwList) {
                         switch (model.getFwtype()) {
                             case PARAM:
                                 progressInfo.paramLen = FirmwareUtil.readInputStream(new FileInputStream(model.getFile())).length;
@@ -393,12 +431,15 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 
     @Override
     public void onUpgradeUpdate(String liveVersion, String title) {
-        mLiveFirmware = liveVersion;
+        mOnLineFirmware = liveVersion;
+        Log.i(TAG,"mOnLineFirmware is "+ mOnLineFirmware);
     }
 
     private void startUpdate(){
-        isUpdatingFrameWork = false;
         FirmwareUtil.isUpdatingFirmWare.set(true);
+        textViewUpdateStatus.setVisibility(View.VISIBLE);
+        textViewUpdateStatus.setText(R.string.firmware_is_updating);
+        textViewButtonDone.setVisibility(View.GONE);
 //        txtUpdating.setVisibility(View.VISIBLE);
 //        mainCircle.setBackgroundResource(R.drawable.orange);
 //        txtProgressVersion.setTextColor(getResources().getColor(R.color.white));
@@ -451,21 +492,16 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 
     public void startWritingFirmware() {
         try {
-            if (fwlist.size() <= 0) {
-                isUpdatingFrameWork = false;
+            if (DashboardActivity.mFwlist.size() <= 0) {
+                Log.i(TAG,"startWritingFirmware fwlist size is 0");
 //                FirmwareUtil.isUpdatingFirmWare.set(false);
-//                lightX.enterApplication();
-//                Logger.d("OTA " + "enterApplication");
-//                txtUpdating.setText(getString(R.string.update_successful));
-//                try {
-//                    getAppActivity().leftHeaderBtn.setVisibility(View.VISIBLE);
-//                } catch (Exception e) {
-//                }
+                lightX.enterApplication();
+                DashboardActivity.isUpdatingFirmware = false;
                 return;
             }
             FirmwareUtil.isUpdatingFirmWare.set(true);
-            int size = fwlist.size() - 1;
-            FirmwareModel firmwareModel = fwlist.remove(size);
+            int size = DashboardActivity.mFwlist.size() - 1;
+            FirmwareModel firmwareModel = DashboardActivity.mFwlist.remove(size);
             byte[] data;
             switch (firmwareModel.getFwtype()) {
                 case APP:
@@ -498,7 +534,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         FirmwareModel firmwareModel = findImage(FwTYPE.PARAM);
         String version = firmwareModel.getVersion();
         String currentVersion = transferCurrentVersion(version);
-        Logger.d(TAG,"currentVersion param   ====="+currentVersion);
+        Logger.d(TAG,"onLineFwVersion param   ====="+version);
         byte[] data ;
         try {
             data = FirmwareUtil.readInputStream(new FileInputStream(firmwareModel.getFile()));
@@ -510,6 +546,11 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         otaSteps = 0;
         Logger.d(TAG,"currentFW ="+currentFW);
         Logger.d(TAG,"PARAM length ="+data.length);
+        if (currentFW < 0){
+            Log.i(TAG,"currentFw is "+currentFW+", unable to upgrade");
+            imageUpdateError();
+            return;
+        }
         Cmd150Manager.getInstance().updateImage(AvneraManager.getAvenraManager(getActivity()).getAudioManager(),
                 data, currentVersion,
                 ImageType.Parameters,currentFW == 0 ? (byte) 1 : (byte) 0);
@@ -519,7 +560,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         FirmwareModel firmwareModel = findImage(FwTYPE.DATA);
         String version = firmwareModel.getVersion();
         String currentVersion = transferCurrentVersion(version);
-        Logger.d(TAG,"currentVersion  data  ====="+currentVersion);
+        Logger.d(TAG,"onLineFwVersion  data  ====="+version);
         byte[] data;
         try {
             data = FirmwareUtil.readInputStream(new FileInputStream(firmwareModel.getFile()));
@@ -539,7 +580,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         FirmwareModel firmwareModel = findImage(FwTYPE.DATA);
         String version = firmwareModel.getVersion();
         String currentVersion = transferCurrentVersion(version);
-        Logger.d(TAG,"currentVersion  firmware  ====="+currentVersion);
+        Logger.d(TAG,"onLineFwVersion  firmware  ====="+version);
         byte[] data ;
         try {
             data = FirmwareUtil.readInputStream(new FileInputStream(firmwareModel.getFile()));
@@ -567,7 +608,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 //            linearLayout.setTag("");
             try {
                 if(getActivity() != null)
-                    checkUpdateAvailable = CheckUpdateAvailable.start(this, getActivity(), this, OTAUtil.getURL(getActivity()), rsrcSavedVersion, currentVersion);
+                    checkUpdateAvailable = CheckUpdateAvailable.start(this, getActivity(), this, OTAUtil.getURL(getActivity()), deviceFwVersion, onLineFwVersion);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -590,9 +631,10 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     int major = result[0];
                     int minor = result[1];
                     int revision = result[2];
-                    rsrcSavedVersion = major + "." + minor + "." + revision;
-                    Logger.d(TAG, "rsrcSavedVersion = " + rsrcSavedVersion);
-                    PreferenceUtils.setString(AppUtils.getModelNumber(getActivity()), PreferenceKeys.RSRC_VERSION, rsrcSavedVersion, getActivity());
+                    deviceFwVersion = major + "." + minor + "." + revision;
+                    Logger.d(TAG, "deviceFwVersion = " + deviceFwVersion);
+                    textViewUpdateStatus.setText("Firmware version "+ deviceFwVersion +" is installed");
+                    PreferenceUtils.setString(AppUtils.getModelNumber(getActivity()), PreferenceKeys.RSRC_VERSION, deviceFwVersion, getActivity());
                 }
                 break;
             }
@@ -610,9 +652,10 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     major = buffer[0];
                     minor = buffer[1];
                     revision = buffer[2];
-                    currentVersion = major + "." + minor + "." + revision;
-//                    txtProgressVersion.setText("V" + currentVersion + " Installed");
-                    PreferenceUtils.setString(PreferenceKeys.FirmVersion, currentVersion, getActivity());
+                    onLineFwVersion = major + "." + minor + "." + revision;
+//                    txtProgressVersion.setText("V" + onLineFwVersion + " Installed");
+                    Logger.d(TAG, "onLineFwVersion is " + onLineFwVersion);
+                    PreferenceUtils.setString(PreferenceKeys.FirmVersion, onLineFwVersion, getActivity());
                 }
                 /*
                  Wait until resource command return resource version.
@@ -645,7 +688,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 //            txtProgressVersion.setText("Failed !");
 //            txtUpdating.setText("Firmware update failed.");
             AlertsDialog.showToast(getActivity(), "Communication broke during update. Please try again");
-            isUpdatingFrameWork = false;
+            DashboardActivity.isUpdatingFirmware = false;
             FirmwareUtil.isUpdatingFirmWare.set(false);
             try {
 //                getActivity().leftHeaderBtn.setVisibility(View.VISIBLE);
@@ -668,6 +711,10 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 //                        txtUpdating.setText(getString(R.string.updating));
 //
 //                    upgradeProgress(progress,value);
+                    if (progress * 100 == 100.0) {
+                        progressFactor += 100.0;
+                    }
+                    updateOTAProgress(value);
                     break;
 
                 case Checksum:
@@ -675,8 +722,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     break;
                 case Complete:
                     Logger.d(TAG, "~~~~~~~~~~Completed..");
-                    if (fwlist.size() <= 0) {
-                        isUpdatingFrameWork = false;
+                    if (DashboardActivity.mFwlist.size() <= 0) {
                         FirmwareUtil.isUpdatingFirmWare.set(false);
                         USB_PERMISSION_CHECK = false;
                         PreferenceUtils.setBoolean(AppUtils.IsNeedToRefreshCommandRead, false, getActivity()); // set RSRC,APP version for Checking version at home.
@@ -697,17 +743,23 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 //                                Animation animation = AnimationUtils.loadAnimation(getAppActivity(), R.anim.move);
 //                                imgCableAnimation.setAnimation(animation);
 //                                animation.start();
+                                textViewUpdateStatus.setText(R.string.OK);
+                                textViewButtonDone.setVisibility(View.VISIBLE);
                                 break;
                             case Connected_BluetoothDevice:
 //                                FirmwareUtil.disconnectHeadphoneText = getActivity().getResources().getString(R.string.pls_Connect_restart);
                                 lightX.enterApplication();
                                 Logger.d(TAG, "OTA enterApplication");
 //                                txtUpdating.setText(getString(R.string.update_successful));
+                                textViewUpdateStatus.setText(R.string.firmware_is_installed);
+                                textViewButtonDone.setVisibility(View.VISIBLE);
                                 try {
 //                                    getActivity().leftHeaderBtn.setVisibility(View.VISIBLE);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
+
+                                DashboardActivity.isUpdatingFirmware = false;
                                 break;
                         }
                     } else {
@@ -730,8 +782,6 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             return;
         }
 
-        isUpdatingFrameWork = true;
-
         Logger.d(TAG, " called lightXIsInBootloader isInBootloader = " + isInBootloader);
         if (isInBootloader) {
             Logger.d(TAG, "is in bootloader mode, start update");
@@ -739,7 +789,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             startWritingFirmware();
         } else {
             lightX.enterBootloader();
-            Logger.d(TAG, "OTA " + "enterBootloader");
+            Logger.d(TAG, "OTA enterBootloader");
         }
     }
 
@@ -763,8 +813,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
     public void isLightXintialize() {
         super.isLightXintialize();
         Logger.d(TAG, "OTA " + "reconnected");
-        Logger.e(TAG, "initizlie isUpdatingFrameWork=" + isUpdatingFrameWork + "");
-        if (isUpdatingFrameWork) {
+        Logger.e(TAG, "initizlie isUpdatingFrameWork=" + DashboardActivity.isUpdatingFirmware);
+        if (DashboardActivity.isUpdatingFirmware) {
             lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
             if (lightX != null) {
                 lightX.readBootImageType();
@@ -787,18 +837,25 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             case AmCmds.CMD_FirmwareVersion: {
                 AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager(getActivity()).getAudioManager().getAccessoryStatus();
                 String version = accessoryInfo.getFirmwareRev();
-                com.avnera.smartdigitalheadset.Log.e("currentVersion : "+version);
-                currentVersion = version;
-//                txtProgressVersion.setText("V" + currentVersion + " Installed");
+                com.avnera.smartdigitalheadset.Log.e("onLineFwVersion : "+version);
+                onLineFwVersion = version;
+//                textViewUpdateStatus.setText("New software update version "+onLineFwVersion+" is available");
+
+                textViewUpdateStatus.setVisibility(View.VISIBLE);
+                textViewUpdateStatus.setText("Firmware version "+ onLineFwVersion +" is installed");
+                TextPaint paint = textViewUpdateStatus.getPaint();
+                paint.setFakeBoldText(true);
+                textViewProgress.setText("Ok");
+//                textViewProgress.setBackground();
                 PreferenceUtils.setString(PreferenceKeys.FirmVersion, version, getActivity());
-//                txtProgressVersion.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        startCheckingIfUpdateIsAvailable();
-//                        registerConnectivity();
-//                    }
-//                }, 1000);
-                AnalyticsManager.getInstance(getActivity()).reportFirmwareVersion(currentVersion);
+                myHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startCheckingIfUpdateIsAvailable();
+                        registerConnectivity();
+                    }
+                }, 1000);
+                AnalyticsManager.getInstance(getActivity()).reportFirmwareVersion(onLineFwVersion);
                 break;
             }
             case AmCmds.CMD_FWInfo: {
@@ -845,9 +902,9 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                         realProgress = progress/100.0 *(progressInfo.firmwareLen/totalLen) + ((progressInfo.paramLen+progressInfo.dataLen)/totalLen);
                     }
                     Logger.d(TAG,"realProgress is = "+realProgress);
-//                    updateOTAProgress(realProgress* 100.0);
+                    updateOTAProgress(realProgress* 100.0);
                 }else if (index ==2){
-//                    updateOTAProgress(100);
+                    updateOTAProgress(100);
                 }
                 break;
             }
@@ -863,7 +920,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
              * OTA steps {@see CmdManager.updateImage}
              */
             case ImageUpdateFinalize: {
-                Logger.d(TAG, "fwlist size =" + fwlist.size());
+                Logger.d(TAG, "fwlist size =" + DashboardActivity.mFwlist.size());
                 if (value!= null && !value.toString().equalsIgnoreCase("Success")){
                     imageUpdateError();
                     break;
@@ -873,8 +930,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 
                 switch (otaSteps) {
                     case 0: {
-                        if (fwlist.size() <= 0) {
-                            isUpdatingFrameWork = false;
+                        if (DashboardActivity.mFwlist.size() <= 0) {
+                            DashboardActivity.isUpdatingFirmware = false;
                             return;
                         }
                         index++;
@@ -889,8 +946,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                         break;
                     }
                     case 1: {
-                        if (fwlist.size() <= 0) {
-                            isUpdatingFrameWork = false;
+                        if (DashboardActivity.mFwlist.size() <= 0) {
+                            DashboardActivity.isUpdatingFirmware = false;
                             return;
                         }
                         index++;
@@ -908,8 +965,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                         Logger.d(TAG, "last ota step");
                         FirmwareUtil.disconnectHeadphoneText = getActivity().getResources().getString(R.string.plsConnect);
                         otaSteps = -1;
-                        if (fwlist.size() <= 0) {
-                            isUpdatingFrameWork = false;
+                        if (DashboardActivity.mFwlist.size() <= 0) {
+
                             FirmwareUtil.isUpdatingFirmWare.set(false);
                             USB_PERMISSION_CHECK = false;
                             PreferenceUtils.setBoolean(AppUtils.IsNeedToRefreshCommandRead, false, getActivity()); // set RSRC,APP version for Checking version at home.
@@ -928,8 +985,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                                                 e.printStackTrace();
                                             }
                                             PreferenceUtils.setBoolean(AppUtils.IsNeedToRefreshCommandRead, false, getActivity());
-                                            Logger.d(TAG, "OTA startFirmware rsrcSavedVersion = "+mLiveFirmware);
-                                            String curVer = transferCurrentVersion(mLiveFirmware);
+                                            Logger.d(TAG, "OTA startFirmware deviceFwVersion = "+ mOnLineFirmware);
+                                            String curVer = transferCurrentVersion(mOnLineFirmware);
                                             int valueOf = Integer.valueOf(curVer, 16);
                                             Cmd150Manager.getInstance().setFirmwareVersion(AvneraManager.getAvenraManager(getActivity()).getAudioManager()
                                                     ,valueOf);
@@ -944,7 +1001,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 
                                     Logger.d(TAG, "OTA enterApplication");
 //                                    txtUpdating.setText(getString(R.string.update_successful));
-                                    AnalyticsManager.getInstance(getActivity()).reportFirmwareUpdateComplete(mLiveFirmware);
+                                    AnalyticsManager.getInstance(getActivity()).reportFirmwareUpdateComplete(mOnLineFirmware);
                                     try {
 //                                        getActivity().leftHeaderBtn.setVisibility(View.VISIBLE);
                                     } catch (Exception e) {
@@ -955,6 +1012,9 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                                             headPhoneStatus(false);
                                         }
                                     },2000);
+                                    textViewUpdateStatus.setText(R.string.OK);
+                                    textViewButtonDone.setVisibility(View.VISIBLE);
+                                    DashboardActivity.isUpdatingFirmware = false;
                                     break;
                             }
                         }
@@ -975,6 +1035,19 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 FirmwareUtil.disconnectHeadphoneText = getActivity().getResources().getString(R.string.plsConnect);
                 myHandler.removeMessages(TIMER_OUT);
                 break;
+            }
+        }
+    }
+
+    private void updateOTAProgress(double realProgress){
+
+        if (realProgress >= 0) {
+            try {
+                DecimalFormat oneDigit = new DecimalFormat("#,##0.0");//format to 1 decimal place
+                String s = oneDigit.format(realProgress);
+                textViewProgress.setText(s + " %");
+            } catch (Exception e) {
+                Logger.e(TAG ,"realProgress:"+realProgress);
             }
         }
     }
@@ -1005,27 +1078,29 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         Logger.d(TAG, "imageUpdateError");
         Cmd150Manager.getInstance().setFirmwareUpdateState(AvneraManager.getAvenraManager(getActivity()).getAudioManager(),JBLConstant.ENABLE_ACCESSORY_INTERRUPTS);
 //        txtProgressVersion.setText("Failed !");
+        textViewProgress.setText("Failed!");
+        textViewUpdateStatus.setText("Firmware update failed.");
 //        txtUpdating.setText("Firmware update failed.");
         AlertsDialog.showToast(getActivity(), "Communication broke during update. Please try again");
-        isUpdatingFrameWork = false;
+        DashboardActivity.isUpdatingFirmware = false;
         FirmwareUtil.isUpdatingFirmWare.set(false);
         try {
 //            getActivity().leftHeaderBtn.setVisibility(View.VISIBLE);
         } catch (Exception e) {
 
         }
-        AnalyticsManager.getInstance(getActivity()).reportFirmwareUpdateFailed(mLiveFirmware);
+        AnalyticsManager.getInstance(getActivity()).reportFirmwareUpdateFailed(mOnLineFirmware);
     }
 
     private FirmwareModel findImage(FwTYPE type){
         int pos = 0;
-        for (int i=0; i< fwlist.size();i++){
-            if (fwlist.get(i).getFwtype() == type){
+        for (int i=0; i< DashboardActivity.mFwlist.size();i++){
+            if (DashboardActivity.mFwlist.get(i).getFwtype() == type){
                 pos = i;
                 break;
             }
         }
-        return fwlist.remove(pos);
+        return DashboardActivity.mFwlist.remove(pos);
     }
 
     public class NetworkChangeReceiver extends BroadcastReceiver {
@@ -1065,7 +1140,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     }
                     if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == AsyncTask.Status.FINISHED) {
                         boolean isSuccessFulDownload = true;
-                        for (FirmwareModel model : fwlist) {
+                        for (FirmwareModel model : DashboardActivity.mFwlist) {
                             if (!model.isSuccess()) {
                                 isSuccessFulDownload = false;
                                 break;

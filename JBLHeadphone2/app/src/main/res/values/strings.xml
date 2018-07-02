@@ -37,9 +37,9 @@
     <string name="user_manual">User manual</string>
     <string name="updating">Updating&#8230;</string>
     <string name="text_ota_title">Product software update</string>
-    <string name="firmware_is_updating">Firmware is Updating…\n1.Please do not close the application.\n2.Keep the headset near the device.\n3.Pluggin in the headphones is recommended.</string>
-    <string name="firmware_new_version">New software update version 2.0.0 is available</string>
-    <string name="firmware_is_installed">Firmware version 2.0.0 is installed</string>
+    <string name="firmware_is_updating"><b>Firmware is Updating…</b>\n1.Please do not close the application.\n2.Keep the headset near the device.\n3.Pluggin in the headphones is recommended.</string>
+    <string name="firmware_new_version">New software update version %1$s is available</string>
+    <string name="firmware_is_installed">Firmware version %1$s is installed</string>
     <string name="done">Done</string>
 
 
@@ -99,6 +99,12 @@
 
 
     <string name="unplug_plug_while_update_error">"Update process interrupted. \nPress OK to restart the process"</string>
+    <string name="battery_alert">The battery level of your headphones needs to be above 50% to perform a firmware update or connect charger and restart update.</string>
 
+
+    <string name="ambientAware">Ambient Aware</string>
+    <string name="noise_cancelling">Noise Cancellation</string>
+    <string name="amibient">Use the smart button on your headphones \n to turn Ambient  Awareness on and off.</string>
+    <string name="noise_cancel_tip">Use the smart button on your headphones \n to turn Noise Cancellation on and off.</string>
 
 </resources>

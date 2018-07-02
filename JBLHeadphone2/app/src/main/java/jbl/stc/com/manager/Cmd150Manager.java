@@ -7,6 +7,8 @@ import com.avnera.audiomanager.ImageType;
 import com.avnera.audiomanager.Status;
 import com.avnera.audiomanager.audioManager;
 
+import java.io.ByteArrayInputStream;
+
 import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.utils.AmToolUtil;
 
@@ -214,6 +216,10 @@ public class Cmd150Manager implements BaseManager {
      * Get "current firmware" from the parameter of callback.
      */
     public void getFWInfo(Object object){
+        if (object == null){
+            Log.i(TAG,"object is null, call setManager first");
+            return;
+        }
         ((audioManager)object).getFWInfo();
     }
 
@@ -260,23 +266,24 @@ public class Cmd150Manager implements BaseManager {
      * The same if current firmware is 1 then the value of parameter set is 1.
      */
     public void updateImage(Object object,byte[] image, String version, ImageType type, byte set){
-        Status status = Status.Failed;
-        if (type == ImageType.Parameters){
-            status = ((audioManager)object).sendCommand(AmCmds.CMD_UPDATE_IMAGE,
-                    set == 0 ? AmCmds.address1_Parameter: AmCmds.address0_Parameter,
-                    image, Integer.valueOf(AmToolUtil.INSTANCE.transferCurrentVersion(version),16),
-                    type, set);
-        }else if (type == ImageType.Data){
-            status = ((audioManager)object).sendCommand(AmCmds.CMD_UPDATE_IMAGE,
-                    set == 0 ? AmCmds.address1_Data: AmCmds.address0_Data,
-                    image, Integer.valueOf(AmToolUtil.INSTANCE.transferCurrentVersion(version),16),
-                    type, set);
-        }else if (type == ImageType.Firmware){
-            status = ((audioManager)object).sendCommand(AmCmds.CMD_UPDATE_IMAGE,
-                    set == 0 ? AmCmds.address1_Firmware: AmCmds.address0_Firmware,
-                    image, Integer.valueOf(AmToolUtil.INSTANCE.transferCurrentVersion(version),16),
-                    type, set);
+        if (object == null){
+            Log.i(TAG,"is not 150NC device");
+            return;
         }
+        int ver = Integer.valueOf(version,16);
+        Status status;
+        int address = 0;
+        if (type == ImageType.Parameters){
+            address = (set == 0) ? AmCmds.address1_Parameter: AmCmds.address0_Parameter;
+        }else if (type == ImageType.Data){
+            address = (set == 0) ? AmCmds.address1_Data: AmCmds.address0_Data;
+        }else if (type == ImageType.Firmware){
+            address = (set == 0) ? AmCmds.address1_Firmware: AmCmds.address0_Firmware;
+        }
+        Log.i(TAG,"updateImage current is "+set+",version is "
+                + ver +", type is "+type+",image length is "+ image.length +",address is "+address);
+        status = ((audioManager)object).sendCommand(AmCmds.CMD_UPDATE_IMAGE,
+                address,image, ver,type, set);
         Log.i(TAG,"status = " + status);
     }
 
@@ -296,6 +303,10 @@ public class Cmd150Manager implements BaseManager {
      * new firmware version.
      */
     public void  setFirmwareVersion(Object object, int version ){
+        if (object == null){
+            Log.i(TAG,"is not 150NC device");
+            return;
+        }
         ((audioManager)object).setBundle(version);
     }
 
@@ -309,6 +320,10 @@ public class Cmd150Manager implements BaseManager {
      * handle the error conditions and enable the accessory functionality properly.
      */
     public void setFirmwareUpdateState(Object object,int state){
+        if (object == null){
+            Log.i(TAG,"is not 150NC device");
+            return;
+        }
         ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_FIRMWARE_UPDATE_STATE, state);
     }
 }

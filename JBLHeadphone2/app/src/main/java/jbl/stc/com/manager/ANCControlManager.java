@@ -235,7 +235,7 @@ public class ANCControlManager {
 
     public void getFirmwareInfo(LightX lightX){
         if (lightX == null) {
-            Cmd150Manager.getInstance().getFirmwareVersion(AvneraManager.getAvenraManager(context).getAudioManager());
+            Cmd150Manager.getInstance().getFWInfo(AvneraManager.getAvenraManager(context).getAudioManager());
             Log.d(TAG, "SendCommand getFirmwareInfo");
         }
     }

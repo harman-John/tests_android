@@ -125,7 +125,7 @@ public class FirmwareUtil {
                     return true;
                 } else if (Integer.parseInt(liveArray[1]) == Integer.parseInt(currentArray[1])) {
                     // Checking for third Index
-                    if (Integer.parseInt(liveArray[2]) > Integer
+                    if (Integer.parseInt(liveArray[2]) >= Integer
                             .parseInt(currentArray[2])) {
                         return true;
                     } else {

@@ -75,7 +75,7 @@ public class AlertsDialog {
      * @param message
      * @param context
      */
-    public static void showSimpleDialogWithOKButtonWithBack(String title, String message, final AppCompatActivity context) {
+    public static void showSimpleDialogWithOKButtonWithBack(String title, String message, final Activity context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         if (!TextUtils.isEmpty(title)) {
