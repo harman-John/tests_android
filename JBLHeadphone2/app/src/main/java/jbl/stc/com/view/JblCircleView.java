@@ -21,7 +21,6 @@ import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.logger.Logger;
-import jbl.stc.com.utils.UiUtils;
 
 public class JblCircleView extends View {
 
@@ -30,16 +29,20 @@ public class JblCircleView extends View {
 
     private int mImageRadius = 100;
 
-    private int mWidth = 600;
+    private int mWidth = 578;
 
     private Integer mMaxRadius = 300;
 
     private boolean mIsWave = true;
 
     private List<Integer> mAlphas = new ArrayList<>();
+    private List<Integer> mAlphas1 = new ArrayList<>();
+    private List<Integer> mAlphas2 = new ArrayList<>();
 
     private List<Integer> mRadius = new ArrayList<>();
     private Paint mPaint;
+    private Paint mPaint1;
+    private Paint mPaint2;
     private Paint mPaintCircle;
 
     private boolean isFill = false;
@@ -60,6 +63,13 @@ public class JblCircleView extends View {
         Logger.i(TAG, "JblCircleView");
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
+
+        mPaint1 = new Paint();
+        mPaint1.setAntiAlias(true);
+
+        mPaint2 = new Paint();
+        mPaint2.setAntiAlias(true);
+
         mPaintCircle = new Paint();
         mPaintCircle.setAntiAlias(true);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WaveView, defStyleAttr, 0);
@@ -100,6 +110,14 @@ public class JblCircleView extends View {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(5);
 
+        mPaint1.setColor(mColor);
+        mPaint1.setStyle(Paint.Style.STROKE);
+        mPaint1.setStrokeWidth(5);
+
+        mPaint2.setColor(mColor);
+        mPaint2.setStyle(Paint.Style.STROKE);
+        mPaint2.setStrokeWidth(5);
+
         mPaintCircle.setColor(mColor);
         mPaintCircle.setStyle(Paint.Style.STROKE);
         mPaintCircle.setStrokeWidth(18);
@@ -108,14 +126,18 @@ public class JblCircleView extends View {
 
             Integer alpha = mAlphas.get(i);
             mPaint.setAlpha(alpha);
+            Integer alpha1 = mAlphas1.get(i);
+            mPaint1.setAlpha(alpha1);
+            Integer alpha2 = mAlphas2.get(i);
+            mPaint2.setAlpha(alpha2);
 
             Integer radius = mRadius.get(i);
 
             mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, mImageRadius + radius, mPaint);
 
-            mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, mImageRadius + radius +100, mPaint);
+            mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, mImageRadius + radius +180, mPaint1);
 
-            mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, mImageRadius + radius +200, mPaint);
+            mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, mImageRadius + radius +320, mPaint2);
 
             if (alpha > 0 && mImageRadius + radius < mMaxRadius) {
                 alpha = (int) (255.0F * (1.0F - (mImageRadius + radius) * 1.0f / mMaxRadius));
@@ -127,19 +149,30 @@ public class JblCircleView extends View {
                         + ",des = " + des
                         + ",radius size = " + mRadius.get(mRadius.size() - 1)
                         + ",mWidth = " + mWidth);
-                if (alpha > 148/2) {
-                    des = des +1;
-                    mAlphas.set(i, des );
+                if (alpha > 110) {
+                    des = des +5;
+                    if (des >0) {
+                        mAlphas.set(i, des);
+                    }
+                    if (des -30 >0){
+                        mAlphas1.set(i, des-30);
+                    }
+                    if (des -60 >0){
+                        mAlphas2.set(i, des-60);
+                    }
                 }else{
-                    des = des -1;
-                    mAlphas.set(i, des);
+                    des = des -2;
+                    if (des >0) {
+                        mAlphas.set(i, des);
+                    }
+                    if (des -30 >0){
+                        mAlphas1.set(i, des-30);
+                    }
+                    if (des -60 >0){
+                        mAlphas2.set(i, des-60);
+                    }
                 }
                 mRadius.set(i, radius + 3);
-            } else if (alpha < 0 && mImageRadius + radius > mMaxRadius) {
-
-                Logger.i(TAG, "remove i = " + i + ",alpha = " + alpha);
-                mRadius.remove(i);
-                mAlphas.remove(i);
             }
 
         }
@@ -149,8 +182,12 @@ public class JblCircleView extends View {
             mAlphas.clear();
             mRadius.clear();
             mAlphas.add(1);
+            mAlphas1.add(1);
+            mAlphas2.add(1);
             mRadius.add(200);
             mPaint.reset();
+            mPaint1.reset();
+            mPaint2.reset();
         }
 
 //        Logger.i(TAG,"mIsWave = "+mIsWave);
@@ -163,6 +200,8 @@ public class JblCircleView extends View {
         Logger.i(TAG, "circle");
         mIsWave = true;
         mAlphas.add(1);
+        mAlphas1.add(1);
+        mAlphas2.add(1);
         mRadius.add(200);
         mMaxRadius = getWidth() > getHeight() ? getHeight() / 2 : getWidth() / 2;
         invalidate();
@@ -171,7 +210,11 @@ public class JblCircleView extends View {
     public void stop() {
         Logger.i(TAG, "stop");
         mPaint.reset();
+        mPaint1.reset();
+        mPaint2.reset();
         mAlphas.clear();
+        mAlphas1.clear();
+        mAlphas2.clear();
         mRadius.clear();
         mMaxRadius = 300;
         mIsWave = false;
