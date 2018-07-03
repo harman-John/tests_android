@@ -4,23 +4,17 @@ package jbl.stc.com.fragment;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.text.Html;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -33,8 +27,6 @@ import com.avnera.audiomanager.Status;
 import com.avnera.audiomanager.audioManager;
 import com.avnera.audiomanager.responseResult;
 
-import com.avnera.smartdigitalheadset.ANCAwarenessPreset;
-
 import com.avnera.smartdigitalheadset.Command;
 
 import com.avnera.smartdigitalheadset.LightX;
@@ -44,13 +36,13 @@ import java.util.ArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.config.DeviceFeatureMap;
+import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.CreateEqTipsDialog;
-import jbl.stc.com.listener.AwarenessChangeListener;
 import jbl.stc.com.listener.OnDialogListener;
-import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
@@ -95,6 +87,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private LightX lightX;
     private AAPopupwindow aaPopupwindow;
 
+    private LinearLayout linearLayoutNoiseCanceling;
+    private LinearLayout linearLayoutAmbientAware;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,24 +102,20 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 container, false);
         Log.i(TAG, "onCreateView");
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
-        view.findViewById(R.id.image_view_settings).setOnClickListener(this);
-        view.findViewById(R.id.image_view_info).setOnClickListener(this);
-        view.findViewById(R.id.image_view_ambient_aware).setOnClickListener(this);
+        view.findViewById(R.id.image_view_home_settings).setOnClickListener(this);
+        view.findViewById(R.id.image_view_home_info).setOnClickListener(this);
         textViewDeviceName = view.findViewById(R.id.text_view_home_device_name);
-        imageViewDevice = view.findViewById(R.id.deviceImageView);
-        view.findViewById(R.id.eqSwitchLayout);
-        view.findViewById(R.id.eqInfoLayout).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.eqInfoLayout).setOnClickListener(this);
-        checkBoxNoiseCancel = view.findViewById(R.id.image_view_noise_cancel);
-        checkBoxNoiseCancel.setOnClickListener(this);
-        textViewCurrentEQ = view.findViewById(R.id.eqNameText);
-        view.findViewById(R.id.titleEqText);
-        view.findViewById(R.id.eqDividerView);
-        linearLayoutBattery = view.findViewById(R.id.linear_layout_battery);
-        progressBarBattery = view.findViewById(R.id.batteryProgressBar);
-        textViewBattery = view.findViewById(R.id.batteryLevelText);
-        view.findViewById(R.id.text_view_ambient_aware);
-        mBlurView = view.findViewById(R.id.blur_view);
+
+        imageViewDevice = view.findViewById(R.id.image_view_home_device_image);
+        view.findViewById(R.id.relative_layout_home_eq_info).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.relative_layout_home_eq_info).setOnClickListener(this);
+
+        textViewCurrentEQ = view.findViewById(R.id.text_view_home_eq_name);
+        linearLayoutBattery = view.findViewById(R.id.linear_layout_home_battery);
+        progressBarBattery = view.findViewById(R.id.progress_bar_battery);
+        textViewBattery = view.findViewById(R.id.text_view_battery_level);
+
+        mBlurView = view.findViewById(R.id.view_home_blur);
         createEqTipsDialog = new CreateEqTipsDialog(getActivity());
         createEqTipsDialog.setOnDialogListener(new OnDialogListener() {
             @Override
@@ -137,8 +128,28 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
             }
         });
+        linearLayoutNoiseCanceling = view.findViewById(R.id.linear_layout_home_noise_cancel);
+        String modelNumber = AppUtils.getModelNumber(getActivity());
+        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_NOISE_CANCEL)){
+            linearLayoutNoiseCanceling.setVisibility(View.GONE);
+        }else{
+            linearLayoutNoiseCanceling.setVisibility(View.VISIBLE);
+            checkBoxNoiseCancel = view.findViewById(R.id.image_view_home_noise_cancel);
+            checkBoxNoiseCancel.setOnClickListener(this);
+        }
 
-
+        linearLayoutAmbientAware = view.findViewById(R.id.linear_layout_home_ambient_aware);
+        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_AMBIENT_AWARE)){
+            linearLayoutAmbientAware.setVisibility(View.GONE);
+        }else{
+            view.findViewById(R.id.image_view_home_ambient_aware).setOnClickListener(this);
+            if (modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
+                    ||modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
+                    ||modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
+                TextView textViewAmbientAware = view.findViewById(R.id.text_view_home_ambient_aware);
+                textViewAmbientAware.setText(R.string.smart_ambient);
+            }
+        }
         updateDeviceName();
         return view;
     }
@@ -153,7 +164,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             case NONE:
                 break;
             case Connected_USBDevice:
-                linearLayoutBattery.setVisibility(View.INVISIBLE);
+                linearLayoutBattery.setVisibility(View.VISIBLE);
+                progressBarBattery.setProgress(100);
+                textViewBattery.setText("100%");
                 break;
             case Connected_BluetoothDevice:
                 linearLayoutBattery.setVisibility(View.VISIBLE);
@@ -173,27 +186,27 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.image_view_ambient_aware: {
+            case R.id.image_view_home_ambient_aware: {
                 showAncPopupWindow();
                 break;
             }
-            case R.id.eqInfoLayout: {
+            case R.id.relative_layout_home_eq_info: {
                 switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 break;
             }
-            case R.id.image_view_info: {
-                switchFragment(new InfoFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+            case R.id.image_view_home_info:{
+                switchFragment(new InfoFragment(),JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
                 break;
             }
-            case R.id.image_view_settings: {
-                switchFragment(new SettingsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            case R.id.image_view_home_settings:{
+                switchFragment(new SettingsFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
-            case R.id.image_view_noise_cancel: {
-                if (checkBoxNoiseCancel.isChecked()) {
-                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX, true);
-                } else {
-                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX, false);
+            case R.id.image_view_home_noise_cancel:{
+                if (checkBoxNoiseCancel.isChecked()){
+                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,true);
+                }else{
+                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,false);
                 }
                 break;
             }

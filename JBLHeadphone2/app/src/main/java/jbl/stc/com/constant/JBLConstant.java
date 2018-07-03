@@ -41,4 +41,10 @@ public class JBLConstant {
 
     public static final String DEVICE_150NC = "150NC";
     public static boolean USB_PERMISSION_CHECK;
+
+
+
+    public static final String DEVICE_LIVE_400BT = "LIVE 400BT";
+    public static final String DEVICE_LIVE_500BT = "LIVE 500BT";
+    public static final String DEVICE_LIVE_FREE_GA = "LIVE FREE GA";
 }

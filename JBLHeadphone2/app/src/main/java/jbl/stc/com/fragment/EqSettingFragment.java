@@ -37,10 +37,6 @@ import jbl.stc.com.view.EqualizerShowView;
 import jbl.stc.com.view.MyGridLayoutManager;
 
 
-/**
- * Setting Eq screen
- * Created by darren.lu on 08/06/2017.
- */
 
 public class EqSettingFragment extends BaseFragment implements View.OnClickListener {
     private EqualizerShowView equalizerView;
@@ -82,7 +78,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         closeImageView = rootView.findViewById(R.id.closeImageView);
         moreImageView = rootView.findViewById(R.id.moreImageView);
         addImageView = rootView.findViewById(R.id.addImageView);
-        eqNameText = rootView.findViewById(R.id.eqNameText);
+        eqNameText = rootView.findViewById(R.id.text_view_eq_settings_eq_name);
         eqRecycleView = rootView.findViewById(R.id.eqRecycleView);
         eqRecycleView.setLayoutManager(new MyGridLayoutManager(getActivity(), 2));
         eqAdapter = new EqRecyclerAdapter();

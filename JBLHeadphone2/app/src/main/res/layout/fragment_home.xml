@@ -14,7 +14,7 @@
         android:paddingRight="@dimen/page_padding_right">
 
         <jbl.stc.com.view.AppImageView
-            android:id="@+id/image_view_info"
+            android:id="@+id/image_view_home_info"
             android:layout_width="@dimen/image_button_width_and_height"
             android:layout_height="@dimen/image_button_width_and_height"
             android:layout_alignParentLeft="true"
@@ -22,7 +22,7 @@
             android:src="@mipmap/icon_setting_normal" />
 
         <ImageView
-            android:id="@+id/image_view_settings"
+            android:id="@+id/image_view_home_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -34,7 +34,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/eqInfoLayout"
+        android:layout_above="@+id/relative_layout_home_eq_info"
         android:layout_below="@+id/titleBar"
         android:layout_centerInParent="true"
         android:orientation="vertical">
@@ -65,7 +65,7 @@
                 android:clickable="false">
 
                 <ImageView
-                    android:id="@+id/deviceImageView"
+                    android:id="@+id/image_view_home_device_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -96,13 +96,14 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/linear_layout_home_noise_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
                     <CheckBox
-                        android:id="@+id/image_view_noise_cancel"
+                        android:id="@+id/image_view_home_noise_cancel"
                         android:layout_width="@dimen/dashboard_talk_image_width"
                         android:layout_height="@dimen/dashboard_talk_image_width"
                         android:scaleType="fitXY"
@@ -121,7 +122,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/eqSwitchLayout"
+                    android:id="@+id/linear_layout_home_ambient_aware"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
@@ -130,14 +131,14 @@
                     android:visibility="visible">
 
                     <jbl.stc.com.view.AppImageView
-                        android:id="@+id/image_view_ambient_aware"
+                        android:id="@+id/image_view_home_ambient_aware"
                         android:layout_width="@dimen/dashboard_talk_image_width"
                         android:layout_height="@dimen/dashboard_talk_image_width"
                         android:scaleType="fitXY"
                         android:src="@mipmap/icon_eq_on" />
 
                     <jbl.stc.com.view.PoppinsRegularTextView
-                        android:id="@+id/text_view_ambient_aware"
+                        android:id="@+id/text_view_home_ambient_aware"
                         style="@style/PoppinsRegularTextStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -155,7 +156,7 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:id="@+id/eqInfoLayout"
+        android:id="@+id/relative_layout_home_eq_info"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
@@ -188,7 +189,7 @@
                 android:background="@color/white" />
 
             <jbl.stc.com.view.PoppinsRegularTextView
-                android:id="@+id/eqNameText"
+                android:id="@+id/text_view_home_eq_name"
                 style="@style/PoppinsRegularTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -209,10 +210,10 @@
                 android:src="@mipmap/icon_arrow_up" />
         </RelativeLayout>
     </FrameLayout>
-<View
-    android:id="@+id/blur_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_alignParentTop="true"
-    ></View>
+
+    <View
+        android:id="@+id/view_home_blur"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true" />
 </RelativeLayout>

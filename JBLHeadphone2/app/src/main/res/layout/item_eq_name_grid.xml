@@ -19,7 +19,7 @@
             android:src="@drawable/shape_circle_eq_name_bg_selected" />
 
         <jbl.stc.com.view.PoppinsRegularTextView
-            android:id="@+id/eqNameText"
+            android:id="@+id/text_view_grid_eq_name"
             style="@style/PoppinsRegularTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

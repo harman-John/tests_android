@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linear_layout_battery"
+    android:id="@+id/linear_layout_home_battery"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
@@ -14,7 +14,7 @@
         android:src="@mipmap/ic_charge" />
 
     <ProgressBar
-        android:id="@+id/batteryProgressBar"
+        android:id="@+id/progress_bar_battery"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="55dp"
         android:layout_height="4dp"
@@ -25,7 +25,7 @@
         android:progressDrawable="@drawable/horizontal_progress_not_charge" />
 
     <jbl.stc.com.view.PoppinsRegularTextView
-        android:id="@+id/batteryLevelText"
+        android:id="@+id/text_view_battery_level"
         style="@style/PoppinsRegularTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

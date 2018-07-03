@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.fabric.sdk.android.Fabric;
 import jbl.stc.com.BuildConfig;
+import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.entity.DeviceInfo;
 import jbl.stc.com.legal.LegalApi;
 import jbl.stc.com.storage.DatabaseHelper;
@@ -39,6 +40,7 @@ public class JBLApplication extends Application {
         context = this;
         LegalApi.INSTANCE.eulaInit(this);
         deviceInfo = new DeviceInfo();
+        DeviceFeatureMap.init(this);
         if (AppUtils.IS_DEBUG) {
             if (BuildConfig.DEBUG) {
                 //LeakCanary.install(this);

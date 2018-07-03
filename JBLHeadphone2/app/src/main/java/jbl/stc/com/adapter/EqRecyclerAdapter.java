@@ -72,7 +72,7 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
                 }
             });
             eqNameBgImage = itemView.findViewById(R.id.eqNameBgImage);
-            eqNameText = itemView.findViewById(R.id.eqNameText);
+            eqNameText = itemView.findViewById(R.id.text_view_grid_eq_name);
             plusImageView = itemView.findViewById(R.id.plusImageView);
             eqNameLayout = itemView.findViewById(R.id.eqNameLayout);
         }
