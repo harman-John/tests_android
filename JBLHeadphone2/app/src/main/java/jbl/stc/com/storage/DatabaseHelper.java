@@ -6,10 +6,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 
+import com.avnera.smartdigitalheadset.GraphicEQPreset;
+
 import java.util.ArrayList;
 
 import jbl.stc.com.constant.EqDbKey;
-import jbl.stc.com.entity.GraphicEQPreset;
 
 
 /**

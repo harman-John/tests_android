@@ -1,12 +1,10 @@
 package jbl.stc.com.fragment;
 
-import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,28 +14,25 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.avnera.smartdigitalheadset.GraphicEQPreset;
+import com.avnera.smartdigitalheadset.LightX;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.adapter.EqRecyclerAdapter;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
+import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.entity.EQModel;
-import jbl.stc.com.entity.GraphicEQPreset;
 import jbl.stc.com.listener.OnCustomEqListener;
 import jbl.stc.com.listener.OnEqItemSelectedListener;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.FastClickHelper;
-import jbl.stc.com.utils.FileUtils;
-import jbl.stc.com.utils.ToastUtil;
 import jbl.stc.com.view.EqualizerShowView;
 import jbl.stc.com.view.MyGridLayoutManager;
 
@@ -63,12 +58,15 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private EQModel currSelectedEq;
     private int currSelectedEqIndex;
     private int eqType;
+    private LightX lightX;
+    private Handler mHandler = new Handler();
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("EqSettingFragment:", "onCreateView");
         rootView = inflater.inflate(R.layout.fragment_eq_settings, container, false);
+        lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         initView();
         initEvent();
         initValue();
@@ -230,14 +228,46 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             rl_eq_view.setBackgroundResource(R.drawable.shape_legal_gradient);
             eqEditImage.setClickable(true);
         }
+        mHandler.removeCallbacks(applyRunnable);
+        mHandler.postDelayed(applyRunnable, 300);
     }
 
-    private void onAddCustomEq(boolean isAdd) {
+    /**
+     * Stop user to abuse app and send all command only after 300 milliseconds
+     */
+    Runnable applyRunnable = new Runnable() {
+        @Override
+        public void run() {
+            switch (currSelectedEqIndex) {
+                case 0:
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Off, lightX);
+                    break;
+                case 1:
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz, lightX);
+                    break;
+                case 2:
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Vocal, lightX);
+                    break;
+                case 3:
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Bass, lightX);
+                    break;
+                default:
+                    ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(currSelectedEq), lightX);
+                    break;
+            }
+            AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
+            PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, currSelectedEq.eqName, getActivity());
+            Log.d(TAG, "select eq position is " + String.valueOf(currSelectedEqIndex));
+        }
+    };
+
+    private void onAddCustomEq(boolean isAdd, boolean isPreset) {
         Log.d(TAG, "onAddCustomEq()");
         EqCustomFragment fragment = new EqCustomFragment();
         fragment.setOnCustomEqListener(onCustomEqListener);
         Bundle bundle = new Bundle();
         bundle.putBoolean(EqCustomFragment.EXTRA_IS_ADD, isAdd);
+        bundle.putBoolean(EqCustomFragment.EXTRA_IS_PRESET, isPreset);
         if (!isAdd) {
             bundle.putSerializable(EqCustomFragment.EXTRA_EQ_MODEL, currSelectedEq);
         }
@@ -250,19 +280,11 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.eqEditImage:
-                List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
-                if (eqModels != null && eqModels.size() > 0) {
-                    if (eqNameText.getText().equals("OFF") || eqNameText.getText().equals("JAZZ")
-                            || eqNameText.getText().equals("VOCAL") || eqNameText.getText().equals("BASS")) {
-                        ToastUtil.ToastLong(getActivity(), "Please select a EQ first.");
-                        return;
-                    }
+                if (currSelectedEqIndex < 4) {
+                    onAddCustomEq(false, true);
                 } else {
-                    ToastUtil.ToastLong(getActivity(), "Please add a EQ first.");
-                    return;
+                    onAddCustomEq(false, false);
                 }
-
-                onAddCustomEq(false);
                 break;
             case R.id.closeImageView:
                 getActivity().onBackPressed();
@@ -272,7 +294,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 break;
             case R.id.addImageView:
-                onAddCustomEq(true);
+                onAddCustomEq(true, false);
                 break;
         }
     }
