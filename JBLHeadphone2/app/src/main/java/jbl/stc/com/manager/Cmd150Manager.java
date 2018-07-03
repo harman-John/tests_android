@@ -7,8 +7,11 @@ import com.avnera.audiomanager.ImageType;
 import com.avnera.audiomanager.Status;
 import com.avnera.audiomanager.audioManager;
 
+import java.util.Arrays;
+
 import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.utils.AmToolUtil;
+import jbl.stc.com.utils.AppUtils;
 
 public class Cmd150Manager implements BaseManager {
 
@@ -25,187 +28,188 @@ public class Cmd150Manager implements BaseManager {
 
     @Override
     public void getANC(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Get, AmCmds.CMD_ANC);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_ANC);
     }
 
     @Override
-    public void setANC(Object object,boolean anc) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setANC(Object object, boolean anc) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_ANC,anc);
+        ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_ANC, anc);
     }
 
     @Override
     public void getAmbientLeveling(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Get, AmCmds.CMD_AmbientLeveling);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_AmbientLeveling);
     }
 
     @Override
     public void getANCLeft(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Get, AmCmds.CMD_RawLeft);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_RawLeft);
     }
 
     @Override
     public void getANCRight(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Get, AmCmds.CMD_RawRight);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_RawRight);
     }
 
     @Override
-    public void setANCLeft(Object object,int ancLeft) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setANCLeft(Object object, int ancLeft) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_RawLeft,ancLeft);
+        ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_RawLeft, ancLeft);
     }
 
     @Override
-    public void setANCRight(Object object,int ancRight) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setANCRight(Object object, int ancRight) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_RawRight,ancRight);
+        ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_RawRight, ancRight);
     }
 
-    public void setAmbientLeveling(Object object,int ambientLeveling) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setAmbientLeveling(Object object, int ambientLeveling) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_AmbientLeveling,ambientLeveling);
+        ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_AmbientLeveling, ambientLeveling);
     }
 
     public void getRawSteps(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Get, AmCmds.CMD_RawSteps);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_RawSteps);
     }
 
     @Override
     public void getBatteryLevel(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Get, AmCmds.CMD_BatteryLevel);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_BatteryLevel);
     }
 
     @Override
     public void getFirmwareVersion(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Get, AmCmds.CMD_FirmwareVersion);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_FirmwareVersion);
     }
 
     @Override
     public void getAutoOff(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Get, AmCmds.CMD_AutoOffEnable);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_AutoOffEnable);
     }
 
     @Override
-    public void setAutoOff(Object object,boolean autoOff) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setAutoOff(Object object, boolean autoOff) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_AutoOffEnable,autoOff);
+        ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_AutoOffEnable, autoOff);
     }
 
     @Override
     public void getVoicePrompt(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Get, AmCmds.CMD_VoicePrompt);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_VoicePrompt);
     }
 
     @Override
-    public void setVoicePrompt(Object object,boolean voicePrompt) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setVoicePrompt(Object object, boolean voicePrompt) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_VoicePrompt,voicePrompt);
+        ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_VoicePrompt, voicePrompt);
     }
 
     @Override
     public void getSmartButtion(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Get, AmCmds.CMD_SmartButton);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_SmartButton);
     }
 
     @Override
-    public void setSmartButton(Object object,boolean smartButton) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setSmartButton(Object object, boolean smartButton) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_SmartButton,smartButton);
+        ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_SmartButton, smartButton);
     }
 
     @Override
     public void getGeqCurrentPreset(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Get, AmCmds.CMD_Geq_Current_Preset);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_Geq_Current_Preset);
     }
 
-    public void setGeqCurrentPreset(Object object,int preset) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setGeqCurrentPreset(Object object, int preset) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_Geq_Current_Preset,preset);
+        ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_Geq_Current_Preset, preset);
     }
 
-    public void setGeqBandGain(Object object,int preset, int band, int value) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setGeqBandGain(Object object, int preset, int band, int value) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_GrEqBandGains,band,value);
+        ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_GrEqBandGains, band, value);
     }
+
 
     @Override
-    public void getGeqBandFreq(Object object,int preset, int band) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void getGeqBandFreq(Object object, int preset, int band) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager)object).sendCommand(Action.Get, AmCmds.CMD_GraphicEqBandFreq);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_GraphicEqBandFreq);
     }
 
     /**
@@ -213,8 +217,8 @@ public class Cmd150Manager implements BaseManager {
      * The result is callback "receivedResponse".
      * Get "current firmware" from the parameter of callback.
      */
-    public void getFWInfo(Object object){
-        ((audioManager)object).getFWInfo();
+    public void getFWInfo(Object object) {
+        ((audioManager) object).getFWInfo();
     }
 
     /**
@@ -232,52 +236,52 @@ public class Cmd150Manager implements BaseManager {
      * Such as "ImageUpdateFinalize", "ImageUpdateComplete", app would better to send next partition data in "ImageUpdateFinalize".
      * In "UpdateProgress", app can update progress bar.
      * When three partitions is done, app receive "ImageUpdateFinalize" too and need call "startFirmware" to switch current firmware.
-     *
+     * <p>
      * command:
      * This is fixed parameter using: "UpdateImage"
-     *
+     * <p>
      * address of first part.
      * parameter: 0x00038000
      * data:      0x00048000
      * firmware:  0x0010C000
-     *
+     * <p>
      * Or address of second part.
      * parameter: 0x0021C000
      * data:      0x0022C000
      * firmware:  0x002F0000
-     *
+     * <p>
      * image: Either downloaded form server or local. No matter from where, the file must be transfer to ByteArray.
-     *
+     * <p>
      * type:
      * ImageType.Parameters
      * ImageType.Data
      * ImageType.Firmware
-     *
+     * <p>
      * version: Firmware version.
-     *
+     * <p>
      * set:
      * If current firmware is 0 then the value of parameter set is 0.
      * The same if current firmware is 1 then the value of parameter set is 1.
      */
-    public void updateImage(Object object,byte[] image, String version, ImageType type, byte set){
+    public void updateImage(Object object, byte[] image, String version, ImageType type, byte set) {
         Status status = Status.Failed;
-        if (type == ImageType.Parameters){
-            status = ((audioManager)object).sendCommand(AmCmds.CMD_UPDATE_IMAGE,
-                    set == 0 ? AmCmds.address1_Parameter: AmCmds.address0_Parameter,
-                    image, Integer.valueOf(AmToolUtil.INSTANCE.transferCurrentVersion(version),16),
+        if (type == ImageType.Parameters) {
+            status = ((audioManager) object).sendCommand(AmCmds.CMD_UPDATE_IMAGE,
+                    set == 0 ? AmCmds.address1_Parameter : AmCmds.address0_Parameter,
+                    image, Integer.valueOf(AmToolUtil.INSTANCE.transferCurrentVersion(version), 16),
                     type, set);
-        }else if (type == ImageType.Data){
-            status = ((audioManager)object).sendCommand(AmCmds.CMD_UPDATE_IMAGE,
-                    set == 0 ? AmCmds.address1_Data: AmCmds.address0_Data,
-                    image, Integer.valueOf(AmToolUtil.INSTANCE.transferCurrentVersion(version),16),
+        } else if (type == ImageType.Data) {
+            status = ((audioManager) object).sendCommand(AmCmds.CMD_UPDATE_IMAGE,
+                    set == 0 ? AmCmds.address1_Data : AmCmds.address0_Data,
+                    image, Integer.valueOf(AmToolUtil.INSTANCE.transferCurrentVersion(version), 16),
                     type, set);
-        }else if (type == ImageType.Firmware){
-            status = ((audioManager)object).sendCommand(AmCmds.CMD_UPDATE_IMAGE,
-                    set == 0 ? AmCmds.address1_Firmware: AmCmds.address0_Firmware,
-                    image, Integer.valueOf(AmToolUtil.INSTANCE.transferCurrentVersion(version),16),
+        } else if (type == ImageType.Firmware) {
+            status = ((audioManager) object).sendCommand(AmCmds.CMD_UPDATE_IMAGE,
+                    set == 0 ? AmCmds.address1_Firmware : AmCmds.address0_Firmware,
+                    image, Integer.valueOf(AmToolUtil.INSTANCE.transferCurrentVersion(version), 16),
                     type, set);
         }
-        Log.i(TAG,"status = " + status);
+        Log.i(TAG, "status = " + status);
     }
 
     /**
@@ -286,8 +290,8 @@ public class Cmd150Manager implements BaseManager {
      * Current firmware is 0, then the value of set is 1.
      * The same current firmware is 1, then the value of set is 0.
      */
-    public void startFirmware(Object object,int set){
-        ((audioManager)object).startFirmware(set);
+    public void startFirmware(Object object, int set) {
+        ((audioManager) object).startFirmware(set);
     }
 
     /**
@@ -295,8 +299,8 @@ public class Cmd150Manager implements BaseManager {
      * version:
      * new firmware version.
      */
-    public void  setFirmwareVersion(Object object, int version ){
-        ((audioManager)object).setBundle(version);
+    public void setFirmwareVersion(Object object, int version) {
+        ((audioManager) object).setBundle(version);
     }
 
     /**
@@ -304,11 +308,39 @@ public class Cmd150Manager implements BaseManager {
      * start Image Update
      * After update is completed, enable the accessory interrupts again.
      * state: To disable accessory interrupts, call the command with parameter: 1
-     *        To enable accessory interrupts, call the command with parameter: 2
+     * To enable accessory interrupts, call the command with parameter: 2
      * In the case where image update gets interrupted, the Android app needs to
      * handle the error conditions and enable the accessory functionality properly.
      */
-    public void setFirmwareUpdateState(Object object,int state){
-        ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_FIRMWARE_UPDATE_STATE, state);
+    public void setFirmwareUpdateState(Object object, int state) {
+        ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_FIRMWARE_UPDATE_STATE, state);
     }
+
+
+    public Status sendSetCommandGain(Object object, String cmd, int preset, int index_of_band, int value) {
+        Status status = null;
+        switch (cmd) {
+            case AmCmds.CMD_GrEqBandGains:
+                Log.d(TAG, "set command is:" + cmd + "params are:" + "preset:" + preset + "index of bands:" + index_of_band + "value:" + value);
+                status = ((audioManager) object).sendCommand(Action.Set, cmd, preset, index_of_band, value);
+
+                Log.d(TAG, "set command callback:" + status.toString());
+                break;
+        }
+        return status;
+    }
+
+    public Status sendSetCommand(Object object, String cmd, int value) {
+        Status status = null;
+        switch (cmd) {
+            case AmCmds.CMD_Geq_Current_Preset:
+                Log.d(TAG, "set command is:" + "cmd" + "value:" + value);
+                status = ((audioManager) object).sendCommand(Action.Set, cmd, value);
+                break;
+        }
+        Log.d(TAG, "set command callback:" + status.toString());
+
+        return status;
+    }
+
 }

@@ -1140,8 +1140,8 @@ public final class LightX {
         writeApp(Command.AppGraphicEQBand, buffer, kTimeoutMsDefault);
     }
 
-    public void writeAppGraphicEQCurrentPreset(GraphicEQPreset preset) {
-        writeAppWithUInt32Argument(Command.AppGraphicEQCurrentPreset, preset.value());
+    public void writeAppGraphicEQCurrentPreset(GraphicEQPreset presets) {
+        writeAppWithUInt32Argument(Command.AppGraphicEQCurrentPreset, presets.value());
     }
 
     public void writeAppGraphicEQDefaultPreset(GraphicEQPreset preset) {

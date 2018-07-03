@@ -21,79 +21,79 @@ public class CmdSDHManager implements BaseManager {
         return InstanceHolder.instance;
     }
 
-    public void setManager(LightX lightX){
+    public void setManager(LightX lightX) {
         object = lightX;
     }
 
     @Override
     public void getANC(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).readAppANCEnable();
+        ((LightX) object).readAppANCEnable();
     }
 
     @Override
-    public void setANC(Object object,boolean anc) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setANC(Object object, boolean anc) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).writeAppANCEnable(anc);
+        ((LightX) object).writeAppANCEnable(anc);
     }
 
     @Override
     public void getAmbientLeveling(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).readAppANCAwarenessPreset();
+        ((LightX) object).readAppANCAwarenessPreset();
     }
 
     @Override
     public void getANCLeft(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).readAppAwarenessRawLeft();
+        ((LightX) object).readAppAwarenessRawLeft();
     }
 
     @Override
     public void getANCRight(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).readAppAwarenessRawRight();
+        ((LightX) object).readAppAwarenessRawRight();
     }
 
     @Override
-    public void setANCLeft(Object object,int ancLeft) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setANCLeft(Object object, int ancLeft) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).writeAppWithUInt32Argument(Command.AppAwarenessRawLeft, (long) ancLeft);
+        ((LightX) object).writeAppWithUInt32Argument(Command.AppAwarenessRawLeft, (long) ancLeft);
     }
 
     @Override
-    public void setANCRight(Object object,int ancRight) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setANCRight(Object object, int ancRight) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).writeAppWithUInt32Argument(Command.AppAwarenessRawRight, (long) ancRight);
+        ((LightX) object).writeAppWithUInt32Argument(Command.AppAwarenessRawRight, (long) ancRight);
     }
 
-    public void setAmbientLeveling(Object object,ANCAwarenessPreset value) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setAmbientLeveling(Object object, ANCAwarenessPreset value) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).writeAppANCAwarenessPreset(value);
+        ((LightX) object).writeAppANCAwarenessPreset(value);
     }
 
     @Override
@@ -102,112 +102,96 @@ public class CmdSDHManager implements BaseManager {
             Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).readApp(Command.AppBatteryLevel);
+        ((LightX) object).readApp(Command.AppBatteryLevel);
     }
 
     @Override
     public void getFirmwareVersion(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).readAppFirmwareVersion();
+        ((LightX) object).readAppFirmwareVersion();
     }
 
     @Override
     public void getAutoOff(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).readAppOnEarDetectionWithAutoOff();
+        ((LightX) object).readAppOnEarDetectionWithAutoOff();
     }
 
     @Override
-    public void setAutoOff(Object object,boolean autoOff) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setAutoOff(Object object, boolean autoOff) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).writeAppOnEarDetectionWithAutoOff(autoOff);
+        ((LightX) object).writeAppOnEarDetectionWithAutoOff(autoOff);
     }
 
     @Override
     public void getVoicePrompt(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).readAppVoicePromptEnable();
+        ((LightX) object).readAppVoicePromptEnable();
     }
 
     @Override
-    public void setVoicePrompt(Object object,boolean voicePrompt) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setVoicePrompt(Object object, boolean voicePrompt) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).writeAppVoicePromptEnable(voicePrompt);
+        ((LightX) object).writeAppVoicePromptEnable(voicePrompt);
     }
 
     @Override
     public void getSmartButtion(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).readAppSmartButtonFeatureIndex();
+        ((LightX) object).readAppSmartButtonFeatureIndex();
     }
 
     @Override
-    public void setSmartButton(Object object,boolean smartButton) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void setSmartButton(Object object, boolean smartButton) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).writeAppSmartButtonFeatureIndex(smartButton);
+        ((LightX) object).writeAppSmartButtonFeatureIndex(smartButton);
     }
 
     @Override
     public void getGeqCurrentPreset(Object object) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).readAppGraphicEQCurrentPreset();
-    }
-
-    public void setGeqCurrentPreset(Object object,GraphicEQPreset preset) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
-            return;
-        }
-        ((LightX)object).writeAppGraphicEQCurrentPreset(preset);
-    }
-
-    public void setGeqBandGain(Object object,GraphicEQPreset presetType, int band, int value) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
-            return;
-        }
-        ((LightX)object).writeAppGraphicEQBand(presetType,band,value);
+        ((LightX) object).readAppGraphicEQCurrentPreset();
     }
 
     @Override
-    public void getGeqBandFreq(Object object,int preset, int band) {
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void getGeqBandFreq(Object object, int preset, int band) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).readAppGraphicEQBandFreq();
+        ((LightX) object).readAppGraphicEQBandFreq();
     }
 
-    public void updateImage(Object object,LightX.FirmwareRegion region, byte[] data){
-        if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+    public void updateImage(Object object, LightX.FirmwareRegion region, byte[] data) {
+        if (object == null) {
+            Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((LightX)object).writeFirmware(region, data);
+        ((LightX) object).writeFirmware(region, data);
     }
 
 }

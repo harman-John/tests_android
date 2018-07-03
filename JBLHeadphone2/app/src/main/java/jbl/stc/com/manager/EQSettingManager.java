@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 
+import com.avnera.smartdigitalheadset.GraphicEQPreset;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,7 +16,6 @@ import java.util.List;
 
 import jbl.stc.com.constant.EqDbKey;
 import jbl.stc.com.entity.EQModel;
-import jbl.stc.com.entity.GraphicEQPreset;
 import jbl.stc.com.storage.DatabaseHelper;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -153,7 +154,7 @@ public class EQSettingManager implements EqDbKey {
      *
      * @return ContentValues
      */
-    private ContentValues getContentValueFromModel(EQModel eqModel , Context mContext) {
+    private ContentValues getContentValueFromModel(EQModel eqModel, Context mContext) {
         String deviceName = PreferenceUtils.getString(PreferenceKeys.CONNECT_DEVICE_NAME, mContext, AppUtils.BASE_DEVICE_NAME);
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.EQ_NAME, eqModel.eqName);
@@ -262,7 +263,7 @@ public class EQSettingManager implements EqDbKey {
         eqModel.setPointXFromStr(cursor.getString(cursor.getColumnIndex(POINT_X)));
         eqModel.setPointYFromStr(cursor.getString(cursor.getColumnIndex(POINT_Y)));
         eqModel.isCustomEq = eqModel.eqType == GraphicEQPreset.User.value();
-        eqModel.deviceName=cursor.getString(cursor.getColumnIndex(DEVICE_NAME));
+        eqModel.deviceName = cursor.getString(cursor.getColumnIndex(DEVICE_NAME));
         return eqModel;
     }
 

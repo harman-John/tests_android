@@ -15,15 +15,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.avnera.smartdigitalheadset.GraphicEQPreset;
+import com.avnera.smartdigitalheadset.LightX;
+
 import java.util.Arrays;
 import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
+import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.entity.EQModel;
-import jbl.stc.com.entity.GraphicEQPreset;
 import jbl.stc.com.listener.OnCustomEqListener;
 import jbl.stc.com.listener.OnEqChangeListener;
 import jbl.stc.com.storage.PreferenceKeys;
@@ -40,6 +44,7 @@ import jbl.stc.com.view.KeyboardLayout;
 public class EqCustomFragment extends BaseFragment implements View.OnClickListener {
     public static final String EXTRA_IS_ADD = "IS_ADD";
     public static final String EXTRA_EQ_MODEL = "EQ_MODEL";
+    public static final String EXTRA_IS_PRESET = "IS_PRESET";
     private EqualizerAddView equalizerView;
     private ImageView addEqOkImage;
     private EditText eqNameEdit;
@@ -60,11 +65,14 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
     private Handler mHandler = new Handler();
     private String defaultEqName;
     private List<EQModel> eqModelList;
+    private LightX lightX;
+    private boolean isPreset = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.fragment_eq_custom, container, false);
+        lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         initView();
         initEvent();
         initValue();
@@ -93,7 +101,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             @Override
             public void onEqValueChanged(int eqIndex, float value) {
                 if (eqIndex >= 0 && eqIndex < eqValueArray.length) {
-                    eqValueArray[eqIndex] = (int)value;
+                    eqValueArray[eqIndex] = (int) value;
                     Log.d(TAG, "onEqValueChanged eqIndex=" + eqIndex + ",value=" + value);
                     if (firstTimeAddEqTipText.getVisibility() == View.VISIBLE) {
                         firstTimeAddEqTipText.setVisibility(View.GONE);
@@ -108,9 +116,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                 Log.d(TAG, "onEqDragFinished pointX=" + Arrays.toString(pointX) + ",pointY=" + Arrays.toString(pointY));
                 currSelectedEq.setPointX(pointX);
                 currSelectedEq.setPointY(pointY);
-                //CommandManager.get().setGrEqBandGains(currSelectedEq.id, eqValueArray);
-//                currSelectedEq = EQSettingManager.get().getEQModelFromValues(currSelectedEq, eqValueArray);
-//                EQSettingManager.get().updateCustomEQ(currSelectedEq, currSelectedEq.eqName, mContext);
+                ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
             }
         });
 
@@ -122,9 +128,11 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         Bundle bundle = getArguments();
         if (bundle != null) {
             isAddOperate = bundle.getBoolean(EXTRA_IS_ADD);
-            if (!isAddOperate) {
-                currSelectedEq = (EQModel) bundle.getSerializable(EXTRA_EQ_MODEL);
-            }
+            currSelectedEq = (EQModel) bundle.getSerializable(EXTRA_EQ_MODEL);
+            isPreset = bundle.getBoolean(EXTRA_IS_PRESET);
+        }
+        if (isPreset) {
+            isAddOperate = true;
         }
         Log.d(TAG, "isAddOperate=" + isAddOperate + ",currSelectedEq=" + currSelectedEq);
         if (currSelectedEq == null) {
@@ -142,11 +150,13 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             if (isAddOperate) {
                 currSelectedEq.id = application.deviceInfo.maxEqId + 1;
                 currSelectedEq.index = application.deviceInfo.maxEqId + 1;
+                currSelectedEq.eqType = GraphicEQPreset.User.value();
                 EQSettingManager.get().addCustomEQ(currSelectedEq, mContext);
             }
         } else {
             srcSelectedEq = currSelectedEq.clone();
             eqNameEdit.setText(currSelectedEq.eqName);
+
         }
 
         eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
@@ -223,12 +233,11 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                         currSelectedEq = new EQModel();
                     }
                     eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
-                    //CommandManager.get().setGrEqBandGains(currSelectedEq.id, eqValueArray);
                 } else {
                     eqValueArray = EQSettingManager.get().getValuesFromEQModel(srcSelectedEq);
-                    //CommandManager.get().setGrEqBandGains(srcSelectedEq.id, eqValueArray);
                 }
                 application.isAddEqFragment = false;
+                ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
                 getActivity().onBackPressed();
                 break;
         }
@@ -277,11 +286,14 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         }
         if (onCustomEqListener != null) {
             onCustomEqListener.onCustomEqResult(currSelectedEq, isAddOperate);
+        } else {
+            application.deviceInfo.hasEq = true;
+            ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
+            switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
         }
         getActivity().getSupportFragmentManager().popBackStack();
 
     }
-
 
 
     public void setOnCustomEqListener(OnCustomEqListener onCustomEqListener) {

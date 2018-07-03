@@ -3,6 +3,8 @@ package jbl.stc.com.entity;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.avnera.smartdigitalheadset.GraphicEQPreset;
+
 import java.io.Serializable;
 import java.util.Arrays;
 
