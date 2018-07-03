@@ -153,6 +153,9 @@ public class JblCircleView extends View{
 
     public void stop() {
         Logger.i(TAG,"stop");
+        mPaint.reset();
+        mAlphas.clear();
+        mRadius.clear();
         mIsWave = false;
     }
 
