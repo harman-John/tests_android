@@ -7,8 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.SweepGradient;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -29,7 +31,7 @@ public class JblCircleView extends View{
 
     private int mImageRadius=100;
 
-    private int mWidth = 3;
+    private int mWidth = 300;
 
     private Integer mMaxRadius = 300;
 
@@ -56,21 +58,13 @@ public class JblCircleView extends View{
     public JblCircleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         Logger.i(TAG,"JblCircleView");
-        init();
+        mPaint = new Paint();
+        mPaint.setAntiAlias(true);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WaveView, defStyleAttr, 0);
         mColor = a.getColor(R.styleable.WaveView_wave_color, mColor);
         mWidth = a.getInt(R.styleable.WaveView_wave_width, mWidth);
         mImageRadius = a.getInt(R.styleable.WaveView_wave_coreImageRadius, mImageRadius);
         a.recycle();
-    }
-
-    private void init() {
-        Logger.i(TAG,"init");
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mAlphas.add(255);
-        mRadius.add(80);
-
     }
 
 
@@ -131,9 +125,10 @@ public class JblCircleView extends View{
 
         }
 
+        Logger.i(TAG,"radius = "+mRadius.get(mRadius.size() - 1)+",mWidth = "+mWidth);
         if (mRadius.get(mRadius.size() - 1) == mWidth) {
             mAlphas.add(255);
-            mRadius.add(150);
+            mRadius.add(200);
         }
 
 //        Logger.i(TAG,"mIsWave = "+mIsWave);
@@ -146,9 +141,9 @@ public class JblCircleView extends View{
         Logger.i(TAG,"circle");
         mIsWave = true;
         mAlphas.add(255);
-        mRadius.add(80);
+        mRadius.add(200);
+        mMaxRadius = getWidth() > getHeight() ? getHeight() / 2 : getWidth() / 2;
         invalidate();
-
     }
 
     public void stop() {
@@ -156,6 +151,7 @@ public class JblCircleView extends View{
         mPaint.reset();
         mAlphas.clear();
         mRadius.clear();
+        mMaxRadius = 300;
         mIsWave = false;
     }
 
@@ -172,15 +168,6 @@ public class JblCircleView extends View{
 
     public void setWidth(int width) {
         mWidth = width;
-    }
-
-
-    public void setMaxRadius(int maxRadius) {
-        mMaxRadius = maxRadius;
-    }
-
-    public void setImageRadius(int imageRadius) {
-        mImageRadius = imageRadius;
     }
 
     public boolean isFill() {

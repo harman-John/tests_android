@@ -46,7 +46,6 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
     private final static int MSG_SHOW_DISCOVERY = 2;
     private final static int MSG_SHOW_OTA_FRAGMENT = 3;
-    private final static int MSG_JBL_VIEW_CIRCLE = 4;
     private final static int REQUEST_CODE = 0;
 
     private DashboardHandler dashboardHandler = new DashboardHandler();
@@ -162,8 +161,6 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             jblCircleView = findViewById(R.id.jbl_circle_view_dashboard);
             jblCircleView.setVisibility(View.VISIBLE);
             jblCircleView.circle();
-            dashboardHandler.removeMessages(MSG_JBL_VIEW_CIRCLE);
-            dashboardHandler.sendEmptyMessageDelayed(MSG_JBL_VIEW_CIRCLE, 2000);
         }
     }
 
@@ -216,14 +213,6 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     relativeLayoutDiscovery.setVisibility(View.GONE);
                     switchFragment(new OTAFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     stopCircle();
-                    break;
-                }
-                case MSG_JBL_VIEW_CIRCLE:{
-                    if (jblCircleView == null){
-                        return;
-                    }
-                    jblCircleView.circle();
-                    dashboardHandler.sendEmptyMessageDelayed(MSG_JBL_VIEW_CIRCLE, 2000);
                     break;
                 }
             }
