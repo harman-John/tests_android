@@ -4,7 +4,7 @@
     android:id="@+id/viewswicther"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/shape_legal_gradient"
+    android:background="@drawable/shape_gradient_legal"
     android:inAnimation="@anim/fadin"
     android:outAnimation="@anim/fadeout">
 

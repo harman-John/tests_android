@@ -54,7 +54,9 @@
     <color name="black">@android:color/black</color>
 
     <color name="orange">#EE4000</color>
+    <color name="red">#f8e61608</color>
     <color name="orange_light">#FF7F00</color>
+    <color name="orange_darker">#f8e76b0c</color>
     <color name="white_1"> #ebebeb</color>
     <color name="text_color_1">#333333</color>
 

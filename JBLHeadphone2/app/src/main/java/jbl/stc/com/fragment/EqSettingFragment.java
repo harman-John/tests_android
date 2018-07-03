@@ -182,7 +182,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             eqEditImage.setClickable(false);
         } else {
             titleBar.setBackgroundColor(getActivity().getResources().getColor(R.color.orange));
-            rl_eq_view.setBackgroundResource(R.drawable.shape_legal_gradient);
+            rl_eq_view.setBackgroundResource(R.drawable.shape_gradient_legal);
             eqEditImage.setClickable(true);
         }
         smoothToPosition();
@@ -221,7 +221,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             eqEditImage.setClickable(false);
         } else {
             titleBar.setBackgroundColor(getActivity().getResources().getColor(R.color.orange));
-            rl_eq_view.setBackgroundResource(R.drawable.shape_legal_gradient);
+            rl_eq_view.setBackgroundResource(R.drawable.shape_gradient_legal);
             eqEditImage.setClickable(true);
         }
         mHandler.removeCallbacks(applyRunnable);

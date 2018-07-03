@@ -66,7 +66,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         dashboardActivity = this;
         initView();
         startCircle();
-        dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,10000);
+//        dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,10000);
         //load the presetEQ
         InsertPredefinePreset insertdefaultValueTask = new InsertPredefinePreset();
         insertdefaultValueTask.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
