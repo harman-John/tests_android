@@ -23,15 +23,14 @@ import jbl.stc.com.R;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.utils.UiUtils;
 
-public class JblCircleView extends View{
-
+public class JblCircleView extends View {
 
 
     private int mColor = getResources().getColor(R.color.white);
 
-    private int mImageRadius=100;
+    private int mImageRadius = 100;
 
-    private int mWidth = 300;
+    private int mWidth = 600;
 
     private Integer mMaxRadius = 300;
 
@@ -41,11 +40,12 @@ public class JblCircleView extends View{
 
     private List<Integer> mRadius = new ArrayList<>();
     private Paint mPaint;
+    private Paint mPaintCircle;
 
     private boolean isFill = false;
 
     private Canvas mCanvas;
-    private final static String TAG  = JblCircleView.class.getSimpleName();
+    private final static String TAG = JblCircleView.class.getSimpleName();
 
     public JblCircleView(Context context) {
         this(context, null);
@@ -57,9 +57,11 @@ public class JblCircleView extends View{
 
     public JblCircleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        Logger.i(TAG,"JblCircleView");
+        Logger.i(TAG, "JblCircleView");
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
+        mPaintCircle = new Paint();
+        mPaintCircle.setAntiAlias(true);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WaveView, defStyleAttr, 0);
         mColor = a.getColor(R.styleable.WaveView_wave_color, mColor);
         mWidth = a.getInt(R.styleable.WaveView_wave_width, mWidth);
@@ -71,7 +73,7 @@ public class JblCircleView extends View{
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
-        Logger.i(TAG,"onWindowFocusChanged");
+        Logger.i(TAG, "onWindowFocusChanged");
 
         mMaxRadius = getWidth() > getHeight() ? getHeight() / 2 : getWidth() / 2;
         invalidate();
@@ -92,43 +94,63 @@ public class JblCircleView extends View{
         doAnimation();
     }
 
-    public void doAnimation(){
-
+    int des = 0;
+    public void doAnimation() {
         mPaint.setColor(mColor);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeWidth(5);
+
+        mPaintCircle.setColor(mColor);
+        mPaintCircle.setStyle(Paint.Style.STROKE);
+        mPaintCircle.setStrokeWidth(18);
+        mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, 300, mPaintCircle);
         for (int i = 0; i < mAlphas.size(); i++) {
 
             Integer alpha = mAlphas.get(i);
             mPaint.setAlpha(alpha);
 
             Integer radius = mRadius.get(i);
-            if(isFill){
-                mPaint.setStyle(Paint.Style.FILL);
-                mCanvas.drawCircle(getWidth() / 2, getHeight() / 2,  mImageRadius+radius, mPaint);
-                mPaint.setStyle(Paint.Style.STROKE);
-                mPaint.setStrokeWidth(5);
-                mCanvas.drawCircle(getWidth() / 2, getHeight() / 2,  mImageRadius+radius, mPaint);
-            }else{
-                mPaint.setStyle(Paint.Style.STROKE);
-                mPaint.setStrokeWidth(5);
-                mCanvas.drawCircle(getWidth() / 2, getHeight() / 2,  mImageRadius+radius, mPaint);
-            }
 
-            if (alpha > 0 && mImageRadius+radius < mMaxRadius) {
-                alpha = (int) (255.0F * (1.0F - (mImageRadius+radius) * 1.0f / mMaxRadius));
-                mAlphas.set(i, alpha);
-                mRadius.set(i, radius + 1);
-            }else if(alpha < 0 && mImageRadius+radius > mMaxRadius){
+            mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, mImageRadius + radius, mPaint);
 
+            mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, mImageRadius + radius +100, mPaint);
+
+            mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, mImageRadius + radius +200, mPaint);
+
+            if (alpha > 0 && mImageRadius + radius < mMaxRadius) {
+                alpha = (int) (255.0F * (1.0F - (mImageRadius + radius) * 1.0f / mMaxRadius));
+                Logger.i(TAG, "mAlphas size =" + mAlphas.size()
+                        + ",i = " + i
+                        + ",alpha = " + alpha
+                        + ",mImageRadius = " + mImageRadius
+                        + ",radius = " + radius
+                        + ",des = " + des
+                        + ",radius size = " + mRadius.get(mRadius.size() - 1)
+                        + ",mWidth = " + mWidth);
+                if (alpha > 148/2) {
+                    des = des +1;
+                    mAlphas.set(i, des );
+                }else{
+                    des = des -1;
+                    mAlphas.set(i, des);
+                }
+                mRadius.set(i, radius + 3);
+            } else if (alpha < 0 && mImageRadius + radius > mMaxRadius) {
+
+                Logger.i(TAG, "remove i = " + i + ",alpha = " + alpha);
                 mRadius.remove(i);
                 mAlphas.remove(i);
             }
 
         }
 
-        Logger.i(TAG,"radius = "+mRadius.get(mRadius.size() - 1)+",mWidth = "+mWidth);
-        if (mRadius.get(mRadius.size() - 1) == mWidth) {
-            mAlphas.add(255);
+        if (mRadius.get(mRadius.size() - 1) >= mWidth) {
+            des = 1;
+            mAlphas.clear();
+            mRadius.clear();
+            mAlphas.add(1);
             mRadius.add(200);
+            mPaint.reset();
         }
 
 //        Logger.i(TAG,"mIsWave = "+mIsWave);
@@ -137,17 +159,17 @@ public class JblCircleView extends View{
         }
     }
 
-    public void circle(){
-        Logger.i(TAG,"circle");
+    public void circle() {
+        Logger.i(TAG, "circle");
         mIsWave = true;
-        mAlphas.add(255);
+        mAlphas.add(1);
         mRadius.add(200);
         mMaxRadius = getWidth() > getHeight() ? getHeight() / 2 : getWidth() / 2;
         invalidate();
     }
 
     public void stop() {
-        Logger.i(TAG,"stop");
+        Logger.i(TAG, "stop");
         mPaint.reset();
         mAlphas.clear();
         mRadius.clear();

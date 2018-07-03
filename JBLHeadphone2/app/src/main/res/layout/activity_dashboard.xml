@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:src="@drawable/ab_logo" />
+            android:src="@mipmap/jbl_logo" />
 
         <LinearLayout
             android:id="@+id/ll_cannot_see"
