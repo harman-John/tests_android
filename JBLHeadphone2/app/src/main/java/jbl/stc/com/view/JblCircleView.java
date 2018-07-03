@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jbl.stc.com.R;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.utils.UiUtils;
 
 public class JblCircleView extends View{
@@ -41,6 +42,9 @@ public class JblCircleView extends View{
 
     private boolean isFill = false;
 
+    private Canvas mCanvas;
+    private final static String TAG  = JblCircleView.class.getSimpleName();
+
     public JblCircleView(Context context) {
         this(context, null);
     }
@@ -51,6 +55,7 @@ public class JblCircleView extends View{
 
     public JblCircleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        Logger.i(TAG,"JblCircleView");
         init();
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WaveView, defStyleAttr, 0);
         mColor = a.getColor(R.styleable.WaveView_wave_color, mColor);
@@ -60,6 +65,7 @@ public class JblCircleView extends View{
     }
 
     private void init() {
+        Logger.i(TAG,"init");
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mAlphas.add(255);
@@ -71,6 +77,8 @@ public class JblCircleView extends View{
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
+        Logger.i(TAG,"onWindowFocusChanged");
+
         mMaxRadius = getWidth() > getHeight() ? getHeight() / 2 : getWidth() / 2;
         invalidate();
     }
@@ -78,12 +86,19 @@ public class JblCircleView extends View{
     @Override
     public void invalidate() {
         if (hasWindowFocus()) {
+//            Logger.i(TAG,"invalidate");
             super.invalidate();
         }
     }
 
     @Override
     public void onDraw(Canvas canvas) {
+        mCanvas = canvas;
+
+        doAnimation();
+    }
+
+    public void doAnimation(){
 
         mPaint.setColor(mColor);
         for (int i = 0; i < mAlphas.size(); i++) {
@@ -94,14 +109,14 @@ public class JblCircleView extends View{
             Integer radius = mRadius.get(i);
             if(isFill){
                 mPaint.setStyle(Paint.Style.FILL);
-                canvas.drawCircle(getWidth() / 2, getHeight() / 2,  mImageRadius+radius, mPaint);
+                mCanvas.drawCircle(getWidth() / 2, getHeight() / 2,  mImageRadius+radius, mPaint);
                 mPaint.setStyle(Paint.Style.STROKE);
                 mPaint.setStrokeWidth(5);
-                canvas.drawCircle(getWidth() / 2, getHeight() / 2,  mImageRadius+radius, mPaint);
+                mCanvas.drawCircle(getWidth() / 2, getHeight() / 2,  mImageRadius+radius, mPaint);
             }else{
                 mPaint.setStyle(Paint.Style.STROKE);
                 mPaint.setStrokeWidth(5);
-                canvas.drawCircle(getWidth() / 2, getHeight() / 2,  mImageRadius+radius, mPaint);
+                mCanvas.drawCircle(getWidth() / 2, getHeight() / 2,  mImageRadius+radius, mPaint);
             }
 
             if (alpha > 0 && mImageRadius+radius < mMaxRadius) {
@@ -117,21 +132,27 @@ public class JblCircleView extends View{
         }
 
         if (mRadius.get(mRadius.size() - 1) == mWidth) {
-            addWave();
+            mAlphas.add(255);
+            mRadius.add(150);
         }
 
+//        Logger.i(TAG,"mIsWave = "+mIsWave);
         if (mIsWave) {
-            start();
+            invalidate();
         }
     }
 
-
-    public void start() {
+    public void circle(){
+        Logger.i(TAG,"circle");
+        mIsWave = true;
+        mAlphas.add(255);
+        mRadius.add(80);
         invalidate();
-    }
 
+    }
 
     public void stop() {
+        Logger.i(TAG,"stop");
         mIsWave = false;
     }
 
@@ -166,9 +187,6 @@ public class JblCircleView extends View{
     public void setFill(boolean fill) {
         isFill = fill;
     }
-    public void addWave(){
-        mAlphas.add(255);
-        mRadius.add(150);
-    }
+
 
 }

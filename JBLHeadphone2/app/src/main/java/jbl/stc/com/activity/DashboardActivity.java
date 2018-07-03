@@ -46,6 +46,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
     private final static int MSG_SHOW_DISCOVERY = 2;
     private final static int MSG_SHOW_OTA_FRAGMENT = 3;
+    private final static int MSG_JBL_VIEW_CIRCLE = 4;
     private final static int REQUEST_CODE = 0;
 
     private DashboardHandler dashboardHandler = new DashboardHandler();
@@ -65,16 +66,17 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
         dashboardActivity = this;
         initView();
-        dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,10000);
+        startCircle();
+//        dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,10000);
         //load the presetEQ
         InsertPredefinePreset insertdefaultValueTask = new InsertPredefinePreset();
         insertdefaultValueTask.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
     }
 
     private void initView() {
-        startCircle();
         relativeLayoutDiscovery = findViewById(R.id.containerLayoutDiscovery);
-        image_view_logo = (ImageView) findViewById(R.id.image_view_logo);
+        image_view_logo = (ImageView) findViewById(R.id.image_view_dashboard_logo);
+        image_view_logo.setOnClickListener(this);
         ll_cannot_see = (LinearLayout) findViewById(R.id.ll_cannot_see);
         txtTips = (TextView) findViewById(R.id.txtTips);
     }
@@ -132,6 +134,12 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.image_view_dashboard_logo:{
+//                jblCircleView.circle();
+                break;
+            }
+        }
 
     }
 
@@ -151,17 +159,18 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     private void startCircle(){
         if (jblCircleView == null) {
-            jblCircleView = (JblCircleView) findViewById(R.id.jblCircleView);
+            jblCircleView = findViewById(R.id.jbl_circle_view_dashboard);
             jblCircleView.setVisibility(View.VISIBLE);
-            jblCircleView.addWave();
-            jblCircleView.start();
+            jblCircleView.circle();
+            dashboardHandler.removeMessages(MSG_JBL_VIEW_CIRCLE);
+            dashboardHandler.sendEmptyMessageDelayed(MSG_JBL_VIEW_CIRCLE, 2000);
         }
     }
 
     private void stopCircle(){
         if (jblCircleView != null) {
-            jblCircleView.setVisibility(View.GONE);
             jblCircleView.stop();
+            jblCircleView.setVisibility(View.GONE);
             jblCircleView = null;
         }
     }
@@ -179,34 +188,42 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 case SHOW_UN_FOUND_TIPS: {
                     Log.i(TAG,"show tips");
                     relativeLayoutDiscovery.setVisibility(View.VISIBLE);
-                    stopCircle();
                     image_view_logo.setVisibility(View.GONE);
                     ll_cannot_see.setVisibility(View.VISIBLE);
                     txtTips.setVisibility(View.VISIBLE);
+                    stopCircle();
                     break;
                 }
                 case MSG_SHOW_HOME_FRAGMENT:{
                     Log.i(TAG,"show homeFragment");
-                    stopCircle();
                     relativeLayoutDiscovery.setVisibility(View.GONE);
                     switchFragment(new HomeFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    stopCircle();
                     break;
                 }
                 case MSG_SHOW_DISCOVERY:{
                     Log.i(TAG,"show discovery page");
                     relativeLayoutDiscovery.setVisibility(View.VISIBLE);
                     removeAllFragment();
-                    startCircle();
                     image_view_logo.setVisibility(View.VISIBLE);
                     ll_cannot_see.setVisibility(View.INVISIBLE);
                     txtTips.setVisibility(View.VISIBLE);
+                    startCircle();
                     break;
                 }
                 case MSG_SHOW_OTA_FRAGMENT:{
                     Log.i(TAG,"show OTAFragment");
-                    stopCircle();
                     relativeLayoutDiscovery.setVisibility(View.GONE);
                     switchFragment(new OTAFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    stopCircle();
+                    break;
+                }
+                case MSG_JBL_VIEW_CIRCLE:{
+                    if (jblCircleView == null){
+                        return;
+                    }
+                    jblCircleView.circle();
+                    dashboardHandler.sendEmptyMessageDelayed(MSG_JBL_VIEW_CIRCLE, 2000);
                     break;
                 }
             }

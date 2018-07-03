@@ -11,12 +11,12 @@
         android:layout_height="match_parent">
 
         <jbl.stc.com.view.JblCircleView
-            android:id="@+id/jblCircleView"
+            android:id="@+id/jbl_circle_view_dashboard"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <ImageView
-            android:id="@+id/image_view_logo"
+            android:id="@+id/image_view_dashboard_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
