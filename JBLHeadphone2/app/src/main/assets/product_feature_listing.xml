@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<map>
+    <product name="REFLECT AWARE">
+        <feature name="ENABLE_NOISE_CANCEL"/>
+        <feature name="ENABLE_AMBIENT_AWARE"/>
+    </product>
+
+    <product name="EVEREST ELITE 100">
+        <feature name="ENABLE_NOISE_CANCEL"/>
+        <feature name="ENABLE_AMBIENT_AWARE"/>
+
+        <feature name="ENABLE_SMART_BUTTON"/>
+        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+    </product>
+
+    <product name="EVEREST ELITE 150NC">
+        <feature name="ENABLE_NOISE_CANCEL"/>
+        <feature name="ENABLE_AMBIENT_AWARE"/>
+
+        <feature name="ENABLE_SMART_BUTTON"/>
+        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+    </product>
+
+    <product name="EVEREST ELITE 300">
+        <feature name="ENABLE_NOISE_CANCEL"/>
+        <feature name="ENABLE_AMBIENT_AWARE"/>
+
+        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_SMART_BUTTON"/>
+        <feature name="ENABLE_TRUE_NOTE"/>
+    </product>
+
+    <product name="EVEREST ELITE 700">
+        <feature name="ENABLE_NOISE_CANCEL"/>
+        <feature name="ENABLE_AMBIENT_AWARE"/>
+
+        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_SMART_BUTTON"/>
+        <feature name="ENABLE_TRUE_NOTE"/>
+    </product>
+
+    <product name="EVEREST ELITE 750NC">
+        <feature name="ENABLE_NOISE_CANCEL"/>
+        <feature name="ENABLE_AMBIENT_AWARE"/>
+
+        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_SMART_BUTTON"/>
+        <feature name="ENABLE_TRUE_NOTE"/>
+    </product>
+
+    <product name="LIVE 400BT">
+        <feature name="ENABLE_AMBIENT_AWARE"/>
+
+        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_SMART_BUTTON"/>
+        <feature name="ENABLE_TRUE_NOTE"/>
+        <feature name="ENABLE_SOUND_X_SETUP"/>
+        <feature name="ENABLE_SMART_ASSISTANT"/>
+    </product>
+
+    <product name="LIVE 500BT">
+        <feature name="ENABLE_AMBIENT_AWARE"/>
+
+        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_SOUND_X_SETUP"/>
+        <feature name="ENABLE_SMART_ASSISTANT"/>
+    </product>
+
+    <product name="LIVE 650BTNC">
+        <feature name="ENABLE_NOISE_CANCEL"/>
+
+        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_SOUND_X_SETUP"/>
+        <feature name="ENABLE_SMART_ASSISTANT"/>
+    </product>
+
+    <product name="LIVE FREE GA">
+        <feature name="ENABLE_NOISE_CANCEL"/>
+        <feature name="ENABLE_AMBIENT_AWARE"/>
+
+        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_SOUND_X_SETUP"/>
+        <feature name="ENABLE_SMART_ASSISTANT"/>
+    </product>
+</map>

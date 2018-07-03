@@ -64,7 +64,7 @@ public class EqNameGridAdapter extends BaseAdapter {
             convertView = View.inflate(context, R.layout.item_eq_name_grid, null);
             viewHolder = new ViewHolder();
             viewHolder.eqNameBgImage = (ImageView) convertView.findViewById(R.id.eqNameBgImage);
-            viewHolder.eqNameText = (TextView) convertView.findViewById(R.id.eqNameText);
+            viewHolder.eqNameText = (TextView) convertView.findViewById(R.id.text_view_grid_eq_name);
             viewHolder.plusImageView = (ImageView) convertView.findViewById(R.id.plusImageView);
             viewHolder.removeImageView = (ImageView) convertView.findViewById(R.id.removeImageView);
             viewHolder.eqNameLayout = convertView.findViewById(R.id.eqNameLayout);

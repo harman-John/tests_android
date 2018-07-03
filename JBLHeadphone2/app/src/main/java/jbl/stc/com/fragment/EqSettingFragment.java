@@ -1,12 +1,9 @@
 package jbl.stc.com.fragment;
 
-import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,11 +13,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,13 +22,11 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.entity.EQModel;
-import jbl.stc.com.entity.GraphicEQPreset;
 import jbl.stc.com.listener.OnCustomEqListener;
 import jbl.stc.com.listener.OnEqItemSelectedListener;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.FastClickHelper;
-import jbl.stc.com.utils.FileUtils;
 import jbl.stc.com.utils.ToastUtil;
 import jbl.stc.com.view.EqualizerShowView;
 import jbl.stc.com.view.MyGridLayoutManager;
@@ -84,7 +74,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         closeImageView = rootView.findViewById(R.id.closeImageView);
         moreImageView = rootView.findViewById(R.id.moreImageView);
         addImageView = rootView.findViewById(R.id.addImageView);
-        eqNameText = rootView.findViewById(R.id.eqNameText);
+        eqNameText = rootView.findViewById(R.id.text_view_eq_settings_eq_name);
         eqRecycleView = rootView.findViewById(R.id.eqRecycleView);
         eqRecycleView.setLayoutManager(new MyGridLayoutManager(getActivity(), 2));
         eqAdapter = new EqRecyclerAdapter();
