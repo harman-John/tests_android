@@ -31,7 +31,9 @@ import jbl.stc.com.dialog.AlertsDialog;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.fragment.BaseFragment;
 import jbl.stc.com.fragment.HomeFragment;
+import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.listener.AppUSBDelegate;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -112,7 +114,11 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
     }
 
     public void removeAllFragment() {
-
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+        if (fr == null) {
+            Log.i(TAG,"fr is null");
+            return;
+        }
         try {
             FragmentManager manager = getSupportFragmentManager();
             int count = manager.getBackStackEntryCount();

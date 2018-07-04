@@ -52,15 +52,16 @@
     <string name="text_harman_privacy_policy">Harman privacy policy</string>
 
     <string name="eula_agree_and_start">AGREE and START</string>
-    <string name="confirm_to_tips">Please confirm that you\nhave read and agree to</string>
+    <string name="confirm_to_tips">Please confirm that you have\nread and agree to</string>
     <string name="legal_the">The&#160;</string>
 
     <string name="agree_to_eula">End User License Agreement</string>
+    <string name="harman_eula">Harman End User License Agreement</string>
     <string name="agree_to_hpp">Harman Privacy Statement</string>
     <string name="hpp_title">Harman Privacy Statement</string>
-    <string name="start_caps">START</string>
+    <string name="start_caps">Start</string>
 
-    <string name="eula_title">End User License Agreement</string>
+    <string name="eula_title">End User License\nAgreement</string>
     <string name="app_version">App version:</string>
 
     <string name="start">Start</string>
@@ -82,7 +83,9 @@
     <string name="advice_four">4.Disconnect your product from other mobile</string>
     <string name="advice_five">5.Pause music on your product</string>
     <string name="try_again">Try again</string>
-
+    <string name="turn_on_bluetooth">Turn on Bluetooth</string>
+    <string name="turn_on_bluetooth_detail_1">Turn on Bluetooth from your control</string>
+    <string name="turn_on_bluetooth_detail_2">center. The Bluetooth icon will turn blue.</string>
 
 
 

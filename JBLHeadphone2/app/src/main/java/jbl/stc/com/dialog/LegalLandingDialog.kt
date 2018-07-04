@@ -43,12 +43,14 @@ class LegalLandingDialog : android.support.v4.app.DialogFragment() {
         // link checkbox eula
         view.checkboxEula!!.setOnCheckedChangeListener { _, isChecked ->
             if (view.checkboxPrivacy.isChecked && isChecked) {
-                view.txtEulaButton.setTextColor(Color.WHITE)
-                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner)
+//                view.txtEulaButton.setTextColor(ContextCompat.getColor(activity,R.color.orange_discovery))
+//                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner)
                 isBothChecked = true
+                view.txtEulaButton.alpha = 1.0F
             } else {
-                view.txtEulaButton.setTextColor(ContextCompat.getColor(context,R.color.light_white))
-                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner_grey)
+                view.txtEulaButton.alpha = 0.7F
+//                view.txtEulaButton.setTextColor(ContextCompat.getColor(context,R.color.light_white))
+//                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner_grey)
                 isBothChecked = false
             }
         }
@@ -58,12 +60,14 @@ class LegalLandingDialog : android.support.v4.app.DialogFragment() {
         // link checkbox privacy
         view.checkboxPrivacy.setOnCheckedChangeListener { _, isChecked ->
             if (view.checkboxEula.isChecked && isChecked) {
-                view.txtEulaButton.setTextColor(Color.WHITE)
-                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner)
+//                view.txtEulaButton.setTextColor(ContextCompat.getColor(activity,R.color.orange_discovery))
+//                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner)
+                view.txtEulaButton.alpha = 1.0F
                 isBothChecked = true
             } else {
-                view.txtEulaButton.setTextColor(ContextCompat.getColor(context,R.color.light_white))
-                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner_grey)
+                view.txtEulaButton.alpha = 0.7F
+//                view.txtEulaButton.setTextColor(ContextCompat.getColor(context,R.color.light_white))
+//                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner_grey)
                 isBothChecked = false
             }
         }
@@ -87,8 +91,8 @@ class LegalLandingDialog : android.support.v4.app.DialogFragment() {
         // text start button
         view.txtEulaButton!!.setOnClickListener {
             if (isBothChecked) {
-                PreferenceUtils.setBoolean(PreferenceKeys.LEGAL_PERSIST, true, activity)
                 AppUtils.mLegalPage = false
+                PreferenceUtils.setBoolean(PreferenceKeys.FIRST_TIME_ENTER_APP, true, activity)
                 dismiss()
             }
         }

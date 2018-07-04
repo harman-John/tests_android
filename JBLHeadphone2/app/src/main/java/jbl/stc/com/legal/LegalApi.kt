@@ -33,7 +33,7 @@ object LegalApi {
                 override fun onLegalDataReceived(list: List<LegalData>) {
                     for (item in list) {
                         if (item.name.equals(LegalConstants.NAME_EULA, ignoreCase = true)) {
-                            showLegalDialog(context, R.string.eula, item.file, AnalyticsManager.SCREEN_EULA)
+                            showLegalDialog(context, R.string.agree_to_eula, item.file, AnalyticsManager.SCREEN_EULA)
                         }
                     }
                 }

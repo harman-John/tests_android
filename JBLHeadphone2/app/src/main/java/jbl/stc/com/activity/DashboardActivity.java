@@ -1,6 +1,11 @@
 package jbl.stc.com.activity;
 
 import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,10 +33,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.dialog.LegalLandingDialog;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.OTAFragment;
+import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.ota.CheckUpdateAvailable;
@@ -69,6 +76,17 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         super.onCreate(savedInstanceState);
         Log.i(TAG,"onCreate");
         setContentView(R.layout.activity_dashboard);
+
+        boolean isNotFirstEnterApp = PreferenceUtils.getBoolean(PreferenceKeys.FIRST_TIME_ENTER_APP,this);
+        if (!isNotFirstEnterApp){
+            LegalLandingDialog legalLandingDialog = (LegalLandingDialog)this.getSupportFragmentManager().findFragmentByTag(LegalLandingDialog.Companion.getTAG());
+            if (legalLandingDialog != null && legalLandingDialog.getDialog() != null)
+                return;
+            legalLandingDialog = new LegalLandingDialog();
+            legalLandingDialog.show(this.getSupportFragmentManager(), LegalLandingDialog.Companion.getTAG());
+        }
+
+        registerReceiver(mBtReceiver, makeFilter());
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
 
@@ -77,9 +95,77 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         startCircle();
         dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,5000);
         //load the presetEQ
-        InsertPredefinePreset insertdefaultValueTask = new InsertPredefinePreset();
-        insertdefaultValueTask.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
+        InsertPredefinePreset insertPredefinePreset = new InsertPredefinePreset();
+        insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
     }
+
+    private void checkBluetooth(){
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter!=null) {
+            Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+            if (bluetoothAdapter.isEnabled()) {
+                if (fr == null) {
+                    Logger.d(TAG, "fr is null");
+                    return;
+                }
+                if (fr instanceof TurnOnBtTipsFragment) {
+                    removeAllFragment();
+                }
+            } else {
+                if (fr == null){
+                    switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                }else if (!(fr instanceof  TurnOnBtTipsFragment)) {
+                    Logger.i(TAG, "checkBluetooth open TurnOnBtTipsFragment");
+                    switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                }
+            }
+        }
+    }
+
+
+    private IntentFilter makeFilter() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        return filter;
+    }
+
+    private BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent == null || intent.getAction() == null){
+                Logger.i(TAG,"intent or its action is null");
+                return;
+            }
+            switch (intent.getAction()) {
+                case BluetoothAdapter.ACTION_STATE_CHANGED:
+                    int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
+                    Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                    switch (blueState) {
+                        case BluetoothAdapter.STATE_ON: {
+                            if (fr == null) {
+                                Logger.d(TAG, "fr is null");
+                                return;
+                            }
+                            if (fr instanceof TurnOnBtTipsFragment) {
+                                removeAllFragment();
+                            }
+                            break;
+                        }
+                        default:{
+                            Logger.i(TAG,"open TurnOnBtTipsFragment");
+                            if (fr == null){
+                                switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                            }else if (!(fr instanceof  TurnOnBtTipsFragment)) {
+                                Logger.i(TAG, "checkBluetooth open TurnOnBtTipsFragment");
+                                switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                            }
+                            break;
+                        }
+                    }
+            }
+        }
+    };
 
     private void initView() {
         relativeLayoutDiscovery = findViewById(R.id.relative_layout_discovery);
@@ -139,6 +225,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     protected void onResume() {
         super.onResume();
         Log.i(TAG,"onResume");
+        checkBluetooth();
     }
 
     @Override
@@ -148,9 +235,16 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG,"onStop");
+    }
+
+    @Override
     protected void onDestroy() {
         Log.i(TAG,"onDestroy");
         stopCircle();
+        unregisterReceiver(mBtReceiver);
         super.onDestroy();
     }
 
@@ -190,7 +284,12 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.image_view_discovery_menu_info:{
-                switchFragment(new InfoFragment(),JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                if (fr == null) {
+                    switchFragment(new InfoFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                }else if (!(fr instanceof  InfoFragment)) {
+                    switchFragment(new InfoFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                }
                 break;
             }
             case R.id.text_view_discovery_try_again:{
@@ -264,7 +363,12 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 case MSG_SHOW_HOME_FRAGMENT:{
                     Log.i(TAG,"show homeFragment");
                     relativeLayoutDiscovery.setVisibility(View.GONE);
-                    switchFragment(new HomeFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                    if (fr == null) {
+                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    }else if (!(fr instanceof  HomeFragment)) {
+                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    }
                     stopCircle();
                     break;
                 }
@@ -280,7 +384,12 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 case MSG_SHOW_OTA_FRAGMENT:{
                     Log.i(TAG,"show OTAFragment");
                     relativeLayoutDiscovery.setVisibility(View.GONE);
-                    switchFragment(new OTAFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                    if (fr == null) {
+                        switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    }else if (!(fr instanceof  OTAFragment)) {
+                        switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    }
                     stopCircle();
                     break;
                 }
