@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.avnera.audiomanager.Status;
@@ -25,6 +26,7 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
 
     public static final String TAG = SmartButtonFragment.class.getSimpleName();
     private RelativeLayout ambient, noise;
+    private ImageView iv_check_ambient,iv_check_noiceCancelling;
     private LightX lightX;
 
     @Override
@@ -40,6 +42,8 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
                 container, false);
         ambient = (RelativeLayout) view.findViewById(R.id.ambientLayout);
         noise = (RelativeLayout) view.findViewById(R.id.noiceCancelling);
+        iv_check_ambient=(ImageView)view.findViewById(R.id.iv_check_ambient);
+        iv_check_noiceCancelling=(ImageView)view.findViewById(R.id.iv_check_noiceCancelling);
         ambient.setOnClickListener(this);
         noise.setOnClickListener(this);
         return view;
@@ -66,11 +70,13 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
                 case AppSmartButtonFeatureIndex:
                     boolean boolValue = Utility.getBoolean(buffer, 0);
                     if (boolValue) {
-//                        noiseImage.setVisibility(View.VISIBLE);
-//                        ambientImage.setVisibility(View.INVISIBLE);
+                      iv_check_noiceCancelling.setVisibility(View.VISIBLE);
+                      iv_check_noiceCancelling.setImageResource(R.mipmap.check);
+                      iv_check_ambient.setVisibility(View.GONE);
                     } else {
-//                        noiseImage.setVisibility(View.INVISIBLE);
-//                        ambientImage.setVisibility(View.VISIBLE);
+                      iv_check_noiceCancelling.setVisibility(View.GONE);
+                      iv_check_ambient.setVisibility(View.VISIBLE);
+                      iv_check_ambient.setImageResource(R.mipmap.check);
                     }
                     break;
             }
@@ -97,15 +103,17 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ambientLayout:
-//                noiseImage.setVisibility(View.INVISIBLE);
-//                ambientImage.setVisibility(View.VISIBLE);
+                iv_check_noiceCancelling.setVisibility(View.GONE);
+                iv_check_ambient.setVisibility(View.VISIBLE);
+                iv_check_ambient.setImageResource(R.mipmap.check);
                 writeProgrammableIndexButton(false);
                 AnalyticsManager.getInstance(getActivity()).reportSmartButtonChange(getString(R.string.ambientAware));
                 break;
             case R.id.noiceCancelling:
+                iv_check_noiceCancelling.setVisibility(View.VISIBLE);
+                iv_check_noiceCancelling.setImageResource(R.mipmap.check);
+                iv_check_ambient.setVisibility(View.GONE);
                 writeProgrammableIndexButton(true);
-//                noiseImage.setVisibility(View.VISIBLE);
-//                ambientImage.setVisibility(View.INVISIBLE);
                 AnalyticsManager.getInstance(getActivity()).reportSmartButtonChange(getString(R.string.noise_cancelling));
                 break;
         }
@@ -136,6 +144,9 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
         Logger.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
+        if (values==null||(values!=null&&values.size()==0)){
+            return;
+        }
         switch (command) {
             case AmCmds.CMD_SmartButton: {
                 boolean boolValue = false;
@@ -143,11 +154,13 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
                     boolValue = values.iterator().next().getValue().toString().equals("1");
                 }
                 if (boolValue) {
-//                    noiseImage.setVisibility(View.VISIBLE);
-//                    ambientImage.setVisibility(View.INVISIBLE);
+                    iv_check_noiceCancelling.setVisibility(View.VISIBLE);
+                    iv_check_noiceCancelling.setImageResource(R.mipmap.check);
+                    iv_check_ambient.setVisibility(View.GONE);
                 } else {
-//                    noiseImage.setVisibility(View.INVISIBLE);
-//                    ambientImage.setVisibility(View.VISIBLE);
+                    iv_check_noiceCancelling.setVisibility(View.GONE);
+                    iv_check_ambient.setVisibility(View.VISIBLE);
+                    iv_check_ambient.setImageResource(R.mipmap.check);
                 }
                 break;
             }

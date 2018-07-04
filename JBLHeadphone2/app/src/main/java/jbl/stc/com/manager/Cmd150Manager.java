@@ -172,7 +172,7 @@ public class Cmd150Manager implements BaseManager {
             Log.i(TAG, "object is null, call setManager first");
             return;
         }
-        ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_SmartButton, smartButton);
+        ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_SmartButton, (!smartButton)? 0 : 1);
     }
 
     @Override
