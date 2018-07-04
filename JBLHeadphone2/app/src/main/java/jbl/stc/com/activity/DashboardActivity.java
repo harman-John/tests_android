@@ -6,12 +6,19 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,8 +30,10 @@ import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.HomeFragment;
+import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.listener.OnDownloadedListener;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -38,10 +47,10 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private static final String TAG = DashboardActivity.class.getSimpleName() + "aa";
     private JblCircleView jblCircleView;
     private static DashboardActivity dashboardActivity;
-    private ImageView image_view_logo;
-    private LinearLayout ll_cannot_see;
     private RelativeLayout relativeLayoutDiscovery;
-    private TextView txtTips;
+    private RelativeLayout relativeLayoutAnimation;
+    private RelativeLayout relativeLayoutTips;
+    private TextView textViewTryAgain;
     private final static int SHOW_UN_FOUND_TIPS = 0;
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
     private final static int MSG_SHOW_DISCOVERY = 2;
@@ -66,18 +75,64 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         dashboardActivity = this;
         initView();
         startCircle();
-//        dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,10000);
+        dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,5000);
         //load the presetEQ
         InsertPredefinePreset insertdefaultValueTask = new InsertPredefinePreset();
         insertdefaultValueTask.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
     }
 
     private void initView() {
-        relativeLayoutDiscovery = findViewById(R.id.containerLayoutDiscovery);
-        image_view_logo = (ImageView) findViewById(R.id.image_view_dashboard_logo);
-        image_view_logo.setOnClickListener(this);
-        ll_cannot_see = (LinearLayout) findViewById(R.id.ll_cannot_see);
-        txtTips = (TextView) findViewById(R.id.txtTips);
+        relativeLayoutDiscovery = findViewById(R.id.relative_layout_discovery);
+        relativeLayoutAnimation = findViewById(R.id.relative_layout_discovery_animation);
+        relativeLayoutTips = findViewById(R.id.relative_layout_discovery_tips);
+        relativeLayoutTips.setVisibility(View.GONE);
+
+        findViewById(R.id.image_view_discovery_menu_info).setOnClickListener(this);
+        textViewTryAgain = findViewById(R.id.text_view_discovery_try_again);
+        textViewTryAgain.setOnClickListener(this);
+
+        TextView textViewAdviceOne = findViewById(R.id.text_view_discovery_advice_one);
+        SpannableString spannableString = new SpannableString(getString(R.string.advice_one));
+        spannableString.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View arg0) {
+
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(getResources().getColor(android.R.color.white));
+                ds.setUnderlineText(true);
+                ds.setFakeBoldText(true);
+                ds.clearShadowLayer();
+            }
+
+        }, 35, 57, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textViewAdviceOne.setText(spannableString);
+        textViewAdviceOne.setMovementMethod(LinkMovementMethod.getInstance());
+        TextView textViewAdviceThree = findViewById(R.id.text_view_discovery_advice_three);
+
+        SpannableString spannableStringThree = new SpannableString(getString(R.string.advice_three));
+        spannableStringThree.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View arg0) {
+
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(getResources().getColor(android.R.color.white));
+                ds.setUnderlineText(true);
+                ds.setFakeBoldText(true);
+                ds.clearShadowLayer();
+            }
+
+        }, 66, 92, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textViewAdviceThree.setText(spannableStringThree);
+        textViewAdviceThree.setMovementMethod(LinkMovementMethod.getInstance());
+
     }
 
     @Override
@@ -134,8 +189,16 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.image_view_dashboard_logo:{
-//                jblCircleView.circle();
+            case R.id.image_view_discovery_menu_info:{
+                switchFragment(new InfoFragment(),JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                break;
+            }
+            case R.id.text_view_discovery_try_again:{
+                relativeLayoutDiscovery.setVisibility(View.VISIBLE);
+                relativeLayoutAnimation.setVisibility(View.VISIBLE);
+                relativeLayoutTips.setVisibility(View.GONE);
+                startCircle();
+                dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,5000);
                 break;
             }
         }
@@ -151,7 +214,15 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             if (isConnected) {
                 AppUtils.hideFromForeground(this);
             } else {
-                finish();
+                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                if (fr != null) {
+                    Logger.d(TAG, "onBackStackChanged " + fr.getClass().getSimpleName());
+                }
+                if (fr instanceof InfoFragment){
+                    super.onBackPressed();
+                }else {
+                    finish();
+                }
             }
         }
     }
@@ -185,9 +256,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 case SHOW_UN_FOUND_TIPS: {
                     Log.i(TAG,"show tips");
                     relativeLayoutDiscovery.setVisibility(View.VISIBLE);
-                    image_view_logo.setVisibility(View.GONE);
-                    ll_cannot_see.setVisibility(View.VISIBLE);
-                    txtTips.setVisibility(View.VISIBLE);
+                    relativeLayoutAnimation.setVisibility(View.GONE);
+                    relativeLayoutTips.setVisibility(View.VISIBLE);
                     stopCircle();
                     break;
                 }
@@ -201,10 +271,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 case MSG_SHOW_DISCOVERY:{
                     Log.i(TAG,"show discovery page");
                     relativeLayoutDiscovery.setVisibility(View.VISIBLE);
+                    relativeLayoutAnimation.setVisibility(View.VISIBLE);
+                    relativeLayoutTips.setVisibility(View.GONE);
                     removeAllFragment();
-                    image_view_logo.setVisibility(View.VISIBLE);
-                    ll_cannot_see.setVisibility(View.INVISIBLE);
-                    txtTips.setVisibility(View.VISIBLE);
                     startCircle();
                     break;
                 }
@@ -259,4 +328,44 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     }
 
+    public class LinkStyleSpan extends StyleSpan {
+
+        public LinkStyleSpan(int style) {
+            super(style);
+        }
+
+        @Override
+        public int describeContents() {
+            return super.describeContents();
+        }
+
+        @Override
+        public int getSpanTypeId() {
+            return super.getSpanTypeId();
+        }
+
+        @Override
+        public int getStyle() {
+            return super.getStyle();
+        }
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            ds.setFakeBoldText(true);
+            ds.setUnderlineText(true);
+            super.updateDrawState(ds);
+        }
+
+        @Override
+        public void updateMeasureState(TextPaint paint) {
+            paint.setFakeBoldText(true);
+            paint.setUnderlineText(true);
+            super.updateMeasureState(paint);
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+        }
+    }
 }

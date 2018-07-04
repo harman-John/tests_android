@@ -4,111 +4,129 @@
     android:layout_height="match_parent"
     android:background="@drawable/shape_gradient_legal">
 
-
     <RelativeLayout
-        android:id="@+id/containerLayoutDiscovery"
+        android:id="@+id/relative_layout_discovery"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <jbl.stc.com.view.JblCircleView
-            android:id="@+id/jbl_circle_view_dashboard"
+        <jbl.stc.com.view.AppImageView
+            android:id="@+id/image_view_discovery_menu_info"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="33dp"
+            android:src="@mipmap/icon_setting_normal" />
+
+        <RelativeLayout
+            android:id="@+id/relative_layout_discovery_animation"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+            <jbl.stc.com.view.JblCircleView
+                android:id="@+id/jbl_circle_view_dashboard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        <ImageView
-            android:id="@+id/image_view_dashboard_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:src="@mipmap/jbl_logo" />
+            <ImageView
+                android:id="@+id/image_view_dashboard_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/jbl_logo" />
+        </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/ll_cannot_see"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="@dimen/autoCalimarginTop"
-            android:orientation="vertical"
-            android:visibility="gone">
+        <RelativeLayout
+            android:id="@+id/relative_layout_discovery_tips"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/autoCalimarginTop"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@android:style/TextAppearance.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="@string/not_found_title"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_view_discovery_advice_one"
+                    style="@android:style/TextAppearance.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28dp"
+                    android:gravity="left"
+                    android:text="@string/advice_one"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/txtHelp" />
+
+                <TextView
+                    style="@android:style/TextAppearance.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/transparentStrokeWidth"
+                    android:gravity="left"
+                    android:text="@string/advice_two"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/txtHelp" />
+
+                <TextView
+                    android:id="@+id/text_view_discovery_advice_three"
+                    style="@android:style/TextAppearance.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/transparentStrokeWidth"
+                    android:gravity="left"
+                    android:text="@string/advice_three"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/txtHelp" />
+
+                <TextView
+                    style="@android:style/TextAppearance.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/transparentStrokeWidth"
+                    android:gravity="left"
+                    android:text="@string/advice_four"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/txtHelp"/>
+
+                <TextView
+                    style="@android:style/TextAppearance.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/transparentStrokeWidth"
+                    android:gravity="left"
+                    android:text="@string/advice_five"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/txtHelp"/>
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/txtMessage"
+                android:id="@+id/text_view_discovery_try_again"
                 style="@android:style/TextAppearance.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="@string/not_found_title"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txtHelp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtAdviceOne"
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/settings_item_padding_left"
-                android:gravity="left"
-                android:text="@string/advice_one"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txtHelp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtAdviceTwo"
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="35dp"
                 android:layout_marginTop="@dimen/transparentStrokeWidth"
-                android:gravity="left"
-                android:text="@string/advice_two"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txtHelp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtAdviceThree"
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/transparentStrokeWidth"
-                android:gravity="left"
-                android:text="@string/advice_three"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txtHelp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtAdviceFour"
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/transparentStrokeWidth"
-                android:gravity="left"
-                android:text="@string/advice_four"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txtHelp"
-                android:textStyle="bold" />
-
-
-        </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/txtTips"
-            style="@android:style/TextAppearance.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/page_padding_right"
-            android:layout_marginTop="@dimen/transparentStrokeWidth"
-            android:gravity="left"
-            android:text="@string/need_more_tips"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/txtConnecting"
-            android:textStyle="bold"
-            android:visibility="gone" />
+                android:background="@drawable/rectangle_with_round_corner_grey"
+                android:paddingBottom="9dp"
+                android:paddingLeft="70dp"
+                android:paddingRight="70dp"
+                android:paddingTop="9dp"
+                android:text="@string/try_again"
+                android:textColor="@color/orange_discovery"
+                android:textSize="16sp" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <FrameLayout

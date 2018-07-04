@@ -76,11 +76,12 @@
     <string name="TrueNote">TruNote</string>
 
     <string name="not_found_title">Cannot see a product?</string>
-    <string name="advice_one">1. Please make sure what you have one of the supported by app headphones models:</string>
-    <string name="advice_two">2. Power off and then on your product</string>
-    <string name="advice_three">3. Make sure your product is within the range of 5m</string>
-    <string name="advice_four">4. Disconnect your product from other JBL app</string>
-    <string name="need_more_tips">Need more help?</string>
+    <string name="advice_one">1.Make sure your headphones are in\nProduct supported list.</string>
+    <string name="advice_two">2.Power off and then on your product</string>
+    <string name="advice_three">3.Make sure your product is paired with\nyour mobile via Bluetooth(how to pair my headphones?).</string>
+    <string name="advice_four">4.Disconnect your product from other mobile</string>
+    <string name="advice_five">5.Pause music on your product</string>
+    <string name="try_again">Try again</string>
 
 
 

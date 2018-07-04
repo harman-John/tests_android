@@ -216,6 +216,7 @@ public class JblCircleView extends View {
         mAlphas1.clear();
         mAlphas2.clear();
         mRadius.clear();
+        des = 0;
         mMaxRadius = 300;
         mIsWave = false;
     }

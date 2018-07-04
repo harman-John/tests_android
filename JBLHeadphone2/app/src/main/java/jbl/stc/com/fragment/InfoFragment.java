@@ -10,7 +10,7 @@ import jbl.stc.com.R;
 import jbl.stc.com.legal.LegalApi;
 
 public class InfoFragment extends BaseFragment implements View.OnClickListener {
-    private static final String TAG = InfoFragment.class.getSimpleName();
+    public static final String TAG = InfoFragment.class.getSimpleName();
     private View view;
     @Override
     public void onCreate(Bundle savedInstanceState) {
