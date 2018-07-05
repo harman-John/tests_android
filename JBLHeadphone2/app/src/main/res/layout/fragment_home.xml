@@ -34,16 +34,14 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/relative_layout_home_eq_info"
-        android:layout_below="@+id/titleBar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="14dp"
+        android:layout_centerInParent="true"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:orientation="vertical">
 
             <TextView
@@ -52,8 +50,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/deviceName"
-                android:textSize="18sp"
                 android:textColor="#030D1C"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <RelativeLayout
@@ -106,15 +104,15 @@
                         android:layout_width="@dimen/dashboard_talk_image_width"
                         android:layout_height="@dimen/dashboard_talk_image_width"
                         android:layout_centerHorizontal="true"
-                        android:button="@android:color/transparent"
-                        android:background="@drawable/checkbox_noise_cancel_selector" />
+                        android:background="@drawable/checkbox_noise_cancel_selector"
+                        android:button="@android:color/transparent" />
 
                     <jbl.stc.com.view.PoppinsRegularTextView
                         style="@style/PoppinsRegularTextStyle"
-                        android:layout_below="@id/image_view_home_noise_cancel"
-                        android:layout_centerHorizontal="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/image_view_home_noise_cancel"
+                        android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
                         android:gravity="center_horizontal"
                         android:lineSpacingExtra="-5dp"
@@ -140,15 +138,15 @@
 
                     <jbl.stc.com.view.PoppinsRegularTextView
                         android:id="@+id/text_view_home_ambient_aware"
-                        android:layout_below="@id/image_view_home_ambient_aware"
                         style="@style/PoppinsRegularTextStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_below="@id/image_view_home_ambient_aware"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
                         android:gravity="center_horizontal"
                         android:text="@string/text_ambient_aware"
-                        android:textColor="#5B697E"/>
+                        android:textColor="#5B697E" />
                 </RelativeLayout>
 
             </LinearLayout>
