@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Headphones</string>
     <string name="noise_cancel">NOISE CANCEL</string>
+    <string name="noise_cancel_1">Noise\ncancelling</string>
     <string name="control_off">OFF</string>
 
     <string name="awareness">AMBIENT AWARENESS</string>
@@ -64,6 +65,7 @@
     <string name="eula_title">End User License\nAgreement</string>
     <string name="app_version">App version:</string>
 
+    <string name="get_start">Get start</string>
     <string name="start">Start</string>
     <string name="help">1. Put on headphones \n2. Push start button</string>
     <string name="personalizemessgae">Personalize your audio \n experience with \n TruNote Auto Calibration</string>
@@ -87,6 +89,8 @@
     <string name="turn_on_bluetooth_detail_1">Turn on Bluetooth from your control</string>
     <string name="turn_on_bluetooth_detail_2">center. The Bluetooth icon will turn blue.</string>
 
+    <string name="turn_on_off_noise_cancel">Turn on and off noise\ncanceling</string>
+    <string name="ambient_aware_tips">Once noise cancelling is on,\nadjust ambient awareness\nusing presets or sliders</string>
 
 
     <string name="OK">OK</string>

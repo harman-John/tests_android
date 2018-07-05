@@ -326,7 +326,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void updateANC(boolean onOff) {
-        checkBoxNoiseCancel.setChecked(onOff);
+        if (checkBoxNoiseCancel != null)
+            checkBoxNoiseCancel.setChecked(onOff);
     }
 
     private void updateCurrentEQ(int index) {

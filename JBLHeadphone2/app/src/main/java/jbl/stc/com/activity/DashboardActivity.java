@@ -39,6 +39,8 @@ import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
+import jbl.stc.com.fragment.TutorialFragment;
+import jbl.stc.com.listener.DismissListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.ota.CheckUpdateAvailable;
@@ -71,6 +73,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     public static boolean isUpdatingFirmware = false;
     public static CopyOnWriteArrayList<FirmwareModel> mFwlist = new CopyOnWriteArrayList<>();
 
+    private boolean mIsConnected = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +88,14 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 return;
             legalLandingDialog = new LegalLandingDialog();
             legalLandingDialog.show(this.getSupportFragmentManager(), LegalLandingDialog.Companion.getTAG());
+            legalLandingDialog.setOnDismissListener(new DismissListener() {
+                @Override
+                public void onDismiss(int reason) {
+                    if (mIsConnected) {
+                        switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                    }
+                }
+            });
         }
 
         registerReceiver(mBtReceiver, makeFilter());
@@ -252,6 +264,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     public void connectDeviceStatus(boolean isConnected) {
         super.connectDeviceStatus(isConnected);
         Log.d(TAG, " connectDeviceStatus isConnected = " + isConnected);
+
+        mIsConnected = isConnected;
         if (isConnected) {
             dashboardHandler.removeMessages(SHOW_UN_FOUND_TIPS);
             if (!isUpdatingFirmware) {
