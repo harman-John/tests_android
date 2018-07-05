@@ -111,7 +111,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 getActivity().onBackPressed();
                 break;
             }
-            case R.id.text_view_settings_true_note: {
+            case R.id.relative_layout_settings_true_note: {
                 Log.d(TAG, "true note clicked");
                 switchFragment(new CalibrationFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
