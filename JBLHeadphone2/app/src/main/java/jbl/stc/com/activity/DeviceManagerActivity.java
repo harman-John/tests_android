@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 
 import com.avnera.audiomanager.Action;
 import com.avnera.audiomanager.AdminEvent;
@@ -43,6 +44,7 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.ConnectedDeviceType;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.AlertsDialog;
+import jbl.stc.com.fragment.CalibrationFragment;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.listener.AppLightXDelegate;
 import jbl.stc.com.logger.Logger;
@@ -582,9 +584,8 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     connectDeviceStatus(false);
                 }
             });
-            if (Calibration.getCalibration() != null) {
-                Calibration.getCalibration().finish();
-            }
+
+
             Logger.d(TAG, "ResetDisconnect " + resetTime);
             Logger.d(TAGReconnect, "Bluetooth disconnected");
             //            checkForUSB_WhenBluetoothDisconnected();
@@ -648,8 +649,8 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (Calibration.getCalibration() != null)
-                                    Calibration.getCalibration().setIsCalibrationComplete(true);
+                                if (CalibrationFragment.getCalibration() != null)
+                                    CalibrationFragment.getCalibration().setIsCalibrationComplete(true);
                                 Logger.d(TAG, "Calibration Stopped");
                             }
                         });
@@ -705,16 +706,16 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         } else if (success) {
             switch (command) {
                 case App_0xB3:
-                    if (Calibration.getCalibration() != null)
-                        Calibration.getCalibration().setIsCalibrationComplete(true);
+                    if (CalibrationFragment.getCalibration() != null)
+                        CalibrationFragment.getCalibration().setIsCalibrationComplete(true);
                     Logger.d(TAG, "Calibration Stopped");
                     break;
             }
         } else {
             switch (command) {
                 case App_0xB2:
-                    if (Calibration.getCalibration() != null)
-                        Calibration.getCalibration().calibrationFailed();
+                    if (CalibrationFragment.getCalibration() != null)
+                        CalibrationFragment.getCalibration().calibrationFailed();
                     break;
             }
         }
@@ -976,7 +977,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     // This fix is to avoid interruption in the middle of Upgrade process thread. Tutorial check is to manage first launch.
                     //These were issues raised by China team.
                     //Fix start
-                    boolean showTutorial = getSupportFragmentManager().findFragmentById(R.id.mainContainer) instanceof HomeFragment;
+                    boolean showTutorial = getSupportFragmentManager().findFragmentById(R.id.containerLayout) instanceof HomeFragment;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !(AppUtils.mTutorial && showTutorial) && (usbManager.hasPermission(device) && isConnected)) {
                         return;
                     }

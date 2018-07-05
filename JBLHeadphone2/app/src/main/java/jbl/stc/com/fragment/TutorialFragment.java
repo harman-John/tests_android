@@ -22,6 +22,8 @@ import jbl.stc.com.legal.LegalApi;
 import jbl.stc.com.listener.AwarenessChangeListener;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AvneraManager;
+import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.view.ANCController;
 import jbl.stc.com.view.CircularInsideLayout;
 
@@ -82,11 +84,17 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.text_view_page_two_get_started:{
-                Fragment fr = getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (fr != null && fr instanceof HomeFragment) {
-                    switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                if(AppUtils.getModelNumber(getActivity()).toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_300)
+                        ||AppUtils.getModelNumber(getActivity()).toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_700)
+                        ||AppUtils.getModelNumber(getActivity()).toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_750NC)){
+                    switchFragment(new CalibrationFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 }else{
-                    switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    Fragment fr = getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                    if (fr != null && fr instanceof HomeFragment) {
+                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    } else {
+                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    }
                 }
                 break;
             }

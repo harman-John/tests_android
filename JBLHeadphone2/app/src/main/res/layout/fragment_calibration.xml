@@ -1,21 +1,39 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@drawable/shape_gradient_legal">
+
+    <ImageView
+        android:id="@+id/image_view_calibration_global_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="17dp"
+        android:layout_marginStart="22dp"
+        android:background="@mipmap/grey_arrow_back" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:text="@string/text_calibration_title" />
 
     <TextView
         android:id="@+id/txtConnectMessage"
         style="@android:style/TextAppearance.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/autoCalimarginTop"
-        android:layout_marginLeft="@dimen/autoCalimarginTopLess"
+        android:layout_marginStart="@dimen/autoCalimarginTopLess"
+        android:layout_marginTop="90dp"
         android:gravity="left"
+        android:text="@string/personalizemessgae"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/txtmainMessage"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
@@ -24,29 +42,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txtConnectMessage"
-        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginStart="@dimen/autoCalimarginTopLess"
+        android:layout_marginTop="8dp"
+        android:gravity="left"
         android:text="@string/help"
         android:textColor="@android:color/white"
         android:textSize="@dimen/txtHelp"
-        android:textStyle="normal"
-        android:layout_marginTop="@dimen/autoCalimarginTopLess"
-        android:layout_marginLeft="@dimen/autoCalimarginTopLess"
-        android:visibility="visible" />
+        android:textStyle="normal" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/txthelp"
-        android:layout_marginBottom="@dimen/autoCalimarginTop"
-        >
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/autoCalimarginTop">
 
         <FrameLayout
             android:id="@+id/informationLayout"
             android:layout_width="@dimen/whitecircle"
             android:layout_height="@dimen/whitecircle"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/autoCalimarginTopLess"
+            android:layout_marginTop="10dp"
             android:background="@drawable/whitecircle">
 
             <TextView

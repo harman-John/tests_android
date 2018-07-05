@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import jbl.stc.com.R;
-import jbl.stc.com.activity.Calibration;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.JBLConstant;
@@ -109,9 +108,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             }
             case R.id.text_view_settings_true_note: {
                 Log.d(TAG, "true note clicked");
-                Intent intent = new Intent(getActivity(), Calibration.class);
-                intent.putExtra(Calibration.TAG, GlobalCalibration.class.getSimpleName());
-                startActivity(intent);
+                switchFragment(new CalibrationFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
             case R.id.text_view_settings_smart_button:{
