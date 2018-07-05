@@ -1,0 +1,137 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="250dp"
+    android:layout_height="250dp"
+    android:splitMotionEvents="false"
+    android:background="@color/grey_turn_on_bt"
+    android:windowEnableSplitTouch="false">
+
+    <jbl.stc.com.view.CircularInsideLayout
+        android:id="@+id/imageContainer_anc_circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="3dp"
+        android:paddingEnd="3dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/high"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@mipmap/btn_awareness_high"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/awarness"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="@string/awareness"
+                android:textColor="@android:color/black"
+                android:textSize="9sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/highTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/awarness"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:drawableLeft="@mipmap/waves_high_l"
+                android:drawablePadding="10dp"
+                android:drawableRight="@mipmap/waves_high_r"
+                android:gravity="center_vertical"
+                android:text="@string/highView"
+                android:textColor="@android:color/black"
+                android:textSize="15sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@mipmap/btn_awareness_mid"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mediumTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:drawableLeft="@mipmap/waves_medium_l"
+                android:drawablePadding="5dp"
+                android:drawableRight="@mipmap/waves_medium_r"
+                android:text="@string/mediumView"
+                android:textColor="@android:color/black"
+                android:textSize="15sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/low"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@mipmap/btn_awareness_low"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lowTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:drawableLeft="@mipmap/waves_low_l"
+                android:drawablePadding="5dp"
+                android:drawableRight="@mipmap/waves_low_r"
+                android:text="@string/lowView"
+                android:textColor="@android:color/black"
+                android:textSize="15sp" />
+        </RelativeLayout>
+    </jbl.stc.com.view.CircularInsideLayout>
+
+    <FrameLayout
+        android:id="@+id/seekArcContainer1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <jbl.stc.com.view.ANCController
+            android:id="@+id/circularSeekBar_anc_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:background="@android:color/transparent"
+            android:layerType="hardware"
+            app:arcColor="@android:color/black"
+            app:clockwise="true"
+            app:progressColor="#FF6600"
+            app:progressWidth="3dp"
+            app:startAngle="30"
+            app:sweepAngle="300"
+            app:thumb1_radius="@dimen/thumb1Radius"
+            app:thumb1_start="@integer/thumb1Angle"
+            app:thumb1_text="@dimen/thumb1Text"
+            app:thumb2_radius="@dimen/thumb2Radius"
+            app:thumb2_start="@integer/thumb2Angle"
+            app:thumb2_text="@dimen/thumb2Text" />
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/text_view_page_two_off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="110dp"
+        android:text="@string/control_off"
+        android:textColor="@drawable/gray_black_txt"
+        android:textSize="15sp" />
+</FrameLayout>
