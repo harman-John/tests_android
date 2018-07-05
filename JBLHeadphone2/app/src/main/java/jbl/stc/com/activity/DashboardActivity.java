@@ -92,6 +92,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 @Override
                 public void onDismiss(int reason) {
                     if (mIsConnected) {
+                        PreferenceUtils.setBoolean(PreferenceKeys.FIRST_TIME_ENTER_APP, true, getApplicationContext());
                         switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
                     }
                 }
@@ -377,11 +378,23 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 case MSG_SHOW_HOME_FRAGMENT:{
                     Log.i(TAG,"show homeFragment");
                     relativeLayoutDiscovery.setVisibility(View.GONE);
-                    Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                    if (fr == null) {
-                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    }else if (!(fr instanceof  HomeFragment)) {
-                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+
+                    boolean isNotFirstEnterApp = PreferenceUtils.getBoolean(PreferenceKeys.FIRST_TIME_ENTER_APP,getApplicationContext());
+                    if (!isNotFirstEnterApp){
+                        PreferenceUtils.setBoolean(PreferenceKeys.FIRST_TIME_ENTER_APP, true, getApplicationContext());
+                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                        if (fr == null) {
+                            switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                        } else if (!(fr instanceof HomeFragment)) {
+                            switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                        }
+                    }else {
+                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                        if (fr == null) {
+                            switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                        } else if (!(fr instanceof HomeFragment)) {
+                            switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                        }
                     }
                     stopCircle();
                     break;

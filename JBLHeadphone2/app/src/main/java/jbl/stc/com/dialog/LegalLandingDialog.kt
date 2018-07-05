@@ -92,7 +92,6 @@ class LegalLandingDialog : android.support.v4.app.DialogFragment() {
         view.txtEulaButton!!.setOnClickListener {
             if (isBothChecked) {
                 AppUtils.mLegalPage = false
-                PreferenceUtils.setBoolean(PreferenceKeys.FIRST_TIME_ENTER_APP, true, activity)
                 dismiss()
             }
         }

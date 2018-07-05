@@ -105,6 +105,7 @@ public class JblCircleView extends View {
     }
 
     int des = 0;
+    int mAlpha = 148;
     public void doAnimation() {
         mPaint.setColor(mColor);
         mPaint.setStyle(Paint.Style.STROKE);
@@ -139,17 +140,21 @@ public class JblCircleView extends View {
 
             mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, mImageRadius + radius +320, mPaint2);
 
-            if (alpha > 0 && mImageRadius + radius < mMaxRadius) {
-                alpha = (int) (255.0F * (1.0F - (mImageRadius + radius) * 1.0f / mMaxRadius));
+            if( radius == 200){
+                mAlpha = 148;
+            }
+            mAlpha --;
+
+               // alpha = (int) (255.0F * (1.0F - (mImageRadius + radius) * 1.0f / mMaxRadius));
                 Logger.i(TAG, "mAlphas size =" + mAlphas.size()
                         + ",i = " + i
-                        + ",alpha = " + alpha
+                        + ",mAlpha = " + mAlpha
                         + ",mImageRadius = " + mImageRadius
                         + ",radius = " + radius
                         + ",des = " + des
                         + ",radius size = " + mRadius.get(mRadius.size() - 1)
                         + ",mWidth = " + mWidth);
-                if (alpha > 110) {
+                if (mAlpha > 110) {
                     des = des +5;
                     if (des >0) {
                         mAlphas.set(i, des);
@@ -173,8 +178,6 @@ public class JblCircleView extends View {
                     }
                 }
                 mRadius.set(i, radius + 3);
-            }
-
         }
 
         if (mRadius.get(mRadius.size() - 1) >= mWidth) {
