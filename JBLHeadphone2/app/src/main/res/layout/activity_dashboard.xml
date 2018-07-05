@@ -15,7 +15,7 @@
             android:layout_height="44dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="33dp"
-            android:src="@mipmap/icon_setting_normal" />
+            android:src="@mipmap/white_menu" />
 
         <RelativeLayout
             android:id="@+id/relative_layout_discovery_animation"
