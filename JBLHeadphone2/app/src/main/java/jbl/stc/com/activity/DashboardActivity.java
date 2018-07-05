@@ -180,6 +180,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
     };
 
+
     private void initView() {
         relativeLayoutDiscovery = findViewById(R.id.relative_layout_discovery);
         relativeLayoutAnimation = findViewById(R.id.relative_layout_discovery_animation);

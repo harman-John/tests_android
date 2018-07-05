@@ -72,7 +72,7 @@
     <string name="calibrating">Calibrating</string>
     <string name="cancel">Cancel</string>
     <string name="extrahelp">Calibrate headphones anytime in settings</string>
-    <string name="autoComplete">TruNote \n Auto Calibration Complete</string>
+    <string name="autoComplete">TruNote Auto Calibration \nComplete</string>
     <string name="failcalibration">Calibration failed. Try again</string>
     <string name="IE_No_calbration">Your headphones don\'t support Calibration.</string>
     <string name="text_calibration_title">TrueNote calibration</string>

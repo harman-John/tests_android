@@ -8,15 +8,23 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.avnera.smartdigitalheadset.Command;
+import com.avnera.smartdigitalheadset.LightX;
+import com.avnera.smartdigitalheadset.Utility;
+
 import jbl.stc.com.R;
+import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.listener.OnHeadphoneconnectListener;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.CalibrationManager;
 
@@ -26,16 +34,20 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
     private static CalibrationFragment calibration = null;
     CalibrationManager calibrationManager;
     private View view;
-    TextView txtConnectMessage, txthelp, txtChangeMessage, txtCalibrating, txtExtraHelp;
+    TextView txtConnectMessage, txthelp, txtChangeMessage, txtCalibrating;
     ProgressBar progressBar;
     int timing = 10 * 1000;
     private View informationLayout;
     private ImageView imageViewBack;
+    private TextView tv_calibratingDone;
+    private ImageView iv_complete;
 
     private boolean isCalibrationComplete;
     private int retryWaitForCalibration = 0;
 
     Handler handler = new Handler();
+
+    private String tag;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,9 +78,15 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
         txtChangeMessage = (TextView) view.findViewById(R.id.txtChangeMessage);
         txtCalibrating = (TextView) view.findViewById(R.id.txtCalibrating);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        txtExtraHelp = (TextView) view.findViewById(R.id.txtExtraHelp);
         informationLayout = view.findViewById(R.id.informationLayout);
         informationLayout.setOnClickListener(this);
+        tv_calibratingDone=(TextView) view.findViewById(R.id.tv_calibratingDone);
+        tv_calibratingDone.setOnClickListener(this);
+        iv_complete=(ImageView)view.findViewById(R.id.iv_complete);
+        if (this.getArguments()!=null){
+            tag=this.getArguments().getString(CalibrationFragment.TAG);
+            Logger.d(TAG,tag);
+        }
         return view;
     }
 
@@ -81,17 +99,23 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
-            case R.id.informationLayout: {
+            case R.id.informationLayout:
                 startCalibration();
                 informationLayout.setOnClickListener(null);
                 break;
-            }
-            case R.id.image_view_calibration_global_back:{
+            case R.id.image_view_calibration_global_back:
                 calibration = null;
                 dummyStopCalibration();
                 getActivity().onBackPressed();
                 break;
-            }
+            case R.id.tv_calibratingDone:
+                if (!TextUtils.isEmpty(tag)&&tag.equals(CalibrationFragment.TAG)){
+                    //enter from setting
+                    getActivity().onBackPressed();
+                }else{
+                    switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                }
+                break;
         }
     }
 
@@ -118,14 +142,6 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
         calibrationManager.setLightX(AvneraManager.getAvenraManager(getActivity()).getLightX());
         calibrationManager.startCalibration();
         handler.postDelayed(runnable, 5000);
-        /*if (Calibration.getCalibration() != null) {
-            retryWaitForCalibration = 0;
-            isCalibrationStarted = true;
-            isCalibrationComplete = false;
-            calibrationManager.setLightX(AvneraManager.getAvenraManager(this).getLightX());
-            findViewById(R.id.txtCancel).setVisibility(View.INVISIBLE);
-            handler.postDelayed(runnable, 5000);
-        }*/
     }
 
     /*
@@ -141,21 +157,20 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
      */
     public void calibrationComplete() {
         imageViewBack.setVisibility(View.GONE);
-        txtConnectMessage.setVisibility(View.INVISIBLE);
-        txtChangeMessage.setBackgroundResource(R.drawable.ic_donetick);
-        progressBar.setVisibility(View.GONE);
-        txthelp.setVisibility(View.VISIBLE);
-        txtExtraHelp.setVisibility(View.INVISIBLE);
+        informationLayout.setVisibility(View.GONE);
+        txthelp.setVisibility(View.GONE);
         txtCalibrating.setVisibility(View.GONE);
+        iv_complete.setVisibility(View.VISIBLE);
 
-        txthelp.setText(Html.fromHtml(getString(R.string.autoComplete)));
+        txtConnectMessage.setText(Html.fromHtml(getString(R.string.autoComplete)));
+        tv_calibratingDone.setVisibility(View.VISIBLE);
 
-        txthelp.postDelayed(new Runnable() {
+        /*txthelp.postDelayed(new Runnable() {
             @Override
             public void run() {
-                getActivity().finish();
+//                getActivity().finish();
             }
-        }, 2000);
+        }, 2000);*/
     }
 
     /*
@@ -209,6 +224,20 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
         @Override
         public void onReceive(Context context, Intent intent) {
             abortBroadcast();
+        }
+    }
+
+
+    @Override
+    public void lightXAppReadResult(LightX var1, Command command, boolean success, byte[] buffer) {
+        super.lightXAppReadResult(var1, command, success, buffer);
+        if (success) {
+            switch (command) {
+                case App_0xB3:
+                    if (CalibrationFragment.getCalibration() != null)
+                        CalibrationFragment.getCalibration().setIsCalibrationComplete(true);
+                    break;
+            }
         }
     }
 }

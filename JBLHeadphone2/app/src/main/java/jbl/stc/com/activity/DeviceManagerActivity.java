@@ -27,6 +27,7 @@ import com.avnera.smartdigitalheadset.Bluetooth;
 import com.avnera.smartdigitalheadset.BluetoothSocketWrapper;
 import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
+import com.avnera.smartdigitalheadset.Log;
 import com.avnera.smartdigitalheadset.ModuleId;
 import com.avnera.smartdigitalheadset.USB;
 import com.avnera.smartdigitalheadset.USBSocket;
@@ -634,8 +635,10 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     @Override
     public void lightXAppReadResult(final LightX lightX, final Command command, final boolean success, final byte[] buffer) {
+        Logger.d(TAG,"command:"+command.toString()+"result:"+(success?"true":"false"));
         try {
             if (appLightXDelegate != null) {
+                Logger.d(TAG,"appLightXDelegate != null");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -646,6 +649,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             } else if (success) {
                 switch (command) {
                     case App_0xB3:
+                        Logger.d(TAG,"calibration");
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

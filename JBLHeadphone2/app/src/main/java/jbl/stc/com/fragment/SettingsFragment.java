@@ -113,7 +113,11 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             }
             case R.id.relative_layout_settings_true_note: {
                 Log.d(TAG, "true note clicked");
-                switchFragment(new CalibrationFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                CalibrationFragment calibrationFragment=new CalibrationFragment();
+                Bundle bundle=new Bundle();
+                bundle.putString(CalibrationFragment.TAG, CalibrationFragment.class.getSimpleName());
+                calibrationFragment.setArguments(bundle);
+                switchFragment(calibrationFragment,JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
             case R.id.text_view_settings_smart_button:{
