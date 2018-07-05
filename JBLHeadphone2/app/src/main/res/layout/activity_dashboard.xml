@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/shape_gradient_legal">
+    android:background="@drawable/shape_gradient_discovery">
 
     <RelativeLayout
         android:id="@+id/relative_layout_discovery"
@@ -15,7 +15,7 @@
             android:layout_height="44dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="33dp"
-            android:src="@mipmap/icon_setting_normal" />
+            android:src="@mipmap/white_menu" />
 
         <RelativeLayout
             android:id="@+id/relative_layout_discovery_animation"

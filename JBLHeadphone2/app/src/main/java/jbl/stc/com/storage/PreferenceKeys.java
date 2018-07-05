@@ -42,4 +42,6 @@ public class PreferenceKeys {
 
 
     public static final String FirmVersion = "FirmVersion";
+    public static final String AUTOOFFTIMER = "AutoOffTimer";
+
 }

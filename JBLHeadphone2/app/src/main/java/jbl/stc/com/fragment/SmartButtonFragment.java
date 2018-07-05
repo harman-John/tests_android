@@ -44,6 +44,7 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
         noise = (RelativeLayout) view.findViewById(R.id.noiceCancelling);
         iv_check_ambient=(ImageView)view.findViewById(R.id.iv_check_ambient);
         iv_check_noiceCancelling=(ImageView)view.findViewById(R.id.iv_check_noiceCancelling);
+        view.findViewById(R.id.image_view_back).setOnClickListener(this);
         ambient.setOnClickListener(this);
         noise.setOnClickListener(this);
         return view;
@@ -102,6 +103,9 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.image_view_back:
+                getActivity().onBackPressed();
+                break;
             case R.id.ambientLayout:
                 iv_check_noiceCancelling.setVisibility(View.GONE);
                 iv_check_ambient.setVisibility(View.VISIBLE);

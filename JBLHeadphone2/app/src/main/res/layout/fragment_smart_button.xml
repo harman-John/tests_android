@@ -1,22 +1,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lighter_gray_theme">
+    android:background="@color/page_background">
 
 
     <RelativeLayout
         android:id="@+id/rl_title"
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:layout_height="@dimen/title_bar_height">
         <ImageView
             android:id="@+id/image_view_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:src="@mipmap/ic_back"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="15dp"/>
 
         <TextView
             android:id="@+id/text_view_title"
@@ -81,6 +81,7 @@
             </LinearLayout>
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/iv_check_ambient"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -140,6 +141,7 @@
             </LinearLayout>
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/iv_check_noiceCancelling"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -29,6 +29,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     private RelativeLayout relativeLayoutSoundXSetup;
     private RelativeLayout relativeLayoutSmartAssitant;
     private TextView deviceName;
+    private TextView toggleautoOff;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,8 +45,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         view.findViewById(R.id.text_view_settings_firmware).setOnClickListener(this);
         view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
         view.findViewById(R.id.text_view_settings_smart_button).setOnClickListener(this);
+        view.findViewById(R.id.relative_layout_settings_auto_off).setOnClickListener(this);
         deviceName = (TextView) view.findViewById(R.id.deviceName);
         deviceName.setText(PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, ""));
+        toggleautoOff=(TextView) view.findViewById(R.id.toggleautoOff);
         Logger.i(TAG,"Model number is "+AppUtils.getModelNumber(getActivity()));
         if (DeviceFeatureMap.isFeatureSupported(AppUtils.getModelNumber(getActivity()), Feature.ENABLE_SMART_BUTTON)){
             relativeLayoutSmartButton = view.findViewById(R.id.relative_layout_settings_smart_button);
@@ -87,6 +90,8 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG,"onResume");
+        toggleautoOff.setText(PreferenceUtils.getString(PreferenceKeys.AUTOOFFTIMER,getActivity(),getContext().getString(R.string.five_minute)));
     }
 
     @Override
@@ -119,7 +124,8 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 switchFragment(new SmartButtonFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
-            case R.id.text_view_settings_auto_off:{
+            case R.id.relative_layout_settings_auto_off:{
+                switchFragment(new AutoOffTimeFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
         }

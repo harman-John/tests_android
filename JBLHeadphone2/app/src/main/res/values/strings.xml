@@ -114,4 +114,8 @@
     <string name="amibient">Use the smart button on your headphones \n to turn Ambient  Awareness on and off.</string>
     <string name="noise_cancel_tip">Use the smart button on your headphones \n to turn Noise Cancellation on and off.</string>
 
+    <string name="five_minute">5min</string>
+    <string name="ten_minute">10min</string>
+    <string name="thirty_minute">30min</string>
+    <string name="never">Never</string>
 </resources>
