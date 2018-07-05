@@ -16,6 +16,8 @@ import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.storage.PreferenceKeys;
+import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 
 public class SettingsFragment extends BaseFragment implements View.OnClickListener {
@@ -26,6 +28,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     private RelativeLayout relativeLayoutTrueNote;
     private RelativeLayout relativeLayoutSoundXSetup;
     private RelativeLayout relativeLayoutSmartAssitant;
+    private TextView deviceName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,9 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);
         view.findViewById(R.id.text_view_settings_firmware).setOnClickListener(this);
         view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
+        view.findViewById(R.id.text_view_settings_smart_button).setOnClickListener(this);
+        deviceName = (TextView) view.findViewById(R.id.deviceName);
+        deviceName.setText(PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, ""));
         Logger.i(TAG,"Model number is "+AppUtils.getModelNumber(getActivity()));
         if (DeviceFeatureMap.isFeatureSupported(AppUtils.getModelNumber(getActivity()), Feature.ENABLE_SMART_BUTTON)){
             relativeLayoutSmartButton = view.findViewById(R.id.relative_layout_settings_smart_button);
@@ -109,6 +115,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.text_view_settings_smart_button:{
+                Log.d(TAG,"smart button click");
                 switchFragment(new SmartButtonFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }

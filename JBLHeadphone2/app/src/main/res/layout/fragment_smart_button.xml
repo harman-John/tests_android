@@ -1,34 +1,59 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lighter_gray_theme">
 
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/rl_title"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:layout_height="60dp">
+        <ImageView
+            android:id="@+id/image_view_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_back"
+            android:layout_marginLeft="10dp"/>
 
         <TextView
-            android:id="@+id/textOptions"
-            android:layout_width="match_parent"
+            android:id="@+id/text_view_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="#000000"
-            android:textStyle="bold" />
+            android:text="@string/text_smart_button"
+            android:layout_centerInParent="true"
+            android:textSize="16sp"/>
+
+    </RelativeLayout>
+
+
+
+    <LinearLayout
+        android:layout_below="@id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:background="@android:color/white"/>
 
         <RelativeLayout
             android:id="@+id/ambientLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textOptions"
-            android:background="@color/cell_background"
-            android:padding="@dimen/marginTop10dp"
-            android:weightSum="1">
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:gravity="center_vertical"
@@ -38,8 +63,8 @@
                     android:id="@+id/text_available_update_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/ambientAware"
                     android:focusable="false"
+                    android:text="@string/ambientAware"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textColor="@color/black"
                     android:textSize="@dimen/txtmainMessage" />
@@ -51,21 +76,38 @@
                     android:layout_marginTop="@dimen/marginTop10dp"
                     android:focusable="false"
                     android:text="@string/amibient"
-                    android:textSize="@dimen/txtBelowMessage"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textSize="@dimen/txtBelowMessage" />
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_check_ambient"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/check_empty"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                />
 
 
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:background="@android:color/white"/>
 
         <RelativeLayout
             android:id="@+id/noiceCancelling"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textOptions"
-            android:background="@color/cell_background"
-            android:padding="@dimen/marginTop10dp"
-            android:weightSum="1">
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -97,8 +139,17 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Small" />
             </LinearLayout>
 
+            <ImageView
+                android:id="@+id/iv_check_noiceCancelling"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/check_empty"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                />
+
 
         </RelativeLayout>
 
     </LinearLayout>
-</FrameLayout>
+</RelativeLayout>

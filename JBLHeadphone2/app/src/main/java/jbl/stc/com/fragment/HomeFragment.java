@@ -10,15 +10,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.avnera.audiomanager.AccessoryInfo;
@@ -43,6 +46,7 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.CreateEqTipsDialog;
 import jbl.stc.com.listener.OnDialogListener;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
@@ -87,8 +91,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private LightX lightX;
     private AAPopupwindow aaPopupwindow;
 
-    private LinearLayout linearLayoutNoiseCanceling;
-    private LinearLayout linearLayoutAmbientAware;
+    private RelativeLayout linearLayoutNoiseCanceling;
+    private RelativeLayout linearLayoutAmbientAware;
+    private FrameLayout relative_layout_home_eq_info;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,8 +112,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         textViewDeviceName = view.findViewById(R.id.text_view_home_device_name);
 
         imageViewDevice = view.findViewById(R.id.image_view_home_device_image);
-        view.findViewById(R.id.relative_layout_home_eq_info).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.relative_layout_home_eq_info).setOnClickListener(this);
+        relative_layout_home_eq_info=(FrameLayout) view.findViewById(R.id.relative_layout_home_eq_info);
+        relative_layout_home_eq_info.setVisibility(View.VISIBLE);
+        relative_layout_home_eq_info.setOnClickListener(this);
 
         textViewCurrentEQ = view.findViewById(R.id.text_view_home_eq_name);
         linearLayoutBattery = view.findViewById(R.id.linear_layout_home_battery);
@@ -333,21 +339,25 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         switch (index) {
             case 0: {
                 textViewCurrentEQ.setText(getString(R.string.off));
+                relative_layout_home_eq_info.setBackgroundColor(getResources().getColor(R.color.gray_aa_bg));
                 break;
             }
             case 1: {
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.jazz));
+                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 2: {
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.vocal));
+                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 3: {
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.bass));
+                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 4: {
@@ -484,6 +494,24 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
         }
 
+    }
+
+    @Override
+    public void receivedPushNotification(Action action, String command, ArrayList<responseResult> values, Status status) {
+        super.receivedPushNotification(action, command, values, status);
+        Logger.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
+        switch (command){
+            case AmCmds.CMD_ANCNotification: {
+                Logger.d(TAG, "CMD_ANCNotification:" + ",values=" + values.iterator().next().getValue().toString() );
+                PreferenceUtils.setInt(PreferenceKeys.ANC_VALUE, Integer.valueOf(values.iterator().next().getValue().toString() ), getActivity());
+                if (Integer.valueOf(values.iterator().next().getValue().toString())==1){
+                    checkBoxNoiseCancel.setChecked(true);
+                }else if (Integer.valueOf(values.iterator().next().getValue().toString())==0){
+                    checkBoxNoiseCancel.setChecked(false);
+                }
+                break;
+            }
+        }
     }
 
     @Override

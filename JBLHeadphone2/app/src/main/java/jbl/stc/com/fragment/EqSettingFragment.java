@@ -154,11 +154,11 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 eqNameText.setText(currSelectedEq.eqName);
                 eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.white));
             } else {
-                eqNameText.setText(R.string.eq_off_name_text);
+                eqNameText.setText(R.string.off);
                 eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.text_white_50));
             }
         } else {
-            eqNameText.setText(R.string.eq_off_name_text);
+            eqNameText.setText(R.string.off);
             eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.text_white_50));
             for (EQModel model : eqModelList) {
                 model.isSelected = false;
