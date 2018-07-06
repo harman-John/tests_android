@@ -6,6 +6,7 @@ import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -188,6 +189,27 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
             ft.commitAllowingStateLoss();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void removeAllFragment() {
+        Fragment fr = getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+        if (fr == null) {
+            Log.i(TAG,"fr is null");
+            return;
+        }
+        try {
+            FragmentManager manager = getActivity().getSupportFragmentManager();
+            int count = manager.getBackStackEntryCount();
+            Log.i(TAG, "count = " + count);
+            while (count > 0) {
+                getActivity().getSupportFragmentManager().popBackStackImmediate();
+                manager = getActivity().getSupportFragmentManager();
+                count = manager.getBackStackEntryCount();
+                Log.i(TAG, "back stack count = " + count);
+            }
+        }catch (Exception e){
+            Log.e(TAG,"Fragment is not shown, then popBack will have exception ");
         }
     }
 
