@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.avnera.smartdigitalheadset.ANCAwarenessPreset;
@@ -34,6 +35,7 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
     private List<View> views;
     private View view1, view2;
     private TextView textViewOffButton;
+    private ImageView closeButton;
 
     private ANCController ancController;
     private CircularInsideLayout circularInsideLayout;
@@ -58,6 +60,8 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
         PagerAdapter adapter = new ViewAdapter(views);
         viewPager.setAdapter(adapter);
 
+        closeButton = view1.findViewById(R.id.image_view_page_one_close);
+        closeButton.setOnClickListener(this);
         ancController = view2.findViewById(R.id.circularSeekBar_anc_circle);
         circularInsideLayout = view2.findViewById(R.id.imageContainer_anc_circle);
         textViewOffButton = view2.findViewById(R.id.text_view_page_two_off);
@@ -66,7 +70,6 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
         circularInsideLayout.setonAwarenesChangeListener(this);
         ancController.setCircularInsideLayout(circularInsideLayout);
         ancController.setOnSeekArcChangeListener(this);
-
         return view;
     }
 
@@ -83,6 +86,7 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
                 ancController.setSwitchOff(false);
                 break;
             }
+            case R.id.image_view_page_one_close:
             case R.id.text_view_page_two_get_started:{
                 if(AppUtils.getModelNumber(getActivity()).toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_300)
                         ||AppUtils.getModelNumber(getActivity()).toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_700)
@@ -148,6 +152,7 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
         public boolean isViewFromObject(View view, Object object) {
             return view == object;
         }
+
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {

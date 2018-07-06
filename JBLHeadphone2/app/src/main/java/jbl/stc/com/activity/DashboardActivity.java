@@ -82,23 +82,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         Log.i(TAG,"onCreate");
         setContentView(R.layout.activity_dashboard);
 
-        boolean isNotFirstEnterApp = PreferenceUtils.getBoolean(PreferenceKeys.FIRST_TIME_ENTER_APP,this);
-        if (!isNotFirstEnterApp){
-            LegalLandingDialog legalLandingDialog = (LegalLandingDialog)this.getSupportFragmentManager().findFragmentByTag(LegalLandingDialog.Companion.getTAG());
-            if (legalLandingDialog != null && legalLandingDialog.getDialog() != null)
-                return;
-            legalLandingDialog = new LegalLandingDialog();
-            legalLandingDialog.show(this.getSupportFragmentManager(), LegalLandingDialog.Companion.getTAG());
-            legalLandingDialog.setOnDismissListener(new DismissListener() {
-                @Override
-                public void onDismiss(int reason) {
-                    if (mIsConnected) {
-                        PreferenceUtils.setBoolean(PreferenceKeys.FIRST_TIME_ENTER_APP, true, getApplicationContext());
-                        switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
-                    }
-                }
-            });
-        }
+
 
         registerReceiver(mBtReceiver, makeFilter());
         ActivityCompat.requestPermissions(this,
@@ -240,6 +224,23 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     protected void onResume() {
         super.onResume();
         Log.i(TAG,"onResume");
+        boolean legalPersist = PreferenceUtils.getBoolean(PreferenceKeys.LEGAL_PERSIST,this);
+        if (!legalPersist){
+            LegalLandingDialog legalLandingDialog = (LegalLandingDialog)this.getSupportFragmentManager().findFragmentByTag(LegalLandingDialog.Companion.getTAG());
+            if (legalLandingDialog != null && legalLandingDialog.getDialog() != null)
+                return;
+            legalLandingDialog = new LegalLandingDialog();
+            legalLandingDialog.show(this.getSupportFragmentManager(), LegalLandingDialog.Companion.getTAG());
+            legalLandingDialog.setOnDismissListener(new DismissListener() {
+                @Override
+                public void onDismiss(int reason) {
+                    if (mIsConnected) {
+                        PreferenceUtils.setBoolean(PreferenceKeys.LEGAL_PERSIST, true, getApplicationContext());
+                        switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                    }
+                }
+            });
+        }
         checkBluetooth();
     }
 
@@ -381,9 +382,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     Log.i(TAG,"show homeFragment");
                     relativeLayoutDiscovery.setVisibility(View.GONE);
 
-                    boolean isNotFirstEnterApp = PreferenceUtils.getBoolean(PreferenceKeys.FIRST_TIME_ENTER_APP,getApplicationContext());
-                    if (!isNotFirstEnterApp){
-                        PreferenceUtils.setBoolean(PreferenceKeys.FIRST_TIME_ENTER_APP, true, getApplicationContext());
+                    boolean isShowTutorialManyTimes = false;//PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME,getApplicationContext());
+                    if (!isShowTutorialManyTimes){
+                        PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
                         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                         if (fr == null) {
                             switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);

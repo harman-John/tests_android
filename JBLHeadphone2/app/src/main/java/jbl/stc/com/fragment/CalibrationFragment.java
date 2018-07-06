@@ -113,7 +113,7 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
                     //enter from setting
                     getActivity().onBackPressed();
                 }else{
-                    switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                    switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 }
                 break;
         }

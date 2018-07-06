@@ -6,7 +6,8 @@ package jbl.stc.com.storage;
  */
 public class PreferenceKeys {
 
-    public static final String FIRST_TIME_ENTER_APP = "first_time_enter_app";
+    public static final String SHOW_JBL_BRAND_FIRST_TIME = "show_jbl_brand_first_time";
+    public static final String SHOW_TUTORIAL_FIRST_TIME = "show_tutorial_first_time";
     public static final String IS_FIRST_LAUNCHER = "first_launcher";
     public static final String IS_FIRST_CONNECTED = "first_connected";
 

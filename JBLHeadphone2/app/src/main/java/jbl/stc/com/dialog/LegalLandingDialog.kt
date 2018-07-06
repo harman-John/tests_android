@@ -39,7 +39,7 @@ class LegalLandingDialog : android.support.v4.app.DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.dialog_legal_landing, container, false)
-        view.background.alpha = 0xCC
+//        view.background.alpha = 0xCC
         // link checkbox eula
         view.checkboxEula!!.setOnCheckedChangeListener { _, isChecked ->
             if (view.checkboxPrivacy.isChecked && isChecked) {
@@ -91,7 +91,6 @@ class LegalLandingDialog : android.support.v4.app.DialogFragment() {
         // text start button
         view.txtEulaButton!!.setOnClickListener {
             if (isBothChecked) {
-                AppUtils.mLegalPage = false
                 dismiss()
             }
         }

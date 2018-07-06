@@ -113,7 +113,7 @@ object LegalXmlParser {
                     val verChanged = isVerChanged(item.version, eulaVer)
                     Log.i(TAG, "eula version changed =$verChanged")
                     if (verChanged) {
-                        PreferenceUtils.setBoolean(PreferenceKeys.TUTORIAL_PERSIST, false, context)
+                        PreferenceUtils.setBoolean(PreferenceKeys.LEGAL_PERSIST, false, context)
                         PreferenceUtils.setString(LegalConstants.NAME_EULA, item.version, context)
                         saveFile(item.url, context.filesDir.path + File.separator + LegalConstants.EULA_FILE)
                         item.url = context.filesDir.path + File.separator + LegalConstants.EULA_FILE
@@ -132,7 +132,7 @@ object LegalXmlParser {
                     val verChanged = isVerChanged(item.version, privacyVer)
                     Log.i(TAG, "privacy policy version changed =$verChanged")
                     if (verChanged) {
-                        PreferenceUtils.setBoolean(PreferenceKeys.TUTORIAL_PERSIST, false, context)
+                        PreferenceUtils.setBoolean(PreferenceKeys.LEGAL_PERSIST, false, context)
                         PreferenceUtils.setString(LegalConstants.NAME_PRIVACY_POLICY, item.version, context)
                         saveFile(item.url, context.filesDir.path + File.separator + LegalConstants.PRIVACY_POLICY_FILE)
                         item.url = context.filesDir.path + File.separator + LegalConstants.PRIVACY_POLICY_FILE

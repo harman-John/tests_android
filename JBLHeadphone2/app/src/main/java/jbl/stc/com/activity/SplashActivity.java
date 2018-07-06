@@ -21,15 +21,16 @@ public class SplashActivity extends FragmentActivity  {
         super.onCreate(savedInstanceState);
         Logger.d(TAG,"onCreate");
         setContentView(R.layout.activity_splash);
-        boolean isNotFirstEnterApp = PreferenceUtils.getBoolean(PreferenceKeys.FIRST_TIME_ENTER_APP,this);
-        if (!isNotFirstEnterApp){
+        boolean isShowJBLBrandManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_JBL_BRAND_FIRST_TIME,this);
+        if (!isShowJBLBrandManyTimes){
             //TODO: show JBL Brand related story.
+            PreferenceUtils.setBoolean(PreferenceKeys.SHOW_JBL_BRAND_FIRST_TIME, true, getApplicationContext());
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     showDashBoard();
                 }
-            },5000);
+            },3000);
         }else {
             showDashBoard();
         }
