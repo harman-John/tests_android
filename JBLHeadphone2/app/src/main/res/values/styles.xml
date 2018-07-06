@@ -57,9 +57,6 @@
     </style>
     <style name="CustomCheckboxTheme" parent="@android:style/Widget.Holo.CheckedTextView">
         <item name="android:button">@drawable/checkbox_selector</item>
-        <item name="android:scaleX">0.5</item>
-        <item name="android:scaleY">0.5
-        </item>
     </style>
     <style name="CustomCheckboxThemeAnc" parent="@android:style/Widget.Holo.CheckedTextView">
         <item name="android:button">@drawable/checkbox_anc_selector</item>
