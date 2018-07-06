@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -249,7 +250,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
         });
 
-        aaPopupwindow.showAsDropDown(view);
+        aaPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
 
         getAAValue();
     }
