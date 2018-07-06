@@ -382,7 +382,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     Log.i(TAG,"show homeFragment");
                     relativeLayoutDiscovery.setVisibility(View.GONE);
 
-                    boolean isShowTutorialManyTimes = false;//PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME,getApplicationContext());
+                    boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME,getApplicationContext());
                     if (!isShowTutorialManyTimes){
                         PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
                         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
