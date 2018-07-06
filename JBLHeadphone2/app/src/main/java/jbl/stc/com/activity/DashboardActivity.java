@@ -325,13 +325,17 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     @Override
     public void onBackPressed() {
         int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if (isConnected && backStackEntryCount > 1) {
-            getSupportFragmentManager().popBackStack();
+            if (fr instanceof HomeFragment) {
+                AppUtils.hideFromForeground(this);
+            }else {
+                getSupportFragmentManager().popBackStack();
+            }
         } else {
             if (isConnected) {
                 AppUtils.hideFromForeground(this);
             } else {
-                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr != null) {
                     Logger.d(TAG, "onBackStackChanged " + fr.getClass().getSimpleName());
                 }
