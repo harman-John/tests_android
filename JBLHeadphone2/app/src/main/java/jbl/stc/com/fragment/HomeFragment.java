@@ -513,6 +513,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 }
                 break;
             }
+            case AmCmds.CMD_AmbientLevelingNotification:{
+                if(aaPopupwindow == null){
+                    return;
+                }
+                aaPopupwindow.updateAAUI(Integer.valueOf(values.iterator().next().getValue().toString()));
+            }
+            break;
         }
     }
 
