@@ -66,6 +66,8 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
         circularInsideLayout = view2.findViewById(R.id.imageContainer_anc_circle);
         textViewOffButton = view2.findViewById(R.id.text_view_page_two_off);
         textViewOffButton.setOnClickListener(this);
+        view2.findViewById(R.id.image_view_page_two_close).setOnClickListener(this);
+        view2.findViewById(R.id.image_view_page_two_back).setOnClickListener(this);
         view2.findViewById(R.id.text_view_page_two_get_started).setOnClickListener(this);
         circularInsideLayout.setonAwarenesChangeListener(this);
         ancController.setCircularInsideLayout(circularInsideLayout);
@@ -86,6 +88,7 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
                 ancController.setSwitchOff(false);
                 break;
             }
+            case R.id.image_view_page_two_close:
             case R.id.image_view_page_one_close:
             case R.id.text_view_page_two_get_started:{
                 if(AppUtils.getModelNumber(getActivity()).toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_300)
@@ -100,6 +103,10 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
                         switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     }
                 }
+                break;
+            }
+            case R.id.image_view_page_two_back:{
+                viewPager.setCurrentItem(0,true);
                 break;
             }
         }
