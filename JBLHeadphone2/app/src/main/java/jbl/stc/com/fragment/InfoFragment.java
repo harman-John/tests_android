@@ -1,10 +1,13 @@
 package jbl.stc.com.fragment;
 
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import jbl.stc.com.R;
 import jbl.stc.com.legal.LegalApi;
@@ -26,6 +29,17 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
         view.findViewById(R.id.text_view_eula).setOnClickListener(this);
         view.findViewById(R.id.text_view_harman_privacy_policy).setOnClickListener(this);
         view.findViewById(R.id.image_view_info_back).setOnClickListener(this);
+        TextView textView =view.findViewById(R.id.text_view_info_app_version);
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(),0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packageInfo != null) {
+            String version = getString(R.string.app_version) + packageInfo.versionName +"-"+ packageInfo.versionCode;
+            textView.setText(version);
+        }
         return view;
     }
 
