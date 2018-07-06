@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
@@ -96,6 +98,7 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
 
     }
 
+
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
@@ -106,17 +109,30 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
             case R.id.image_view_calibration_global_back:
                 calibration = null;
                 dummyStopCalibration();
-                getActivity().onBackPressed();
                 break;
             case R.id.tv_calibratingDone:
-                if (!TextUtils.isEmpty(tag)&&tag.equals(CalibrationFragment.TAG)){
-                    //enter from setting
-                    getActivity().onBackPressed();
-                }else{
-                    switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                }
+                calibration = null;
+                dummyStopCalibration();
                 break;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if(keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_BACK){
+                    calibration = null;
+                    dummyStopCalibration();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -149,7 +165,13 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
     * */
     public void dummyStopCalibration() {
         handler.removeCallbacks(runnable);
-        getActivity().onBackPressed();
+        if (!TextUtils.isEmpty(tag)&&tag.equals(CalibrationFragment.TAG)){
+            //enter from setting
+            getActivity().onBackPressed();
+        }else{
+            removeAllFragment();
+            switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+        }
     }
 
     /**

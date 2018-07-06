@@ -61,13 +61,13 @@
 
         <ImageView
             android:id="@+id/deviceImage"
-            android:layout_width="53dp"
-            android:layout_height="105dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:clickable="false"
             android:scaleType="fitCenter"
-            android:src="@mipmap/everest_elite_150nc" />
+            android:src="@mipmap/everest_elite_150nc_small" />
     </RelativeLayout>
 
     <ScrollView
