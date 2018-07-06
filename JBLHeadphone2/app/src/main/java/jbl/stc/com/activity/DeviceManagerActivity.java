@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 
+import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.Action;
 import com.avnera.audiomanager.AdminEvent;
 import com.avnera.audiomanager.Status;
@@ -1119,6 +1120,10 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             case AccessoryReady:{
                 if (specifiedDevice!= null && specifiedDevice.getName().contains(JBLConstant.DEVICE_150NC)&& value == null
                       || specifiedDevice!= null&& value!= null &&((HashMap)value).containsKey(specifiedDevice.getAddress())  ) {
+
+                    AccessoryInfo accessoryInfo = bt150Manager.getAccessoryStatus();
+                    PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), getApplicationContext());
+                    AppUtils.setModelNumber(getApplicationContext(), accessoryInfo.getModelNumber());
                     Message message = new Message();
                     message.what = MSG_CONNECTED;
                     message.obj = value;

@@ -28,12 +28,12 @@
             android:layout_marginTop="50dp"
             android:gravity="center"
             android:orientation="vertical">
-
-            <ImageView
+            <CheckBox
                 android:id="@+id/image_view_page_one_noise_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/noise_cancel_active" />
+                android:layout_width="@dimen/dashboard_talk_image_width"
+                android:layout_height="@dimen/dashboard_talk_image_width"
+                android:background="@drawable/checkbox_noise_cancel_selector"
+                android:button="@android:color/transparent" />
 
             <TextView
                 android:id="@+id/text_view_page_one_noise_cancel"

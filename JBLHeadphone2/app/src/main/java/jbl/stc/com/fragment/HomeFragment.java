@@ -5,12 +5,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -134,7 +132,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
             }
         });
-        linearLayoutNoiseCanceling = view.findViewById(R.id.linear_layout_home_noise_cancel);
+        linearLayoutNoiseCanceling = view.findViewById(R.id.relative_layout_home_noise_cancel);
         String modelNumber = AppUtils.getModelNumber(getActivity());
         if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_NOISE_CANCEL)){
             linearLayoutNoiseCanceling.setVisibility(View.GONE);
@@ -512,6 +510,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 }
                 break;
             }
+            case AmCmds.CMD_AmbientLevelingNotification:{
+                break;
+            }
         }
     }
 
@@ -526,8 +527,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 case AppANCAwarenessPreset:
                     Log.d(TAG, "AppANCAwarenessPreset");
-//                    int intValue = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0);
+                    int intValue = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0);
 //                    update(intValue);
+                    sendMessageTo(MSG_AMBIENT_LEVEL, String.valueOf(intValue));
                     break;
                 case AppANCEnable:
                     if (var4 != null) {
