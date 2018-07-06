@@ -2,18 +2,10 @@ package jbl.stc.com.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.SweepGradient;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -24,6 +16,8 @@ import jbl.stc.com.logger.Logger;
 
 public class JblCircleView extends View {
 
+    private static final float DEFAULT_RADIUS = 700;
+    private int realRadius = 200;
 
     private int mColor = getResources().getColor(R.color.white);
 
@@ -61,6 +55,7 @@ public class JblCircleView extends View {
     public JblCircleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         Logger.i(TAG, "JblCircleView");
+        realRadius = (int)( DEFAULT_RADIUS / getScreenSizeOfDevice());
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
 
@@ -104,6 +99,18 @@ public class JblCircleView extends View {
         doAnimation();
     }
 
+    private float getScreenSizeOfDevice() {
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int width=dm.widthPixels;
+        int height=dm.heightPixels;
+        double x = Math.pow(width,2);
+        double y = Math.pow(height,2);
+        double diagonal = Math.sqrt(x+y);
+
+        int dens=dm.densityDpi;
+        return (float)(diagonal/(double)dens);
+    }
+
     int des = 0;
     int mAlpha = 148;
     public void doAnimation() {
@@ -122,7 +129,7 @@ public class JblCircleView extends View {
         mPaintCircle.setColor(mColor);
         mPaintCircle.setStyle(Paint.Style.STROKE);
         mPaintCircle.setStrokeWidth(18);
-        mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, 300, mPaintCircle);
+        mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, mImageRadius + realRadius, mPaintCircle);
         for (int i = 0; i < mAlphas.size(); i++) {
 
             Integer alpha = mAlphas.get(i);
@@ -140,15 +147,15 @@ public class JblCircleView extends View {
 
             mCanvas.drawCircle(getWidth() / 2, getHeight() / 2, mImageRadius + radius +320, mPaint2);
 
-            if( radius == 200){
+            if( radius == realRadius){
                 mAlpha = 148;
             }
             mAlpha --;
 
                // alpha = (int) (255.0F * (1.0F - (mImageRadius + radius) * 1.0f / mMaxRadius));
-                Logger.i(TAG, "mAlphas size =" + mAlphas.size()
-                        + ",i = " + i
-                        + ",mAlpha = " + mAlpha
+                Logger.i(TAG, ",mAlpha = " + mAlpha
+                        + ",realRadius = " + realRadius
+                        + ",getScreenSizeOfDevice = " + getScreenSizeOfDevice()
                         + ",mImageRadius = " + mImageRadius
                         + ",radius = " + radius
                         + ",des = " + des
@@ -187,7 +194,7 @@ public class JblCircleView extends View {
             mAlphas.add(1);
             mAlphas1.add(1);
             mAlphas2.add(1);
-            mRadius.add(200);
+            mRadius.add(realRadius);
             mPaint.reset();
             mPaint1.reset();
             mPaint2.reset();
@@ -205,7 +212,7 @@ public class JblCircleView extends View {
         mAlphas.add(1);
         mAlphas1.add(1);
         mAlphas2.add(1);
-        mRadius.add(200);
+        mRadius.add(realRadius);
         mMaxRadius = getWidth() > getHeight() ? getHeight() / 2 : getWidth() / 2;
         invalidate();
     }

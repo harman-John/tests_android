@@ -24,6 +24,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -58,7 +59,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private static DashboardActivity dashboardActivity;
     private RelativeLayout relativeLayoutDiscovery;
     private RelativeLayout relativeLayoutAnimation;
-    private RelativeLayout relativeLayoutTips;
+    private LinearLayout linearLayoutTips;
     private TextView textViewTryAgain;
     private final static int SHOW_UN_FOUND_TIPS = 0;
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
@@ -184,8 +185,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private void initView() {
         relativeLayoutDiscovery = findViewById(R.id.relative_layout_discovery);
         relativeLayoutAnimation = findViewById(R.id.relative_layout_discovery_animation);
-        relativeLayoutTips = findViewById(R.id.relative_layout_discovery_tips);
-        relativeLayoutTips.setVisibility(View.GONE);
+        linearLayoutTips = findViewById(R.id.linear_layout_discovery_tips);
+        linearLayoutTips.setVisibility(View.GONE);
 
         findViewById(R.id.image_view_discovery_menu_info).setOnClickListener(this);
         textViewTryAgain = findViewById(R.id.text_view_discovery_try_again);
@@ -311,7 +312,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             case R.id.text_view_discovery_try_again:{
                 relativeLayoutDiscovery.setVisibility(View.VISIBLE);
                 relativeLayoutAnimation.setVisibility(View.VISIBLE);
-                relativeLayoutTips.setVisibility(View.GONE);
+                linearLayoutTips.setVisibility(View.GONE);
                 startCircle();
                 dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,5000);
                 break;
@@ -372,7 +373,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     Log.i(TAG,"show tips");
                     relativeLayoutDiscovery.setVisibility(View.VISIBLE);
                     relativeLayoutAnimation.setVisibility(View.GONE);
-                    relativeLayoutTips.setVisibility(View.VISIBLE);
+                    linearLayoutTips.setVisibility(View.VISIBLE);
                     stopCircle();
                     break;
                 }
@@ -404,7 +405,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     Log.i(TAG,"show discovery page");
                     relativeLayoutDiscovery.setVisibility(View.VISIBLE);
                     relativeLayoutAnimation.setVisibility(View.VISIBLE);
-                    relativeLayoutTips.setVisibility(View.GONE);
+                    linearLayoutTips.setVisibility(View.GONE);
                     removeAllFragment();
                     startCircle();
                     break;
