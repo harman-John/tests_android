@@ -37,7 +37,7 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
             e.printStackTrace();
         }
         if (packageInfo != null) {
-            String version = getString(R.string.app_version) + packageInfo.versionName +"-"+ packageInfo.versionCode;
+            String version = getString(R.string.app_version) + packageInfo.versionName +"("+ packageInfo.versionCode+")";
             textView.setText(version);
         }
         return view;
