@@ -7,28 +7,31 @@
     android:background="@color/page_background"
     android:focusable="true">
 
+    <ImageView
+        android:id="@+id/image_view_info_back"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:src="@mipmap/ic_close"
+        android:layout_marginLeft="10dp"/>
+
     <RelativeLayout
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_height"
+        android:layout_height="42dp"
         android:layout_marginTop="42dp"
         android:paddingLeft="@dimen/margin_top_10dp"
         android:paddingRight="@dimen/margin_top_10dp">
 
-        <ImageView
-            android:id="@+id/image_view_info_back"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:src="@mipmap/ic_close"
-            android:layout_marginLeft="10dp"/>
 
         <ImageView
             android:id="@+id/deviceImage"
-            android:layout_width="85dp"
-            android:layout_height="@dimen/title_bar_height"
-            android:background="@mipmap/jbl_logo"
+            android:layout_width="74dp"
+            android:layout_height="42dp"
+            android:background="@mipmap/grey_jbl_logo"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:text="@string/text_settings"
@@ -43,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/titleBar"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="42dp"
         android:layout_above="@+id/linearLayoutVersion"
         android:fadingEdge="vertical"
         android:scrollbars="vertical">
