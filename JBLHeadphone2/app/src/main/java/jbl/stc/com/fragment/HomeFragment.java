@@ -5,12 +5,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -113,7 +111,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         textViewDeviceName = view.findViewById(R.id.text_view_home_device_name);
 
         imageViewDevice = view.findViewById(R.id.image_view_home_device_image);
-        relative_layout_home_eq_info=(FrameLayout) view.findViewById(R.id.relative_layout_home_eq_info);
+        relative_layout_home_eq_info = (FrameLayout) view.findViewById(R.id.relative_layout_home_eq_info);
         relative_layout_home_eq_info.setVisibility(View.VISIBLE);
         relative_layout_home_eq_info.setOnClickListener(this);
 
@@ -135,24 +133,24 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
             }
         });
-        linearLayoutNoiseCanceling = view.findViewById(R.id.linear_layout_home_noise_cancel);
+        linearLayoutNoiseCanceling = view.findViewById(R.id.relative_layout_home_noise_cancel);
         String modelNumber = AppUtils.getModelNumber(getActivity());
-        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_NOISE_CANCEL)){
+        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_NOISE_CANCEL)) {
             linearLayoutNoiseCanceling.setVisibility(View.GONE);
-        }else{
+        } else {
             linearLayoutNoiseCanceling.setVisibility(View.VISIBLE);
             checkBoxNoiseCancel = view.findViewById(R.id.image_view_home_noise_cancel);
             checkBoxNoiseCancel.setOnClickListener(this);
         }
 
         linearLayoutAmbientAware = view.findViewById(R.id.linear_layout_home_ambient_aware);
-        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_AMBIENT_AWARE)){
+        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_AMBIENT_AWARE)) {
             linearLayoutAmbientAware.setVisibility(View.GONE);
-        }else{
+        } else {
             view.findViewById(R.id.image_view_home_ambient_aware).setOnClickListener(this);
             if (modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
-                    ||modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
-                    ||modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
+                    || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
+                    || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
                 TextView textViewAmbientAware = view.findViewById(R.id.text_view_home_ambient_aware);
                 textViewAmbientAware.setText(R.string.smart_ambient);
             }
@@ -191,6 +189,15 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        if(aaPopupwindow == null){
+            return;
+        }
+        aaPopupwindow.dismiss();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_home_ambient_aware: {
@@ -201,19 +208,19 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 break;
             }
-            case R.id.image_view_home_info:{
-                switchFragment(new InfoFragment(),JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+            case R.id.image_view_home_info: {
+                switchFragment(new InfoFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
                 break;
             }
-            case R.id.image_view_home_settings:{
-                switchFragment(new SettingsFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            case R.id.image_view_home_settings: {
+                switchFragment(new SettingsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
-            case R.id.image_view_home_noise_cancel:{
-                if (checkBoxNoiseCancel.isChecked()){
-                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,true);
-                }else{
-                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX,false);
+            case R.id.image_view_home_noise_cancel: {
+                if (checkBoxNoiseCancel.isChecked()) {
+                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX, true);
+                } else {
+                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX, false);
                 }
                 break;
             }
@@ -304,7 +311,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 }
                 case MSG_AMBIENT_LEVEL: {
-                    aaPopupwindow.updateAAUI(AppUtils.levelTransfer(msg.arg1));
+                    //for old devices
+                    aaPopupwindow.updateAAUI(msg.arg1);//AppUtils.levelTransfer(msg.arg1)<---method for new device
                     break;
                 }
                 case MSG_AA_LEFT:
@@ -502,24 +510,26 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void receivedPushNotification(Action action, String command, ArrayList<responseResult> values, Status status) {
         super.receivedPushNotification(action, command, values, status);
         Logger.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
-        switch (command){
+        switch (command) {
             case AmCmds.CMD_ANCNotification: {
-                Logger.d(TAG, "CMD_ANCNotification:" + ",values=" + values.iterator().next().getValue().toString() );
-                PreferenceUtils.setInt(PreferenceKeys.ANC_VALUE, Integer.valueOf(values.iterator().next().getValue().toString() ), getActivity());
-                if (Integer.valueOf(values.iterator().next().getValue().toString())==1){
+                Logger.d(TAG, "CMD_ANCNotification:" + ",values=" + values.iterator().next().getValue().toString());
+                PreferenceUtils.setInt(PreferenceKeys.ANC_VALUE, Integer.valueOf(values.iterator().next().getValue().toString()), getActivity());
+                if (Integer.valueOf(values.iterator().next().getValue().toString()) == 1) {
                     checkBoxNoiseCancel.setChecked(true);
-                }else if (Integer.valueOf(values.iterator().next().getValue().toString())==0){
+                } else if (Integer.valueOf(values.iterator().next().getValue().toString()) == 0) {
                     checkBoxNoiseCancel.setChecked(false);
                 }
                 break;
             }
-            case AmCmds.CMD_AmbientLevelingNotification:{
-                if(aaPopupwindow == null){
+            case AmCmds.CMD_AmbientLevelingNotification: {
+
+                if (aaPopupwindow == null) {
                     return;
                 }
-                aaPopupwindow.updateAAUI(Integer.valueOf(values.iterator().next().getValue().toString()));
+                aaPopupwindow.updateAAUI(AppUtils.levelTransfer(Integer.valueOf(values.iterator().next().getValue().toString())));//new devices
             }
             break;
+
         }
     }
 
@@ -534,8 +544,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 case AppANCAwarenessPreset:
                     Log.d(TAG, "AppANCAwarenessPreset");
-//                    int intValue = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0);
+                    int intValue = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0);
 //                    update(intValue);
+                    sendMessageTo(MSG_AMBIENT_LEVEL, String.valueOf(intValue));
                     break;
                 case AppANCEnable:
                     if (var4 != null) {
