@@ -38,6 +38,7 @@ import java.util.ArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.AmCmds;
@@ -106,6 +107,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 container, false);
         Log.i(TAG, "onCreateView");
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
+        generateAAPopupWindow();
         view.findViewById(R.id.image_view_home_settings).setOnClickListener(this);
         view.findViewById(R.id.image_view_home_info).setOnClickListener(this);
         textViewDeviceName = view.findViewById(R.id.text_view_home_device_name);
@@ -156,10 +158,28 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
         }
         updateDeviceName();
+        getRawSteps();
         return view;
     }
 
 
+    private void getRawSteps(){
+        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext())
+                .getRawStepsByCmd(AvneraManager.getAvenraManager(JBLApplication.getJBLApplicationContext()).getLightX());//get raw steps count of connected device
+    }
+    private void generateAAPopupWindow(){
+        aaPopupwindow = new AAPopupwindow(getActivity(), lightX);
+        aaPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                //dismiss blur view
+                aaPopupwindow.setAAOff();
+                if (mBlurView != null) {
+                    mBlurView.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -232,19 +252,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             Bitmap image = BlurBuilder.blur(view);
             mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
         }
-        if (aaPopupwindow == null) {
-            aaPopupwindow = new AAPopupwindow(getActivity(), lightX);
-            aaPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                @Override
-                public void onDismiss() {
-                    //dismiss blur view
-                    aaPopupwindow.setAAOff();
-                    if (mBlurView != null) {
-                        mBlurView.setVisibility(View.GONE);
-                    }
-                }
-            });
-        }
+
         mBlurView.setVisibility(View.VISIBLE);
         mBlurView.setAlpha(0f);
         mBlurView.animate().alpha(1f).setDuration(500).setListener(new AnimatorListenerAdapter() {
@@ -326,6 +334,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 }
                 case MSG_RAW_STEP: {
+                    int rawSteps = msg.arg1 - 1;
+                    Logger.d(TAG , "received raw steps call back rawSteps = " + rawSteps);
+                    ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRawSteps(rawSteps);
                     break;
                 }
                 case MSG_SEND_CMD_GET_FIRMWARE: {
@@ -580,6 +591,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 case AppAwarenessRawSteps:
 //                    readAppReturn = Utility.getUnsignedInt(var4, 0);
+                    int rawSteps = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0) - 1;
+                    Logger.d(TAG , "received raw steps call back rawSteps = " + rawSteps);
+                    ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRawSteps(rawSteps);
+
                     break;
                 case AppGraphicEQCurrentPreset:
                     long currentPreset = Utility.getUnsignedInt(var4, 0);
