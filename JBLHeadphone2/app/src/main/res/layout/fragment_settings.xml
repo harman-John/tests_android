@@ -40,7 +40,7 @@
         android:id="@+id/deviceName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:layout_below="@id/titleBar"
         android:layout_centerHorizontal="true"
         android:text="@string/deviceName"
@@ -74,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_deviceImage"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:layout_above="@+id/linearLayoutVersion"
         android:fadingEdge="vertical"
         android:scrollbars="vertical">

@@ -2,8 +2,10 @@ package jbl.stc.com.fragment;
 
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +23,7 @@ import com.avnera.smartdigitalheadset.LightX;
 import java.util.ArrayList;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.AmCmds;
@@ -32,6 +35,7 @@ import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.FirmwareUtil;
 
 public class SettingsFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = SettingsFragment.class.getSimpleName();
@@ -48,6 +52,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     private Handler mHandler = new Handler();
     private LightX lightX;
     private String deviceNameStr;
+    private TextView textViewFirmware;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,10 +62,12 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.voice_prompt_layout).setOnClickListener(this);
         view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);
-        view.findViewById(R.id.text_view_settings_firmware).setOnClickListener(this);
+        textViewFirmware = view.findViewById(R.id.text_view_settings_firmware);
+        textViewFirmware.setOnClickListener(this);
         view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
         view.findViewById(R.id.text_view_settings_smart_button).setOnClickListener(this);
         view.findViewById(R.id.relative_layout_settings_auto_off).setOnClickListener(this);
@@ -110,7 +117,16 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         //get voice prompt
         ANCControlManager.getANCManager(getActivity()).getVoicePrompt(lightX);
         updateDeviceName();
+        showOta(FirmwareUtil.isUpdatingFirmWare.get());
         return view;
+    }
+
+    public void showOta(boolean hasUpdate){
+        if ( hasUpdate && textViewFirmware != null) {
+            Drawable nav_up = ContextCompat.getDrawable(getActivity(), R.mipmap.download);
+            nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
+            textViewFirmware.setCompoundDrawables(null, null, nav_up, null);
+        }
     }
 
     private void updateDeviceName() {
