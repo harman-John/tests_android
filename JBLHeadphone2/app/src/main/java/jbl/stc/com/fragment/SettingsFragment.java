@@ -4,6 +4,7 @@ package jbl.stc.com.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +14,16 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.avnera.audiomanager.Status;
+import com.avnera.audiomanager.responseResult;
 import com.avnera.smartdigitalheadset.LightX;
+
+import java.util.ArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
+import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
@@ -41,6 +47,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     private Switch toggleVoicePrompt;
     private Handler mHandler = new Handler();
     private LightX lightX;
+    private String deviceNameStr;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +66,6 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         view.findViewById(R.id.relative_layout_settings_auto_off).setOnClickListener(this);
         deviceName = (TextView) view.findViewById(R.id.deviceName);
         deviceImage=(ImageView) view.findViewById(R.id.deviceImage);
-        updateDeviceName();
         //deviceName.setText(PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, ""));
         toggleautoOff=(TextView) view.findViewById(R.id.toggleautoOff);
         toggleVoicePrompt=(Switch) view.findViewById(R.id.toggleVoicePrompt);
@@ -98,13 +104,19 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             relativeLayoutSmartAssitant.setOnClickListener(this);
             relativeLayoutSmartAssitant.setVisibility(View.VISIBLE);
         }
+        deviceNameStr=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
+        Logger.d(TAG,"deviceName:"+deviceName);
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
+        //get voice prompt
+        ANCControlManager.getANCManager(getActivity()).getVoicePrompt(lightX);
+        updateDeviceName();
         return view;
     }
 
     private void updateDeviceName() {
-        String deviceNameStr=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
-        Logger.d(TAG,"deviceName:"+deviceName);
+        if (TextUtils.isEmpty(deviceNameStr)) {
+            return;
+        }
         //update device name
         deviceName.setText(deviceNameStr);
         //update device image
@@ -187,6 +199,30 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             lightX.writeAppVoicePromptEnable(voiceprompt);
         }else{
             ANCControlManager.getANCManager(getContext()).setVoicePrompt(lightX,voiceprompt);
+        }
+    }
+
+    @Override
+    public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
+        Logger.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
+        if (values==null||(values!=null&&values.size()==0)){
+            return;
+        }
+        switch (command) {
+            case AmCmds.CMD_VoicePrompt: {
+                values.iterator().next().getValue().toString();
+                Logger.d(TAG,"value:"+values.iterator().next().getValue().toString());
+                String boolValue = "";
+                if (values != null && values.size() > 0) {
+                    boolValue = values.iterator().next().getValue().toString();
+                }
+                if (!TextUtils.isEmpty(boolValue)&&boolValue.equals("true")){
+                    toggleVoicePrompt.setChecked(true);
+                }else{
+                    toggleVoicePrompt.setChecked(false);
+                }
+                break;
+            }
         }
     }
 }
