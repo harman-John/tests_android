@@ -54,6 +54,7 @@ public class SplashActivity extends FragmentActivity  {
 
                 @Override
                 public void onDismiss(int reason) {
+                    PreferenceUtils.setBoolean(PreferenceKeys.LEGAL_PERSIST,true,getApplicationContext());
                     showDashBoard();
                 }
             });

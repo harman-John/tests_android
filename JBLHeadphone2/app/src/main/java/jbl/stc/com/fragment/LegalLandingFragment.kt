@@ -65,14 +65,14 @@ class LegalLandingFragment : Fragment() {
         view.textEulaLink.highlightColor = Color.TRANSPARENT
         view.textEulaLink.paint.flags = Paint.UNDERLINE_TEXT_FLAG
         view.textEulaLink.setOnClickListener{
-            LegalApi.showEula(activity)
+            LegalApi.showEula(activity,true)
         }
         // link text privacy
         view.textPrivacyLink.movementMethod = LinkMovementMethod.getInstance()
         view.textPrivacyLink.highlightColor = Color.TRANSPARENT
         view.textPrivacyLink.paint.flags = Paint.UNDERLINE_TEXT_FLAG
         view.textPrivacyLink.setOnClickListener{
-            LegalApi.showPrivacyPolicy(activity)
+            LegalApi.showPrivacyPolicy(activity,true)
         }
         // text start button
         view.txtEulaButton!!.setOnClickListener {

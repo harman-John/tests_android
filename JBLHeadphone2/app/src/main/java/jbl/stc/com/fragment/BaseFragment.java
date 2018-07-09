@@ -170,7 +170,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
         super.onDestroy();
     }
 
-    public void switchFragment(BaseFragment baseFragment,int type) {
+    public void switchFragment(Fragment baseFragment,int type) {
         try {
             android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
             if (type == JBLConstant.SLIDE_FROM_DOWN_TO_TOP) {

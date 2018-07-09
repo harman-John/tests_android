@@ -34,6 +34,7 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.InfoFragment;
+import jbl.stc.com.fragment.LegalFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.fragment.TutorialFragment;
@@ -299,7 +300,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 if (fr != null) {
                     Logger.d(TAG, "onBackStackChanged " + fr.getClass().getSimpleName());
                 }
-                if (fr instanceof InfoFragment){
+                if (fr instanceof InfoFragment
+                        || fr instanceof LegalFragment){
                     super.onBackPressed();
                 }else {
                     finish();
