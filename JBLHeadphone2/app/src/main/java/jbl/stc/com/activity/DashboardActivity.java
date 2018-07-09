@@ -34,7 +34,9 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.InfoFragment;
+import jbl.stc.com.fragment.LegalFragment;
 import jbl.stc.com.fragment.OTAFragment;
+import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.fragment.TutorialFragment;
 import jbl.stc.com.listener.OnDownloadedListener;
@@ -302,7 +304,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 if (fr != null) {
                     Logger.d(TAG, "onBackStackChanged " + fr.getClass().getSimpleName());
                 }
-                if (fr instanceof InfoFragment){
+                if (fr instanceof InfoFragment
+                        || fr instanceof LegalFragment){
                     super.onBackPressed();
                 }else {
                     finish();
@@ -395,7 +398,10 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     public void setIsUpdateAvailable(boolean isUpdateAvailable) {
-
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+        if (fr != null && fr instanceof SettingsFragment) {
+            ((SettingsFragment)fr).showOta(isUpdateAvailable);
+        }
     }
 
     public void startCheckingIfUpdateIsAvailable() {

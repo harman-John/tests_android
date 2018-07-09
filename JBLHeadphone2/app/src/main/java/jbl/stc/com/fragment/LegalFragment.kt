@@ -10,7 +10,7 @@ import jbl.stc.com.R
 import jbl.stc.com.R.*
 import jbl.stc.com.legal.LegalConstants
 import jbl.stc.com.manager.AnalyticsManager
-import kotlinx.android.synthetic.main.dialog_legal.view.*
+import kotlinx.android.synthetic.main.fragment_legal.view.*
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
@@ -21,7 +21,7 @@ class LegalFragment : Fragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(layout.dialog_legal,
+        val view = inflater.inflate(layout.fragment_legal,
                 container, false)
         view.text_title.setText(mTitleResId)
         view.back_btn.setOnClickListener(this)

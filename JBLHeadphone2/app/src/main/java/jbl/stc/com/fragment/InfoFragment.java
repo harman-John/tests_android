@@ -52,15 +52,15 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.text_view_open_source_license:{
-                LegalApi.INSTANCE.showOpenSource(getActivity());
+                LegalApi.INSTANCE.showOpenSource(getActivity(),false);
                 break;
             }
             case R.id.text_view_eula:{
-                LegalApi.INSTANCE.showEula(getActivity());
+                LegalApi.INSTANCE.showEula(getActivity(),false);
                 break;
             }
             case R.id.text_view_harman_privacy_policy:{
-                LegalApi.INSTANCE.showPrivacyPolicy(getActivity());
+                LegalApi.INSTANCE.showPrivacyPolicy(getActivity(),false);
                 break;
             }
             case R.id.image_view_info_back:{

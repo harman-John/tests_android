@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.avnera.audiomanager.Action;
 import com.avnera.audiomanager.AdminEvent;
@@ -170,7 +173,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
         super.onDestroy();
     }
 
-    public void switchFragment(BaseFragment baseFragment,int type) {
+    public void switchFragment(Fragment baseFragment,int type) {
         try {
             android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
             if (type == JBLConstant.SLIDE_FROM_DOWN_TO_TOP) {
@@ -210,6 +213,28 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
             }
         }catch (Exception e){
             Log.e(TAG,"Fragment is not shown, then popBack will have exception ");
+        }
+    }
+
+    public void updateDeviceNameAndImage(String deviceName, ImageView imageViewDevice, TextView textViewDeviceName) {
+        if (TextUtils.isEmpty(deviceName)) {
+            return;
+        }
+        //update device name
+        textViewDeviceName.setText(deviceName);
+        //update device image
+        if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_REFLECT_AWARE).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.reflect_aware_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_100_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_150nc_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_300_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_700_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_750nc_icon);
         }
     }
 

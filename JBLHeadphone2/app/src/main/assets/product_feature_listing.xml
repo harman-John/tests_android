@@ -10,7 +10,7 @@
         <feature name="ENABLE_AMBIENT_AWARE"/>
 
         <feature name="ENABLE_SMART_BUTTON"/>
-        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_AUTO_OFF_TIMER_SWITCH"/>
     </product>
 
     <product name="EVEREST ELITE 150NC">
@@ -18,14 +18,14 @@
         <feature name="ENABLE_AMBIENT_AWARE"/>
 
         <feature name="ENABLE_SMART_BUTTON"/>
-        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_AUTO_OFF_TIMER_SWITCH"/>
     </product>
 
     <product name="EVEREST ELITE 300">
         <feature name="ENABLE_NOISE_CANCEL"/>
         <feature name="ENABLE_AMBIENT_AWARE"/>
 
-        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_AUTO_OFF_TIMER_SWITCH"/>
         <feature name="ENABLE_SMART_BUTTON"/>
         <feature name="ENABLE_TRUE_NOTE"/>
     </product>
@@ -34,7 +34,7 @@
         <feature name="ENABLE_NOISE_CANCEL"/>
         <feature name="ENABLE_AMBIENT_AWARE"/>
 
-        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_AUTO_OFF_TIMER_SWITCH"/>
         <feature name="ENABLE_SMART_BUTTON"/>
         <feature name="ENABLE_TRUE_NOTE"/>
     </product>
@@ -43,7 +43,7 @@
         <feature name="ENABLE_NOISE_CANCEL"/>
         <feature name="ENABLE_AMBIENT_AWARE"/>
 
-        <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_AUTO_OFF_TIMER_SWITCH"/>
         <feature name="ENABLE_SMART_BUTTON"/>
         <feature name="ENABLE_TRUE_NOTE"/>
     </product>

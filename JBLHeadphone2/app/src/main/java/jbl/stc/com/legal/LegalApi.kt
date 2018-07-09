@@ -23,47 +23,47 @@ object LegalApi {
         LegalXmlParser.readLegalData(context, LegalConstants.getLegalUrl(context), null)
     }
 
-    fun showOpenSource(context: FragmentActivity) {
-        showLegalDialog(context, R.string.open_source, LegalConstants.OPEN_SOURCE_FILE, AnalyticsManager.SCREEN_OPEN_SOURCE)
+    fun showOpenSource(context: FragmentActivity, isSplash: Boolean) {
+        showLegalDialog(context, R.string.open_source, LegalConstants.OPEN_SOURCE_FILE, AnalyticsManager.SCREEN_OPEN_SOURCE,isSplash)
     }
 
-    fun showEula(context: FragmentActivity) {
+    fun showEula(context: FragmentActivity,isSplash: Boolean) {
         if (isConnectionAvailable(context)) {
             LegalXmlParser.readLegalData(context, LegalConstants.getLegalUrl(context), object : LegalListener {
                 override fun onLegalDataReceived(list: List<LegalData>) {
                     for (item in list) {
                         if (item.name.equals(LegalConstants.NAME_EULA, ignoreCase = true)) {
-                            showLegalDialog(context, R.string.agree_to_eula, item.file, AnalyticsManager.SCREEN_EULA)
+                            showLegalDialog(context, R.string.agree_to_eula, item.file, AnalyticsManager.SCREEN_EULA,isSplash)
                         }
                     }
                 }
             })
         } else {
-            showLegalDialog(context, R.string.eula, LegalConstants.EULA_FILE, AnalyticsManager.SCREEN_EULA)
+            showLegalDialog(context, R.string.eula, LegalConstants.EULA_FILE, AnalyticsManager.SCREEN_EULA,isSplash)
         }
     }
 
-    fun showPrivacyPolicy(context: FragmentActivity) {
+    fun showPrivacyPolicy(context: FragmentActivity,isSplash: Boolean) {
         if (isConnectionAvailable(context)) {
             LegalXmlParser.readLegalData(context, LegalConstants.getLegalUrl(context), object : LegalListener {
                 override fun onLegalDataReceived(list: List<LegalData>) {
                     for (item in list) {
                         if (item.name.equals(LegalConstants.NAME_PRIVACY_POLICY, ignoreCase = true))
-                            showLegalDialog(context, R.string.harman_privacy_policy, item.file, AnalyticsManager.SCREEN_EULA)
+                            showLegalDialog(context, R.string.harman_privacy_policy, item.file, AnalyticsManager.SCREEN_EULA,isSplash)
                     }
                 }
             })
         } else {
-            showLegalDialog(context, R.string.harman_privacy_policy, LegalConstants.PRIVACY_POLICY_FILE, AnalyticsManager.SCREEN_EULA)
+            showLegalDialog(context, R.string.harman_privacy_policy, LegalConstants.PRIVACY_POLICY_FILE, AnalyticsManager.SCREEN_EULA,isSplash)
         }
     }
 
-    private fun showLegalDialog(activity: FragmentActivity, titleId: Int, file: String, screenName: String) {
-        var legalFragment: LegalFragment = LegalFragment()
+    private fun showLegalDialog(activity: FragmentActivity, titleId: Int, file: String, screenName: String,isSplash: Boolean) {
+        var legalFragment = LegalFragment()
         legalFragment.setTitle(titleId)
         legalFragment.setFile(file)
         legalFragment.setScreenName(screenName)
-        switchFragment(activity,legalFragment,JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT)
+        switchFragment(activity,legalFragment,JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT,isSplash)
     }
 
     private fun isConnectionAvailable(context: Context): Boolean {
@@ -78,7 +78,7 @@ object LegalApi {
 
     }
 
-    fun switchFragment(activity: FragmentActivity, baseFragment: LegalFragment, type: Int) {
+    fun switchFragment(activity: FragmentActivity, baseFragment: LegalFragment, type: Int, isSplash: Boolean) {
         try {
             val ft = activity.supportFragmentManager.beginTransaction()
             if (type == JBLConstant.SLIDE_FROM_DOWN_TO_TOP) {
@@ -88,10 +88,18 @@ object LegalApi {
             } else if (type == JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT) {
                 ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
             }
-            if (activity.supportFragmentManager.findFragmentById(R.id.relative_layout_splash) == null) {
-                ft.add(R.id.relative_layout_splash, baseFragment)
-            } else {
-                ft.replace(R.id.relative_layout_splash, baseFragment, baseFragment.tag)
+            if (isSplash) {
+                if (activity.supportFragmentManager.findFragmentById(R.id.relative_layout_splash) == null) {
+                    ft.add(R.id.relative_layout_splash, baseFragment)
+                } else {
+                    ft.replace(R.id.relative_layout_splash, baseFragment, baseFragment.tag)
+                }
+            }else{
+                if (activity.supportFragmentManager.findFragmentById(R.id.containerLayout) == null) {
+                    ft.add(R.id.containerLayout, baseFragment)
+                } else {
+                    ft.replace(R.id.containerLayout, baseFragment, baseFragment.tag)
+                }
             }
             ft.addToBackStack(null)
             ft.commitAllowingStateLoss()

@@ -101,8 +101,8 @@
 
                     <CheckBox
                         android:id="@+id/image_view_home_noise_cancel"
-                        android:layout_width="@dimen/dashboard_talk_image_width"
-                        android:layout_height="@dimen/dashboard_talk_image_width"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/checkbox_noise_cancel_selector"
                         android:button="@android:color/transparent" />
@@ -131,8 +131,8 @@
 
                     <jbl.stc.com.view.AppImageView
                         android:id="@+id/image_view_home_ambient_aware"
-                        android:layout_width="@dimen/dashboard_talk_image_width"
-                        android:layout_height="@dimen/dashboard_talk_image_width"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:src="@drawable/checkbox_ambient_selector" />
 
@@ -160,7 +160,7 @@
         android:id="@+id/relative_layout_home_eq_info"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@drawable/shape_gradient_legal"
+        android:background="@drawable/shape_gradient_eq"
         android:layout_alignParentBottom="true"
         android:visibility="visible">
 

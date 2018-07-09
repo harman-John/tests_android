@@ -94,6 +94,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout linearLayoutNoiseCanceling;
     private RelativeLayout linearLayoutAmbientAware;
     private FrameLayout relative_layout_home_eq_info;
+    private String deviceName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -157,8 +158,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 textViewAmbientAware.setText(R.string.smart_ambient);
             }
         }
-        updateDeviceName();
         getRawSteps();
+        deviceName=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
+        updateDeviceNameAndImage(deviceName,imageViewDevice,textViewDeviceName);
         return view;
     }
 
@@ -347,27 +349,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
-    private void updateDeviceName() {
-        String deviceName=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
-        Logger.d(TAG,"deviceName:"+deviceName);
-        //update device name
-        textViewDeviceName.setText(deviceName);
-        //update device image
-        if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_REFLECT_AWARE).toUpperCase())){
-            imageViewDevice.setImageResource(R.mipmap.reflect_aware_icon);
-        }else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase())){
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_100_icon);
-        }else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase())){
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_150nc_icon);
-        }else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase())){
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_300_icon);
-        }else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase())){
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_700_icon);
-        }else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())){
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_750nc_icon);
-        }
-
-    }
 
     private void updateANC(boolean onOff) {
         if (checkBoxNoiseCancel != null)
@@ -451,7 +432,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), getActivity());
         AppUtils.setModelNumber(getActivity(), accessoryInfo.getModelNumber());
         Log.d(TAG, "modelName : " + accessoryInfo.getModelNumber());
-        updateDeviceName();
+        updateDeviceNameAndImage(deviceName,imageViewDevice,textViewDeviceName);
         String version = accessoryInfo.getFirmwareRev();
         if (version.length() >= 5) {
             Log.d(TAG, "currentVersion : " + version);
@@ -686,7 +667,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 case ConfigModelNumber:
                     AppUtils.setModelNumber(getActivity(), var4);
-                    updateDeviceName();
+                    updateDeviceNameAndImage(deviceName,imageViewDevice,textViewDeviceName);
                     homeHandler.sendEmptyMessageDelayed(MSG_SEND_CMD_GET_FIRMWARE, 200);
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                         case Connected_USBDevice:

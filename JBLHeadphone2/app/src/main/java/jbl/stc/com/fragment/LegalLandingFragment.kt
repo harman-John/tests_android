@@ -12,7 +12,7 @@ import jbl.stc.com.R
 import jbl.stc.com.legal.LegalApi
 import jbl.stc.com.listener.DismissListener
 
-import kotlinx.android.synthetic.main.dialog_legal_landing.view.*
+import kotlinx.android.synthetic.main.fragment_legal_landing.view.*
 
 class LegalLandingFragment : Fragment() {
     private var mDismissListener: DismissListener? = null
@@ -24,7 +24,7 @@ class LegalLandingFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.dialog_legal_landing, container, false)
+        val view = inflater.inflate(R.layout.fragment_legal_landing, container, false)
 //        view.background.alpha = 0xCC
         // link checkbox eula
         view.checkboxEula!!.setOnCheckedChangeListener { _, isChecked ->
@@ -65,14 +65,14 @@ class LegalLandingFragment : Fragment() {
         view.textEulaLink.highlightColor = Color.TRANSPARENT
         view.textEulaLink.paint.flags = Paint.UNDERLINE_TEXT_FLAG
         view.textEulaLink.setOnClickListener{
-            LegalApi.showEula(activity)
+            LegalApi.showEula(activity,true)
         }
         // link text privacy
         view.textPrivacyLink.movementMethod = LinkMovementMethod.getInstance()
         view.textPrivacyLink.highlightColor = Color.TRANSPARENT
         view.textPrivacyLink.paint.flags = Paint.UNDERLINE_TEXT_FLAG
         view.textPrivacyLink.setOnClickListener{
-            LegalApi.showPrivacyPolicy(activity)
+            LegalApi.showPrivacyPolicy(activity,true)
         }
         // text start button
         view.txtEulaButton!!.setOnClickListener {

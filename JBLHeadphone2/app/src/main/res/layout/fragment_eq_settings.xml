@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/eq_panel_background"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -11,8 +11,8 @@
         android:layout_height="@dimen/title_bar_height"
         android:background="@color/orange"
         android:focusableInTouchMode="true"
-        android:paddingLeft="@dimen/page_padding_left"
-        android:paddingRight="@dimen/page_padding_right">
+        android:paddingLeft="@dimen/margin_top_10dp"
+        android:paddingRight="@dimen/margin_top_10dp">
 
         <jbl.stc.com.view.PoppinsMediumTextView
             style="@style/PoppinsMediumTextStyle"
