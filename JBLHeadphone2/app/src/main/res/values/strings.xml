@@ -40,9 +40,10 @@
     <string name="user_manual">User manual</string>
     <string name="updating">Updating&#8230;</string>
     <string name="text_ota_title">Product software update</string>
-    <string name="firmware_is_updating"><b>Firmware is Updating…</b>\n1.Please do not close the application.\n2.Keep the headset near the device.\n3.Pluggin in the headphones is recommended.</string>
-    <string name="firmware_new_version">New software update version %1$s is available</string>
-    <string name="firmware_is_installed">Firmware version %1$s is installed</string>
+    <string name="firmware_is_updating_title"><b>Firmware is Updating…</b></string>
+    <string name="firmware_is_updating">1.Please do not close the application.\n2.Keep the headset near the device.\n3.Pluggin in the headphones is\nrecommended.</string>
+    <string name="firmware_is_available">New software update version %1$s is\navailable</string>
+    <string name="firmware_is_installed">Firmware version %1$s\nis installed</string>
     <string name="done">Done</string>
 
 

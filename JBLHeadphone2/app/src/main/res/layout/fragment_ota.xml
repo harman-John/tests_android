@@ -6,37 +6,54 @@
     android:splitMotionEvents="false"
     android:windowEnableSplitTouch="false">
 
-    <ImageView
-        android:id="@+id/image_view_ota_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:padding="10dp"
-        android:src="@mipmap/ic_back"
-        android:layout_marginLeft="10dp"/>
-
-    <TextView
-        android:id="@+id/text_ota_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_ota_title"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:id="@+id/updateStatus"
-        style="@android:style/TextAppearance.Large"
+    <RelativeLayout
+        android:id="@+id/relative_layout_ota_title"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/image_view_ota_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:padding="10dp"
+            android:src="@mipmap/ic_back"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/text_ota_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_ota_title"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/startupdating"
-        android:layout_marginBottom="20dp"
-        android:layout_alignParentStart="true"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        android:text="@string/firmware_is_updating"
-        android:textColor="@android:color/black"
-        android:textSize="16sp" />
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/relative_layout_ota_title"
+        android:layout_above="@id/startupdating"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/updateStatusTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/firmware_is_updating_title"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/updateStatus"
+            style="@android:style/TextAppearance.Large"
+            android:layout_marginTop="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/firmware_is_updating"
+            android:layout_marginBottom="20dp"
+            android:textSize="16sp" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/startupdating"
@@ -50,10 +67,11 @@
 
         <FrameLayout
             android:id="@+id/mainCircle"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="146dp"
+            android:layout_height="146dp"
             android:background="@color/lighter_gray_theme">
             <TextView
+                android:id="@+id/text_view_ota_circle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/shape_ota_circle" />
@@ -64,8 +82,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
+                android:textColor="@android:color/black"
                 android:text="0 %"
                 android:textStyle="bold"
+                android:textSize="22sp"
                 android:visibility="visible" />
         </FrameLayout>
     </LinearLayout>

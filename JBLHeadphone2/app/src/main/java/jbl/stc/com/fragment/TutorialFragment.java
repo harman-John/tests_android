@@ -85,6 +85,8 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
                 Logger.d(TAG,"onPageSelected position = "+position);
                 if (position == 1){
                     ANCControlManager.getANCManager(getContext()).getAmbientLeveling(AvneraManager.getAvenraManager(getActivity()).getLightX());
+                }else if (position == 0){
+                    ANCControlManager.getANCManager(getContext()).getANCValue(AvneraManager.getAvenraManager(getActivity()).getLightX());
                 }
             }
 
