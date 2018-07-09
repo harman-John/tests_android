@@ -219,9 +219,9 @@ public class ANCController extends SurfaceView {
                     }
                     break;
                 case -1:
-                    if (leftFactor == 0 && rightFactor == 0) {
-                        setProgress(leftProgress, true);
-                        setProgress(rightProgress, false);
+                    if (leftFactor == 0 && rightFactor == 0 && leftProgress >0 && rightProgress >0) {
+                        setProgress(--leftProgress, true);
+                        setProgress(--rightProgress, false);
                     }
                     if (leftProgress < leftFactor) {
                         leftProgress += 1;

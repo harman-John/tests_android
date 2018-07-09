@@ -22,31 +22,29 @@
             android:background="@mipmap/btn_awareness_high"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/awarness"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:text="@string/awareness"
-                android:textColor="@android:color/black"
-                android:textSize="9sp"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/awarness"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentTop="true"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--android:text="@string/awareness"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:textSize="9sp"-->
+                <!--android:textStyle="bold" />-->
 
             <TextView
                 android:id="@+id/highTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/awarness"
-                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="5dp"
-                android:drawableLeft="@mipmap/waves_high_l"
                 android:drawablePadding="10dp"
-                android:drawableRight="@mipmap/waves_high_r"
                 android:gravity="center_vertical"
                 android:text="@string/highView"
-                android:textColor="@android:color/black"
+                android:textColor="@color/text_color_bold_black"
+                android:textStyle="bold"
                 android:textSize="15sp" />
         </RelativeLayout>
 
@@ -63,11 +61,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:drawableLeft="@mipmap/waves_medium_l"
                 android:drawablePadding="5dp"
-                android:drawableRight="@mipmap/waves_medium_r"
                 android:text="@string/mediumView"
-                android:textColor="@android:color/black"
+                android:textColor="@color/text_color_bold_black"
+                android:textStyle="bold"
                 android:textSize="15sp" />
         </RelativeLayout>
 
@@ -83,17 +80,29 @@
                 android:id="@+id/lowTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="15dp"
-                android:drawableLeft="@mipmap/waves_low_l"
                 android:drawablePadding="5dp"
-                android:drawableRight="@mipmap/waves_low_r"
                 android:text="@string/lowView"
-                android:textColor="@android:color/black"
+                android:textColor="@color/text_color_bold_black"
+                android:textStyle="bold"
                 android:textSize="15sp" />
         </RelativeLayout>
     </jbl.stc.com.view.CircularInsideLayout>
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/seekContainerHeightHalf"
+        android:text="@string/control_off"
+        android:textColor="@color/text_color_bold_gray"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:background="@drawable/shape_aa_off_btn_bg" />
     <FrameLayout
         android:id="@+id/seekArcContainer1"
         android:layout_width="@dimen/seekContainerWidth"
@@ -133,12 +142,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ambient_awareness"
-            android:textColor="@color/text_color_1"
+            android:textColor="@color/title_text_color"
             android:textSize="@dimen/normal_text_size"
             android:textStyle="bold" />
 
     </LinearLayout>
-
     <TextView
         android:id="@+id/noiseText"
         android:layout_width="wrap_content"
@@ -146,16 +154,19 @@
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/seekContainerHeightHalf"
         android:text="@string/control_off"
-        android:textColor="@drawable/gray_black_txt"
+        android:textColor="@color/transparent"
+        android:textStyle="bold"
         android:textSize="15sp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="6dp"/>
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        />
     <ImageView
         android:id="@+id/aa_popup_close_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/base_arrow_down"
+        android:src="@mipmap/icon_arrow_down"
         android:layout_gravity="right"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"

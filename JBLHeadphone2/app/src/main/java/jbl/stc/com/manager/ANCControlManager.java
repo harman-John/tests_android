@@ -117,11 +117,7 @@ public class ANCControlManager {
 //        }else{
 //            return (ancValue * mRawsteps) /100;
 //        }
-        if (AppUtils.is150NC(JBLApplication.getJBLApplicationContext())) {
-            mRawsteps = 7;
-        } else {
-            mRawsteps = 8;
-        }
+
         if (ancValue > 95) {
             return mRawsteps;
         }
@@ -159,6 +155,7 @@ public class ANCControlManager {
     public void getRawStepsByCmd(LightX lightX) {
         if (lightX != null) {
             Log.e(TAG, "getRawStepsByCmd ");
+            lightX.readAppAwarenessRawSteps();
         } else {
             Cmd150Manager.getInstance().getRawSteps(AvneraManager.getAvenraManager(context).getAudioManager());
             Log.d(TAG, "SendCommand getRawStepsByCmd");

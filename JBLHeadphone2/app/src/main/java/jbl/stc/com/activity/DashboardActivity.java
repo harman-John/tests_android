@@ -41,6 +41,8 @@ import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.fragment.TutorialFragment;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.manager.ANCControlManager;
+import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -253,6 +255,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             }else{
                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_OTA_FRAGMENT,200);
             }
+
         }else{
             dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
             dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 200);

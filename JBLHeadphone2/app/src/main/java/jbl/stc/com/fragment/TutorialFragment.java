@@ -2,7 +2,6 @@ package jbl.stc.com.fragment;
 
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -20,7 +19,6 @@ import com.avnera.audiomanager.responseResult;
 import com.avnera.smartdigitalheadset.ANCAwarenessPreset;
 import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
-import com.avnera.smartdigitalheadset.Logger;
 import com.avnera.smartdigitalheadset.Utility;
 
 import java.util.ArrayList;
@@ -31,6 +29,7 @@ import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.listener.AwarenessChangeListener;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.storage.PreferenceKeys;
@@ -109,9 +108,13 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
         circularInsideLayout.setonAwarenesChangeListener(this);
         ancController.setCircularInsideLayout(circularInsideLayout);
         ancController.setOnSeekArcChangeListener(this);
+        getRawSteps();
         return view;
     }
-
+    private void getRawSteps(){
+        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext())
+                .getRawStepsByCmd(AvneraManager.getAvenraManager(JBLApplication.getJBLApplicationContext()).getLightX());//get raw steps count of connected device
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -182,10 +185,24 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onProgressChanged(ANCController ANCController, int leftProgress, int rightProgress, boolean fromUser) {
         Log.d(TAG, "onProgressChanged fromUser "+fromUser);
-        if (fromUser){
+        if (fromUser) {
+            // Check added to fix Bug :Bug 64517 - Sometimes Awareness adjustment is disordered when left and right AA have different level.
+            //Set animation to false and presetValue to -1
             mFromUser = fromUser;
             mLeftProgress = leftProgress;
             mRightProgress = rightProgress;
+//            int savedLeft = PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST,JBLApplication.getJBLApplicationContext());
+//            int savedRight = PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, JBLApplication.getJBLApplicationContext());
+//
+//            PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, leftProgress, JBLApplication.getJBLApplicationContext());
+//            PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, rightProgress, JBLApplication.getJBLApplicationContext());
+//            lastsavedAwarenessState = null;
+//            if (leftProgress != savedLeft) {
+//                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setLeftAwarenessPresetValue(AvneraManager.getAvenraManager(getActivity()).getLightX(), leftProgress);
+//            }
+//            if (rightProgress != savedRight) {
+//                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRightAwarenessPresetValue(AvneraManager.getAvenraManager(getActivity()).getLightX(), rightProgress);
+//            }
         }
     }
 
@@ -302,6 +319,12 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
                     updateAAUI(intValue);
                     break;
                 }
+                case AppAwarenessRawSteps:{
+                    int intValue = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0) - 1;
+                    Logger.d(TAG , "received raw steps call back rawSteps = " + intValue);
+                    ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRawSteps(intValue);
+                    break;
+                }
             }
         }
     }
@@ -343,6 +366,12 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
             case AmCmds.CMD_AmbientLeveling: {
                 String value = values.iterator().next().getValue().toString();
                 updateAAUI(AppUtils.levelTransfer(Integer.valueOf(value)));
+                break;
+            }
+            case AmCmds.CMD_RawSteps: {
+                int rawSteps = Integer.parseInt(values.iterator().next().getValue().toString()) - 1;
+                Logger.d(TAG , "received raw steps call back rawSteps = " + rawSteps);
+                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRawSteps(rawSteps);
                 break;
             }
         }

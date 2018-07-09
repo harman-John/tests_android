@@ -65,9 +65,9 @@ public class CircularInsideLayout extends LinearLayout {
                                 setSelectedViewStatus(R.id.high);
                                 hView = view;
                                 final TextView text1;
-                                text1 = (TextView) ((RelativeLayout) view).getChildAt(1);
-                                text1.setTextColor(ContextCompat.getColor(getContext(),R.color.background));
-                                text1.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_l_pressed), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_r_pressed), null);
+                                text1 = (TextView) ((RelativeLayout) view).getChildAt(0);
+                                text1.setTextColor(ContextCompat.getColor(getContext(), R.color.background));
+//                                text1.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(), R.mipmap.waves_high_l_pressed), null, ContextCompat.getDrawable(getContext(), R.mipmap.waves_high_r_pressed), null);
                                 hView.setAlpha((float) 0.5);
                             }
                             return R.id.high;
@@ -78,8 +78,8 @@ public class CircularInsideLayout extends LinearLayout {
                                 mView = view;
                                 final TextView text2;
                                 text2 = (TextView) ((RelativeLayout) view).getChildAt(0);
-                                text2.setTextColor(ContextCompat.getColor(getContext(),R.color.background));
-                                text2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_l_pressed), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_r_pressed), null);
+                                text2.setTextColor(ContextCompat.getColor(getContext(), R.color.background));
+//                                text2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(), R.mipmap.waves_medium_l_pressed), null, ContextCompat.getDrawable(getContext(), R.mipmap.waves_medium_r_pressed), null);
                                 mView.setAlpha((float) 0.5);
                             }
                             return R.id.medium;
@@ -89,8 +89,8 @@ public class CircularInsideLayout extends LinearLayout {
                                 lView = view;
                                 final TextView text3;
                                 text3 = (TextView) ((RelativeLayout) view).getChildAt(0);
-                                text3.setTextColor(ContextCompat.getColor(getContext(),R.color.background));
-                                text3.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_l_pressed), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_r_pressed), null);
+                                text3.setTextColor(ContextCompat.getColor(getContext(), R.color.background));
+//                                text3.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(), R.mipmap.waves_low_l_pressed), null, ContextCompat.getDrawable(getContext(), R.mipmap.waves_low_r_pressed), null);
                                 lView.setAlpha((float) 0.5);
                             }
                             return R.id.low;
@@ -155,7 +155,7 @@ public class CircularInsideLayout extends LinearLayout {
         }
 
         TextView text1, text2, text3;
-        Drawable dLeft, dRight;
+//        Drawable dLeft, dRight;
 
 
         switch (id) {
@@ -166,19 +166,19 @@ public class CircularInsideLayout extends LinearLayout {
                 mView.setAlpha(1);
                 hView.setAlpha(1);
 
-                text1 = (TextView) ((RelativeLayout) hView).getChildAt(1);
-                text1.setTextColor(ContextCompat.getColor(getContext(),android.R.color.black));
-                text1.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_r), null);
+                text1 = (TextView) ((RelativeLayout) hView).getChildAt(0);
+                text1.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_bold_black));
+//                text1.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_r), null);
 
 
                 text2 = (TextView) ((RelativeLayout) mView).getChildAt(0);
-                text2.setTextColor(ContextCompat.getColor(getContext(),android.R.color.black));
-                text2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_r), null);
+                text2.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_bold_black));
+//                text2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_r), null);
 
-                dLeft = ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_l_pressed);
-                dRight = ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_r_pressed);
-                dLeft.setAlpha(255);
-                dRight.setAlpha(255);
+//                dLeft = ContextCompat.getDrawable(getContext(), R.mipmap.waves_low_l_pressed);
+//                dRight = ContextCompat.getDrawable(getContext(), R.mipmap.waves_low_r_pressed);
+//                dLeft.setAlpha(255);
+//                dRight.setAlpha(255);
 
                 break;
 
@@ -188,18 +188,18 @@ public class CircularInsideLayout extends LinearLayout {
                 isLowSelected = false;
                 lView.setAlpha(1);
                 hView.setAlpha(1);
-                text1 = (TextView) ((RelativeLayout) hView).getChildAt(1);
-                text1.setTextColor(ContextCompat.getColor(getContext(),android.R.color.black));
-                text1.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_r), null);
+                text1 = (TextView) ((RelativeLayout) hView).getChildAt(0);
+                text1.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_bold_black));
+//                text1.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_r), null);
 
                 text3 = (TextView) ((RelativeLayout) lView).getChildAt(0);
-                text3.setTextColor(ContextCompat.getColor(getContext(),android.R.color.black));
-                text3.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_r), null);
+                text3.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_bold_black));
+//                text3.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_r), null);
 
-                dLeft = ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_l_pressed);
-                dRight = ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_r_pressed);
-                dLeft.setAlpha(255);
-                dRight.setAlpha(255);
+//                dLeft = ContextCompat.getDrawable(getContext(), R.mipmap.waves_medium_l_pressed);
+//                dRight = ContextCompat.getDrawable(getContext(), R.mipmap.waves_medium_r_pressed);
+//                dLeft.setAlpha(255);
+//                dRight.setAlpha(255);
                 break;
 
             case R.id.high://High
@@ -211,18 +211,18 @@ public class CircularInsideLayout extends LinearLayout {
 
 
                 text2 = (TextView) ((RelativeLayout) mView).getChildAt(0);
-                text2.setTextColor(ContextCompat.getColor(getContext(),android.R.color.black));
-                text2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_r), null);
+                text2.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_bold_black));
+//                text2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_r), null);
 
 
                 text3 = (TextView) ((RelativeLayout) lView).getChildAt(0);
-                text3.setTextColor(ContextCompat.getColor(getContext(),android.R.color.black));
-                text3.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_r), null);
+                text3.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_bold_black));
+//                text3.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_r), null);
 
-                dLeft = ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_l_pressed);
-                dRight = ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_r_pressed);
-                dLeft.setAlpha(255);
-                dRight.setAlpha(255);
+//                dLeft = ContextCompat.getDrawable(getContext(), R.mipmap.waves_high_l_pressed);
+//                dRight = ContextCompat.getDrawable(getContext(), R.mipmap.waves_high_r_pressed);
+//                dLeft.setAlpha(255);
+//                dRight.setAlpha(255);
                 break;
 
             case -1://Reset
@@ -232,19 +232,19 @@ public class CircularInsideLayout extends LinearLayout {
                 hView.setAlpha(1);
 
 
-                text1 = (TextView) ((RelativeLayout) hView).getChildAt(1);
-                text1.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
-                text1.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_r), null);
+                text1 = (TextView) ((RelativeLayout) hView).getChildAt(0);
+                text1.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_bold_black));
+//                text1.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_high_r), null);
 
 
                 text2 = (TextView) ((RelativeLayout) mView).getChildAt(0);
-                text2.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
-                text2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_r), null);
+                text2.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_bold_black));
+//                text2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_medium_r), null);
 
 
                 text3 = (TextView) ((RelativeLayout) lView).getChildAt(0);
-                text3.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
-                text3.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_r), null);
+                text3.setTextColor(ContextCompat.getColor(getContext(), R.color.text_color_bold_black));
+//                text3.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_l), null, ContextCompat.getDrawable(getContext(),R.mipmap.waves_low_r), null);
 
                 lView = null;
                 hView = null;
