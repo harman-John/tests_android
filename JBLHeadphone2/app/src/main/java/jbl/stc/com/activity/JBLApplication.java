@@ -17,6 +17,8 @@ import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.entity.DeviceInfo;
 import jbl.stc.com.legal.LegalApi;
 import jbl.stc.com.storage.DatabaseHelper;
+import jbl.stc.com.storage.PreferenceKeys;
+import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 
 
@@ -38,6 +40,16 @@ public class JBLApplication extends Application {
     public void onCreate() {
         super.onCreate();
         context = this;
+        if(BuildConfig.DEBUG){
+            // turn using test url since debug type
+            PreferenceUtils.setBoolean(PreferenceKeys.OTA_TEST_URL, true, this);
+            PreferenceUtils.setBoolean(PreferenceKeys.LEGAL_TEST_URL, true, this);
+            PreferenceUtils.setBoolean(PreferenceKeys.ANALYTICS_TEST_URL, true, this);
+        }else{
+            PreferenceUtils.setBoolean(PreferenceKeys.OTA_TEST_URL, false, this);
+            PreferenceUtils.setBoolean(PreferenceKeys.LEGAL_TEST_URL, false, this);
+            PreferenceUtils.setBoolean(PreferenceKeys.ANALYTICS_TEST_URL, false, this);
+        }
         LegalApi.INSTANCE.eulaInit(this);
         deviceInfo = new DeviceInfo();
         DeviceFeatureMap.init(this);
