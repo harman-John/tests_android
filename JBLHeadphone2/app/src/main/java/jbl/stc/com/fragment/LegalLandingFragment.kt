@@ -1,40 +1,26 @@
-package jbl.stc.com.dialog
+package jbl.stc.com.fragment
 
-import android.app.Dialog
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import android.support.v4.app.Fragment
 import android.text.method.LinkMovementMethod
-import android.view.Gravity
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import jbl.stc.com.R
 import jbl.stc.com.legal.LegalApi
 import jbl.stc.com.listener.DismissListener
-import jbl.stc.com.storage.PreferenceKeys
-import jbl.stc.com.storage.PreferenceUtils
-import jbl.stc.com.utils.AppUtils
 
 import kotlinx.android.synthetic.main.dialog_legal_landing.view.*
 
-class LegalLandingDialog : android.support.v4.app.DialogFragment() {
+class LegalLandingFragment : Fragment() {
     private var mDismissListener: DismissListener? = null
 
     private var isBothChecked = false
 
     fun setOnDismissListener(dismissListener: DismissListener) {
         mDismissListener = dismissListener
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        mDismissListener?.onDismiss(0)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -91,29 +77,13 @@ class LegalLandingDialog : android.support.v4.app.DialogFragment() {
         // text start button
         view.txtEulaButton!!.setOnClickListener {
             if (isBothChecked) {
-                dismiss()
+                mDismissListener?.onDismiss(0)
             }
-        }
-        this.dialog.setOnKeyListener { _, keyCode, _ ->
-            keyCode == KeyEvent.KEYCODE_BACK
         }
         return view
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = Dialog(activity, android.R.style.Theme_Black_NoTitleBar)
-        val d = ColorDrawable(ContextCompat.getColor(context,R.color.dialogBackGround))
-        dialog.window.setBackgroundDrawable(d)
-        dialog.window.attributes.windowAnimations = R.style.DialogAnimation
-        val params = dialog.window.attributes
-        params.width = WindowManager.LayoutParams.MATCH_PARENT
-        params.height = WindowManager.LayoutParams.MATCH_PARENT
-        params.gravity = Gravity.CENTER
-        dialog.setCanceledOnTouchOutside(true)
-        return dialog
-    }
-
     companion object {
-        val TAG = LegalLandingDialog::class.java.simpleName!!
+        val TAG = LegalLandingFragment::class.java.simpleName!!
     }
 }

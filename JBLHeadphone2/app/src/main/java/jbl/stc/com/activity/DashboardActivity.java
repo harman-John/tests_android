@@ -1,19 +1,16 @@
 package jbl.stc.com.activity;
 
-import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -34,14 +31,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
-import jbl.stc.com.dialog.LegalLandingDialog;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.fragment.TutorialFragment;
-import jbl.stc.com.listener.DismissListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.ota.CheckUpdateAvailable;
@@ -65,7 +60,6 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
     private final static int MSG_SHOW_DISCOVERY = 2;
     private final static int MSG_SHOW_OTA_FRAGMENT = 3;
-    private final static int REQUEST_CODE = 0;
 
     private DashboardHandler dashboardHandler = new DashboardHandler();
 
@@ -81,15 +75,12 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         super.onCreate(savedInstanceState);
         Log.i(TAG,"onCreate");
         setContentView(R.layout.activity_dashboard);
-
-
-
         registerReceiver(mBtReceiver, makeFilter());
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
+
 
         dashboardActivity = this;
         initView();
+
         startCircle();
         dashboardHandler.sendEmptyMessageDelayed(SHOW_UN_FOUND_TIPS,5000);
         //load the presetEQ
@@ -111,10 +102,10 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 }
             } else {
                 if (fr == null){
-                    switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                    switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 }else if (!(fr instanceof  TurnOnBtTipsFragment)) {
                     Logger.i(TAG, "checkBluetooth open TurnOnBtTipsFragment");
-                    switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                    switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 }
             }
         }
@@ -224,23 +215,6 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     protected void onResume() {
         super.onResume();
         Log.i(TAG,"onResume");
-        boolean legalPersist = PreferenceUtils.getBoolean(PreferenceKeys.LEGAL_PERSIST,this);
-        if (!legalPersist){
-            LegalLandingDialog legalLandingDialog = (LegalLandingDialog)this.getSupportFragmentManager().findFragmentByTag(LegalLandingDialog.Companion.getTAG());
-            if (legalLandingDialog != null && legalLandingDialog.getDialog() != null)
-                return;
-            legalLandingDialog = new LegalLandingDialog();
-            legalLandingDialog.show(this.getSupportFragmentManager(), LegalLandingDialog.Companion.getTAG());
-            legalLandingDialog.setOnDismissListener(new DismissListener() {
-                @Override
-                public void onDismiss(int reason) {
-                    if (mIsConnected) {
-                        PreferenceUtils.setBoolean(PreferenceKeys.LEGAL_PERSIST, true, getApplicationContext());
-                        switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
-                    }
-                }
-            });
-        }
         checkBluetooth();
     }
 
@@ -283,20 +257,6 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                }
-                return;
-            }
-        }
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -325,13 +285,17 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     @Override
     public void onBackPressed() {
         int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if (isConnected && backStackEntryCount > 1) {
-            getSupportFragmentManager().popBackStack();
+            if (fr instanceof HomeFragment) {
+                AppUtils.hideFromForeground(this);
+            }else {
+                getSupportFragmentManager().popBackStack();
+            }
         } else {
             if (isConnected) {
                 AppUtils.hideFromForeground(this);
             } else {
-                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr != null) {
                     Logger.d(TAG, "onBackStackChanged " + fr.getClass().getSimpleName());
                 }

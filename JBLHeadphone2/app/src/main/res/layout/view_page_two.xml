@@ -12,7 +12,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:background="@mipmap/grey_arrow_back" />
+        android:background="@mipmap/ic_back" />
 
     <ImageView
         android:id="@+id/image_view_page_two_close"
@@ -21,7 +21,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/delete_speaker_icon" />
+        android:background="@mipmap/ic_close" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/noise_cancel_active" />
+                android:background="@mipmap/icon_noise_cancle_on" />
 
             <include
                 android:id="@+id/circle_control"

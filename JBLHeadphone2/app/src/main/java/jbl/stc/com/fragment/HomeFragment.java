@@ -337,7 +337,25 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void updateDeviceName() {
-        textViewDeviceName.setText(PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, ""));
+        String deviceName=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
+        Logger.d(TAG,"deviceName:"+deviceName);
+        //update device name
+        textViewDeviceName.setText(deviceName);
+        //update device image
+        if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_REFLECT_AWARE).toUpperCase())){
+            imageViewDevice.setImageResource(R.mipmap.reflect_aware_icon);
+        }else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase())){
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_100_icon);
+        }else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase())){
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_150nc_icon);
+        }else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase())){
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_300_icon);
+        }else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase())){
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_700_icon);
+        }else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())){
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_750nc_icon);
+        }
+
     }
 
     private void updateANC(boolean onOff) {

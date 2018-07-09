@@ -3,10 +3,10 @@ package jbl.stc.com.legal
 import android.content.Context
 import android.net.ConnectivityManager
 import android.preference.PreferenceManager
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import jbl.stc.com.R
-import jbl.stc.com.dialog.LegalDialog
+import jbl.stc.com.constant.JBLConstant
+import jbl.stc.com.fragment.LegalFragment
 import jbl.stc.com.manager.AnalyticsManager
 
 /**
@@ -59,14 +59,11 @@ object LegalApi {
     }
 
     private fun showLegalDialog(activity: FragmentActivity, titleId: Int, file: String, screenName: String) {
-        var legalDialog: Fragment? = activity.supportFragmentManager.findFragmentByTag(LegalDialog.TAG)
-        if (legalDialog != null && (legalDialog as LegalDialog).dialog != null)
-            return
-        legalDialog = LegalDialog()
-        legalDialog.setTitle(titleId)
-        legalDialog.setFile(file)
-        legalDialog.setScreenName(screenName)
-        legalDialog.show(activity.supportFragmentManager, LegalDialog.TAG)
+        var legalFragment: LegalFragment = LegalFragment()
+        legalFragment.setTitle(titleId)
+        legalFragment.setFile(file)
+        legalFragment.setScreenName(screenName)
+        switchFragment(activity,legalFragment,JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT)
     }
 
     private fun isConnectionAvailable(context: Context): Boolean {
@@ -77,6 +74,29 @@ object LegalApi {
         } catch (e: Exception) {
             e.printStackTrace()
             false
+        }
+
+    }
+
+    fun switchFragment(activity: FragmentActivity, baseFragment: LegalFragment, type: Int) {
+        try {
+            val ft = activity.supportFragmentManager.beginTransaction()
+            if (type == JBLConstant.SLIDE_FROM_DOWN_TO_TOP) {
+                ft.setCustomAnimations(R.anim.enter_from_down, R.anim.exit_to_up, R.anim.enter_from_up, R.anim.exit_to_down)
+            } else if (type == JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT) {
+                ft.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left)
+            } else if (type == JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT) {
+                ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
+            }
+            if (activity.supportFragmentManager.findFragmentById(R.id.relative_layout_splash) == null) {
+                ft.add(R.id.relative_layout_splash, baseFragment)
+            } else {
+                ft.replace(R.id.relative_layout_splash, baseFragment, baseFragment.tag)
+            }
+            ft.addToBackStack(null)
+            ft.commitAllowingStateLoss()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
     }
