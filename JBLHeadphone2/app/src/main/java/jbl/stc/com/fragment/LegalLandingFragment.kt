@@ -12,7 +12,7 @@ import jbl.stc.com.R
 import jbl.stc.com.legal.LegalApi
 import jbl.stc.com.listener.DismissListener
 
-import kotlinx.android.synthetic.main.dialog_legal_landing.view.*
+import kotlinx.android.synthetic.main.fragment_legal_landing.view.*
 
 class LegalLandingFragment : Fragment() {
     private var mDismissListener: DismissListener? = null
@@ -24,7 +24,7 @@ class LegalLandingFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.dialog_legal_landing, container, false)
+        val view = inflater.inflate(R.layout.fragment_legal_landing, container, false)
 //        view.background.alpha = 0xCC
         // link checkbox eula
         view.checkboxEula!!.setOnCheckedChangeListener { _, isChecked ->

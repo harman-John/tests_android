@@ -37,28 +37,33 @@ public class SplashActivity extends FragmentActivity  {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-//                    showDashBoard();
-                    boolean legalPersist = PreferenceUtils.getBoolean(PreferenceKeys.LEGAL_PERSIST,getApplicationContext());
-                    if (!legalPersist){
-                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                        LegalLandingFragment legalLandingFragment = new LegalLandingFragment();
-                        legalLandingFragment.setOnDismissListener(new DismissListener(){
-
-                            @Override
-                            public void onDismiss(int reason) {
-                                showDashBoard();
-                            }
-                        });
-                        if (fr == null) {
-                            switchFragment(legalLandingFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                        }else if (!(fr instanceof  LegalLandingFragment)) {
-                            jbl.stc.com.logger.Logger.i(TAG, "LegalLandingFragment");
-                            switchFragment(legalLandingFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                        }
-                    }
+                    showLegalFragment();
                 }
             },3000);
         }else {
+            showLegalFragment();
+        }
+    }
+
+    private void showLegalFragment(){
+        boolean legalPersist = PreferenceUtils.getBoolean(PreferenceKeys.LEGAL_PERSIST,getApplicationContext());
+        if (!legalPersist){
+            Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+            LegalLandingFragment legalLandingFragment = new LegalLandingFragment();
+            legalLandingFragment.setOnDismissListener(new DismissListener(){
+
+                @Override
+                public void onDismiss(int reason) {
+                    showDashBoard();
+                }
+            });
+            if (fr == null) {
+                switchFragment(legalLandingFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            }else if (!(fr instanceof  LegalLandingFragment)) {
+                Logger.d(TAG, "LegalLandingFragment");
+                switchFragment(legalLandingFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            }
+        }else{
             showDashBoard();
         }
     }
