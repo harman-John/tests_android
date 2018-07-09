@@ -53,5 +53,6 @@ public class JBLConstant {
 
     public static final String DEVICE_LIVE_400BT = "LIVE 400BT";
     public static final String DEVICE_LIVE_500BT = "LIVE 500BT";
+    public static final String DEVICE_LIVE_650BTNC = "LIVE 650BTNC";
     public static final String DEVICE_LIVE_FREE_GA = "LIVE FREE GA";
 }

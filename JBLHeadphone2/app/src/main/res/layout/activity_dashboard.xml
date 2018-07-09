@@ -5,17 +5,26 @@
     android:background="@drawable/shape_gradient_discovery">
 
     <RelativeLayout
-        android:id="@+id/relative_layout_discovery"
+        android:id="@+id/rl_title"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="@dimen/title_bar_height"
+        android:paddingLeft="@dimen/margin_top_10dp"
+        android:paddingRight="@dimen/margin_top_10dp"
+        >
         <jbl.stc.com.view.AppImageView
             android:id="@+id/image_view_discovery_menu_info"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="23dp"
+            android:layout_alignParentLeft="true"
             android:src="@mipmap/white_menu" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative_layout_discovery"
+        android:layout_below="@id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:id="@+id/relative_layout_discovery_animation"

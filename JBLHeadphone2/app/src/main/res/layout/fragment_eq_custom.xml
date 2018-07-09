@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_bar_height"
         android:background="@color/orange"
-        android:paddingLeft="@dimen/page_padding_left"
-        android:paddingRight="@dimen/page_padding_right">
+        android:paddingLeft="@dimen/margin_top_10dp"
+        android:paddingRight="@dimen/margin_top_10dp">
 
         <jbl.stc.com.view.PoppinsMediumTextView
             style="@style/PoppinsMediumTextStyle"
@@ -101,10 +101,9 @@
 
             <jbl.stc.com.view.AppImageView
                 android:id="@+id/addEqOkImage"
-                android:layout_width="@dimen/image_button_width_and_height"
-                android:layout_height="@dimen/image_button_width_and_height"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_alignParentRight="true"
-                android:scaleType="centerInside"
                 android:src="@mipmap/icon_save" />
         </RelativeLayout>
     </RelativeLayout>

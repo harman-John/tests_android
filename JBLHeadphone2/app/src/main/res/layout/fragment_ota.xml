@@ -8,24 +8,28 @@
 
     <RelativeLayout
         android:id="@+id/relative_layout_ota_title"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/title_bar_height"
+        android:paddingLeft="@dimen/margin_top_10dp"
+        android:paddingRight="@dimen/margin_top_10dp"
+        >
         <ImageView
             android:id="@+id/image_view_ota_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:visibility="visible"
-            android:padding="10dp"
             android:src="@mipmap/ic_back"
-            android:layout_marginStart="10dp"/>
+          />
 
         <TextView
             android:id="@+id/text_ota_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/text_ota_title"
-            android:layout_marginTop="20dp"
-            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
             android:textColor="@android:color/black"
             android:textSize="18sp"/>
     </RelativeLayout>
