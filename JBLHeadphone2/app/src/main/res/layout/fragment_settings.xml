@@ -142,7 +142,8 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/toggleautoOff"
+                        android:visibility="gone"
+                        android:id="@+id/tv_toggleautoOff"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -151,6 +152,21 @@
                         android:drawableRight="@mipmap/settings_arrow"
                         android:paddingRight="@dimen/settings_item_padding_right"
                         android:text="5min"/>
+
+                    <Switch
+                        android:id="@+id/toggleAutoOffTimer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="6dp"
+                        android:paddingRight="@dimen/settings_item_padding_right"
+                        android:layout_alignParentRight="true"
+                        android:saveEnabled="true"
+                        android:switchMinWidth="0dp"
+                        android:text=""
+                        android:textOff=""
+                        android:textOn=""
+                        android:thumb="@drawable/toggle_switch_thumb"
+                        android:track="@drawable/toggle_switch_track" />
                 </RelativeLayout>
             </RelativeLayout>
 

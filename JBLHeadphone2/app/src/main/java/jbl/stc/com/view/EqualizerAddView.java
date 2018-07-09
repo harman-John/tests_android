@@ -138,7 +138,8 @@ public class EqualizerAddView extends View {
         mLinePaint.setStrokeWidth(1);
 
         touchLineWidth = dp2px(45);
-        touchLinePaint.setColor(ContextCompat.getColor(mContext, R.color.equalizer_view_touch_line));
+        //touchLinePaint.setColor(ContextCompat.getColor(mContext, R.color.equalizer_view_touch_line));
+        touchLinePaint.setARGB(76,255,255,255);
         touchLinePaint.setAntiAlias(true);
         touchLinePaint.setStyle(Paint.Style.STROKE);
         touchLinePaint.setStrokeWidth(touchLineWidth);

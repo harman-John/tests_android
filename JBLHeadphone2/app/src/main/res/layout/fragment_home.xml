@@ -160,7 +160,7 @@
         android:id="@+id/relative_layout_home_eq_info"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@drawable/shape_gradient_legal"
+        android:background="@drawable/shape_gradient_eq"
         android:layout_alignParentBottom="true"
         android:visibility="visible">
 

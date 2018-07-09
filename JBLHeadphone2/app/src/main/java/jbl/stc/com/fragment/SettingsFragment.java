@@ -42,9 +42,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     private RelativeLayout relativeLayoutSoundXSetup;
     private RelativeLayout relativeLayoutSmartAssitant;
     private TextView deviceName;
-    private TextView toggleautoOff;
+    private TextView tv_toggleautoOff;
     private ImageView deviceImage;
     private Switch toggleVoicePrompt;
+    private Switch toggleAutoOffTimer;
     private Handler mHandler = new Handler();
     private LightX lightX;
     private String deviceNameStr;
@@ -67,8 +68,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         deviceName = (TextView) view.findViewById(R.id.deviceName);
         deviceImage=(ImageView) view.findViewById(R.id.deviceImage);
         //deviceName.setText(PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, ""));
-        toggleautoOff=(TextView) view.findViewById(R.id.toggleautoOff);
+        tv_toggleautoOff=(TextView) view.findViewById(R.id.tv_toggleautoOff);
         toggleVoicePrompt=(Switch) view.findViewById(R.id.toggleVoicePrompt);
+        toggleVoicePrompt.setOnClickListener(this);
+        toggleAutoOffTimer=(Switch) view.findViewById(R.id.toggleAutoOffTimer);
         Logger.i(TAG,"Model number is "+AppUtils.getModelNumber(getActivity()));
         if (DeviceFeatureMap.isFeatureSupported(AppUtils.getModelNumber(getActivity()), Feature.ENABLE_SMART_BUTTON)){
             relativeLayoutSmartButton = view.findViewById(R.id.relative_layout_settings_smart_button);
@@ -77,11 +80,19 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         }
 
         relativeLayoutAutoOffTimer = view.findViewById(R.id.relative_layout_settings_auto_off);
-        if (!DeviceFeatureMap.isFeatureSupported(AppUtils.getModelNumber(getActivity()), Feature.ENABLE_AUTO_OFF_TIMER)){
-            relativeLayoutAutoOffTimer.setVisibility(View.GONE);
-        }else{
+        if (DeviceFeatureMap.isFeatureSupported(AppUtils.getModelNumber(getActivity()), Feature.ENABLE_AUTO_OFF_TIMER)) {
             relativeLayoutAutoOffTimer.setVisibility(View.VISIBLE);
+            tv_toggleautoOff.setVisibility(View.VISIBLE);
+            toggleAutoOffTimer.setVisibility(View.GONE);
             relativeLayoutAutoOffTimer.setOnClickListener(this);
+        }else if(DeviceFeatureMap.isFeatureSupported(AppUtils.getModelNumber(getActivity()), Feature.ENABLE_AUTO_OFF_TIMER_SWITCH)){
+            relativeLayoutAutoOffTimer.setVisibility(View.VISIBLE);
+            tv_toggleautoOff.setVisibility(View.GONE);
+            toggleAutoOffTimer.setVisibility(View.VISIBLE);
+            toggleAutoOffTimer.setOnClickListener(this);
+
+        } else{
+            relativeLayoutAutoOffTimer.setVisibility(View.GONE);
         }
         relativeLayoutTrueNote = view.findViewById(R.id.relative_layout_settings_true_note);
         if (!DeviceFeatureMap.isFeatureSupported(AppUtils.getModelNumber(getActivity()), Feature.ENABLE_TRUE_NOTE)){
@@ -107,10 +118,33 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         deviceNameStr=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
         Logger.d(TAG,"deviceName:"+deviceName);
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
+        updateDeviceName();
+        updateUI();
+        return view;
+    }
+
+    private void updateUI() {
         //get voice prompt
         ANCControlManager.getANCManager(getActivity()).getVoicePrompt(lightX);
-        updateDeviceName();
-        return view;
+        if (TextUtils.isEmpty(deviceNameStr)) {
+            return;
+        }
+        if (deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase())||
+                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase())||
+                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase())||
+                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase())||
+                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())){
+            tv_toggleautoOff.setVisibility(View.GONE);
+            toggleAutoOffTimer.setVisibility(View.VISIBLE);
+            //get autooff timer
+            ANCControlManager.getANCManager(getActivity()).getAutoOffFeature(lightX);
+        }else if(deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_500BT).toUpperCase())||
+                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_400BT).toUpperCase())||
+                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_650BTNC).toUpperCase())||
+                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_FREE_GA).toUpperCase())){
+            tv_toggleautoOff.setVisibility(View.VISIBLE);
+            toggleAutoOffTimer.setVisibility(View.GONE);
+        }
     }
 
     private void updateDeviceName() {
@@ -140,13 +174,18 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     public void onResume() {
         super.onResume();
         Log.d(TAG,"onResume");
-        toggleautoOff.setText(PreferenceUtils.getString(PreferenceKeys.AUTOOFFTIMER,getActivity(),getContext().getString(R.string.five_minute)));
+        tv_toggleautoOff.setText(PreferenceUtils.getString(PreferenceKeys.AUTOOFFTIMER,getActivity(),getContext().getString(R.string.five_minute)));
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.text_view_settings_product_help:{
+                break;
+            }
+            case R.id.toggleAutoOffTimer:{
+                mHandler.removeCallbacks(autoOffToggleRunnable);
+                mHandler.postDelayed(autoOffToggleRunnable, 1000);
                 break;
             }
             case R.id.toggleVoicePrompt:{
@@ -185,6 +224,16 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
 
     }
 
+    private Runnable autoOffToggleRunnable = new Runnable() {
+        @Override
+        public void run() {
+            writeAppAutoOffFeature(toggleAutoOffTimer.isChecked());
+            AnalyticsManager.getInstance(getActivity()).reportAutoOffToggle(toggleAutoOffTimer.isChecked());
+            Logger.d(TAG, "AutoOffFeature " + toggleAutoOffTimer.isChecked() + " sent");
+        }
+
+    };
+
     private Runnable enableVoicePromptRunnable = new Runnable() {
         @Override
         public void run() {
@@ -193,6 +242,14 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             Logger.d(TAG, "VoicePrompt " + toggleVoicePrompt.isChecked() + " sent");
         }
     };
+
+    private void writeAppAutoOffFeature(boolean checked) {
+        if (lightX != null){
+            lightX.writeAppOnEarDetectionWithAutoOff(checked);
+        }else{
+            ANCControlManager.getANCManager(getContext()).setAutoOffFeature(lightX,checked);
+        }
+    }
 
     private void writeEnableVoicePrompt(boolean voiceprompt) {
         if (lightX != null){
@@ -208,10 +265,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         if (values==null||(values!=null&&values.size()==0)){
             return;
         }
+        values.iterator().next().getValue().toString();
+        Logger.d(TAG,"value:"+values.iterator().next().getValue().toString());
         switch (command) {
             case AmCmds.CMD_VoicePrompt: {
-                values.iterator().next().getValue().toString();
-                Logger.d(TAG,"value:"+values.iterator().next().getValue().toString());
                 String boolValue = "";
                 if (values != null && values.size() > 0) {
                     boolValue = values.iterator().next().getValue().toString();
@@ -223,6 +280,27 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 }
                 break;
             }
+            case AmCmds.CMD_AutoOffEnable:{
+                String boolValue = "";
+                if (values != null && values.size() > 0) {
+                    boolValue = values.iterator().next().getValue().toString();
+                }
+                if (!TextUtils.isEmpty(boolValue)&&boolValue.equals("true")){
+                    toggleAutoOffTimer.setChecked(true);
+                }else{
+                    toggleAutoOffTimer.setChecked(false);
+                }
+                break;
+            }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacks(autoOffToggleRunnable);
+        autoOffToggleRunnable = null;
+        mHandler.removeCallbacks(enableVoicePromptRunnable);
+        enableVoicePromptRunnable = null;
     }
 }
