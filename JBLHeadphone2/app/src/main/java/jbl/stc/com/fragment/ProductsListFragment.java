@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.logger.Logger;
 
 public class ProductsListFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = ProductsListFragment.class.getSimpleName();
@@ -20,6 +21,7 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Logger.d(TAG,"onCreateView");
         view = inflater.inflate(R.layout.fragment_products_list,
                 container, false);
         view.findViewById(R.id.image_view_pro_white_menu).setOnClickListener(this);
@@ -39,6 +41,7 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void onResume() {
         super.onResume();
+        Logger.d(TAG,"onResume");
     }
 
     @Override
@@ -90,5 +93,23 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
         UnableConnectFragment unableConnectFragment = new UnableConnectFragment();
         unableConnectFragment.setArguments(bundle);
         switchFragment(unableConnectFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Logger.d(TAG,"onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Logger.d(TAG,"onStop");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Logger.d(TAG,"onDestroy");
     }
 }

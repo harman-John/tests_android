@@ -86,12 +86,18 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
         dashboardActivity = this;
         initView();
-
+        showProductLIst();
         startCircle();
-        dashboardHandler.sendEmptyMessageDelayed(SHOW_PRODUCT_LIST_FRAGMENT,5000);
         //load the presetEQ
         InsertPredefinePreset insertPredefinePreset = new InsertPredefinePreset();
         insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
+    }
+
+    private void showProductLIst(){
+        if (relativeLayoutDiscovery.getVisibility() == View.VISIBLE) {
+            dashboardHandler.removeMessages(SHOW_PRODUCT_LIST_FRAGMENT);
+            dashboardHandler.sendEmptyMessageDelayed(SHOW_PRODUCT_LIST_FRAGMENT, 5000);
+        }
     }
 
     private void checkBluetooth(){
@@ -269,6 +275,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.image_view_discovery_menu_info:{
+                dashboardHandler.removeMessages(SHOW_PRODUCT_LIST_FRAGMENT);
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr == null) {
                     switchFragment(new InfoFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
@@ -306,11 +313,15 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 if (fr != null) {
                     Logger.d(TAG, "onBackStackChanged " + fr.getClass().getSimpleName());
                 }
-                if (fr instanceof InfoFragment
-                        || fr instanceof LegalFragment
-                        || fr instanceof ProductsListFragment
-                        || fr instanceof UnableConnectFragment){
+                if (fr instanceof LegalFragment
+                        || fr instanceof UnableConnectFragment) {
                     super.onBackPressed();
+                }else if (fr instanceof InfoFragment
+                        || fr instanceof ProductsListFragment){
+                    super.onBackPressed();
+                    if (backStackEntryCount <= 1) {
+                        showProductLIst();
+                    }
                 } else {
                     finish();
                 }
@@ -345,6 +356,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             super.handleMessage(msg);
             switch (msg.what) {
                 case SHOW_PRODUCT_LIST_FRAGMENT: {
+                    dashboardHandler.removeMessages(SHOW_PRODUCT_LIST_FRAGMENT);
                     Log.i(TAG,"SHOW_PRODUCT_LIST_FRAGMENT");
 //                    relativeLayoutDiscovery.setVisibility(View.VISIBLE);
 //                    relativeLayoutAnimation.setVisibility(View.GONE);
