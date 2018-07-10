@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/titleBar"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="32dp"
         android:layout_above="@+id/linearLayoutVersion"
         android:fadingEdge="vertical"
         android:scrollbars="vertical">

@@ -59,4 +59,8 @@
 
 
     <dimen name="width_50dp">50dp</dimen>
+
+
+    <dimen name="product_list_icon_size">120dp</dimen>
+    <dimen name="product_list_text_size">12sp</dimen>
 </resources>
