@@ -46,94 +46,94 @@
                 android:src="@mipmap/jbl_logo" />
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/linear_layout_discovery_tips"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:paddingTop="30dp"
-            android:paddingStart="30dp"
-            android:orientation="vertical">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/linear_layout_discovery_tips"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:paddingTop="30dp"-->
+            <!--android:paddingStart="30dp"-->
+            <!--android:orientation="vertical">-->
 
-            <TextView
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="@string/not_found_title"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--style="@android:style/TextAppearance.Large"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="left"-->
+                <!--android:text="@string/not_found_title"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="20sp"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/text_view_discovery_advice_one"
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:gravity="left"
-                android:text="@string/advice_one"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txtHelp" />
+            <!--<TextView-->
+                <!--android:id="@+id/text_view_discovery_advice_one"-->
+                <!--style="@android:style/TextAppearance.Large"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="28dp"-->
+                <!--android:gravity="left"-->
+                <!--android:text="@string/advice_one"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="@dimen/txtHelp" />-->
 
-            <TextView
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/transparentStrokeWidth"
-                android:gravity="left"
-                android:text="@string/advice_two"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txtHelp" />
+            <!--<TextView-->
+                <!--style="@android:style/TextAppearance.Large"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="@dimen/transparentStrokeWidth"-->
+                <!--android:gravity="left"-->
+                <!--android:text="@string/advice_two"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="@dimen/txtHelp" />-->
 
-            <TextView
-                android:id="@+id/text_view_discovery_advice_three"
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/transparentStrokeWidth"
-                android:gravity="left"
-                android:text="@string/advice_three"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txtHelp" />
+            <!--<TextView-->
+                <!--android:id="@+id/text_view_discovery_advice_three"-->
+                <!--style="@android:style/TextAppearance.Large"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="@dimen/transparentStrokeWidth"-->
+                <!--android:gravity="left"-->
+                <!--android:text="@string/advice_three"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="@dimen/txtHelp" />-->
 
-            <TextView
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/transparentStrokeWidth"
-                android:gravity="left"
-                android:text="@string/advice_four"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txtHelp" />
+            <!--<TextView-->
+                <!--style="@android:style/TextAppearance.Large"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="@dimen/transparentStrokeWidth"-->
+                <!--android:gravity="left"-->
+                <!--android:text="@string/advice_four"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="@dimen/txtHelp" />-->
 
-            <TextView
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/transparentStrokeWidth"
-                android:gravity="left"
-                android:text="@string/advice_five"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txtHelp" />
+            <!--<TextView-->
+                <!--style="@android:style/TextAppearance.Large"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="@dimen/transparentStrokeWidth"-->
+                <!--android:gravity="left"-->
+                <!--android:text="@string/advice_five"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="@dimen/txtHelp" />-->
 
-            <TextView
-                android:id="@+id/text_view_discovery_try_again"
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="60dp"
-                android:background="@drawable/rectangle_with_round_corner_grey"
-                android:paddingBottom="9dp"
-                android:paddingLeft="70dp"
-                android:paddingRight="70dp"
-                android:paddingTop="9dp"
-                android:text="@string/try_again"
-                android:textColor="@color/orange_discovery"
-                android:textSize="16sp" />
-        </LinearLayout>
+            <!--<TextView-->
+                <!--android:id="@+id/text_view_discovery_try_again"-->
+                <!--style="@android:style/TextAppearance.Large"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:layout_marginTop="60dp"-->
+                <!--android:background="@drawable/rectangle_with_round_corner_grey"-->
+                <!--android:paddingBottom="9dp"-->
+                <!--android:paddingLeft="70dp"-->
+                <!--android:paddingRight="70dp"-->
+                <!--android:paddingTop="9dp"-->
+                <!--android:text="@string/try_again"-->
+                <!--android:textColor="@color/orange_discovery"-->
+                <!--android:textSize="16sp" />-->
+        <!--</LinearLayout>-->
 
     </RelativeLayout>
 

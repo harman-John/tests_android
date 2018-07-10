@@ -1,0 +1,123 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/shape_gradient_discovery"
+    android:clickable="true"
+    android:clipChildren="false"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:paddingLeft="@dimen/margin_top_10dp"
+        android:paddingRight="@dimen/margin_top_10dp">
+
+        <ImageView
+            android:id="@+id/image_view_unable_white_menu"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="TODO"
+            android:src="@mipmap/white_menu" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linear_layout_unable_device"
+        android:layout_width="wrap_content"
+        android:layout_height="249dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="69dp"
+        android:clipChildren="false"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_view_unable_device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="@string/everest_elite_750nc"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/shape_product_circle">
+
+            <ImageView
+                android:id="@+id/image_view_unable_device_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/everest_elite_700_icon" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutVersion"
+        android:layout_width="match_parent"
+        android:layout_height="138dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linear_layout_unable_device"
+        android:layout_gravity="center"
+        android:clipChildren="false"
+        android:gravity="left"
+        android:orientation="vertical"
+        android:paddingEnd="30dp"
+        android:paddingStart="30dp"
+        android:weightSum="1">
+
+        <TextView
+            style="@android:style/TextAppearance.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:gravity="center_vertical"
+            android:text="@string/advice_two"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/text_view_discovery_advice_three"
+            style="@android:style/TextAppearance.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:gravity="center_vertical"
+            android:text="@string/advice_three"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <TextView
+            style="@android:style/TextAppearance.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:gravity="center_vertical"
+            android:text="@string/advice_four"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <TextView
+            style="@android:style/TextAppearance.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:gravity="center_vertical"
+            android:text="@string/advice_five"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+    </LinearLayout>
+</RelativeLayout>

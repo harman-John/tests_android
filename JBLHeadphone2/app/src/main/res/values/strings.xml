@@ -79,12 +79,10 @@
     <string name="text_calibration_title">TrueNote calibration</string>
     <string name="TrueNote">TruNote</string>
 
-    <string name="not_found_title">Cannot see a product?</string>
-    <string name="advice_one">1.Make sure your headphones are in\nProduct supported list.</string>
-    <string name="advice_two">2.Power off and then on your product</string>
-    <string name="advice_three">3.Make sure your product is paired with\nyour mobile via Bluetooth(how to pair my headphones?).</string>
-    <string name="advice_four">4.Disconnect your product from other mobile</string>
-    <string name="advice_five">5.Pause music on your product</string>
+    <string name="advice_two">1. Power off and then on your product</string>
+    <string name="advice_three">2. Make sure your product is paired with your mobile via Bluetooth(how to pair my headphones?).</string>
+    <string name="advice_four">3. Disconnect your product from other mobile</string>
+    <string name="advice_five">4. Pause music on your product</string>
     <string name="try_again">Try again</string>
     <string name="turn_on_bluetooth">Turn on Bluetooth</string>
     <string name="turn_on_bluetooth_detail_1">Turn on Bluetooth from your control</string>
@@ -127,4 +125,17 @@
     <string name="never">Never</string>
 
     <string name="talkthru">TalkThru</string>
+    <string name="no_headphones_found">No headphones found</string>
+    <string name="make_sure_your_headphones_are_in_the_list_below">Make sure your headphones\nare in the list bellow</string>
+    <string name="All_product_lists">All <b>My JBL Headphones</b> app compatible\nproducts are listed above,if you want to know\nmore about our updates, go to JBL.com to find\nmore information.</string>
+
+    <string name="live_650bt_nc">LIVE 650BTNC</string>
+    <string name="live_500bt">LIVE 500BT</string>
+    <string name="live_400bt">LIVE 400BT</string>
+    <string name="everest_elite_750nc">EVEREST ELITE 750NC</string>
+    <string name="reflect_aware">REFLECT AWARE</string>
+    <string name="everest_elite_700">EVEREST ELITE 700</string>
+    <string name="everest_elite_150nc">EVEREST ELITE 150NC</string>
+    <string name="everest_elite_100">EVEREST ELITE 100</string>
+    <string name="everest_elite_300">EVEREST ELITE 300</string>
 </resources>

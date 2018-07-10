@@ -44,6 +44,8 @@ public class JBLConstant {
 
 
 
+    public static final String DEVICE_MODEL_NAME = "DEVICE MODEL NAME";
+
     public static final String DEVICE_REFLECT_AWARE = "REFLECT AWARE";
     public static final String DEVICE_EVEREST_ELITE_100 = "EVEREST ELITE 100";
     public static final String DEVICE_EVEREST_ELITE_150NC = "EVEREST ELITE 150NC";
@@ -55,4 +57,16 @@ public class JBLConstant {
     public static final String DEVICE_LIVE_500BT = "LIVE 500BT";
     public static final String DEVICE_LIVE_650BTNC = "LIVE 650BTNC";
     public static final String DEVICE_LIVE_FREE_GA = "LIVE FREE GA";
+
+    public enum DEVICE_TYPE{
+        LIVE_400BT,
+        LIVE_500BT,
+        LIVE_650BTNC,
+        REFLECT_AWARE,
+        EVEREST_ELITE_100,
+        EVEREST_ELITE_150NC,
+        EVEREST_ELITE_300,
+        EVEREST_ELITE_700,
+        EVEREST_ELITE_750NC
+    }
 }
