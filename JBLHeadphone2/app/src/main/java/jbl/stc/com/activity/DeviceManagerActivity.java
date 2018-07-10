@@ -470,7 +470,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         if (currentState != BluetoothAdapter.STATE_ON) {
             Logger.e(TAG, "The Bluetooth adapter is not enabled, cannot communicate with LightX device");
             // Could ask the user if it's ok to call bluetooth.enableBluetoothAdapter() here, otherwise abort
-            if (specifiedDevice.getName().equalsIgnoreCase("150NC") && !disconnected) {
+            if (specifiedDevice!=null && specifiedDevice.getName()!= null && specifiedDevice.getName().equalsIgnoreCase("150NC") && !disconnected) {
 
                 Message message = new Message();
                 message.what = MSG_DISCONNECTED;
