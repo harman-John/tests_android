@@ -29,7 +29,7 @@
     <LinearLayout
         android:id="@+id/linear_layout_unable_device"
         android:layout_width="wrap_content"
-        android:layout_height="249dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="69dp"
