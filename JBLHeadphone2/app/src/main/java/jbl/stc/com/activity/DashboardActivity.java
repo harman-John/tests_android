@@ -35,6 +35,7 @@ import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.LegalFragment;
+import jbl.stc.com.fragment.NewTutorialFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;

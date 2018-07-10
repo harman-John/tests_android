@@ -125,4 +125,6 @@
     <string name="ten_minute">10min</string>
     <string name="thirty_minute">30min</string>
     <string name="never">Never</string>
+
+    <string name="talkthru">TalkThru</string>
 </resources>
