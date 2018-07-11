@@ -174,55 +174,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private void initView() {
         relativeLayoutDiscovery = findViewById(R.id.relative_layout_discovery);
         relativeLayoutAnimation = findViewById(R.id.relative_layout_discovery_animation);
-//        linearLayoutTips = findViewById(R.id.linear_layout_discovery_tips);
-//        linearLayoutTips.setVisibility(View.GONE);
-
         findViewById(R.id.image_view_discovery_menu_info).setOnClickListener(this);
-//        textViewTryAgain = findViewById(R.id.text_view_discovery_try_again);
-//        textViewTryAgain.setOnClickListener(this);
-
-//        TextView textViewAdviceOne = findViewById(R.id.text_view_discovery_advice_one);
-//        SpannableString spannableString = new SpannableString(getString(R.string.advice_one));
-//        spannableString.setSpan(new ClickableSpan() {
-//            @Override
-//            public void onClick(View arg0) {
-//
-//            }
-//
-//            @Override
-//            public void updateDrawState(@NonNull TextPaint ds) {
-//                super.updateDrawState(ds);
-//                ds.setColor(getResources().getColor(android.R.color.white));
-//                ds.setUnderlineText(true);
-//                ds.setFakeBoldText(true);
-//                ds.clearShadowLayer();
-//            }
-//
-//        }, 35, 57, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        textViewAdviceOne.setText(spannableString);
-//        textViewAdviceOne.setMovementMethod(LinkMovementMethod.getInstance());
-//        TextView textViewAdviceThree = findViewById(R.id.text_view_discovery_advice_three);
-//
-//        SpannableString spannableStringThree = new SpannableString(getString(R.string.advice_three));
-//        spannableStringThree.setSpan(new ClickableSpan() {
-//            @Override
-//            public void onClick(View arg0) {
-//
-//            }
-//
-//            @Override
-//            public void updateDrawState(@NonNull TextPaint ds) {
-//                super.updateDrawState(ds);
-//                ds.setColor(getResources().getColor(android.R.color.white));
-//                ds.setUnderlineText(true);
-//                ds.setFakeBoldText(true);
-//                ds.clearShadowLayer();
-//            }
-//
-//        }, 66, 92, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        textViewAdviceThree.setText(spannableStringThree);
-//        textViewAdviceThree.setMovementMethod(LinkMovementMethod.getInstance());
-
     }
 
     @Override

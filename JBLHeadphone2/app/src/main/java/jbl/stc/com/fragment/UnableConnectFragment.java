@@ -2,7 +2,13 @@ package jbl.stc.com.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +86,26 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
                 }
             }
         }
+        TextView textViewAdviceOne = view.findViewById(R.id.text_view_unable_advice_three);
+        SpannableString spannableString = new SpannableString(getString(R.string.advice_three));
+        spannableString.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View arg0) {
+
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(getResources().getColor(android.R.color.white));
+                ds.setUnderlineText(true);
+                ds.setFakeBoldText(true);
+                ds.clearShadowLayer();
+            }
+
+        }, 66, 92, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textViewAdviceOne.setText(spannableString);
+        textViewAdviceOne.setMovementMethod(LinkMovementMethod.getInstance());
         return view;
     }
 
