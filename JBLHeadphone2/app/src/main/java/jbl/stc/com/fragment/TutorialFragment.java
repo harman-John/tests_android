@@ -224,6 +224,11 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
         }
     }
 
+    @Override
+    public void onBothThumbsTouched(ANCController seekArc, boolean touched) {
+
+    }
+
     class ViewAdapter extends PagerAdapter {
         private List<View> datas;
 

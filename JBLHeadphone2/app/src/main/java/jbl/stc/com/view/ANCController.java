@@ -48,6 +48,8 @@ public class ANCController extends SurfaceView {
     private Paint mPointerTextPaint1, mPointerTextPaint2;
     private boolean mIsClicked = false;
     private int mViewPosition;
+    private boolean mThumb1Touched = false;
+    private boolean mThumb2Touched = false;
     /**
      * The Drawable for the seek arc thumbnail
      */
@@ -685,6 +687,11 @@ public class ANCController extends SurfaceView {
 //                if (ancAwarehome != null) {
 //                    ancAwarehome.remove_addPollingAgain();
 //                }
+                if (mThumb1Touched && mThumb2Touched) {
+                    if (mOnSeekArcChangeListener != null) {
+                        mOnSeekArcChangeListener.onBothThumbsTouched(this, true);
+                    }
+                }
                 break;
             case MotionEvent.ACTION_CANCEL:
                 dis1 = mThumb1Radius + 999;
@@ -727,6 +734,12 @@ public class ANCController extends SurfaceView {
     private void onStopTrackingTouch() {
         if (mOnSeekArcChangeListener != null) {
             mOnSeekArcChangeListener.onStopTrackingTouch(this);
+        }
+    }
+
+    private void onBothThumbsTouched(ANCController seekArc, boolean touched){
+        if (mOnSeekArcChangeListener != null) {
+            mOnSeekArcChangeListener.onBothThumbsTouched(this,touched);
         }
     }
 
@@ -870,10 +883,12 @@ public class ANCController extends SurfaceView {
         if (dis1 <= mThumb1Radius * 2) {
             // Touch Left thumb
             mHandler1.removeCallbacks(runnable);
+            mThumb1Touched = true;
             mArcClockwise = true;
         } else if (dis2 <= mThumb2Radius * 2) {
             // Touch Right thumb
             mHandler1.removeCallbacks(runnable);
+            mThumb2Touched = true;
             mArcClockwise = false;
         } else {
             mIsClicked = true;
@@ -1234,5 +1249,7 @@ public class ANCController extends SurfaceView {
          * @param ANCController The SeekArc in which the touch gesture began
          */
         void onStopTrackingTouch(ANCController ANCController);
+
+        void onBothThumbsTouched(ANCController seekArc, boolean touched);
     }
 }

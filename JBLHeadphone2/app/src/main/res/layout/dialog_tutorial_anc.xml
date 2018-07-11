@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relative_layout_tutorial_dialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/relative_layout_tutorial_dialog_add"
+        android:layout_width="@dimen/title_bar_height"
+        android:layout_height="@dimen/title_bar_height"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/margin_top_10dp"
+        android:layout_marginTop="@dimen/margin_top_10dp"
+        android:background="@drawable/shape_circle_eq_name_bg_selected"
+        android:focusableInTouchMode="true">
+
+        <jbl.stc.com.view.AppImageView
+            android:id="@+id/addImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/icon_eq_name_plus" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_view_tutorial_dialog_device_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/deviceName"
+                android:visibility="invisible"
+                android:textColor="#030D1C"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="@dimen/margin_top_10dp"
+                android:clickable="false">
+
+                <ImageView
+                    android:id="@+id/image_view_tutorial_dialog_device_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:clickable="false"
+                    android:visibility="invisible"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/everest_elite_150nc_icon" />
+            </RelativeLayout>
+
+            <include
+                layout="@layout/layout_battery"
+                android:visibility="invisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:gravity="center" />
+
+            <LinearLayout
+                android:id="@+id/linear_layout_tutorial_dialog_anc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:baselineAligned="false"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/relative_layout_tutorial_dialog_noise_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/image_view_tutorial_dialog_noise_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/checkbox_noise_cancel_selector"
+                        android:button="@android:color/transparent" />
+
+                    <jbl.stc.com.view.PoppinsRegularTextView
+                        style="@style/PoppinsRegularTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/image_view_tutorial_dialog_noise_cancel"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center_horizontal"
+                        android:lineSpacingExtra="-5dp"
+                        android:text="@string/text_noise_canceling"
+                        android:textColor="@color/white" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/linear_layout_tutorial_dialog_ambient_aware"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <jbl.stc.com.view.AppImageView
+                        android:id="@+id/image_view_tutorial_dialog_ambient_aware"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/checkbox_ambient_selector" />
+
+                    <jbl.stc.com.view.PoppinsRegularTextView
+                        android:id="@+id/text_view_tutorial_dialog_ambient_aware"
+                        style="@style/PoppinsRegularTextStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/image_view_tutorial_dialog_ambient_aware"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center_horizontal"
+                        android:text="@string/text_ambient_aware"
+                        android:textColor="@color/white" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/frame_layout_tutorial_dialog_eq_info"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@drawable/shape_gradient_eq"
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/page_padding_left"
+            android:paddingRight="@dimen/page_padding_right">
+
+            <jbl.stc.com.view.PoppinsRegularTextView
+                android:id="@+id/text_view_tutorial_dialog_eq"
+                style="@style/PoppinsRegularTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/title_eq"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="@color/white" />
+
+            <View
+                android:id="@+id/eqDividerView"
+                android:layout_width="@dimen/divider_size"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="13dp"
+                android:layout_marginRight="13dp"
+                android:layout_toRightOf="@+id/text_view_tutorial_dialog_eq"
+                android:background="@color/white" />
+
+            <jbl.stc.com.view.PoppinsRegularTextView
+                android:id="@+id/text_view_tutorial_dialog_eq_name"
+                style="@style/PoppinsRegularTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/image_button_width_and_height"
+                android:layout_toRightOf="@+id/eqDividerView"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textSize="20dp"
+                android:text="@string/off"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:id="@+id/arrowUpImage"
+                android:layout_width="@dimen/image_button_width_and_height"
+                android:layout_height="@dimen/image_button_width_and_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/icon_arrow_up" />
+        </RelativeLayout>
+    </FrameLayout>
+
+
+
+    <TextView
+        android:id="@+id/text_view_tutorial_dialog_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="28dp"
+        android:layout_marginTop="37dp"
+        android:textColor="@color/white"
+        android:text="skip" />
+
+    <TextView
+        android:id="@+id/text_view_tutorial_dialog_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="59dp"
+        android:layout_marginTop="124dp"
+        android:text="@string/tutorial_tips_one"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+</RelativeLayout>

@@ -179,6 +179,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 if (mBlurView != null) {
                     mBlurView.setVisibility(View.GONE);
                 }
+                if (DashboardActivity.getDashboardActivity().tutorialAncDialog!= null){
+                    DashboardActivity.getDashboardActivity().tutorialAncDialog.setTextViewTips(R.string.tutorial_tips_one);
+                    DashboardActivity.getDashboardActivity().tutorialAncDialog.showEqInfo();
+                }
             }
         });
     }
@@ -223,7 +227,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_home_ambient_aware: {
-                showAncPopupWindow();
+                showAncPopupWindow(view);
                 break;
             }
             case R.id.relative_layout_home_eq_info: {
@@ -239,17 +243,21 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 break;
             }
             case R.id.image_view_home_noise_cancel: {
-                if (checkBoxNoiseCancel.isChecked()) {
-                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX, true);
-                } else {
-                    ANCControlManager.getANCManager(getActivity()).setANCValue(lightX, false);
-                }
+                setANC();
                 break;
             }
         }
     }
 
-    protected void showAncPopupWindow() {
+    public void setANC(){
+        if (checkBoxNoiseCancel.isChecked()) {
+            ANCControlManager.getANCManager(getActivity()).setANCValue(lightX, true);
+        } else {
+            ANCControlManager.getANCManager(getActivity()).setANCValue(lightX, false);
+        }
+    }
+
+    public void showAncPopupWindow(View view) {
         if (mBlurView.getBackground() == null) {
             Bitmap image = BlurBuilder.blur(view);
             mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
@@ -266,7 +274,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 mBlurView.setAlpha(1f);
             }
         });
-
         aaPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
 
         getAAValue();
@@ -353,6 +360,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private void updateANC(boolean onOff) {
         if (checkBoxNoiseCancel != null)
             checkBoxNoiseCancel.setChecked(onOff);
+        if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null) {
+            DashboardActivity.getDashboardActivity().tutorialAncDialog.setChecked(onOff);
+        }
     }
 
     private void updateCurrentEQ(int index) {
@@ -398,6 +408,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(), null);
                 textViewCurrentEQ.setText(name != null ? name : getString(R.string.off));
                 break;
+        }
+        if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null) {
+            DashboardActivity.getDashboardActivity().tutorialAncDialog.updateCurrentEQ(index);
         }
     }
 

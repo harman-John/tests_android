@@ -30,6 +30,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.dialog.TutorialAncDialog;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.InfoFragment;
@@ -75,6 +76,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     public static CopyOnWriteArrayList<FirmwareModel> mFwlist = new CopyOnWriteArrayList<>();
 
     private boolean mIsConnected = false;
+
+    public TutorialAncDialog tutorialAncDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +125,6 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             }
         }
     }
-
 
     private IntentFilter makeFilter() {
         IntentFilter filter = new IntentFilter();
@@ -375,21 +377,24 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     relativeLayoutDiscovery.setVisibility(View.GONE);
 
                     boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME,getApplicationContext());
-                    if (!isShowTutorialManyTimes){
-                        PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
-                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                        if (fr == null) {
-                            switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                        } else if (!(fr instanceof HomeFragment)) {
-                            switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    if (!isShowTutorialManyTimes) {
+//                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+//                        if (fr == null) {
+//                            switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+//                        } else if (!(fr instanceof HomeFragment)) {
+//                            switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+//                        }
+                        if (tutorialAncDialog == null) {
+                            PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
+                            tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
+                            tutorialAncDialog.show();
                         }
-                    }else {
-                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                        if (fr == null) {
-                            switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                        } else if (!(fr instanceof HomeFragment)) {
-                            switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                        }
+                    }
+                    Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                    if (fr == null) {
+                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    } else if (!(fr instanceof HomeFragment)) {
+                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     }
                     stopCircle();
                     break;

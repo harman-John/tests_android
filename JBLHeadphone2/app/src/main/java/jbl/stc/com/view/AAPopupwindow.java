@@ -14,6 +14,7 @@ import com.avnera.smartdigitalheadset.ANCAwarenessPreset;
 import com.avnera.smartdigitalheadset.LightX;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.listener.AwarenessChangeListener;
 import jbl.stc.com.manager.ANCControlManager;
@@ -68,7 +69,6 @@ public class AAPopupwindow extends PopupWindow implements View.OnClickListener, 
 
     }
 
-
     @Override
     public void onClick(View view) {
         switch(view.getId()){
@@ -79,6 +79,7 @@ public class AAPopupwindow extends PopupWindow implements View.OnClickListener, 
             case R.id.aa_popup_close_arrow:
                 if (isShowing()) {
                     dismiss();
+                    showNextTutorialTips();
                 }
                 break;
         }
@@ -191,5 +192,17 @@ public class AAPopupwindow extends PopupWindow implements View.OnClickListener, 
     @Override
     public void onStopTrackingTouch(ANCController ANCController) {
 
+    }
+
+    @Override
+    public void onBothThumbsTouched(ANCController seekArc, boolean touched) {
+        showNextTutorialTips();
+    }
+
+    private void showNextTutorialTips(){
+        if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null){
+            dismiss();
+            DashboardActivity.getDashboardActivity().tutorialAncDialog.setTextViewTips(R.string.tutorial_tips_three);
+        }
     }
 }

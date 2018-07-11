@@ -257,7 +257,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         }
     };
 
-    private void onAddCustomEq(boolean isAdd, boolean isPreset) {
+    public void onAddCustomEq(boolean isAdd, boolean isPreset) {
         Log.d(TAG, "onAddCustomEq()");
         EqCustomFragment fragment = new EqCustomFragment();
         fragment.setOnCustomEqListener(onCustomEqListener);

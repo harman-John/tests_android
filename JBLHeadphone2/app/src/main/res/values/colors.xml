@@ -73,4 +73,5 @@
 
     <color name="outerCircle">#b2b0b2</color>
     <color name="grey_eual">#DEE2E6</color>
+    <color name="tutorial_transparent">#88000000</color>
 </resources>
