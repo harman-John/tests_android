@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    >
+
+    <TextView
+        android:id="@+id/tv_eqname"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:text="@string/bass"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/shape_circle_eq_name_bg_normal" />
+</LinearLayout>

@@ -286,7 +286,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 getActivity().onBackPressed();
                 break;
             case R.id.moreImageView:
-                EqMoreSettingFragment fragment = new EqMoreSettingFragment();
+                /*EqMoreSettingFragment fragment = new EqMoreSettingFragment();
+                switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);*/
+                NewEqMoreSettingFragment fragment = new NewEqMoreSettingFragment();
                 switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 break;
             case R.id.addImageView:

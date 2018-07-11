@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/eq_panel_background"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@drawable/shape_gradient_eq"
+        android:paddingLeft="@dimen/margin_top_10dp"
+        android:paddingRight="@dimen/margin_top_10dp">
+
+        <jbl.stc.com.view.PoppinsMediumTextView
+            style="@style/PoppinsMediumTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/title_eq_setting" />
+
+        <jbl.stc.com.view.AppImageView
+            android:id="@+id/closeImageView"
+            android:layout_width="@dimen/image_button_width_and_height"
+            android:layout_height="@dimen/image_button_width_and_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_arrow_down_eq" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_below="@id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="Presets"
+                />
+            <LinearLayout
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                >
+
+                <TextView
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:text="@string/jazz"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/shape_circle_eq_name_bg_normal" />
+                <TextView
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:text="@string/vocal"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/shape_circle_eq_name_bg_normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="20dp"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                >
+
+                <TextView
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:text="@string/bass"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/shape_circle_eq_name_bg_normal" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="Custom"
+                />
+            <jbl.stc.com.view.EqGridView
+                android:id="@+id/eqGridView"
+                android:layout_width="240dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/transparent"
+                android:gravity="center_horizontal"
+                android:horizontalSpacing="20dp"
+                android:verticalSpacing="20dp"
+                android:listSelector="@android:color/transparent"
+                android:numColumns="2"
+                android:overScrollMode="never"
+                android:scrollbars="none" />
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <ImageView
+        android:id="@+id/iv_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/icon_remove_eq"
+        />
+
+
+</RelativeLayout>
