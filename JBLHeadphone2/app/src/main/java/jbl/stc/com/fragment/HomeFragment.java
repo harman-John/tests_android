@@ -486,7 +486,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
         AccessoryInfo accessoryInfo = am.getAccessoryStatus();
         PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), getActivity());
-        AppUtils.setModelNumber(getActivity(), accessoryInfo.getModelNumber());
+        deviceName = accessoryInfo.getModelNumber();
+        AppUtils.setModelNumber(getActivity(), deviceName);
         Log.d(TAG, "modelName : " + accessoryInfo.getModelNumber());
         updateDeviceNameAndImage(deviceName,imageViewDevice,textViewDeviceName);
         String version = accessoryInfo.getFirmwareRev();
@@ -722,7 +723,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     PreferenceUtils.setString(PreferenceKeys.PRODUCT, var4, getActivity());
                     break;
                 case ConfigModelNumber:
-                    AppUtils.setModelNumber(getActivity(), var4);
+                    deviceName = var4;
+                    AppUtils.setModelNumber(getActivity(), deviceName);
                     updateDeviceNameAndImage(deviceName,imageViewDevice,textViewDeviceName);
                     homeHandler.sendEmptyMessageDelayed(MSG_SEND_CMD_GET_FIRMWARE, 200);
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
