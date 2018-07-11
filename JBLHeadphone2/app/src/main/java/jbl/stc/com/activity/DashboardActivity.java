@@ -10,19 +10,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcel;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 
 import java.io.FileNotFoundException;
@@ -35,17 +29,13 @@ import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.LegalFragment;
-import jbl.stc.com.fragment.NewTutorialFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.ProductsListFragment;
 import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
-import jbl.stc.com.fragment.TutorialFragment;
 import jbl.stc.com.fragment.UnableConnectFragment;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
-import jbl.stc.com.manager.ANCControlManager;
-import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -63,7 +53,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private RelativeLayout relativeLayoutAnimation;
 //    private LinearLayout linearLayoutTips;
 //    private TextView textViewTryAgain;
-    private final static int SHOW_PRODUCT_LIST_FRAGMENT = 0;
+    private final static int MSG_SHOW_PRODUCT_LIST_FRAGMENT = 0;
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
     private final static int MSG_SHOW_DISCOVERY = 2;
     private final static int MSG_SHOW_OTA_FRAGMENT = 3;
@@ -98,8 +88,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     private void showProductLIst(){
         if (relativeLayoutDiscovery.getVisibility() == View.VISIBLE) {
-            dashboardHandler.removeMessages(SHOW_PRODUCT_LIST_FRAGMENT);
-            dashboardHandler.sendEmptyMessageDelayed(SHOW_PRODUCT_LIST_FRAGMENT, 5000);
+            dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
+            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_PRODUCT_LIST_FRAGMENT, 5000);
         }
     }
 
@@ -211,7 +201,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
         mIsConnected = isConnected;
         if (isConnected) {
-            dashboardHandler.removeMessages(SHOW_PRODUCT_LIST_FRAGMENT);
+            dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
             if (!isUpdatingFirmware) {
                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT, 200);
             }else{
@@ -221,6 +211,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }else{
             dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
             dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 200);
+            dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
+            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_PRODUCT_LIST_FRAGMENT, 5000);
         }
     }
 
@@ -229,7 +221,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.image_view_discovery_menu_info:{
-                dashboardHandler.removeMessages(SHOW_PRODUCT_LIST_FRAGMENT);
+                dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr == null) {
                     switchFragment(new InfoFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
@@ -243,7 +235,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 //                relativeLayoutAnimation.setVisibility(View.VISIBLE);
 //                linearLayoutTips.setVisibility(View.GONE);
 //                startCircle();
-//                dashboardHandler.sendEmptyMessageDelayed(SHOW_PRODUCT_LIST_FRAGMENT,5000);
+//                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_PRODUCT_LIST_FRAGMENT,5000);
 //                break;
 //            }
         }
@@ -309,9 +301,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case SHOW_PRODUCT_LIST_FRAGMENT: {
-                    dashboardHandler.removeMessages(SHOW_PRODUCT_LIST_FRAGMENT);
-                    Log.i(TAG,"SHOW_PRODUCT_LIST_FRAGMENT");
+                case MSG_SHOW_PRODUCT_LIST_FRAGMENT: {
+                    dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
+                    Log.i(TAG,"MSG_SHOW_PRODUCT_LIST_FRAGMENT");
 //                    relativeLayoutDiscovery.setVisibility(View.VISIBLE);
 //                    relativeLayoutAnimation.setVisibility(View.GONE);
 //                    linearLayoutTips.setVisibility(View.VISIBLE);
