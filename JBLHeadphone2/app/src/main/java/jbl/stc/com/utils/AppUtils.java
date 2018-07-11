@@ -19,12 +19,14 @@ import android.widget.ImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import jbl.stc.com.BuildConfig;
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.fragment.BaseFragment;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 
@@ -309,6 +311,13 @@ public class AppUtils {
 
     public static void setModelNumber(Context context,String value){
         PreferenceUtils.setString(PreferenceKeys.MODEL, value, context);
+    }
+
+    public static void addConnectedBeforeDevice(Context context, String deviceInfo){
+        Set<String> connectedBeforeDevices = PreferenceUtils.getStringSet(context, PreferenceKeys.CONNECTED_BEFORE_DEVICES);
+        connectedBeforeDevices.add(deviceInfo);
+        PreferenceUtils.setStringSet(context,PreferenceKeys.CONNECTED_BEFORE_DEVICES,connectedBeforeDevices);
+        Logger.i(TAG,"deviceSet = "+connectedBeforeDevices);
     }
 
     public static int[] parseVersionFromASCIIbuffer(byte[] bytes) {

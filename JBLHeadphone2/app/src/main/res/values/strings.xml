@@ -142,4 +142,7 @@
     <string name="tutorial_tips_two">Adjust ambient awareness\nusing presets or sliders.</string>
     <string name="tutorial_tips_three">Swipe up or tap the bottom bar\nto explore equalizer</string>
     <string name="tutorial_tips_four">Add your own EQ for your\nheadphones by tapping the +\nbutton</string>
+
+
+    <string name="my_products">My products</string>
 </resources>

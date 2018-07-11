@@ -26,6 +26,7 @@ import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.dialog.TutorialAncDialog;
 import jbl.stc.com.entity.FirmwareModel;
+import jbl.stc.com.fragment.ConnectedBeforeFragment;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.LegalFragment;
@@ -58,6 +59,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
     private final static int MSG_SHOW_DISCOVERY = 2;
     private final static int MSG_SHOW_OTA_FRAGMENT = 3;
+    private final static int MSG_SHOW_CONNECTED_BEFORE_FRAGMENT = 4;
 
     private DashboardHandler dashboardHandler = new DashboardHandler();
 
@@ -85,6 +87,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         //load the presetEQ
         InsertPredefinePreset insertPredefinePreset = new InsertPredefinePreset();
         insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
+
+//        dashboardHandler.removeMessages(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
+//        dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT, 200);
     }
 
     private void showProductLIst(){
@@ -374,6 +379,15 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     }
                     stopCircle();
                     break;
+                }
+                case MSG_SHOW_CONNECTED_BEFORE_FRAGMENT:{
+                    dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
+                    Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                    if (fr == null) {
+                        switchFragment(new ConnectedBeforeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    }else if (!(fr instanceof  ConnectedBeforeFragment)) {
+                        switchFragment(new ConnectedBeforeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    }
                 }
             }
         }

@@ -38,8 +38,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
@@ -128,6 +130,9 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     public void connectDeviceStatus(boolean isConnected){
         Logger.i(TAG, "connectDeviceStatus isConnected = "+isConnected);
+        if (isConnected){
+            AppUtils.addConnectedBeforeDevice(getApplicationContext(),specifiedDevice.getName()+"-"+specifiedDevice.getAddress());
+        }
     }
 
     protected synchronized void initUSB() {

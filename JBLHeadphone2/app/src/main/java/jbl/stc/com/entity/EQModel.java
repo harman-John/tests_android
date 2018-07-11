@@ -8,11 +8,6 @@ import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import java.io.Serializable;
 import java.util.Arrays;
 
-/**
- * CircleModel
- * <p>
- * Created by darren.lu on 08/10/2017.
- */
 public class EQModel implements Serializable, Comparable<EQModel> {
     public static final String POINT_X_Y_SEP = ",";
     public int eqType;//0:off 1:Jazz 2:Vocal 3:Bass 4:USER(Custom)
