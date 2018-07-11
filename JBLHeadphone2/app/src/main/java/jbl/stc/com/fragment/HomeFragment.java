@@ -57,6 +57,7 @@ import jbl.stc.com.utils.BlurBuilder;
 import jbl.stc.com.view.AAPopupwindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
+import jbl.stc.com.view.SaPopupwindow;
 
 import static java.lang.Integer.valueOf;
 
@@ -90,6 +91,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private LinearLayout linearLayoutBattery;
     private LightX lightX;
     private AAPopupwindow aaPopupwindow;
+    private SaPopupwindow saPopupwindow;
 
     private RelativeLayout linearLayoutNoiseCanceling;
     private RelativeLayout linearLayoutAmbientAware;
@@ -109,6 +111,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         Log.i(TAG, "onCreateView");
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         generateAAPopupWindow();
+        generateSaPopupWindow();
         view.findViewById(R.id.image_view_home_settings).setOnClickListener(this);
         view.findViewById(R.id.image_view_home_info).setOnClickListener(this);
         textViewDeviceName = view.findViewById(R.id.text_view_home_device_name);
@@ -162,6 +165,19 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         deviceName=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
         updateDeviceNameAndImage(deviceName,imageViewDevice,textViewDeviceName);
         return view;
+    }
+
+    private void generateSaPopupWindow() {
+        saPopupwindow = new SaPopupwindow(getActivity());
+        saPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                //dismiss blur view
+                if (mBlurView != null) {
+                    mBlurView.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
 
@@ -223,7 +239,19 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_home_ambient_aware: {
-                showAncPopupWindow();
+                if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_REFLECT_AWARE).toUpperCase())||
+                        deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase())||
+                        deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase())||
+                        deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase())||
+                        deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase())||
+                        deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())){
+                    showAncPopupWindow();
+                }else if(deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_500BT).toUpperCase())||
+                        deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_400BT).toUpperCase())||
+                        deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_650BTNC).toUpperCase())||
+                        deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_FREE_GA).toUpperCase())){
+                    showSaPopupWindow();
+                }
                 break;
             }
             case R.id.relative_layout_home_eq_info: {
@@ -247,6 +275,27 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 break;
             }
         }
+    }
+
+    private void showSaPopupWindow() {
+        if (mBlurView.getBackground() == null) {
+            Bitmap image = BlurBuilder.blur(view);
+            mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
+        }
+
+        mBlurView.setVisibility(View.VISIBLE);
+        mBlurView.setAlpha(0f);
+        mBlurView.animate().alpha(1f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mBlurView.setVisibility(View.VISIBLE);
+                //OR
+                mBlurView.setAlpha(1f);
+            }
+        });
+
+        saPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
     }
 
     protected void showAncPopupWindow() {

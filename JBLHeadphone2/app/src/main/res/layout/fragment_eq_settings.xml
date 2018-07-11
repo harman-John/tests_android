@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/eq_panel_background"
+    android:background="@color/orange"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_bar_height"
-        android:background="@color/orange"
+        android:background="@color/transparent"
         android:focusableInTouchMode="true"
         android:paddingLeft="@dimen/margin_top_10dp"
         android:paddingRight="@dimen/margin_top_10dp">
@@ -42,7 +43,7 @@
             android:layout_height="@dimen/image_button_width_and_height"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/icon_arrow_down" />
+            android:src="@mipmap/icon_arrow_down_eq" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -50,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@drawable/shape_gradient_eq">
+        android:background="@color/transparent">
 
         <jbl.stc.com.view.EqualizerShowView
             android:id="@+id/equalizerView"
@@ -90,16 +91,24 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/eqRecycleView"
-        android:layout_width="240dp"
-        android:layout_height="230dp"
-        android:layout_gravity="center_horizontal"
-        android:background="@color/transparent"
-        android:gravity="center_horizontal"
-        android:horizontalSpacing="20dp"
-        android:listSelector="@android:color/transparent"
-        android:overScrollMode="never"
-        android:scrollbars="none" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/eq_panel_background"
+        >
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/eqRecycleView"
+            android:layout_width="240dp"
+            android:layout_height="230dp"
+            android:layout_centerHorizontal="true"
+            android:background="@color/eq_panel_background"
+            android:gravity="center_horizontal"
+            android:horizontalSpacing="20dp"
+            android:listSelector="@android:color/transparent"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+    </RelativeLayout>
+
 
 </LinearLayout>

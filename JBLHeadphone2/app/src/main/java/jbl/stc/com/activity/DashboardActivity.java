@@ -366,11 +366,29 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     if (!isShowTutorialManyTimes){
                         PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
                         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                        if (fr == null) {
-                            switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                        } else if (!(fr instanceof HomeFragment)) {
-                            switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                        String deviceNameStr=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
+                        if (deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_REFLECT_AWARE).toUpperCase())||
+                                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase())||
+                                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase())||
+                                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase())||
+                                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase())||
+                                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())){
+                            if (fr == null) {
+                                switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                            } else if (!(fr instanceof HomeFragment)) {
+                                switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                            }
+                        }else if(deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_500BT).toUpperCase())||
+                                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_400BT).toUpperCase())||
+                                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_650BTNC).toUpperCase())||
+                                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_FREE_GA).toUpperCase())){
+                            if (fr == null) {
+                                switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                            } else if (!(fr instanceof HomeFragment)) {
+                                switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                            }
                         }
+
                     }else {
                         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                         if (fr == null) {

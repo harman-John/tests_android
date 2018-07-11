@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/transparent" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="330dp"
+        android:background="@drawable/shape_round_corner"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/smart_ambient"
+                android:layout_centerInParent="true"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                />
+            <ImageView
+                android:id="@+id/aa_popup_close_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_arrow_down"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:tint="@color/black"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="30dp"
+            >
+            <jbl.stc.com.view.AppImageView
+                android:id="@+id/iv_ambient_aware"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/checkbox_ambient_selector" />
+
+            <LinearLayout
+                android:layout_toRightOf="@id/iv_ambient_aware"
+                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Daylight Ambient"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Activate or de-activate Daylight Smart Ambient feature by single pressing the Smart Ambient Button"
+                    android:textSize="16sp"
+                    />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="30dp"
+            >
+            <jbl.stc.com.view.AppImageView
+                android:id="@+id/iv_talk_through"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/checkbox_talk_through_selector" />
+
+            <LinearLayout
+                android:layout_toRightOf="@id/iv_talk_through"
+                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Talk Through"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Early catch the conversation by pushing the Smart Ambient Button"
+                    android:textSize="16sp"
+                    />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+</RelativeLayout>

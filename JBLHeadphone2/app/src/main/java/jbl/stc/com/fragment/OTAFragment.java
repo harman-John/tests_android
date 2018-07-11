@@ -17,6 +17,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.avnera.audiomanager.AccessoryInfo;
@@ -91,6 +92,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
     private TextView textViewOTACircle;
     private TextView textViewProgress;
     private TextView textViewButtonDone;
+    private ImageView iv_ok;
 
     @Override
     public void setArguments(Bundle args) {
@@ -122,6 +124,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewProgress = view.findViewById(R.id.text_progress);
         textViewProgress.setOnClickListener(this);
         textViewButtonDone = view.findViewById(R.id.button_done);
+        iv_ok = view.findViewById(R.id.iv_ok);
         textViewButtonDone.setOnClickListener(this);
         return view;
     }
@@ -1027,6 +1030,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewUpdateStatus.setVisibility(View.GONE);
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.ota_install_button));
         textViewButtonDone.setVisibility(View.GONE);
+        iv_ok.setVisibility(View.GONE);
     }
 
     private void otaUpdating(){
@@ -1041,6 +1045,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewProgress.setVisibility(View.VISIBLE);
         textViewProgress.setText("0%");
         textViewButtonDone.setVisibility(View.GONE);
+        iv_ok.setVisibility(View.GONE);
     }
 
     private void otaInstalled(String version){
@@ -1053,6 +1058,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewProgress.setVisibility(View.GONE);
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.ota_finish_icon));
         textViewButtonDone.setVisibility(View.VISIBLE);
+        iv_ok.setVisibility(View.VISIBLE);
     }
 
     private void otaError(){
