@@ -1,5 +1,6 @@
 package jbl.stc.com.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,6 +51,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private RecyclerView eqRecycleView;
     private EqRecyclerAdapter eqAdapter;
     private RelativeLayout rl_eq_view;
+    private LinearLayout linearLayout;
 
     private List<EQModel> eqModelList = new ArrayList<>();
     private EQModel currSelectedEq;
@@ -84,6 +87,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         eqAdapter = new EqRecyclerAdapter();
         eqRecycleView.setAdapter(eqAdapter);
         rl_eq_view = (RelativeLayout) rootView.findViewById(R.id.rl_eq_view);
+        linearLayout=(LinearLayout) rootView.findViewById(R.id.linearLayout);
     }
 
     private void initEvent() {
@@ -177,12 +181,10 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
         }
         if (currSelectedEqIndex == 0) {
-            titleBar.setBackgroundColor(getActivity().getResources().getColor(R.color.gray_aa_bg));
-            rl_eq_view.setBackgroundColor(getActivity().getResources().getColor(R.color.gray_aa_bg));
+            linearLayout.setBackgroundResource(R.drawable.shape_gradient_eq_off);
             eqEditImage.setClickable(false);
         } else {
-            titleBar.setBackgroundColor(getActivity().getResources().getColor(R.color.orange));
-            rl_eq_view.setBackgroundResource(R.drawable.shape_gradient_legal);
+            linearLayout.setBackgroundResource(R.drawable.shape_gradient_legal);
             eqEditImage.setClickable(true);
         }
         smoothToPosition();
@@ -216,12 +218,10 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
         }
         if (eqIndex == 0) {
-            titleBar.setBackgroundColor(getActivity().getResources().getColor(R.color.gray_aa_bg));
-            rl_eq_view.setBackgroundColor(getActivity().getResources().getColor(R.color.gray_aa_bg));
+            linearLayout.setBackgroundResource(R.drawable.shape_gradient_eq_off);
             eqEditImage.setClickable(false);
         } else {
-            titleBar.setBackgroundColor(getActivity().getResources().getColor(R.color.orange));
-            rl_eq_view.setBackgroundResource(R.drawable.shape_gradient_legal);
+            linearLayout.setBackgroundResource(R.drawable.shape_gradient_legal);
             eqEditImage.setClickable(true);
         }
         mHandler.removeCallbacks(applyRunnable);

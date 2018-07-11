@@ -116,6 +116,15 @@ public class EqMoreSettingFragment extends BaseFragment implements View.OnClickL
 
     private void initValue() {
         eqModelList = EQSettingManager.get().getCompleteEQList(mContext);
+        int index=0;
+        if (eqModelList!=null&&eqModelList.size()>0){
+            for (int i=0;i<eqModelList.size();i++){
+                if (eqModelList.get(i).eqName.equals(getContext().getString(R.string.off))){
+                    index=i;
+                }
+            }
+        }
+        eqModelList.remove(index);
         currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""), mContext);
         if (eqModelList == null) {
             eqModelList = new ArrayList<>();

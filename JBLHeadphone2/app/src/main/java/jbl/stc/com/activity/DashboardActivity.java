@@ -324,29 +324,39 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 //                    stopCircle();
                     break;
                 }
-                case MSG_SHOW_HOME_FRAGMENT:{
-                    Log.i(TAG,"show homeFragment");
+                case MSG_SHOW_HOME_FRAGMENT: {
+                    Log.i(TAG, "show homeFragment");
                     relativeLayoutDiscovery.setVisibility(View.GONE);
-
-                    boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME,getApplicationContext());
+                    String deviceNameStr = PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
+                    boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
                     if (!isShowTutorialManyTimes) {
-//                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-//                        if (fr == null) {
-//                            switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-//                        } else if (!(fr instanceof HomeFragment)) {
-//                            switchFragment(new TutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-//                        }
-                        if (tutorialAncDialog == null) {
-                            PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
-                            tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
-                            tutorialAncDialog.show();
+                        PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
+                        if (AppUtils.isOldDevice(deviceNameStr)) {
+                            if (tutorialAncDialog == null) {
+                                PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
+                                tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
+                                tutorialAncDialog.show();
+                            }
+
+                        }else{
+                            Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                            if (AppUtils.isNewDevice(deviceNameStr)) {
+                                if (fr == null) {
+                                    switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                                } else if (!(fr instanceof HomeFragment)) {
+                                    switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                                }
+                            }
                         }
                     }
-                    Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                    if (fr == null) {
-                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    } else if (!(fr instanceof HomeFragment)) {
-                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+
+                    if (AppUtils.isOldDevice(deviceNameStr)){
+                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                        if (fr == null) {
+                            switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                        } else if (!(fr instanceof HomeFragment)) {
+                            switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                        }
                     }
                     stopCircle();
                     break;

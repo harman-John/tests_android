@@ -91,6 +91,16 @@
                 android:textStyle="bold"
                 android:textSize="22sp"
                 android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/iv_ok"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:src="@mipmap/grey_ok"
+                />
         </FrameLayout>
     </LinearLayout>
 

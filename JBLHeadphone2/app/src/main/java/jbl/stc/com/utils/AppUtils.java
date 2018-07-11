@@ -265,6 +265,30 @@ public class AppUtils {
         return getModelNumber(context).contains("750");
     }
 
+    public static boolean isOldDevice(String deviceName) {
+        boolean isOldDevice=false;
+        if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_REFLECT_AWARE).toUpperCase())||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase())||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase())||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase())||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase())||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())){
+            isOldDevice=true;
+        }
+        return  isOldDevice;
+    }
+
+    public static boolean isNewDevice(String deviceName) {
+        boolean isNewDevice=false;
+        if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_500BT).toUpperCase()) ||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_400BT).toUpperCase()) ||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_650BTNC).toUpperCase()) ||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_FREE_GA).toUpperCase())) {
+            isNewDevice=true;
+        }
+        return  isNewDevice;
+    }
+
     public static int levelTransfer(int ambLevel150) {
         switch (ambLevel150) {
             case 0: {
