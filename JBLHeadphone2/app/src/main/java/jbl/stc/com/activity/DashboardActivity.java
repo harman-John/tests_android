@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 
 
 import java.io.FileNotFoundException;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
@@ -82,14 +83,18 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
         dashboardActivity = this;
         initView();
-        showProductLIst();
+        Set<String> connectedBeforeDevices = PreferenceUtils.getStringSet(getDashboardActivity(), PreferenceKeys.CONNECTED_BEFORE_DEVICES);
+        if (connectedBeforeDevices.size()>=1){
+            dashboardHandler.removeMessages(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
+            dashboardHandler.sendEmptyMessage(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
+        }else {
+            showProductLIst();
+        }
         startCircle();
         //load the presetEQ
         InsertPredefinePreset insertPredefinePreset = new InsertPredefinePreset();
         insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
 
-//        dashboardHandler.removeMessages(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
-//        dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT, 200);
     }
 
     private void showProductLIst(){
@@ -262,18 +267,21 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             if (isConnected) {
                 AppUtils.hideFromForeground(this);
             } else {
-                if (fr != null) {
-                    Logger.d(TAG, "onBackStackChanged " + fr.getClass().getSimpleName());
+                if (fr == null) {
+                    Logger.d(TAG, "fr is null " + fr.getClass().getSimpleName());
+                    return;
                 }
                 if (fr instanceof LegalFragment
                         || fr instanceof UnableConnectFragment) {
                     super.onBackPressed();
                 }else if (fr instanceof InfoFragment
-                        || fr instanceof ProductsListFragment){
+                        || fr instanceof ProductsListFragment) {
                     super.onBackPressed();
                     if (backStackEntryCount <= 1) {
                         showProductLIst();
                     }
+                } else if (fr instanceof ConnectedBeforeFragment){
+                    super.onBackPressed();
                 } else {
                     finish();
                 }
@@ -325,35 +333,12 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 case MSG_SHOW_HOME_FRAGMENT: {
                     Log.i(TAG, "show homeFragment");
                     relativeLayoutDiscovery.setVisibility(View.GONE);
-                    String deviceNameStr = PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
-                    boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
-                    if (!isShowTutorialManyTimes) {
-                        PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
-                        if (AppUtils.isOldDevice(deviceNameStr)) {
-                            if (tutorialAncDialog == null) {
-                                PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
-                                tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
-                                tutorialAncDialog.show();
-                            }
-
+                    Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                    if (fr !=null  && fr instanceof ConnectedBeforeFragment){
+                        if (((ConnectedBeforeFragment)fr).connectedDeviceThroughA2dp() == 1){
+                            goConnectedFragment();
                         }else{
-                            Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                            if (AppUtils.isNewDevice(deviceNameStr)) {
-                                if (fr == null) {
-                                    switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                                } else if (!(fr instanceof HomeFragment)) {
-                                    switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                                }
-                            }
-                        }
-                    }
-
-                    if (AppUtils.isOldDevice(deviceNameStr)){
-                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                        if (fr == null) {
-                            switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                        } else if (!(fr instanceof HomeFragment)) {
-                            switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                            ((ConnectedBeforeFragment)fr).setSpecifiedDevice(getSpecifiedDevice());
                         }
                     }
                     stopCircle();
@@ -389,6 +374,39 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                         switchFragment(new ConnectedBeforeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     }
                 }
+            }
+        }
+    }
+
+    public void goConnectedFragment(){
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+        String deviceNameStr = PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
+        boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
+        if (!isShowTutorialManyTimes) {
+            PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
+            if (AppUtils.isOldDevice(deviceNameStr)) {
+                if (tutorialAncDialog == null) {
+                    PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
+                    tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
+                    tutorialAncDialog.show();
+                }
+
+            }else{
+                if (AppUtils.isNewDevice(deviceNameStr)) {
+                    if (fr == null) {
+                        switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    } else if (!(fr instanceof HomeFragment)) {
+                        switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    }
+                }
+            }
+        }
+
+        if (AppUtils.isOldDevice(deviceNameStr)){
+            if (fr == null) {
+                switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            } else if (!(fr instanceof HomeFragment)) {
+                switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
             }
         }
     }

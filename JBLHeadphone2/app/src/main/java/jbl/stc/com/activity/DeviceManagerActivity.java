@@ -1300,6 +1300,10 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         }
     }
 
+    public BluetoothDevice getSpecifiedDevice() {
+        return specifiedDevice;
+    }
+
     private void connectedToDevice(final Object value){
         Logger.d(TAG, " MSG_CONNECTED value = "+value);
         FirmwareUtil.disconnectHeadphoneText = getResources().getString(R.string.plsConnect);

@@ -2,6 +2,8 @@ package jbl.stc.com.fragment;
 
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
@@ -12,8 +14,15 @@ import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
@@ -23,6 +32,9 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
     private View view;
     private ImageView imageViewDeviceIcon;
     private TextView textViewDeviceName;
+    private LinearLayout linearLayoutTips;
+//    private RelativeLayout relativeLayoutBreathingLamp;
+//    private Handler mHandler = new Handler();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +48,9 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
         view.findViewById(R.id.image_view_unable_white_menu).setOnClickListener(this);
         imageViewDeviceIcon = view.findViewById(R.id.image_view_unable_device_icon);
         textViewDeviceName = view.findViewById(R.id.text_view_unable_device_name);
+//        linearLayoutTips = view.findViewById(R.id.linear_layout_unable_tips);
+//        linearLayoutTips.setVisibility(View.VISIBLE);
+//        relativeLayoutBreathingLamp = view.findViewById(R.id.relative_layout_unable_breathing_lamp);
         String deviceModelName = getArguments().getString(JBLConstant.DEVICE_MODEL_NAME);
         if (deviceModelName != null){
             switch (deviceModelName){
@@ -124,4 +139,5 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
         }
 
     }
+
 }

@@ -8,9 +8,10 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/titleBar"
+        android:id="@+id/relative_layout_connected_before_title"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_height">
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/red_discovery">
 
         <ImageView
             android:id="@+id/image_view_connected_before_white_menu"
@@ -31,6 +32,7 @@
             android:textSize="18sp" />
 
         <ImageView
+            android:id="@+id/image_view_connected_before_white_plus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -40,12 +42,12 @@
 
     </RelativeLayout>
 
-
     <GridView
         android:id="@+id/grid_view_connected_before"
-        android:layout_below="@id/titleBar"
+        android:layout_below="@id/relative_layout_connected_before_title"
         android:layout_width="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
         android:layout_height="match_parent"
         android:numColumns="1"/>
 </RelativeLayout>
