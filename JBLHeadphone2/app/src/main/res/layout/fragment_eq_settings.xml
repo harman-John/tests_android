@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@mipmap/icon_eq_name_plus" />
+            android:src="@mipmap/white_plus" />
 
         <jbl.stc.com.view.AppImageView
             android:id="@+id/moreImageView"
