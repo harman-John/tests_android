@@ -31,6 +31,7 @@ import com.avnera.audiomanager.responseResult;
 
 import com.avnera.smartdigitalheadset.Command;
 
+import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Utility;
 
@@ -166,6 +167,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         deviceName=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
         updateDeviceNameAndImage(deviceName,imageViewDevice,textViewDeviceName);
         return view;
+    }
+
+    private void getDeviceEQ() {
+
     }
 
     private void generateSaPopupWindow() {
@@ -434,6 +439,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 break;
             }
             case 4: {
+                //ANCControlManager.getANCManager(getContext()).getAppGraphicEQBand(GraphicEQPreset.User,lightX);
                 application.deviceInfo.eqOn = true;
                 String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(), null);
                 if (name != null) {
@@ -549,6 +555,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case AmCmds.CMD_Geq_Current_Preset: {
                 sendMessageTo(MSG_CURRENT_PRESET, values.iterator().next().getValue().toString());
+                break;
+            }
+            case AmCmds.CMD_GrEqBandGains:{
+                String value = values.iterator().next().getValue().toString();
+                Logger.d(TAG,"GrEqBandGains:"+value);
                 break;
             }
             case AmCmds.CMD_FirmwareVersion: {

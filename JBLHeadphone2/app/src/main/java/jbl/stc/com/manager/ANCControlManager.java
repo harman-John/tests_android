@@ -25,6 +25,7 @@ public class ANCControlManager {
     private static String LEFTANC = "LEFTANC";
     private static String RIGHTANC = "RIGHTANC";
     private static String ANCVALUE = "ANCVALUE";
+    private static final int kGraphicEQNumBands=10;
 
     private static ANCControlManager ancControlManager;
     private final Context context;
@@ -351,6 +352,23 @@ public class ANCControlManager {
         else {
             Cmd150Manager.getInstance().sendSetEqBandGains(AvneraManager.getAvenraManager(context).getAudioManager(), eqPresetToInt(presetType), band, one);
         }
+    }
+
+    public void getAppGraphicEQBand(GraphicEQPreset presetType, LightX lightX){
+        /*for (int i = 0; i < kGraphicEQNumBands; i++) {
+            if (lightX != null)
+                lightX.readAppGraphicEQBand(presetType,i);
+            else {
+                Cmd150Manager.getInstance().getEqBandGains(AvneraManager.getAvenraManager(context).getAudioManager(), eqPresetToInt(presetType), i);
+            }
+        }*/
+
+        if (lightX != null)
+            lightX.readAppGraphicEQBand(presetType,0);
+        else {
+            Cmd150Manager.getInstance().getEqBandGains(AvneraManager.getAvenraManager(context).getAudioManager(), eqPresetToInt(presetType), 0);
+        }
+
     }
 
     private int eqPresetToInt(GraphicEQPreset preset) {

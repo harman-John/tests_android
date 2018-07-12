@@ -338,5 +338,15 @@ public class Cmd150Manager implements BaseManager {
         ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_GrEqBandGains, preset, index_of_band, value);
     }
 
+    public void getEqBandGains(Object object, int preset, int band) {
+        if (object == null) {
+            Log.i(TAG, "is not 150NC device");
+            return;
+        }
+        Log.d(TAG, "get command is:" + AmCmds.CMD_GrEqBandGains + "params are:" + "preset:" + preset + "index of bands:" + band);
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_GrEqBandGains, preset, band);
+
+    }
+
 
 }
