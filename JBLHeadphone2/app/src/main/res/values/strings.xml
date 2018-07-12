@@ -127,7 +127,7 @@
     <string name="talkthru">TalkThru</string>
     <string name="no_headphones_found">No headphones found</string>
     <string name="make_sure_your_headphones_are_in_the_list_below">Make sure your headphones\nare in the list bellow</string>
-    <string name="All_product_lists">All <b>My JBL Headphones</b> app compatible products are listed above,if you want to know more about our updates, go to JBL.com to find more information.</string>
+    <string name="All_product_lists">Only compatible products listed above are supported by <b>My JBL Headphones</b> app. We continuously work on adding more products supports, please go to JBL.com to fond more updates.</string>
 
     <string name="live_650bt_nc">LIVE 650BTNC</string>
     <string name="live_500bt">LIVE 500BT</string>
@@ -145,4 +145,8 @@
 
 
     <string name="my_products">My products</string>
+    <string name="my_products_tips_zero">Don\'t see your products?</string>
+    <string name="my_products_tips_one">1.Make sure your product is paired with your mobile via Bluetooth.<b>how to pair my headphones?</b></string>
+    <string name="my_products_tips_two">2. Pause music on your product or your mobile</string>
+    <string name="my_products_tips_three">3. To make sure your headphones are compatible with the app.<b>Check the compatible product list bellow:</b></string>
 </resources>

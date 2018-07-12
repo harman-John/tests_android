@@ -3,6 +3,6 @@
     android:shape="oval"
     android:useLevel="false">
 
-    <solid android:color="@color/product_semi_transparent" />
+    <solid android:color="@color/white" />
 
 </shape>
