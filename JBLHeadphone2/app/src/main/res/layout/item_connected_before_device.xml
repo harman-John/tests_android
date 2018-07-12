@@ -19,6 +19,7 @@
         android:textStyle="bold" />
 
     <RelativeLayout
+        android:id="@+id/relative_layout_item_connected_before_breathing_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
