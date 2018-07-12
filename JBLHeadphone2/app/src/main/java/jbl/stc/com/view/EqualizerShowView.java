@@ -99,11 +99,11 @@ public class EqualizerShowView extends View {
         //mLinePaint.setPathEffect(new DashPathEffect(new float[]{6, 6}, 0));
         mLinePaint.setStrokeWidth(dp2px(1));
 
-        marginTop = UiUtils.dip2px(mContext, 10);
-        marginBottom = UiUtils.dip2px(mContext, 45);
+        marginTop = UiUtils.dip2px(mContext, 1);
+        marginBottom = UiUtils.dip2px(mContext, 15);
         marginLeft = UiUtils.dip2px(context, 15);
         marginRight = UiUtils.dip2px(context, 15);
-        textMarginBottom = UiUtils.dip2px(context, 15);
+        textMarginBottom = UiUtils.dip2px(context, 10);
     }
 
     public void setCurveData(float[] eqPointX, float[] eqPointY, int curveColor) {
@@ -165,9 +165,9 @@ public class EqualizerShowView extends View {
             float startVerticalX = getRelativelyX(mEqFreqArray[i]);
             //canvas.drawText(getShowName(i), startVerticalX - dp2px(6), dp2px(20), mTextPaint);
             if (i==mEqFreqArray.length-1){
-                canvas.drawText(getShowName(i), startVerticalX - dp2px(20), mHeight-marginBottom/2, mTextPaint);
+                canvas.drawText(getShowName(i), startVerticalX - dp2px(20), mHeight, mTextPaint);
             }else{
-                canvas.drawText(getShowName(i), startVerticalX - dp2px(6), mHeight-marginBottom/2, mTextPaint);
+                canvas.drawText(getShowName(i), startVerticalX - dp2px(6), mHeight, mTextPaint);
             }
 
         }
