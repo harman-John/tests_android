@@ -143,7 +143,7 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
             }
             case R.id.image_view_connected_before_white_plus:{
                 if (DashboardActivity.getDashboardActivity().isConnected()
-                        ||DashboardActivity.getDashboardActivity().getConnectedBeforeCount() == 1){
+                        &&DashboardActivity.getDashboardActivity().getConnectedBeforeCount() == 1){
                     DashboardActivity.getDashboardActivity().goHomeFragment();
                 }else{
                     getActivity().onBackPressed();

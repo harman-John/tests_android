@@ -1,0 +1,84 @@
+<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"--><!--android:layout_width="fill_parent"--><!--android:layout_height="fill_parent"--><!--android:fillViewport="true"--><!--android:background="@android:color/white">-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/page_background"
+    android:clickable="true"
+    android:focusable="true">
+
+
+    <RelativeLayout
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:paddingLeft="@dimen/margin_top_10dp"
+        android:paddingRight="@dimen/margin_top_10dp">
+
+        <ImageView
+            android:id="@+id/image_view_how_to_pair_next_close"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:src="@mipmap/ic_close" />
+
+        <ImageView
+            android:id="@+id/image_view_how_to_pair_next_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:background="@mipmap/ic_back" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/red_discovery" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="135dp"
+        android:padding="30dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="@string/how_to_pair_tips_next_zero" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/how_to_pair_tips_next_one" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_view_how_to_pair_next_go_bt_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="47dp"
+        android:textAlignment="center"
+        android:background="@drawable/shape_ota_button"
+        android:paddingBottom="7dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="7dp"
+        android:text="@string/go_to_bluetooth"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+</RelativeLayout>

@@ -25,6 +25,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
 
 public class UnableConnectFragment extends BaseFragment implements View.OnClickListener {
@@ -32,9 +33,10 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
     private View view;
     private ImageView imageViewDeviceIcon;
     private TextView textViewDeviceName;
-    private LinearLayout linearLayoutTips;
-//    private RelativeLayout relativeLayoutBreathingLamp;
-//    private Handler mHandler = new Handler();
+    private TextView textViewTipsTwo;
+    private TextView textViewTipsThree;
+    private TextView textViewTipsFour;
+    private TextView textViewTipsFive;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +50,10 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
         view.findViewById(R.id.image_view_unable_white_menu).setOnClickListener(this);
         imageViewDeviceIcon = view.findViewById(R.id.image_view_unable_device_icon);
         textViewDeviceName = view.findViewById(R.id.text_view_unable_device_name);
-//        linearLayoutTips = view.findViewById(R.id.linear_layout_unable_tips);
-//        linearLayoutTips.setVisibility(View.VISIBLE);
-//        relativeLayoutBreathingLamp = view.findViewById(R.id.relative_layout_unable_breathing_lamp);
+        textViewTipsTwo = view.findViewById(R.id.text_view_unable_advice_two);
+        textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
+        textViewTipsFour = view.findViewById(R.id.text_view_unable_advice_four);
+        textViewTipsFive = view.findViewById(R.id.text_view_unable_advice_five);
         String deviceModelName = getArguments().getString(JBLConstant.DEVICE_MODEL_NAME);
         if (deviceModelName != null){
             switch (deviceModelName){
@@ -101,26 +104,33 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
                 }
             }
         }
-        TextView textViewAdviceOne = view.findViewById(R.id.text_view_unable_advice_three);
-        SpannableString spannableString = new SpannableString(getString(R.string.advice_three));
-        spannableString.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View arg0) {
+        if (textViewDeviceName.getText().equals(JBLConstant.DEVICE_REFLECT_AWARE)){
+            textViewTipsTwo.setText(R.string.advice_reflect_aware);
+            textViewTipsThree.setVisibility(View.GONE);
+            textViewTipsFour.setVisibility(View.GONE);
+            textViewTipsFive.setVisibility(View.GONE);
+        }else {
+            textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
+            SpannableString spannableString = new SpannableString(getString(R.string.advice_three));
+            spannableString.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(View arg0) {
+                    DashboardActivity.getDashboardActivity().switchFragment(new HowToPairFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                }
 
-            }
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setColor(getResources().getColor(android.R.color.white));
+                    ds.setUnderlineText(true);
+                    ds.setFakeBoldText(true);
+                    ds.clearShadowLayer();
+                }
 
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setColor(getResources().getColor(android.R.color.white));
-                ds.setUnderlineText(true);
-                ds.setFakeBoldText(true);
-                ds.clearShadowLayer();
-            }
-
-        }, 66, 92, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textViewAdviceOne.setText(spannableString);
-        textViewAdviceOne.setMovementMethod(LinkMovementMethod.getInstance());
+            }, 66, 92, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            textViewTipsThree.setText(spannableString);
+            textViewTipsThree.setMovementMethod(LinkMovementMethod.getInstance());
+        }
         return view;
     }
 

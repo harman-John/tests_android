@@ -2,17 +2,26 @@ package jbl.stc.com.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.logger.Logger;
 
 public class ProductsListFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = ProductsListFragment.class.getSimpleName();
     private View view;
+    private TextView textViewTipsOne;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +33,26 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
         Logger.d(TAG,"onCreateView");
         view = inflater.inflate(R.layout.fragment_products_list,
                 container, false);
+        textViewTipsOne = view.findViewById(R.id.text_view_product_tips_one);
+        SpannableString spannableString = new SpannableString(getString(R.string.my_products_tips_one));
+        spannableString.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View arg0) {
+                DashboardActivity.getDashboardActivity().switchFragment(new HowToPairNextFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(getResources().getColor(R.color.white));
+                ds.setUnderlineText(true);
+                ds.setFakeBoldText(true);
+                ds.clearShadowLayer();
+            }
+
+        }, 67, textViewTipsOne.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textViewTipsOne.setText(spannableString);
+        textViewTipsOne.setMovementMethod(LinkMovementMethod.getInstance());
         view.findViewById(R.id.image_view_pro_white_menu).setOnClickListener(this);
         view.findViewById(R.id.image_view_pro_live_650).setOnClickListener(this);
         view.findViewById(R.id.image_view_pro_live_500).setOnClickListener(this);
