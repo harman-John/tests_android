@@ -90,12 +90,16 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     private void selectFragmentToEnter() {
         if (getConnectedBeforeCount() >= 1) {
-            stopCircle();
-            dashboardHandler.removeMessages(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
-            dashboardHandler.sendEmptyMessage(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
+            showConnectedBeforeFragment();
         } else {
             showProductLIst();
         }
+    }
+
+    private void showConnectedBeforeFragment(){
+        stopCircle();
+        dashboardHandler.removeMessages(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
+        dashboardHandler.sendEmptyMessage(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
     }
 
     private void showProductLIst() {
@@ -224,10 +228,14 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             }
 
         } else {
-            dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
-            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 200);
-            dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
-            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_PRODUCT_LIST_FRAGMENT, 5000);
+            if (getConnectedBeforeCount() >= 1){
+                showConnectedBeforeFragment();
+            }else {
+                dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
+                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 200);
+                dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
+                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_PRODUCT_LIST_FRAGMENT, 5000);
+            }
         }
     }
 
