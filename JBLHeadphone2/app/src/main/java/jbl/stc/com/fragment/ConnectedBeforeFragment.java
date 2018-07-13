@@ -32,7 +32,8 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
     private View view;
     private ConnectedBeforeGridAdapter connectedBeforeGridAdapter;
     private GridView gridView;
-
+    private BluetoothDevice mBluetoothDevice;
+    private List<ConnectedBeforeDevice> lists;
     public void stopTimerConnected(){
         connectedBeforeGridAdapter.stopTimerConnected();
     }
@@ -40,7 +41,7 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
     public void setSpecifiedDevice(BluetoothDevice bluetoothDevice){
         Message msg = new Message();
         msg.what = MSG_DEVICE_CONNECTED;
-        msg.obj = bluetoothDevice;
+        mBluetoothDevice = bluetoothDevice;
         cbHandler.sendMessage(msg);
     }
 
@@ -49,39 +50,15 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
         super.onCreate(savedInstanceState);
     }
 
-    private void startA2DPCheck(){
-        BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBtAdapter != null && mBtAdapter.isEnabled()) {
-            mBtAdapter.getProfileProxy(mContext, mListener, BluetoothProfile.A2DP);
-        }
-    }
-    List<BluetoothDevice> deviceList;
-    private BluetoothProfile.ServiceListener mListener = new BluetoothProfile.ServiceListener() {
-        @Override
-        public void onServiceConnected(int profile, BluetoothProfile proxy) {
-            if(profile == BluetoothProfile.A2DP) {
-                deviceList = proxy.getConnectedDevices();
-                Logger.d(TAG, " A2DP connected deviceList = "+deviceList +",size = "+deviceList.size());
-                cbHandler.sendEmptyMessage(MSG_UPDATE_UI);
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(int profile) {
-
-        }
-    };
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_connected_before,
                 container, false);
-        startA2DPCheck();
         view.findViewById(R.id.relative_layout_connected_before_title).bringToFront();
         view.findViewById(R.id.image_view_connected_before_white_plus).setOnClickListener(this);
         gridView = view.findViewById(R.id.grid_view_connected_before);
-
+        initView();
         return view;
     }
 
@@ -95,7 +72,13 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
         return connectedDeviceInc;
     }
 
-    List<ConnectedBeforeDevice> lists;
+    private void initView(){
+        initList();
+        connectedBeforeGridAdapter = new ConnectedBeforeGridAdapter();
+        connectedBeforeGridAdapter.setConnectedBeforeList(lists);
+        gridView.setAdapter(connectedBeforeGridAdapter);
+    }
+
     private void initList(){
         lists = new ArrayList<>();
         Set<String> devicesSet = PreferenceUtils.getStringSet(getContext(), PreferenceKeys.CONNECTED_BEFORE_DEVICES);
@@ -135,16 +118,12 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
         }
     }
 
-    private void initView(){
-        initList();
-        connectedBeforeGridAdapter = new ConnectedBeforeGridAdapter();
-        connectedBeforeGridAdapter.setConnectedBeforeList(lists);
-        gridView.setAdapter(connectedBeforeGridAdapter);
-    }
-
     @Override
     public void onResume() {
         super.onResume();
+        if (mBluetoothDevice != null) {
+            setSpecifiedDevice(mBluetoothDevice);
+        }
     }
 
     @Override
@@ -163,8 +142,7 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
     }
 
     private CbHandler cbHandler = new CbHandler(Looper.getMainLooper());
-    private final static int MSG_UPDATE_UI = 0;
-    private final static int MSG_DEVICE_CONNECTED = 1;
+    private final static int MSG_DEVICE_CONNECTED = 0;
     private class CbHandler extends Handler{
         public CbHandler(Looper looper) {
             super(looper);
@@ -174,14 +152,9 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case MSG_UPDATE_UI:{
-                    initView();
-                    break;
-                }
                 case MSG_DEVICE_CONNECTED:{
-                    BluetoothDevice bluetoothDevice = ((BluetoothDevice)msg.obj);
                     for(ConnectedBeforeDevice connectedBeforeDevice: lists){
-                        if (bluetoothDevice.getName().toUpperCase().contains(connectedBeforeDevice.deviceName)) {
+                        if (mBluetoothDevice.getName().toUpperCase().contains(connectedBeforeDevice.deviceName)) {
                             connectedBeforeDevice.a2dpConnected = true;
                             connectedBeforeGridAdapter.setConnectedBeforeList(lists);
                             break;
