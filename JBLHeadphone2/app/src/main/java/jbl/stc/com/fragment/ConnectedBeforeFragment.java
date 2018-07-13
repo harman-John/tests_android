@@ -20,12 +20,14 @@ import java.util.List;
 import java.util.Set;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.adapter.ConnectedBeforeGridAdapter;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.ConnectedBeforeDevice;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.utils.AppUtils;
 
 public class ConnectedBeforeFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = ConnectedBeforeFragment.class.getSimpleName();
@@ -34,15 +36,16 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
     private GridView gridView;
     private BluetoothDevice mBluetoothDevice;
     private List<ConnectedBeforeDevice> lists;
-    public void stopTimerConnected(){
-        connectedBeforeGridAdapter.stopTimerConnected();
-    }
 
     public void setSpecifiedDevice(BluetoothDevice bluetoothDevice){
         Message msg = new Message();
         msg.what = MSG_DEVICE_CONNECTED;
         mBluetoothDevice = bluetoothDevice;
         cbHandler.sendMessage(msg);
+    }
+
+    public void removeConnectBeforeMessage(){
+        connectedBeforeGridAdapter.removeAllMessage();
     }
 
     @Override
@@ -57,12 +60,13 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
                 container, false);
         view.findViewById(R.id.relative_layout_connected_before_title).bringToFront();
         view.findViewById(R.id.image_view_connected_before_white_plus).setOnClickListener(this);
+        view.findViewById(R.id.image_view_connected_before_white_menu).setOnClickListener(this);
         gridView = view.findViewById(R.id.grid_view_connected_before);
         initView();
         return view;
     }
 
-    public int connectedDeviceThroughA2dp(){
+    public int getA2dpConnectedDevices(){
         int connectedDeviceInc = 0;
         for (ConnectedBeforeDevice connectedBeforeDevice: lists){
             if (connectedBeforeDevice.a2dpConnected){
@@ -130,11 +134,20 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_connected_before_white_menu: {
-                switchFragment(new InfoFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                InfoFragment infoFragment = new InfoFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(JBLConstant.TYPE_FRAGMENT,ConnectedBeforeFragment.TAG);
+                infoFragment.setArguments(bundle);
+                switchFragment(infoFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
             case R.id.image_view_connected_before_white_plus:{
-                getActivity().onBackPressed();
+                if (DashboardActivity.getDashboardActivity().isConnected()
+                        ||DashboardActivity.getDashboardActivity().getConnectedBeforeCount() == 1){
+                    DashboardActivity.getDashboardActivity().goHomeFragment();
+                }else{
+                    getActivity().onBackPressed();
+                }
                 break;
             }
         }
@@ -160,7 +173,6 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
                             break;
                         }
                     }
-                    stopTimerConnected();
                     break;
                 }
             }

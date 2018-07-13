@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import jbl.stc.com.R
 import jbl.stc.com.legal.LegalApi
 import jbl.stc.com.listener.DismissListener
+import jbl.stc.com.storage.PreferenceKeys
+import jbl.stc.com.storage.PreferenceUtils
 
 import kotlinx.android.synthetic.main.fragment_legal_landing.view.*
 
@@ -77,6 +79,7 @@ class LegalLandingFragment : Fragment() {
         // text start button
         view.txtEulaButton!!.setOnClickListener {
             if (isBothChecked) {
+                PreferenceUtils.setBoolean(PreferenceKeys.LEGAL_PERSIST, true, activity)
                 mDismissListener?.onDismiss(0)
             }
         }

@@ -166,6 +166,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         getRawSteps();
         deviceName=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
         updateDeviceNameAndImage(deviceName,imageViewDevice,textViewDeviceName);
+        AppUtils.addConnectedBeforeDevice(getActivity(),DashboardActivity.getDashboardActivity().getSpecifiedDevice().getName()+"-"+DashboardActivity.getDashboardActivity().getSpecifiedDevice().getAddress());
         return view;
     }
 

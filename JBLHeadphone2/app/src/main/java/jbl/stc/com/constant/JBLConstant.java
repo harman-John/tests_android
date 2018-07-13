@@ -69,4 +69,7 @@ public class JBLConstant {
         EVEREST_ELITE_700,
         EVEREST_ELITE_750NC
     }
+
+    public static final String TYPE_FRAGMENT = "type_fragment";
+
 }

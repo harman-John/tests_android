@@ -130,9 +130,6 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     public void connectDeviceStatus(boolean isConnected){
         Logger.i(TAG, "connectDeviceStatus isConnected = "+isConnected);
-        if (isConnected){
-            AppUtils.addConnectedBeforeDevice(getApplicationContext(),specifiedDevice.getName()+"-"+specifiedDevice.getAddress());
-        }
     }
 
     protected synchronized void initUSB() {
@@ -246,6 +243,10 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         if (mBtAdapter != null && mBtAdapter.isEnabled()) {
             mBtAdapter.getProfileProxy(this, mListener, BluetoothProfile.A2DP);
         }
+    }
+
+    public BluetoothDevice getSpecifiedDevice() {
+        return specifiedDevice;
     }
 
     private BluetoothDevice specifiedDevice = null;
@@ -1298,10 +1299,6 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                 }
             }
         }
-    }
-
-    public BluetoothDevice getSpecifiedDevice() {
-        return specifiedDevice;
     }
 
     private void connectedToDevice(final Object value){

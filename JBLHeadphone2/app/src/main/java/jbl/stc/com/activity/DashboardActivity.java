@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Parcel;
 import android.support.v4.app.Fragment;
@@ -48,13 +49,13 @@ import jbl.stc.com.utils.InsertPredefinePreset;
 import jbl.stc.com.utils.OTAUtil;
 import jbl.stc.com.view.JblCircleView;
 
-public class DashboardActivity extends DeviceManagerActivity implements View.OnClickListener,OnDownloadedListener {
+public class DashboardActivity extends DeviceManagerActivity implements View.OnClickListener, OnDownloadedListener {
     private static final String TAG = DashboardActivity.class.getSimpleName() + "aa";
     private JblCircleView jblCircleView;
     private static DashboardActivity dashboardActivity;
     private RelativeLayout relativeLayoutDiscovery;
     private RelativeLayout relativeLayoutAnimation;
-//    private LinearLayout linearLayoutTips;
+    //    private LinearLayout linearLayoutTips;
 //    private TextView textViewTryAgain;
     private final static int MSG_SHOW_PRODUCT_LIST_FRAGMENT = 0;
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
@@ -62,7 +63,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private final static int MSG_SHOW_OTA_FRAGMENT = 3;
     private final static int MSG_SHOW_CONNECTED_BEFORE_FRAGMENT = 4;
 
-    private DashboardHandler dashboardHandler = new DashboardHandler();
+    private DashboardHandler dashboardHandler = new DashboardHandler(Looper.getMainLooper());
 
     private CheckUpdateAvailable checkUpdateAvailable;
 
@@ -76,41 +77,38 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG,"onCreate");
+        Log.i(TAG, "onCreate");
         setContentView(R.layout.activity_dashboard);
         registerReceiver(mBtReceiver, makeFilter());
-
-
         dashboardActivity = this;
         initView();
         selectFragmentToEnter();
-        startCircle();
-        //load the presetEQ
         InsertPredefinePreset insertPredefinePreset = new InsertPredefinePreset();
         insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
 
     }
 
-    private void selectFragmentToEnter(){
-        Set<String> connectedBeforeDevices = PreferenceUtils.getStringSet(getDashboardActivity(), PreferenceKeys.CONNECTED_BEFORE_DEVICES);
-        if (connectedBeforeDevices.size()>=1){
+    private void selectFragmentToEnter() {
+        if (getConnectedBeforeCount() >= 1) {
+            stopCircle();
             dashboardHandler.removeMessages(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
             dashboardHandler.sendEmptyMessage(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
-        }else {
+        } else {
             showProductLIst();
         }
     }
 
-    private void showProductLIst(){
+    private void showProductLIst() {
         if (relativeLayoutDiscovery.getVisibility() == View.VISIBLE) {
+            startCircle();
             dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
             dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_PRODUCT_LIST_FRAGMENT, 5000);
         }
     }
 
-    private void checkBluetooth(){
+    private void checkBluetooth() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter!=null) {
+        if (bluetoothAdapter != null) {
             Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
             if (bluetoothAdapter.isEnabled()) {
                 if (fr == null) {
@@ -122,9 +120,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 }
             } else {
                 dashboardHandler.removeMessages(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
-                if (fr == null){
+                if (fr == null) {
                     switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                }else if (!(fr instanceof  TurnOnBtTipsFragment)) {
+                } else if (!(fr instanceof TurnOnBtTipsFragment)) {
                     Logger.i(TAG, "checkBluetooth open TurnOnBtTipsFragment");
                     switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 }
@@ -142,8 +140,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent == null || intent.getAction() == null){
-                Logger.i(TAG,"intent or its action is null");
+            if (intent == null || intent.getAction() == null) {
+                Logger.i(TAG, "intent or its action is null");
                 return;
             }
             switch (intent.getAction()) {
@@ -162,11 +160,11 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                             selectFragmentToEnter();
                             break;
                         }
-                        default:{
-                            Logger.i(TAG,"open TurnOnBtTipsFragment");
-                            if (fr == null){
+                        default: {
+                            Logger.i(TAG, "open TurnOnBtTipsFragment");
+                            if (fr == null) {
                                 switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
-                            }else if (!(fr instanceof  TurnOnBtTipsFragment)) {
+                            } else if (!(fr instanceof TurnOnBtTipsFragment)) {
                                 Logger.i(TAG, "checkBluetooth open TurnOnBtTipsFragment");
                                 switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
                             }
@@ -187,25 +185,25 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG,"onResume");
+        Log.i(TAG, "onResume");
         checkBluetooth();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(TAG,"onPause");
+        Log.i(TAG, "onPause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i(TAG,"onStop");
+        Log.i(TAG, "onStop");
     }
 
     @Override
     protected void onDestroy() {
-        Log.i(TAG,"onDestroy");
+        Log.i(TAG, "onDestroy");
         stopCircle();
         unregisterReceiver(mBtReceiver);
         super.onDestroy();
@@ -221,11 +219,11 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
             if (!isUpdatingFirmware) {
                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT, 200);
-            }else{
-                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_OTA_FRAGMENT,200);
+            } else {
+                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_OTA_FRAGMENT, 200);
             }
 
-        }else{
+        } else {
             dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
             dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 200);
             dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
@@ -233,28 +231,23 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
     }
 
+    public boolean isConnected(){
+        return mIsConnected;
+    }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.image_view_discovery_menu_info:{
+        switch (v.getId()) {
+            case R.id.image_view_discovery_menu_info: {
                 dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr == null) {
                     switchFragment(new InfoFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
-                }else if (!(fr instanceof  InfoFragment)) {
+                } else if (!(fr instanceof InfoFragment)) {
                     switchFragment(new InfoFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
                 }
                 break;
             }
-//            case R.id.text_view_discovery_try_again:{
-//                relativeLayoutDiscovery.setVisibility(View.VISIBLE);
-//                relativeLayoutAnimation.setVisibility(View.VISIBLE);
-//                linearLayoutTips.setVisibility(View.GONE);
-//                startCircle();
-//                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_PRODUCT_LIST_FRAGMENT,5000);
-//                break;
-//            }
         }
 
     }
@@ -266,7 +259,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         if (isConnected && backStackEntryCount > 1) {
             if (fr instanceof HomeFragment) {
                 AppUtils.hideFromForeground(this);
-            }else {
+            } else {
                 getSupportFragmentManager().popBackStack();
             }
         } else {
@@ -280,13 +273,14 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 if (fr instanceof LegalFragment
                         || fr instanceof UnableConnectFragment) {
                     super.onBackPressed();
-                }else if (fr instanceof InfoFragment
+                } else if (fr instanceof InfoFragment
                         || fr instanceof ProductsListFragment) {
                     super.onBackPressed();
                     if (backStackEntryCount <= 1) {
                         showProductLIst();
                     }
-                } else if (fr instanceof ConnectedBeforeFragment){
+                } else if (fr instanceof ConnectedBeforeFragment) {
+                    startCircle();
                     super.onBackPressed();
                 } else {
                     finish();
@@ -295,7 +289,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
     }
 
-    private void startCircle(){
+    private void startCircle() {
+        relativeLayoutAnimation.setVisibility(View.VISIBLE);
         if (jblCircleView == null) {
             jblCircleView = findViewById(R.id.jbl_circle_view_dashboard);
             jblCircleView.setVisibility(View.VISIBLE);
@@ -303,12 +298,13 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
     }
 
-    private void stopCircle(){
+    private void stopCircle() {
         if (jblCircleView != null) {
             jblCircleView.stop();
             jblCircleView.setVisibility(View.GONE);
             jblCircleView = null;
         }
+        relativeLayoutAnimation.setVisibility(View.GONE);
     }
 
     public static DashboardActivity getDashboardActivity() {
@@ -317,66 +313,86 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     private class DashboardHandler extends Handler {
 
+        DashboardHandler(Looper looper) {
+            super(looper);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_SHOW_PRODUCT_LIST_FRAGMENT: {
                     dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
-                    Log.i(TAG,"MSG_SHOW_PRODUCT_LIST_FRAGMENT");
-//                    relativeLayoutDiscovery.setVisibility(View.VISIBLE);
-//                    relativeLayoutAnimation.setVisibility(View.GONE);
-//                    linearLayoutTips.setVisibility(View.VISIBLE);
+
+                    Log.i(TAG, "MSG_SHOW_PRODUCT_LIST_FRAGMENT");
                     Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                     if (fr == null) {
                         switchFragment(new ProductsListFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     } else if (!(fr instanceof HomeFragment)) {
                         switchFragment(new ProductsListFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     }
-//                    stopCircle();
+                    stopCircle();
                     break;
                 }
                 case MSG_SHOW_HOME_FRAGMENT: {
                     Log.i(TAG, "show homeFragment");
-                    relativeLayoutDiscovery.setVisibility(View.GONE);
                     Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                    if (fr !=null  && fr instanceof ConnectedBeforeFragment){
-                        if (((ConnectedBeforeFragment)fr).connectedDeviceThroughA2dp() == 1){
-                            goConnectedFragment();
+                    int count = getConnectedBeforeCount();
+                    if (count == 0 || count == 1) {
+                        if (fr != null && fr instanceof ConnectedBeforeFragment) {
+                            ((ConnectedBeforeFragment) fr).removeConnectBeforeMessage();
+                            Set<String> devicesSet = PreferenceUtils.getStringSet(getApplicationContext(), PreferenceKeys.CONNECTED_BEFORE_DEVICES);
+                            Logger.i(TAG, "deviceSet = " + devicesSet);
+                            for (String value : devicesSet) {
+                                if (value.contains(getSpecifiedDevice().getAddress())){
+                                    removeAllFragment();
+                                    goHomeFragment();
+                                    break;
+                                }else{
+                                    //TODO：what todo if find another device and auto connected?
+                                }
+                            }
                         }else{
-                            ((ConnectedBeforeFragment)fr).setSpecifiedDevice(getSpecifiedDevice());
+                            removeAllFragment();
+                            goHomeFragment();
+                        }
+                    } else {
+                        if (fr != null && fr instanceof ConnectedBeforeFragment) {
+                            if (((ConnectedBeforeFragment) fr).getA2dpConnectedDevices() == 1) {
+                                goHomeFragment();
+                            } else {
+                                ((ConnectedBeforeFragment) fr).setSpecifiedDevice(getSpecifiedDevice());
+                            }
+                        } else {
+                            goHomeFragment();
                         }
                     }
                     stopCircle();
                     break;
                 }
-                case MSG_SHOW_DISCOVERY:{
-                    Log.i(TAG,"show discovery page");
-                    relativeLayoutDiscovery.setVisibility(View.VISIBLE);
-                    relativeLayoutAnimation.setVisibility(View.VISIBLE);
-//                    linearLayoutTips.setVisibility(View.GONE);
+                case MSG_SHOW_DISCOVERY: {
+                    Log.i(TAG, "show discovery page");
                     removeAllFragment();
                     startCircle();
                     break;
                 }
-                case MSG_SHOW_OTA_FRAGMENT:{
-                    Log.i(TAG,"show OTAFragment");
-                    relativeLayoutDiscovery.setVisibility(View.GONE);
+                case MSG_SHOW_OTA_FRAGMENT: {
+                    Log.i(TAG, "show OTAFragment");
                     Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                     if (fr == null) {
                         switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    }else if (!(fr instanceof  OTAFragment)) {
+                    } else if (!(fr instanceof OTAFragment)) {
                         switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     }
                     stopCircle();
                     break;
                 }
-                case MSG_SHOW_CONNECTED_BEFORE_FRAGMENT:{
+                case MSG_SHOW_CONNECTED_BEFORE_FRAGMENT: {
                     dashboardHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
                     Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                     if (fr == null) {
                         switchFragment(new ConnectedBeforeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    }else if (!(fr instanceof  ConnectedBeforeFragment)) {
+                    } else if (!(fr instanceof ConnectedBeforeFragment)) {
                         switchFragment(new ConnectedBeforeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     }
                 }
@@ -384,43 +400,45 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
     }
 
-    public void goConnectedFragment(){
+    public int getConnectedBeforeCount() {
+        return PreferenceUtils.getStringSet(getApplicationContext(), PreferenceKeys.CONNECTED_BEFORE_DEVICES).size();
+    }
+
+    public void goHomeFragment() {
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        String deviceNameStr = PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
-        boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
-        if (!isShowTutorialManyTimes) {
-            PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
-            if (AppUtils.isOldDevice(deviceNameStr)) {
-                if (tutorialAncDialog == null) {
-                    PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
-                    tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
-                    tutorialAncDialog.show();
-                }
+//        String deviceNameStr = PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
+//        boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
+//        if (!isShowTutorialManyTimes) {
+//            PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
+//            if (AppUtils.isOldDevice(deviceNameStr)) {
+//                if (tutorialAncDialog == null) {
+//                    PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
+//                    tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
+//                    tutorialAncDialog.show();
+//                }
+//
+//            } else {
+//                if (AppUtils.isNewDevice(deviceNameStr)) {
+//                    if (fr == null) {
+//                        switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+//                    } else if (!(fr instanceof HomeFragment)) {
+//                        switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+//                    }
+//                }
+//            }
+//        }
 
-            }else{
-                if (AppUtils.isNewDevice(deviceNameStr)) {
-                    if (fr == null) {
-                        switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    } else if (!(fr instanceof HomeFragment)) {
-                        switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    }
-                }
-            }
-        }
-
-        if (AppUtils.isOldDevice(deviceNameStr)){
-            if (fr == null) {
-                switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-            } else if (!(fr instanceof HomeFragment)) {
-                switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-            }
+        if (fr == null) {
+            switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+        } else if (!(fr instanceof HomeFragment)) {
+            switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
         }
     }
 
     public void setIsUpdateAvailable(boolean isUpdateAvailable) {
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if (fr != null && fr instanceof SettingsFragment) {
-            ((SettingsFragment)fr).showOta(isUpdateAvailable);
+            ((SettingsFragment) fr).showOta(isUpdateAvailable);
         }
     }
 
