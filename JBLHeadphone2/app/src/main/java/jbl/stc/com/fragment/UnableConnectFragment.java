@@ -27,16 +27,19 @@ import java.util.TimerTask;
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.utils.BreathLight;
 
 public class UnableConnectFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = UnableConnectFragment.class.getSimpleName();
     private View view;
+    private RelativeLayout relativeLayoutDeviceIcon;
     private ImageView imageViewDeviceIcon;
     private TextView textViewDeviceName;
     private TextView textViewTipsTwo;
     private TextView textViewTipsThree;
     private TextView textViewTipsFour;
     private TextView textViewTipsFive;
+    private LinearLayout linearLayoutTips;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +50,12 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_unable_connect,
                 container, false);
-        view.findViewById(R.id.image_view_unable_white_menu).setOnClickListener(this);
+        view.findViewById(R.id.image_view_unable_back).setOnClickListener(this);
         imageViewDeviceIcon = view.findViewById(R.id.image_view_unable_device_icon);
+        relativeLayoutDeviceIcon = view.findViewById(R.id.relative_layout_unable_breathing_lamp);
+        linearLayoutTips = view.findViewById(R.id.linear_layout_unable_tips);
+        linearLayoutTips.setVisibility(View.GONE);
+        relativeLayoutDeviceIcon.setOnClickListener(this);
         textViewDeviceName = view.findViewById(R.id.text_view_unable_device_name);
         textViewTipsTwo = view.findViewById(R.id.text_view_unable_advice_two);
         textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
@@ -131,19 +138,40 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
             textViewTipsThree.setText(spannableString);
             textViewTipsThree.setMovementMethod(LinkMovementMethod.getInstance());
         }
+
+        breathLight = new BreathLight(getActivity(),
+                relativeLayoutDeviceIcon,
+                R.anim.breathing_lamp_fade_in,
+                R.anim.breathing_lamp_fade_out);
+
+        breathLight.startBreathing(0);
+
         return view;
     }
 
+    private BreathLight breathLight;
+    private Handler handler = new Handler();
     @Override
     public void onResume() {
         super.onResume();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                breathLight.stopBreathing();
+                linearLayoutTips.setVisibility(View.VISIBLE);
+            }
+        },2000);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.image_view_unable_white_menu:{
-                switchFragment(new InfoFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            case R.id.image_view_unable_back:{
+                getActivity().onBackPressed();
+                break;
+            }
+            case R.id.relative_layout_unable_breathing_lamp:{
+
                 break;
             }
         }
