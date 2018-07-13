@@ -83,6 +83,15 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
         dashboardActivity = this;
         initView();
+        selectFragmentToEnter();
+        startCircle();
+        //load the presetEQ
+        InsertPredefinePreset insertPredefinePreset = new InsertPredefinePreset();
+        insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
+
+    }
+
+    private void selectFragmentToEnter(){
         Set<String> connectedBeforeDevices = PreferenceUtils.getStringSet(getDashboardActivity(), PreferenceKeys.CONNECTED_BEFORE_DEVICES);
         if (connectedBeforeDevices.size()>=1){
             dashboardHandler.removeMessages(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
@@ -90,11 +99,6 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }else {
             showProductLIst();
         }
-        startCircle();
-        //load the presetEQ
-        InsertPredefinePreset insertPredefinePreset = new InsertPredefinePreset();
-        insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
-
     }
 
     private void showProductLIst(){
@@ -117,6 +121,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     removeAllFragment();
                 }
             } else {
+                dashboardHandler.removeMessages(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
                 if (fr == null){
                     switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 }else if (!(fr instanceof  TurnOnBtTipsFragment)) {
@@ -154,6 +159,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                             if (fr instanceof TurnOnBtTipsFragment) {
                                 removeAllFragment();
                             }
+                            selectFragmentToEnter();
                             break;
                         }
                         default:{
