@@ -127,7 +127,7 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
                     ds.clearShadowLayer();
                 }
 
-            }, 66, 92, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }, 66, textViewTipsThree.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             textViewTipsThree.setText(spannableString);
             textViewTipsThree.setMovementMethod(LinkMovementMethod.getInstance());
         }
