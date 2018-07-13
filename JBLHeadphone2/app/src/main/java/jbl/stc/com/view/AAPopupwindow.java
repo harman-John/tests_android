@@ -196,7 +196,7 @@ public class AAPopupwindow extends PopupWindow implements View.OnClickListener, 
 
     @Override
     public void onBothThumbsTouched(ANCController seekArc, boolean touched) {
-        showNextTutorialTips();
+//        showNextTutorialTips();
     }
 
     private void showNextTutorialTips(){

@@ -31,7 +31,6 @@ import com.avnera.audiomanager.responseResult;
 
 import com.avnera.smartdigitalheadset.Command;
 
-import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Utility;
 
@@ -58,7 +57,6 @@ import jbl.stc.com.utils.BlurBuilder;
 import jbl.stc.com.view.AAPopupwindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
-import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.SaPopupwindow;
 
 import static java.lang.Integer.valueOf;
@@ -151,7 +149,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             checkBoxNoiseCancel.setOnClickListener(this);
         }
 
-        linearLayoutAmbientAware = view.findViewById(R.id.linear_layout_home_ambient_aware);
+        linearLayoutAmbientAware = view.findViewById(R.id.relative_layout_home_ambient_aware);
         if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_AMBIENT_AWARE)) {
             linearLayoutAmbientAware.setVisibility(View.GONE);
         } else {

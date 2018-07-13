@@ -543,6 +543,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         mIsConnectedPhysically = true;
         if (mLightX != null) {
             AvneraManager.getAvenraManager(DeviceManagerActivity.this).setLightX(mLightX);
+            mLightX.readConfigModelNumber();
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -892,6 +893,11 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     @Override
     public void lightXReadConfigResult(final LightX lightX, final Command command, final boolean success, final String value) {
+        switch (command){
+            case ConfigModelNumber: {
+                AppUtils.setModelNumber(getApplicationContext(), value);
+            }
+        }
         if (appLightXDelegate != null) {
             runOnUiThread(new Runnable() {
                 @Override

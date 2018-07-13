@@ -1,6 +1,5 @@
 package jbl.stc.com.dialog;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -10,6 +9,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +17,8 @@ import android.widget.TextView;
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.activity.JBLApplication;
+import jbl.stc.com.config.DeviceFeatureMap;
+import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.fragment.EqSettingFragment;
 import jbl.stc.com.fragment.HomeFragment;
@@ -24,6 +26,7 @@ import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.utils.AppUtils;
 
 
 public class TutorialAncDialog extends Dialog implements View.OnClickListener {
@@ -38,6 +41,11 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
     private TextView textViewEqName;
     private TextView textViewSkip;
     private RelativeLayout relativeLayoutAdd;
+    private RelativeLayout relativeLayoutNoiceCancel;
+    private RelativeLayout relativeLayoutAmbientAware;
+    private ImageView imageViewAbientAware;
+    private TextView textViewAmbientAware;
+
     private final static String TAG =  TutorialAncDialog.class.getSimpleName();
 
     public void setOnDialogListener(OnDialogListener onDialogListener) {
@@ -70,9 +78,31 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
         Window window = getWindow();
 //        window.setWindowAnimations(R.style.style_down_to_top);
         window.setAttributes(lp);
-        checkBoxANC = findViewById(R.id.image_view_tutorial_dialog_noise_cancel);
-        checkBoxANC.setOnClickListener(this);
-        findViewById(R.id.image_view_tutorial_dialog_ambient_aware).setOnClickListener(this);
+
+        relativeLayoutNoiceCancel = findViewById(R.id.relative_layout_tutorial_dialog_noise_cancel);
+        String modelNumber = AppUtils.getModelNumber(getContext());
+        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_NOISE_CANCEL)) {
+            relativeLayoutNoiceCancel.setVisibility(View.GONE);
+        } else {
+            relativeLayoutNoiceCancel.setVisibility(View.VISIBLE);
+            checkBoxANC = findViewById(R.id.image_view_tutorial_dialog_noise_cancel);
+            checkBoxANC.setOnClickListener(this);
+        }
+
+        relativeLayoutAmbientAware = findViewById(R.id.relative_layout_tutorial_dialog_ambient_aware);
+        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_AMBIENT_AWARE)) {
+            relativeLayoutAmbientAware.setVisibility(View.GONE);
+        } else {
+            relativeLayoutAmbientAware.setVisibility(View.VISIBLE);
+            imageViewAbientAware = findViewById(R.id.image_view_tutorial_dialog_ambient_aware);
+            imageViewAbientAware.setOnClickListener(this);
+            textViewAmbientAware = findViewById(R.id.text_view_tutorial_dialog_ambient_aware);
+            if (modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
+                    || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
+                    || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
+                textViewAmbientAware.setText(R.string.smart_ambient);
+            }
+        }
     }
 
     public void setChecked(boolean isChecked){

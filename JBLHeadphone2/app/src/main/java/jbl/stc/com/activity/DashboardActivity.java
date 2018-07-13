@@ -414,27 +414,15 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     public void goHomeFragment() {
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-//        String deviceNameStr = PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
-//        boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
-//        if (!isShowTutorialManyTimes) {
-//            PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
-//            if (AppUtils.isOldDevice(deviceNameStr)) {
-//                if (tutorialAncDialog == null) {
-//                    PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
-//                    tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
-//                    tutorialAncDialog.show();
-//                }
-//
-//            } else {
-//                if (AppUtils.isNewDevice(deviceNameStr)) {
-//                    if (fr == null) {
-//                        switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-//                    } else if (!(fr instanceof HomeFragment)) {
-//                        switchFragment(new NewTutorialFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-//                    }
-//                }
-//            }
-//        }
+        boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
+        if (!isShowTutorialManyTimes) {
+            PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
+            if (tutorialAncDialog == null) {
+                PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
+                tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
+                tutorialAncDialog.show();
+            }
+        }
 
         if (fr == null) {
             switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
