@@ -234,6 +234,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
         } else {
             if (getConnectedBeforeCount() >= 1){
+                removeAllFragment();
                 showConnectedBeforeFragment();
             }else {
                 dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
