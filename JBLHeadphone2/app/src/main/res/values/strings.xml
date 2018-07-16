@@ -27,6 +27,7 @@
     <string name="text_settings">Settings</string>
     <string name="firmware">Firmware</string>
     <string name="text_smart_button">Programmable Smart Button</string>
+    <string name="online_user_manual">Online user manual</string>
     <string name="text_auto_off_feature">Auto-off timer</string>
     <string name="text_voice_prompt">Enable Voice Prompt</string>
     <string name="open_source">Open Source Licenses</string>
