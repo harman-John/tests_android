@@ -412,6 +412,16 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
+    public void setEqMenuColor(boolean onOff){
+        if (relative_layout_home_eq_info!= null) {
+            if (onOff){
+                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
+            }else {
+                relative_layout_home_eq_info.setBackgroundColor(getResources().getColor(R.color.gray_aa_bg));
+            }
+        }
+    }
+
     private void updateCurrentEQ(int index) {
         switch (index) {
             case 0: {

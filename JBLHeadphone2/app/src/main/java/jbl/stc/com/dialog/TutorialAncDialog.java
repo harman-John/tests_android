@@ -37,6 +37,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
     private RelativeLayout relativeLayout;
     private TextView textViewTips;
     private FrameLayout frameLayoutEqInfo;
+    private RelativeLayout relativeLayoutEqGrey;
     private LinearLayout linearLayoutAnc;
     private TextView textViewEqName;
     private TextView textViewSkip;
@@ -45,6 +46,10 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
     private RelativeLayout relativeLayoutAmbientAware;
     private ImageView imageViewAbientAware;
     private TextView textViewAmbientAware;
+    private View viewDivider;
+    private ImageView imageViewArrowUp;
+    private TextView textViewEq;
+    private TextView textViewEqGrey;
 
     private final static String TAG =  TutorialAncDialog.class.getSimpleName();
 
@@ -72,6 +77,12 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
         textViewSkip.setOnClickListener(this);
         relativeLayoutAdd = findViewById(R.id.relative_layout_tutorial_dialog_add);
         relativeLayoutAdd.setOnClickListener(this);
+        viewDivider = findViewById(R.id.view_dialog_eq_divider);
+        imageViewArrowUp = findViewById(R.id.image_view_tutorial_dialog_arrow_up);
+        textViewEq = findViewById(R.id.text_view_tutorial_dialog_eq);
+        relativeLayoutEqGrey = findViewById(R.id.relative_layout_tutorial_dialog_eq_grey);
+        textViewEqGrey = findViewById(R.id.text_view_tutorial_dialog_eq_grey);
+        textViewEqGrey.setOnClickListener(this);
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
@@ -102,12 +113,25 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
                     || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
                 textViewAmbientAware.setText(R.string.smart_ambient);
             }
+            relativeLayoutAmbientAware.setVisibility(View.INVISIBLE);
         }
+
     }
 
     public void setChecked(boolean isChecked){
         if (checkBoxANC!= null){
             checkBoxANC.setChecked(isChecked);
+        }
+        if (isChecked) {
+            if (relativeLayoutAmbientAware != null){
+                relativeLayoutAmbientAware.setVisibility(View.VISIBLE);
+            }
+            setTextViewTips(R.string.tutorial_tips_one);
+        }else{
+            if (relativeLayoutAmbientAware != null){
+                relativeLayoutAmbientAware.setVisibility(View.INVISIBLE);
+            }
+            setTextViewTips(R.string.tutorial_tips_zero);
         }
     }
 
@@ -118,8 +142,22 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
     }
 
     public void showEqInfo(){
+        Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+        if (fr != null && fr instanceof HomeFragment){
+            ((HomeFragment)fr).setEqMenuColor(false);
+        }
+        if (textViewEqName != null){
+            textViewEqName.setVisibility(View.INVISIBLE);
+        }
         if (frameLayoutEqInfo != null){
-            frameLayoutEqInfo.setVisibility(View.VISIBLE);
+            frameLayoutEqInfo.setVisibility(View.INVISIBLE);
+        }
+        if (relativeLayoutEqGrey != null){
+            relativeLayoutEqGrey.setVisibility(View.VISIBLE);
+            relativeLayoutEqGrey.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.shape_circle_off_eq_name_bg_normal));
+        }
+        if (textViewEqGrey != null){
+            textViewEqGrey.setVisibility(View.VISIBLE);
         }
         if (linearLayoutAnc != null){
             linearLayoutAnc.setVisibility(View.GONE);
@@ -200,6 +238,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
                 Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr != null && fr instanceof HomeFragment){
                     ((HomeFragment)fr).setANC();
+                    setChecked(checkBoxANC.isChecked());
                 }
                 break;
             }
@@ -223,13 +262,16 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
                 }
                 DashboardActivity.getDashboardActivity().switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 hideEqInfo();
-                setTextViewTips(R.string.tutorial_tips_four);
+                setTextViewTips(R.string.tutorial_tips_five);
                 hideSkip();
                 showAdd();
                 break;
             }
             case R.id.relative_layout_tutorial_dialog_add:{
-                dismiss();
+//                dismiss();
+                if (relativeLayoutAdd!=null){
+                    relativeLayoutAdd.setVisibility(View.GONE);
+                }
                 Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr == null ){
                     Logger.i(TAG,"fr is null");
@@ -239,10 +281,25 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
                     Logger.i(TAG,"fr is already showed");
                     ((EqSettingFragment)fr).onAddCustomEq(true, false);
                 }
+                setTextViewTips(R.string.tutorial_tips_six);
                 break;
             }
             case R.id.text_view_tutorial_dialog_skip:{
                 dismiss();
+                break;
+            }
+            case R.id.text_view_tutorial_dialog_eq_grey:{
+                if (relativeLayoutEqGrey!= null) {
+                    relativeLayoutEqGrey.setVisibility(View.GONE);
+                }
+                if (frameLayoutEqInfo!= null) {
+                    frameLayoutEqInfo.setVisibility(View.VISIBLE);
+                }
+                Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                if (fr != null && fr instanceof HomeFragment){
+                    ((HomeFragment)fr).setEqMenuColor(true);
+                }
+                setTextViewTips(R.string.tutorial_tips_four);
                 break;
             }
         }

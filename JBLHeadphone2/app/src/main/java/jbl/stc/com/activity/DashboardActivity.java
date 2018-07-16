@@ -414,7 +414,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     public void goHomeFragment() {
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
+        boolean isShowTutorialManyTimes = false;//PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
         if (!isShowTutorialManyTimes) {
             PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
             if (tutorialAncDialog == null) {
