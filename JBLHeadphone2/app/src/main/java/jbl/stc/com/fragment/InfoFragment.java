@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.legal.LegalApi;
 
@@ -31,6 +32,7 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
         if (bundle != null){
             typeFragment = bundle.getString(JBLConstant.TYPE_FRAGMENT);
         }
+        view.findViewById(R.id.text_view_info_my_product).setOnClickListener(this);
         view.findViewById(R.id.text_view_open_source_license).setOnClickListener(this);
         view.findViewById(R.id.text_view_eula).setOnClickListener(this);
         view.findViewById(R.id.text_view_info_product_help).setOnClickListener(this);
@@ -76,6 +78,14 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
             }
             case R.id.text_view_info_product_help:{
                 switchFragment(new ProductHelpFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                break;
+            }
+            case R.id.text_view_info_my_product:{
+                if (!DashboardActivity.getDashboardActivity().isConnected()){
+                    getActivity().onBackPressed();
+                }else{
+                    switchFragment(new ConnectedBeforeFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                }
                 break;
             }
         }

@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.RelativeLayout;
 
 
@@ -30,14 +31,18 @@ import jbl.stc.com.dialog.TutorialAncDialog;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.ConnectedBeforeFragment;
 import jbl.stc.com.fragment.HomeFragment;
+import jbl.stc.com.fragment.HowToPairFragment;
+import jbl.stc.com.fragment.HowToPairNextFragment;
 import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.LegalFragment;
 import jbl.stc.com.fragment.NewTutorialFragment;
 import jbl.stc.com.fragment.OTAFragment;
+import jbl.stc.com.fragment.ProductHelpFragment;
 import jbl.stc.com.fragment.ProductsListFragment;
 import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.fragment.UnableConnectFragment;
+import jbl.stc.com.fragment.WebViewFragment;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.ota.CheckUpdateAvailable;
@@ -279,10 +284,14 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     return;
                 }
                 if (fr instanceof LegalFragment
-                        || fr instanceof UnableConnectFragment) {
+                        || fr instanceof UnableConnectFragment
+                        || fr instanceof HowToPairFragment
+                        || fr instanceof HowToPairNextFragment
+                        || fr instanceof ProductHelpFragment
+                        || fr instanceof InfoFragment
+                        || fr instanceof WebViewFragment) {
                     super.onBackPressed();
-                } else if (fr instanceof InfoFragment
-                        || fr instanceof ProductsListFragment) {
+                } else if (fr instanceof ProductsListFragment) {
                     super.onBackPressed();
                     if (backStackEntryCount <= 1) {
                         showProductLIst();

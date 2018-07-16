@@ -24,6 +24,7 @@ public class ProductHelpFragment extends BaseFragment implements View.OnClickLis
         view = inflater.inflate(R.layout.fragment_product_help,
                 container, false);
         view.findViewById(R.id.relative_layout_product_help_item_one).setOnClickListener(this);
+        view.findViewById(R.id.image_view_product_help_back).setOnClickListener(this);
         return view;
     }
 
@@ -39,6 +40,10 @@ public class ProductHelpFragment extends BaseFragment implements View.OnClickLis
         switch (v.getId()) {
             case R.id.relative_layout_product_help_item_one: {
 
+                break;
+            }
+            case R.id.image_view_product_help_back:{
+                getActivity().onBackPressed();
                 break;
             }
         }

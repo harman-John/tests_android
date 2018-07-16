@@ -33,6 +33,8 @@ public class HowToPairFragment extends BaseFragment implements View.OnClickListe
                 container, false);
         view.findViewById(R.id.text_view_how_to_pair_next).setOnClickListener(this);
         textViewLink = view.findViewById(R.id.text_view_how_to_pair_link);
+        view.findViewById(R.id.image_view_how_to_pair_back).setOnClickListener(this);
+        view.findViewById(R.id.image_view_how_to_pair_close).setOnClickListener(this);
         SpannableString spannableString = new SpannableString(getString(R.string.how_to_pair_tips_two));
         spannableString.setSpan(new ClickableSpan() {
             @Override

@@ -3,8 +3,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:clickable="true"
     android:background="@color/page_background"
+    android:clickable="true"
     android:focusable="true">
 
 
@@ -19,27 +19,26 @@
             android:id="@+id/image_view_info_back"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:src="@mipmap/ic_close"
-            android:layout_marginRight="10dp"/>
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@mipmap/ic_close" />
 
         <ImageView
             android:id="@+id/deviceImage"
             android:layout_width="74dp"
             android:layout_height="42dp"
-            android:background="@mipmap/jbl_logo_gray"
             android:layout_centerInParent="true"
-            />
+            android:background="@mipmap/jbl_logo_gray" />
 
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayoutVersion"
         android:layout_below="@id/titleBar"
         android:layout_marginTop="32dp"
-        android:layout_above="@+id/linearLayoutVersion"
         android:fadingEdge="vertical"
         android:scrollbars="vertical">
 
@@ -52,106 +51,130 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:background="@android:color/white"/>
+                android:layout_marginStart="30dp"
+                android:background="@android:color/white" />
+
             <TextView
-                android:id="@+id/text_view_info_product_help"
+                android:id="@+id/text_view_info_my_product"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
-                android:gravity="start|center_vertical"
                 android:drawableRight="@mipmap/settings_arrow"
+                android:gravity="start|center_vertical"
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
+                android:text="@string/my_products"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:text="@string/text_product_help"/>
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:background="@android:color/white"/>
+                android:layout_marginStart="30dp"
+                android:background="@android:color/white" />
+
+            <TextView
+                android:id="@+id/text_view_info_product_help"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_item_height"
+                android:drawableRight="@mipmap/settings_arrow"
+                android:gravity="start|center_vertical"
+                android:paddingLeft="@dimen/settings_item_padding_left"
+                android:paddingRight="@dimen/settings_item_padding_right"
+                android:text="@string/text_product_help"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:background="@android:color/white" />
 
 
             <TextView
                 android:id="@+id/text_jbl_com"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
-                android:gravity="start|center_vertical"
                 android:drawableRight="@mipmap/settings_arrow"
+                android:gravity="start|center_vertical"
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
+                android:text="@string/text_jbl_com"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:text="@string/text_jbl_com"/>
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:background="@android:color/white"/>
+                android:layout_marginStart="30dp"
+                android:background="@android:color/white" />
 
             <TextView
                 android:id="@+id/text_view_open_source_license"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
-                android:gravity="start|center_vertical"
                 android:drawableRight="@mipmap/settings_arrow"
+                android:gravity="start|center_vertical"
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
+                android:text="@string/text_open_source_license"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:text="@string/text_open_source_license"/>
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:background="@android:color/white"/>
+                android:layout_marginStart="30dp"
+                android:background="@android:color/white" />
 
             <TextView
                 android:id="@+id/text_view_eula"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
-                android:gravity="start|center_vertical"
                 android:drawableRight="@mipmap/settings_arrow"
+                android:gravity="start|center_vertical"
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
+                android:text="@string/text_eula"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:text="@string/text_eula"/>
+                android:textStyle="bold" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:background="@android:color/white"/>
+                android:layout_marginStart="30dp"
+                android:background="@android:color/white" />
+
             <TextView
                 android:id="@+id/text_view_harman_privacy_policy"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
-                android:gravity="start|center_vertical"
                 android:drawableRight="@mipmap/settings_arrow"
+                android:gravity="start|center_vertical"
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
+                android:text="@string/text_harman_privacy_policy"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:text="@string/text_harman_privacy_policy"/>
+                android:textStyle="bold" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:background="@android:color/white"/>
+                android:layout_marginStart="30dp"
+                android:background="@android:color/white" />
         </LinearLayout>
     </ScrollView>
 
