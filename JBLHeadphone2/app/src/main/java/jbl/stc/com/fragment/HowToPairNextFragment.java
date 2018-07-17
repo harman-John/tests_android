@@ -51,8 +51,12 @@ public class HowToPairNextFragment extends BaseFragment implements View.OnClickL
                 startActivity(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS));
                 break;
             }
-            case R.id.image_view_how_to_pair_next_back:
+            case R.id.image_view_how_to_pair_next_back:{
+                getActivity().onBackPressed();
+                break;
+            }
             case R.id.image_view_how_to_pair_next_close:{
+                getActivity().onBackPressed();
                 getActivity().onBackPressed();
                 break;
             }

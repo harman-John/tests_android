@@ -70,7 +70,6 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         textViewFirmware.setOnClickListener(this);
         view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
         view.findViewById(R.id.text_view_settings_smart_button).setOnClickListener(this);
-        view.findViewById(R.id.relative_layout_settings_auto_off).setOnClickListener(this);
         deviceName = (TextView) view.findViewById(R.id.deviceName);
         deviceImage=(ImageView) view.findViewById(R.id.deviceImage);
         //deviceName.setText(PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, ""));

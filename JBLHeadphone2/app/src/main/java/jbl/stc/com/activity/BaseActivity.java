@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -24,12 +25,14 @@ import com.avnera.smartdigitalheadset.USB;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.dialog.AlertsDialog;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.fragment.BaseFragment;
+import jbl.stc.com.fragment.ConnectedBeforeFragment;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.listener.AppUSBDelegate;
@@ -122,7 +125,6 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
         try {
             FragmentManager manager = getSupportFragmentManager();
             int count = manager.getBackStackEntryCount();
-            Log.i(TAG, "count = " + count);
             while (count > 0) {
                 getSupportFragmentManager().popBackStackImmediate();
                 manager = getSupportFragmentManager();

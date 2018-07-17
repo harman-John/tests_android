@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -21,23 +20,24 @@ import java.util.Set;
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.adapter.ConnectedBeforeGridAdapter;
+import jbl.stc.com.adapter.MyProductsGridAdapter;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.ConnectedBeforeDevice;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 
-public class ConnectedBeforeFragment extends BaseFragment implements View.OnClickListener {
-    public static final String TAG = ConnectedBeforeFragment.class.getSimpleName();
+public class MyProductsFragment extends BaseFragment implements View.OnClickListener {
+    public static final String TAG = MyProductsFragment.class.getSimpleName();
     private View view;
-    private ConnectedBeforeGridAdapter connectedBeforeGridAdapter;
+    private MyProductsGridAdapter myProductsGridAdapter;
     private GridView gridView;
     private BluetoothDevice mBluetoothDevice;
     private List<ConnectedBeforeDevice> lists;
     private Context mContext;
 
     public void removeConnectBeforeMessage(){
-        connectedBeforeGridAdapter.removeAllMessage();
+        myProductsGridAdapter.removeAllMessage();
     }
 
     @Override
@@ -48,11 +48,11 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_connected_before,
+        view = inflater.inflate(R.layout.fragment_my_products,
                 container, false);
-        view.findViewById(R.id.relative_layout_connected_before_title).bringToFront();
-        view.findViewById(R.id.image_view_connected_before_white_plus).setOnClickListener(this);
-        view.findViewById(R.id.image_view_connected_before_white_menu).setOnClickListener(this);
+        view.findViewById(R.id.relative_layout_my_products_title).bringToFront();
+//        view.findViewById(R.id.image_view_my_products_white_plus).setOnClickListener(this);
+        view.findViewById(R.id.image_view_my_products_white_menu).setOnClickListener(this);
         gridView = view.findViewById(R.id.grid_view_connected_before);
         initList();
         initView();
@@ -81,13 +81,13 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
         for(ConnectedBeforeDevice connectedBeforeDevice: lists){
             connectedBeforeDevice.a2dpConnected = false;
         }
-        connectedBeforeGridAdapter.setConnectedBeforeList(lists);
+        myProductsGridAdapter.setConnectedBeforeList(lists);
     }
 
     private void initView(){
-        connectedBeforeGridAdapter = new ConnectedBeforeGridAdapter();
-        connectedBeforeGridAdapter.setConnectedBeforeList(lists);
-        gridView.setAdapter(connectedBeforeGridAdapter);
+        myProductsGridAdapter = new MyProductsGridAdapter();
+        myProductsGridAdapter.setConnectedBeforeList(lists);
+        gridView.setAdapter(myProductsGridAdapter);
     }
 
     private void initList(){
@@ -142,23 +142,23 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.image_view_connected_before_white_menu: {
+            case R.id.image_view_my_products_white_menu: {
                 InfoFragment infoFragment = new InfoFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString(JBLConstant.TYPE_FRAGMENT,ConnectedBeforeFragment.TAG);
+                bundle.putString(JBLConstant.TYPE_FRAGMENT, MyProductsFragment.TAG);
                 infoFragment.setArguments(bundle);
                 switchFragment(infoFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
-            case R.id.image_view_connected_before_white_plus:{
-                if (DashboardActivity.getDashboardActivity().isConnected()
-                        &&DashboardActivity.getDashboardActivity().getConnectedBeforeCount() == 1){
-                    DashboardActivity.getDashboardActivity().goHomeFragment();
-                }else{
-                    getActivity().onBackPressed();
-                }
-                break;
-            }
+//            case R.id.image_view_my_products_white_plus:{
+//                if (DashboardActivity.getDashboardActivity().isConnected()
+//                        &&DashboardActivity.getDashboardActivity().getConnectedBeforeCount() == 1){
+//                    DashboardActivity.getDashboardActivity().goHomeFragment();
+//                }else{
+//                    getActivity().onBackPressed();
+//                }
+//                break;
+//            }
         }
 
     }
@@ -180,7 +180,7 @@ public class ConnectedBeforeFragment extends BaseFragment implements View.OnClic
                                 && mBluetoothDevice.getName()!=null
                                 && mBluetoothDevice.getName().toUpperCase().contains(connectedBeforeDevice.deviceName)) {
                             connectedBeforeDevice.a2dpConnected = true;
-                            connectedBeforeGridAdapter.setConnectedBeforeList(lists);
+                            myProductsGridAdapter.setConnectedBeforeList(lists);
                             break;
                         }
                     }

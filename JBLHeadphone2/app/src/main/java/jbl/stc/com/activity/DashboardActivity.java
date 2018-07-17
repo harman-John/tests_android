@@ -30,13 +30,17 @@ import jbl.stc.com.dialog.TutorialAncDialog;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.ConnectedBeforeFragment;
 import jbl.stc.com.fragment.HomeFragment;
+import jbl.stc.com.fragment.HowToPairFragment;
+import jbl.stc.com.fragment.HowToPairNextFragment;
 import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.LegalFragment;
 import jbl.stc.com.fragment.OTAFragment;
+import jbl.stc.com.fragment.ProductHelpFragment;
 import jbl.stc.com.fragment.ProductsListFragment;
 import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.fragment.UnableConnectFragment;
+import jbl.stc.com.fragment.WebViewFragment;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.ota.CheckUpdateAvailable;
@@ -98,7 +102,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private void showConnectedBeforeFragment(){
         stopCircle();
         dashboardHandler.removeMessages(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
-        dashboardHandler.sendEmptyMessage(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
+        dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT,200);
     }
 
     private void showProductLIst() {
@@ -278,10 +282,14 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     return;
                 }
                 if (fr instanceof LegalFragment
-                        || fr instanceof UnableConnectFragment) {
+                        || fr instanceof UnableConnectFragment
+                        || fr instanceof HowToPairFragment
+                        || fr instanceof HowToPairNextFragment
+                        || fr instanceof ProductHelpFragment
+                        || fr instanceof InfoFragment
+                        || fr instanceof WebViewFragment) {
                     super.onBackPressed();
-                } else if (fr instanceof InfoFragment
-                        || fr instanceof ProductsListFragment) {
+                } else if (fr instanceof ProductsListFragment) {
                     super.onBackPressed();
                     if (backStackEntryCount <= 1) {
                         showProductLIst();
@@ -368,7 +376,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                             if (((ConnectedBeforeFragment) fr).getA2dpConnectedDevices() == 1) {
                                 goHomeFragment();
                             } else {
-                                ((ConnectedBeforeFragment) fr).setSpecifiedDevice(getSpecifiedDevice());
+                                ((ConnectedBeforeFragment) fr).setDeviceConnected();
                             }
                         } else {
                             goHomeFragment();
@@ -400,7 +408,10 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     if (fr == null) {
                         switchFragment(new ConnectedBeforeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     } else if (!(fr instanceof ConnectedBeforeFragment)) {
+                        removeAllFragment();
                         switchFragment(new ConnectedBeforeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    }else {
+                        ((ConnectedBeforeFragment)fr).setDeviceDisconnected();
                     }
                 }
             }
