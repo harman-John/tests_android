@@ -1,224 +1,242 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/relative_Layout_home"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/shape_gradient_home_fragment"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/titleBar"
+        android:id="@+id/relative_Layout_home"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_height"
-        android:paddingLeft="@dimen/margin_top_10dp"
-        android:paddingRight="@dimen/margin_top_10dp">
-
-        <jbl.stc.com.view.AppImageView
-            android:id="@+id/image_view_home_info"
-            android:layout_width="@dimen/image_button_width_and_height"
-            android:layout_height="@dimen/image_button_width_and_height"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/icon_setting_normal" />
-
-        <ImageView
-            android:id="@+id/image_view_home_settings"
-            android:layout_width="@dimen/image_button_width_and_height"
-            android:layout_height="@dimen/image_button_width_and_height"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_settings" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_gradient_home_fragment"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text_view_home_device_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/deviceName"
-                android:textColor="#030D1C"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <RelativeLayout
-                android:layout_width="240dp"
-                android:layout_height="240dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="@dimen/margin_top_10dp"
-                android:background="@drawable/shape_dashboard_device_circle"
-                android:clickable="false">
-
-                <ImageView
-                    android:id="@+id/image_view_home_device_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:clickable="false"
-                    android:scaleType="fitCenter"
-                    android:src="@mipmap/everest_elite_150nc_icon" />
-            </RelativeLayout>
-
-            <include
-                layout="@layout/layout_battery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:gravity="center" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:baselineAligned="false"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
-
-                <RelativeLayout
-                    android:id="@+id/relative_layout_home_noise_cancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <CheckBox
-                        android:id="@+id/image_view_home_noise_cancel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:background="@drawable/checkbox_noise_cancel_selector"
-                        android:button="@android:color/transparent" />
-
-                    <jbl.stc.com.view.PoppinsRegularTextView
-                        style="@style/PoppinsRegularTextStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/image_view_home_noise_cancel"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center_horizontal"
-                        android:lineSpacingExtra="-5dp"
-                        android:text="@string/text_noise_canceling"
-                        android:textColor="#5B697E" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/relative_layout_home_ambient_aware"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:visibility="visible">
-
-                    <jbl.stc.com.view.AppImageView
-                        android:id="@+id/image_view_home_ambient_aware"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:src="@drawable/checkbox_ambient_selector" />
-
-                    <jbl.stc.com.view.PoppinsRegularTextView
-                        android:id="@+id/text_view_home_ambient_aware"
-                        style="@style/PoppinsRegularTextStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/image_view_home_ambient_aware"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center_horizontal"
-                        android:text="@string/text_ambient_aware"
-                        android:textColor="#5B697E" />
-                </RelativeLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-
-    </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/relative_layout_home_eq_info"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="@drawable/shape_gradient_eq"
-        android:layout_alignParentBottom="true"
-        android:visibility="visible">
-
         <RelativeLayout
+            android:id="@+id/titleBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="@dimen/page_padding_left"
-            android:paddingRight="@dimen/page_padding_right">
+            android:layout_height="@dimen/title_bar_height"
+            android:paddingLeft="@dimen/margin_top_10dp"
+            android:paddingRight="@dimen/margin_top_10dp">
 
-            <jbl.stc.com.view.PoppinsRegularTextView
-                android:id="@+id/titleEqText"
-                style="@style/PoppinsRegularTextStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <jbl.stc.com.view.AppImageView
+                android:id="@+id/image_view_home_info"
+                android:layout_width="@dimen/image_button_width_and_height"
+                android:layout_height="@dimen/image_button_width_and_height"
+                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:text="@string/title_eq"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
-
-            <View
-                android:id="@+id/eqDividerView"
-                android:layout_width="@dimen/divider_size"
-                android:layout_height="45dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="13dp"
-                android:layout_marginRight="13dp"
-                android:layout_toRightOf="@+id/titleEqText"
-                android:background="@color/white" />
-
-            <jbl.stc.com.view.PoppinsRegularTextView
-                android:id="@+id/text_view_home_eq_name"
-                style="@style/PoppinsRegularTextStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/image_button_width_and_height"
-                android:layout_toRightOf="@+id/eqDividerView"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textSize="20dp"
-                android:text="@string/off"
-                android:textColor="@color/white" />
+                android:src="@mipmap/icon_setting_normal" />
 
             <ImageView
-                android:id="@+id/arrowUpImage"
+                android:id="@+id/image_view_home_settings"
                 android:layout_width="@dimen/image_button_width_and_height"
                 android:layout_height="@dimen/image_button_width_and_height"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:rotation="90"
-                android:src="@mipmap/white_arrow_back" />
-        </RelativeLayout>
-    </FrameLayout>
+                android:src="@mipmap/ic_settings" />
 
-    <View
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_view_home_device_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/deviceName"
+                    android:textColor="#030D1C"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="240dp"
+                    android:layout_height="240dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="@dimen/margin_top_10dp"
+                    android:background="@drawable/shape_dashboard_device_circle"
+                    android:clickable="false">
+
+                    <ImageView
+                        android:id="@+id/image_view_home_device_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:clickable="false"
+                        android:scaleType="fitCenter"
+                        android:src="@mipmap/everest_elite_150nc_icon" />
+                </RelativeLayout>
+
+                <include
+                    layout="@layout/layout_battery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:baselineAligned="false"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:id="@+id/relative_layout_home_noise_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <CheckBox
+                            android:id="@+id/image_view_home_noise_cancel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/checkbox_noise_cancel_selector"
+                            android:button="@android:color/transparent" />
+
+                        <jbl.stc.com.view.PoppinsRegularTextView
+                            style="@style/PoppinsRegularTextStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/image_view_home_noise_cancel"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center_horizontal"
+                            android:lineSpacingExtra="-5dp"
+                            android:text="@string/text_noise_canceling"
+                            android:textColor="#5B697E" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/relative_layout_home_ambient_aware"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <jbl.stc.com.view.AppImageView
+                            android:id="@+id/image_view_home_ambient_aware"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:src="@drawable/checkbox_ambient_selector" />
+
+                        <jbl.stc.com.view.PoppinsRegularTextView
+                            android:id="@+id/text_view_home_ambient_aware"
+                            style="@style/PoppinsRegularTextStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/image_view_home_ambient_aware"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center_horizontal"
+                            android:text="@string/text_ambient_aware"
+                            android:textColor="#5B697E" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/relative_layout_home_eq_info"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/shape_gradient_eq"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/page_padding_left"
+                android:paddingRight="@dimen/page_padding_right">
+
+                <jbl.stc.com.view.PoppinsRegularTextView
+                    android:id="@+id/titleEqText"
+                    style="@style/PoppinsRegularTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/title_eq"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/eqDividerView"
+                    android:layout_width="@dimen/divider_size"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginRight="13dp"
+                    android:layout_toRightOf="@+id/titleEqText"
+                    android:background="@color/white" />
+
+                <jbl.stc.com.view.PoppinsRegularTextView
+                    android:id="@+id/text_view_home_eq_name"
+                    style="@style/PoppinsRegularTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/image_button_width_and_height"
+                    android:layout_toRightOf="@+id/eqDividerView"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="@string/off"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
+
+                <ImageView
+                    android:id="@+id/arrowUpImage"
+                    android:layout_width="@dimen/image_button_width_and_height"
+                    android:layout_height="@dimen/image_button_width_and_height"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:rotation="90"
+                    android:src="@mipmap/white_arrow_back" />
+            </RelativeLayout>
+        </FrameLayout>
+
+
+        <!--<View-->
+        <!--android:id="@+id/view_home_blur"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentTop="true" />-->
+    </RelativeLayout>
+
+    <jbl.stc.com.view.BlurringView
         android:id="@+id/view_home_blur"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        app:blurRadius="11"
+        app:downsampleFactor="6"
+        app:overlayColor="@color/blur_overlay_color"
+        android:visibility="gone"/>
+
 </RelativeLayout>

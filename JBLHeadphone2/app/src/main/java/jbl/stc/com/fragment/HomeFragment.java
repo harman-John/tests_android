@@ -57,6 +57,7 @@ import jbl.stc.com.utils.BlurBuilder;
 import jbl.stc.com.view.AAPopupWindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
+import jbl.stc.com.view.BlurringView;
 import jbl.stc.com.view.SaPopupWindow;
 
 import static java.lang.Integer.valueOf;
@@ -64,7 +65,8 @@ import static java.lang.Integer.valueOf;
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener{
     public static final String TAG = HomeFragment.class.getSimpleName();
-    private View view, mBlurView;
+    private View view;
+    private BlurringView mBlurView;
     private CreateEqTipsDialog createEqTipsDialog;
 
     private HomeHandler homeHandler = new HomeHandler(Looper.getMainLooper());
@@ -98,7 +100,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     private FrameLayout relative_layout_home_eq_info;
     private String deviceName;
     private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
-
+    private View bluredView;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +120,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         textViewDeviceName = view.findViewById(R.id.text_view_home_device_name);
 
         imageViewDevice = view.findViewById(R.id.image_view_home_device_image);
+        bluredView = view.findViewById(R.id.relative_Layout_home);
         relative_layout_home_eq_info = (FrameLayout) view.findViewById(R.id.relative_layout_home_eq_info);
         relative_layout_home_eq_info.setVisibility(View.VISIBLE);
         relative_layout_home_eq_info.setOnClickListener(this);
@@ -291,11 +294,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         showSaPopupWindow(view, null);
     }
     public void showSaPopupWindow(View view, SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
-        if (mBlurView.getBackground() == null) {
-            Bitmap image = BlurBuilder.blur(view);
-            mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
-        }
-
+        mBlurView.setBlurredView(bluredView);
+//        if (mBlurView.getBackground() == null) {
+//            Bitmap image = BlurBuilder.blur(view);
+//            mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
+//        }
+        mBlurView.invalidate();
         mBlurView.setVisibility(View.VISIBLE);
         mBlurView.setAlpha(0f);
         mBlurView.animate().alpha(1f).setDuration(500).setListener(new AnimatorListenerAdapter() {
@@ -322,11 +326,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         }
     };
     public void showAncPopupWindow(View view) {
-        if (mBlurView.getBackground() == null) {
-            Bitmap image = BlurBuilder.blur(view);
-            mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
-        }
-
+//        if (mBlurView.getBackground() == null) {
+//            Bitmap image = BlurBuilder.blur(view);
+//            mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
+//        }
+        mBlurView.setBlurredView(bluredView);
+        mBlurView.invalidate();
         mBlurView.setVisibility(View.VISIBLE);
         mBlurView.setAlpha(0f);
         mBlurView.animate().alpha(1f).setDuration(500).setListener(new AnimatorListenerAdapter() {
