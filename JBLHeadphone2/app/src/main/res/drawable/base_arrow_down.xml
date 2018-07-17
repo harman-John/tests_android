@@ -4,6 +4,6 @@
     android:toDegrees="180"
     android:pivotX="50%"
     android:pivotY="50%"
-    android:drawable="@mipmap/icon_arrow_up">
+    android:drawable="@mipmap/white_arrow_back">
 
 </rotate>

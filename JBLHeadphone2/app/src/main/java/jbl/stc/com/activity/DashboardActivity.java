@@ -34,6 +34,7 @@ import jbl.stc.com.fragment.HowToPairFragment;
 import jbl.stc.com.fragment.HowToPairNextFragment;
 import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.LegalFragment;
+import jbl.stc.com.fragment.MyProductsFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.ProductHelpFragment;
 import jbl.stc.com.fragment.ProductsListFragment;
@@ -281,13 +282,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     Logger.d(TAG, "fr is null " + fr.getClass().getSimpleName());
                     return;
                 }
-                if (fr instanceof LegalFragment
-                        || fr instanceof UnableConnectFragment
-                        || fr instanceof HowToPairFragment
-                        || fr instanceof HowToPairNextFragment
-                        || fr instanceof ProductHelpFragment
-                        || fr instanceof InfoFragment
-                        || fr instanceof WebViewFragment) {
+                if (isBeforeConnectedFragments()) {
                     super.onBackPressed();
                 } else if (fr instanceof ProductsListFragment) {
                     super.onBackPressed();
@@ -302,6 +297,25 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 }
             }
         }
+    }
+
+    private boolean isBeforeConnectedFragments(){
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+        if (fr == null){
+            Log.i(TAG,"fr is null");
+            return false;
+        }
+        if (fr instanceof LegalFragment
+                || fr instanceof UnableConnectFragment
+                || fr instanceof HowToPairFragment
+                || fr instanceof HowToPairNextFragment
+                || fr instanceof ProductHelpFragment
+                || fr instanceof InfoFragment
+                || fr instanceof WebViewFragment
+                || fr instanceof MyProductsFragment){
+            return true;
+        }
+        return false;
     }
 
     private void startCircle() {
@@ -372,10 +386,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                             goHomeFragment();
                         }
                     } else {
-                        if (fr != null && fr instanceof ConnectedBeforeFragment) {
-                            if (((ConnectedBeforeFragment) fr).getA2dpConnectedDevices() == 1) {
-                                goHomeFragment();
-                            } else {
+                        if (isBeforeConnectedFragments()|| fr instanceof ConnectedBeforeFragment) {
+                            if (fr instanceof ConnectedBeforeFragment) {
                                 ((ConnectedBeforeFragment) fr).setDeviceConnected();
                             }
                         } else {

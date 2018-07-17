@@ -20,7 +20,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
             android:contentDescription="TODO"
-            android:src="@mipmap/white_menu" />
+            android:src="@mipmap/white_arrow_back" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -143,11 +143,7 @@ public class MyProductsFragment extends BaseFragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_my_products_white_menu: {
-                InfoFragment infoFragment = new InfoFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(JBLConstant.TYPE_FRAGMENT, MyProductsFragment.TAG);
-                infoFragment.setArguments(bundle);
-                switchFragment(infoFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                getActivity().onBackPressed();
                 break;
             }
 //            case R.id.image_view_my_products_white_plus:{

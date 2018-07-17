@@ -211,7 +211,8 @@
                 android:layout_height="@dimen/image_button_width_and_height"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/icon_arrow_up" />
+                android:rotation="90"
+                android:src="@mipmap/white_arrow_back" />
         </RelativeLayout>
     </FrameLayout>
 
