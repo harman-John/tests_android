@@ -32,7 +32,6 @@ import jbl.stc.com.fragment.ConnectedBeforeFragment;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.LegalFragment;
-import jbl.stc.com.fragment.NewTutorialFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.ProductsListFragment;
 import jbl.stc.com.fragment.SettingsFragment;
@@ -420,6 +419,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             if (tutorialAncDialog == null) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
                 tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
+            }
+            if(!tutorialAncDialog.isShowing()) {
                 tutorialAncDialog.show();
             }
         }

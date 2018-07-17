@@ -4,7 +4,9 @@ import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
@@ -14,22 +16,30 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.avnera.smartdigitalheadset.GraphicEQPreset;
+
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.fragment.EqSettingFragment;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.listener.OnDialogListener;
+import jbl.stc.com.listener.OnEqChangeListener;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.view.EqualizerAddView;
+import jbl.stc.com.view.KeyboardLayout;
+import jbl.stc.com.view.SaPopupwindow;
 
 
-public class TutorialAncDialog extends Dialog implements View.OnClickListener {
+public class TutorialAncDialog extends Dialog implements View.OnClickListener, SaPopupwindow.OnSmartAmbientStatusReceivedListener {
     private OnDialogListener onDialogListener;
 
     private CheckBox checkBoxANC;
@@ -50,6 +60,11 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
     private ImageView imageViewArrowUp;
     private TextView textViewEq;
     private TextView textViewEqGrey;
+    private String modelNumber;
+    private EqualizerAddView mEqAddView;
+    private KeyboardLayout mKeyboardLayout;
+    private FrameLayout tutorialEqualizerLayout;
+    private RelativeLayout mTutorialEqSystemParentLayout;
 
     private final static String TAG =  TutorialAncDialog.class.getSimpleName();
 
@@ -60,6 +75,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
     public TutorialAncDialog(FragmentActivity context) {
         super(context, R.style.AppDialog);
         mActivity = context;
+        modelNumber = AppUtils.getModelNumber(getContext());
         initUI();
     }
 
@@ -67,6 +83,10 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
         setCanceledOnTouchOutside(true);
         setCancelable(true);
         setContentView(R.layout.dialog_tutorial_anc);
+        mKeyboardLayout = findViewById(R.id.tutorial_viewKeyboardLayout);
+        mKeyboardLayout.setOnKeyboardStateChangedListener(onKeyboardStateChangedListener);
+        tutorialEqualizerLayout = findViewById(R.id.tutorial_equalizerLayout);
+        mTutorialEqSystemParentLayout = findViewById(R.id.tutorial_eq_system_parent_layout);
         relativeLayout = findViewById(R.id.relative_layout_tutorial_dialog);
         textViewTips = findViewById(R.id.text_view_tutorial_dialog_tips);
         frameLayoutEqInfo = findViewById(R.id.frame_layout_tutorial_dialog_eq_info);
@@ -83,6 +103,18 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
         relativeLayoutEqGrey = findViewById(R.id.relative_layout_tutorial_dialog_eq_grey);
         textViewEqGrey = findViewById(R.id.text_view_tutorial_dialog_eq_grey);
         textViewEqGrey.setOnClickListener(this);
+        mEqAddView = findViewById(R.id.tutorial_equalizerView);
+        mEqAddView.setOnEqChangeListener(new OnEqChangeListener() {
+            @Override
+            public void onEqValueChanged(int eqIndex, float value) {
+                dismiss();
+            }
+
+            @Override
+            public void onEqDragFinished(float[] pointX, float[] pointY) {
+                dismiss();
+            }
+        });
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
@@ -91,7 +123,6 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
         window.setAttributes(lp);
 
         relativeLayoutNoiceCancel = findViewById(R.id.relative_layout_tutorial_dialog_noise_cancel);
-        String modelNumber = AppUtils.getModelNumber(getContext());
         if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_NOISE_CANCEL)) {
             relativeLayoutNoiceCancel.setVisibility(View.GONE);
         } else {
@@ -101,23 +132,50 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
         }
 
         relativeLayoutAmbientAware = findViewById(R.id.relative_layout_tutorial_dialog_ambient_aware);
-        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_AMBIENT_AWARE)) {
+        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_AMBIENT_AWARE) || isShowOnlyNoiceCancelingType()) {
             relativeLayoutAmbientAware.setVisibility(View.GONE);
         } else {
             relativeLayoutAmbientAware.setVisibility(View.VISIBLE);
             imageViewAbientAware = findViewById(R.id.image_view_tutorial_dialog_ambient_aware);
             imageViewAbientAware.setOnClickListener(this);
             textViewAmbientAware = findViewById(R.id.text_view_tutorial_dialog_ambient_aware);
-            if (modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
-                    || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
-                    || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
+            if (isShowOnlySmartAmbientType()) {
                 textViewAmbientAware.setText(R.string.smart_ambient);
             }
-            relativeLayoutAmbientAware.setVisibility(View.INVISIBLE);
+//            relativeLayoutAmbientAware.setVisibility(View.INVISIBLE);
         }
 
     }
+    private KeyboardLayout.OnKeyboardStateChangedListener onKeyboardStateChangedListener = new KeyboardLayout.OnKeyboardStateChangedListener() {
+        @Override
+        public void onKeyboardStateChanged(int state, int height) {
+            switch (state) {
+                case KeyboardLayout.KEYBOARD_STATE_INIT:
+                    int eqViewHeight = (int) (height - (mActivity.getResources().getDimensionPixelSize(R.dimen.eq_name_edit_layout_height)
+                            + mEqAddView.getMarginTop() + mEqAddView.getMarginBottom()));
+                    RelativeLayout.LayoutParams equalizerParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            eqViewHeight);
+                    Log.d(TAG, "KEYBOARD_STATE_INIT:height=" + eqViewHeight);
+                    tutorialEqualizerLayout.setLayoutParams(equalizerParams);
+                    mEqAddView.setCustomHeight(eqViewHeight);
+                    break;
+                case KeyboardLayout.KEYBOARD_STATE_HIDE:
 
+                    break;
+                case KeyboardLayout.KEYBOARD_STATE_SHOW:
+
+                    break;
+            }
+        }
+    };
+    private boolean isShowOnlySmartAmbientType(){
+        return (modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
+                || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
+                || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA));
+    }
+    private boolean isShowOnlyNoiceCancelingType(){
+        return (modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC));
+    }
     public void setChecked(boolean isChecked){
         if (checkBoxANC!= null){
             checkBoxANC.setChecked(isChecked);
@@ -232,6 +290,15 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
     }
 
     @Override
+    public void onSaStatusReceived(boolean isDaEnable, boolean isTtEnable) {
+        if(isDaEnable){
+            textViewTips.setText(JBLApplication.getJBLApplicationContext().getString(R.string.tutorial_tips_one_live));
+        }else{
+            textViewTips.setText(JBLApplication.getJBLApplicationContext().getString(R.string.tutorial_tips_two_live));
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.image_view_tutorial_dialog_noise_cancel:{
@@ -244,9 +311,16 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
             }
             case R.id.image_view_tutorial_dialog_ambient_aware:{
                 Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (fr != null && fr instanceof HomeFragment){
-                    setTextViewTips(R.string.tutorial_tips_two);
-                    ((HomeFragment)fr).showAncPopupWindow(relativeLayout);
+                if(!isShowOnlySmartAmbientType()) {
+                    if (fr != null && fr instanceof HomeFragment) {
+                        setTextViewTips(R.string.tutorial_tips_two);
+                        ((HomeFragment) fr).showAncPopupWindow(relativeLayout);
+                    }
+                }else{
+                    if (fr != null && fr instanceof HomeFragment) {
+//                        setTextViewTips(R.string.tutorial_tips_two);
+                        ((HomeFragment) fr).showSaPopupWindow(relativeLayout,this);
+                    }
                 }
                 break;
             }
@@ -282,6 +356,13 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener {
                     ((EqSettingFragment)fr).onAddCustomEq(true, false);
                 }
                 setTextViewTips(R.string.tutorial_tips_six);
+                EQModel currSelectedEq  = new EQModel();
+                JBLApplication application = (JBLApplication)mActivity.getApplication();
+                currSelectedEq.id = application.deviceInfo.maxEqId + 1;
+                currSelectedEq.index = application.deviceInfo.maxEqId + 1;
+                currSelectedEq.eqType = GraphicEQPreset.User.value();
+                mEqAddView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.white);
+                mTutorialEqSystemParentLayout.setVisibility(View.VISIBLE);
                 break;
             }
             case R.id.text_view_tutorial_dialog_skip:{

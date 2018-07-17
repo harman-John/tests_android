@@ -22,6 +22,7 @@
                 android:layout_centerInParent="true"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:textColor="@color/smart_audio_popup_text_color1"
                 />
             <ImageView
                 android:id="@+id/aa_popup_close_arrow"
@@ -56,18 +57,22 @@
                 android:orientation="vertical"
                 >
                 <TextView
+                    android:id="@+id/daylight_ambient_tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Daylight Ambient"
                     android:textSize="18sp"
                     android:textStyle="bold"
+                    android:textColor="@color/smart_audio_popup_text_color1"
                     />
 
                 <TextView
+                    android:id="@+id/daylight_ambient_tv_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Activate or de-activate Daylight Smart Ambient feature by single pressing the Smart Ambient Button"
                     android:textSize="16sp"
+                    android:textColor="@color/smart_audio_popup_text_color1"
                     />
 
             </LinearLayout>
@@ -97,18 +102,22 @@
                 android:orientation="vertical"
                 >
                 <TextView
+                    android:id="@+id/talk_through_tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Talk Through"
                     android:textSize="18sp"
                     android:textStyle="bold"
+                    android:textColor="@color/smart_audio_popup_text_color1"
                     />
 
                 <TextView
+                    android:id="@+id/talk_through_tv_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Early catch the conversation by pushing the Smart Ambient Button"
                     android:textSize="16sp"
+                    android:textColor="@color/smart_audio_popup_text_color1"
                     />
 
             </LinearLayout>

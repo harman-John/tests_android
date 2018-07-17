@@ -67,4 +67,10 @@
         <attr name="wave_coreImageRadius" format="integer"/>
         <attr name="wave_width" format="integer"/>
     </declare-styleable>
+    <declare-styleable name="EqualizerAddView">
+        <attr name="show_type">
+            <flag name="normal" value="0" />
+            <flag name="only_line" value="1" />
+        </attr>
+    </declare-styleable>
 </resources>
