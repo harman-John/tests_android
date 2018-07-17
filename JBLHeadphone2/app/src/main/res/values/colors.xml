@@ -68,6 +68,8 @@
     <color name="round_corner_gray_bg">#C4C9CF</color>
     <color name="text_color_bold_gray">#808486</color>
     <color name="text_color_bold_black">#3D403E</color>
+    <color name="smart_audio_popup_text_color1">#4C596B</color>
+    <color name="smart_audio_popup_text_color2">#808486</color>
 
 
 

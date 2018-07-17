@@ -62,7 +62,7 @@ import jbl.stc.com.view.SaPopupWindow;
 import static java.lang.Integer.valueOf;
 
 
-public class HomeFragment extends BaseFragment implements View.OnClickListener {
+public class HomeFragment extends BaseFragment implements View.OnClickListener{
     public static final String TAG = HomeFragment.class.getSimpleName();
     private View view, mBlurView;
     private CreateEqTipsDialog createEqTipsDialog;
@@ -97,6 +97,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout linearLayoutAmbientAware;
     private FrameLayout relative_layout_home_eq_info;
     private String deviceName;
+    private SaPopupwindow.OnSmartAmbientStatusReceivedListener mSaListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -183,6 +184,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 }
             }
         });
+        saPopupwindow.setOnSmartAmbientStatusReceivedListener(nativeSaListener);
     }
 
 
@@ -252,7 +254,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 if (AppUtils.isOldDevice(deviceName)){
                     showAncPopupWindow(view);
                 }else if (AppUtils.isNewDevice(deviceName)){
-                    showSaPopupWindow();
+                    showSaPopupWindow(view);
                 }
                 break;
             }
@@ -282,8 +284,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             ANCControlManager.getANCManager(getActivity()).setANCValue(lightX, false);
         }
     }
-
-    private void showSaPopupWindow() {
+    private void setOnSmartAmbientStatusReceivedListener(SaPopupwindow.OnSmartAmbientStatusReceivedListener listener){
+        this.mSaListener = listener;
+    }
+    private void showSaPopupWindow(View view){
+        showSaPopupWindow(view, null);
+    }
+    public void showSaPopupWindow(View view, SaPopupwindow.OnSmartAmbientStatusReceivedListener listener) {
         if (mBlurView.getBackground() == null) {
             Bitmap image = BlurBuilder.blur(view);
             mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
@@ -300,10 +307,20 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 mBlurView.setAlpha(1f);
             }
         });
-
+        if(listener != null){
+            setOnSmartAmbientStatusReceivedListener(listener);
+        }
         saPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
     }
 
+    private SaPopupwindow.OnSmartAmbientStatusReceivedListener nativeSaListener = new SaPopupwindow.OnSmartAmbientStatusReceivedListener() {
+        @Override
+        public void onSaStatusReceived(boolean isDaEnable, boolean isTtEnable) {
+            if(mSaListener != null){
+                mSaListener.onSaStatusReceived(isDaEnable, isTtEnable);
+            }
+        }
+    };
     public void showAncPopupWindow(View view) {
         if (mBlurView.getBackground() == null) {
             Bitmap image = BlurBuilder.blur(view);

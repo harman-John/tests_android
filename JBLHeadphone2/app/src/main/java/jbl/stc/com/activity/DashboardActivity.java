@@ -442,6 +442,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             if (tutorialAncDialog == null) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
                 tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
+            }
+            if(!tutorialAncDialog.isShowing()) {
                 tutorialAncDialog.show();
             }
         }
