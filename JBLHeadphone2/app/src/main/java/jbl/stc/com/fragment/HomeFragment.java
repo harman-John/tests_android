@@ -54,10 +54,10 @@ import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.BlurBuilder;
-import jbl.stc.com.view.AAPopupwindow;
+import jbl.stc.com.view.AAPopupWindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
-import jbl.stc.com.view.SaPopupwindow;
+import jbl.stc.com.view.SaPopupWindow;
 
 import static java.lang.Integer.valueOf;
 
@@ -90,8 +90,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private CheckBox checkBoxNoiseCancel;
     private LinearLayout linearLayoutBattery;
     private LightX lightX;
-    private AAPopupwindow aaPopupwindow;
-    private SaPopupwindow saPopupwindow;
+    private AAPopupWindow aaPopupWindow;
+    private SaPopupWindow saPopupwindow;
 
     private RelativeLayout linearLayoutNoiseCanceling;
     private RelativeLayout linearLayoutAmbientAware;
@@ -173,7 +173,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void generateSaPopupWindow() {
-        saPopupwindow = new SaPopupwindow(getActivity());
+        saPopupwindow = new SaPopupWindow(getActivity());
         saPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -191,12 +191,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 .getRawStepsByCmd(AvneraManager.getAvenraManager(JBLApplication.getJBLApplicationContext()).getLightX());//get raw steps count of connected device
     }
     private void generateAAPopupWindow(){
-        aaPopupwindow = new AAPopupwindow(getActivity(), lightX);
-        aaPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        aaPopupWindow = new AAPopupWindow(getActivity(), lightX);
+        aaPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 //dismiss blur view
-                aaPopupwindow.setAAOff();
+                aaPopupWindow.setAAOff();
                 if (mBlurView != null) {
                     mBlurView.setVisibility(View.GONE);
                 }
@@ -238,10 +238,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onDetach() {
         super.onDetach();
-        if(aaPopupwindow == null){
+        if(aaPopupWindow == null){
             return;
         }
-        aaPopupwindow.dismiss();
+        aaPopupWindow.dismiss();
     }
 
     @Override
@@ -321,7 +321,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 mBlurView.setAlpha(1f);
             }
         });
-        aaPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
+        aaPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
 
         getAAValue();
     }
@@ -376,14 +376,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 }
                 case MSG_AMBIENT_LEVEL: {
                     //for old devices
-                    aaPopupwindow.updateAAUI(msg.arg1);//AppUtils.levelTransfer(msg.arg1)<---method for new device
+                    aaPopupWindow.updateAAUI(msg.arg1);//AppUtils.levelTransfer(msg.arg1)<---method for new device
                     break;
                 }
                 case MSG_AA_LEFT:
-                    aaPopupwindow.updateAALeft(msg.arg1);
+                    aaPopupWindow.updateAALeft(msg.arg1);
                     break;
                 case MSG_AA_RIGHT:
-                    aaPopupwindow.updateAARight(msg.arg1);
+                    aaPopupWindow.updateAARight(msg.arg1);
                     break;
                 case MSG_CURRENT_PRESET: {
                     updateCurrentEQ(msg.arg1);
@@ -610,10 +610,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case AmCmds.CMD_AmbientLevelingNotification: {
 
-                if (aaPopupwindow == null) {
+                if (aaPopupWindow == null) {
                     return;
                 }
-                aaPopupwindow.updateAAUI(AppUtils.levelTransfer(Integer.valueOf(values.iterator().next().getValue().toString())));//new devices
+                aaPopupWindow.updateAAUI(AppUtils.levelTransfer(Integer.valueOf(values.iterator().next().getValue().toString())));//new devices
             }
             break;
 

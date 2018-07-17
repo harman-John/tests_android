@@ -2,10 +2,8 @@ package jbl.stc.com.view;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.nfc.Tag;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
@@ -28,16 +26,16 @@ import jbl.stc.com.utils.AppUtils;
  * @class describe
  * Created by Wayne on 6/26/18.
  */
-public class AAPopupwindow extends PopupWindow implements View.OnClickListener, AwarenessChangeListener,ANCController.OnSeekArcChangeListener{
+public class AAPopupWindow extends PopupWindow implements View.OnClickListener, AwarenessChangeListener,ANCController.OnSeekArcChangeListener{
 
-    private static final String TAG = AAPopupwindow.class.getSimpleName();
+    private static final String TAG = AAPopupWindow.class.getSimpleName();
     private ANCController ancController;
     private CircularInsideLayout circularInsideLayout;
     private View offBtn, closeBtn;
     private LightX lightX;
     private ANCAwarenessPreset lastsavedAwarenessState;
     private boolean isRequestingLeftANC, isRequestingRightANC;
-    public AAPopupwindow(Context context, LightX lightX) {
+    public AAPopupWindow(Context context, LightX lightX) {
         super(context);
         this.lightX = lightX;
         init(context);

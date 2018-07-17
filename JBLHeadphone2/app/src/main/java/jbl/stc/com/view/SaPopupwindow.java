@@ -10,9 +10,9 @@ import android.widget.PopupWindow;
 import jbl.stc.com.R;
 
 
-public class SaPopupwindow extends PopupWindow implements View.OnClickListener{
+public class SaPopupWindow extends PopupWindow implements View.OnClickListener{
 
-    public SaPopupwindow(Context context) {
+    public SaPopupWindow(Context context) {
         super(context);
         init(context);
 
