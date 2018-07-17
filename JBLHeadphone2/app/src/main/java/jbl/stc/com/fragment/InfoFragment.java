@@ -84,7 +84,8 @@ public class InfoFragment extends BaseFragment implements View.OnClickListener {
                 if (!DashboardActivity.getDashboardActivity().isConnected()){
                     getActivity().onBackPressed();
                 }else{
-                    switchFragment(new ConnectedBeforeFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    MyProductsFragment myProductsFragment = new MyProductsFragment();
+                    switchFragment(myProductsFragment,JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 }
                 break;
             }

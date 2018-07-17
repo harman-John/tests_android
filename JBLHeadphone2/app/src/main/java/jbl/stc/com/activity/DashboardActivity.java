@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.RelativeLayout;
 
 
@@ -35,7 +34,6 @@ import jbl.stc.com.fragment.HowToPairFragment;
 import jbl.stc.com.fragment.HowToPairNextFragment;
 import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.LegalFragment;
-import jbl.stc.com.fragment.NewTutorialFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.ProductHelpFragment;
 import jbl.stc.com.fragment.ProductsListFragment;
@@ -104,7 +102,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private void showConnectedBeforeFragment(){
         stopCircle();
         dashboardHandler.removeMessages(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
-        dashboardHandler.sendEmptyMessage(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT);
+        dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_CONNECTED_BEFORE_FRAGMENT,200);
     }
 
     private void showProductLIst() {
@@ -234,7 +232,6 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
         } else {
             if (getConnectedBeforeCount() >= 1){
-                removeAllFragment();
                 showConnectedBeforeFragment();
             }else {
                 dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
@@ -379,7 +376,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                             if (((ConnectedBeforeFragment) fr).getA2dpConnectedDevices() == 1) {
                                 goHomeFragment();
                             } else {
-                                ((ConnectedBeforeFragment) fr).setSpecifiedDevice(getSpecifiedDevice());
+                                ((ConnectedBeforeFragment) fr).setDeviceConnected();
                             }
                         } else {
                             goHomeFragment();
@@ -411,7 +408,10 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     if (fr == null) {
                         switchFragment(new ConnectedBeforeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     } else if (!(fr instanceof ConnectedBeforeFragment)) {
+                        removeAllFragment();
                         switchFragment(new ConnectedBeforeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    }else {
+                        ((ConnectedBeforeFragment)fr).setDeviceDisconnected();
                     }
                 }
             }
