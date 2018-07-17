@@ -97,7 +97,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     private RelativeLayout linearLayoutAmbientAware;
     private FrameLayout relative_layout_home_eq_info;
     private String deviceName;
-    private SaPopupwindow.OnSmartAmbientStatusReceivedListener mSaListener;
+    private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -284,13 +284,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             ANCControlManager.getANCManager(getActivity()).setANCValue(lightX, false);
         }
     }
-    private void setOnSmartAmbientStatusReceivedListener(SaPopupwindow.OnSmartAmbientStatusReceivedListener listener){
+    private void setOnSmartAmbientStatusReceivedListener(SaPopupWindow.OnSmartAmbientStatusReceivedListener listener){
         this.mSaListener = listener;
     }
     private void showSaPopupWindow(View view){
         showSaPopupWindow(view, null);
     }
-    public void showSaPopupWindow(View view, SaPopupwindow.OnSmartAmbientStatusReceivedListener listener) {
+    public void showSaPopupWindow(View view, SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
         if (mBlurView.getBackground() == null) {
             Bitmap image = BlurBuilder.blur(view);
             mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
@@ -313,7 +313,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         saPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
     }
 
-    private SaPopupwindow.OnSmartAmbientStatusReceivedListener nativeSaListener = new SaPopupwindow.OnSmartAmbientStatusReceivedListener() {
+    private SaPopupWindow.OnSmartAmbientStatusReceivedListener nativeSaListener = new SaPopupWindow.OnSmartAmbientStatusReceivedListener() {
         @Override
         public void onSaStatusReceived(boolean isDaEnable, boolean isTtEnable) {
             if(mSaListener != null){

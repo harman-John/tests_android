@@ -15,13 +15,13 @@ import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.activity.JBLApplication;
 
 
-public class SaPopupwindow extends PopupWindow implements View.OnClickListener {
+public class SaPopupWindow extends PopupWindow implements View.OnClickListener {
 
     private OnSmartAmbientStatusReceivedListener mListener;
     private ImageView mDaImg, mTtImg;
     private TextView mDaTvTitle, mTtTvTitle, mDaTvDetail, mTtTvDetail;
 
-    public SaPopupwindow(Context context) {
+    public SaPopupWindow(Context context) {
         super(context);
         init(context);
     }

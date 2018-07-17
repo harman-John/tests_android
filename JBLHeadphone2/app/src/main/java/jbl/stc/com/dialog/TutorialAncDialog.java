@@ -30,16 +30,15 @@ import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.listener.OnEqChangeListener;
 import jbl.stc.com.logger.Logger;
-import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.view.EqualizerAddView;
 import jbl.stc.com.view.KeyboardLayout;
-import jbl.stc.com.view.SaPopupwindow;
+import jbl.stc.com.view.SaPopupWindow;
 
 
-public class TutorialAncDialog extends Dialog implements View.OnClickListener, SaPopupwindow.OnSmartAmbientStatusReceivedListener {
+public class TutorialAncDialog extends Dialog implements View.OnClickListener, SaPopupWindow.OnSmartAmbientStatusReceivedListener {
     private OnDialogListener onDialogListener;
 
     private CheckBox checkBoxANC;
