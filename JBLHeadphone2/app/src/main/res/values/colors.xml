@@ -70,6 +70,7 @@
     <color name="text_color_bold_black">#3D403E</color>
     <color name="smart_audio_popup_text_color1">#4C596B</color>
     <color name="smart_audio_popup_text_color2">#808486</color>
+    <color name="blur_overlay_color">#994C596B</color>
 
 
 
