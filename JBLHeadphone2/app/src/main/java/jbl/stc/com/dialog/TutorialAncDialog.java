@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -64,6 +67,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     private KeyboardLayout mKeyboardLayout;
     private FrameLayout tutorialEqualizerLayout;
     private RelativeLayout mTutorialEqSystemParentLayout;
+    private ImageView tripleUpArrow;
 
     private final static String TAG =  TutorialAncDialog.class.getSimpleName();
 
@@ -103,6 +107,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         textViewEqGrey = findViewById(R.id.text_view_tutorial_dialog_eq_grey);
         textViewEqGrey.setOnClickListener(this);
         mEqAddView = findViewById(R.id.tutorial_equalizerView);
+        tripleUpArrow = findViewById(R.id.eq_tutorial_triple_up_arrows_img);
         mEqAddView.setOnEqChangeListener(new OnEqChangeListener() {
             @Override
             public void onEqValueChanged(int eqIndex, float value) {
@@ -297,6 +302,11 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         }
     }
 
+    private void showTripleArrowsAnimation(){
+        final Animation tripleArrowsAnim = AnimationUtils.loadAnimation(JBLApplication.getJBLApplicationContext(), R.anim.anim_triple_up_arrow);
+        tripleUpArrow.setAnimation(tripleArrowsAnim);
+        tripleUpArrow.setVisibility(View.VISIBLE);
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -324,6 +334,9 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                 break;
             }
             case R.id.frame_layout_tutorial_dialog_eq_info:{
+//                repeatTrippleArrowAnim = false;
+                tripleUpArrow.clearAnimation();
+                tripleUpArrow.setVisibility(View.GONE);
                 Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr == null ){
                     Logger.i(TAG,"fr is null");
@@ -345,6 +358,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                 if (relativeLayoutAdd!=null){
                     relativeLayoutAdd.setVisibility(View.GONE);
                 }
+
                 Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr == null ){
                     Logger.i(TAG,"fr is null");
@@ -380,6 +394,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                     ((HomeFragment)fr).setEqMenuColor(true);
                 }
                 setTextViewTips(R.string.tutorial_tips_four);
+                showTripleArrowsAnimation();
                 break;
             }
         }
