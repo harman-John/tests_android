@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/eq_panel_background"
@@ -29,10 +31,12 @@
             android:src="@mipmap/icon_arrow_down_eq" />
     </RelativeLayout>
 
-    <ScrollView
+
+    <jbl.stc.com.view.CustomScrollView
+        android:id="@+id/scrollview"
         android:layout_below="@id/titleBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:scrollbars="vertical"
         >
         <LinearLayout
@@ -42,7 +46,7 @@
             >
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
@@ -91,12 +95,13 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:text="Custom"
                 />
+
             <jbl.stc.com.view.EqGridView
                 android:id="@+id/eqGridView"
                 android:layout_width="240dp"
@@ -110,21 +115,65 @@
                 android:verticalSpacing="20dp"
                 android:listSelector="@android:color/transparent"
                 android:numColumns="2"
-                android:overScrollMode="never"
-                android:scrollbars="none" />
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:scrollbars="none"
+                app:drag_last_position="true"
+                app:drag_scale="1.00"
+                app:drag_start_position="0"
+                app:scale_mill="200"
+                app:vibrator="true"
+                />
+
         </LinearLayout>
 
-    </ScrollView>
+    </jbl.stc.com.view.CustomScrollView>
+
+
 
 
     <ImageView
         android:id="@+id/iv_remove"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@mipmap/eq_delete"
+        android:visibility="gone"
+        />
+
+    <jbl.stc.com.view.EqArcView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:src="@mipmap/icon_remove_eq"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
         />
+
+
+    <!--<jbl.stc.com.view.EqGridView-->
+        <!--android:layout_above="@id/iv_remove"-->
+        <!--android:layout_below="@id/titleBar"-->
+        <!--android:id="@+id/eqGridView"-->
+        <!--android:layout_width="240dp"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:layout_marginBottom="20dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:background="@color/transparent"-->
+        <!--android:horizontalSpacing="20dp"-->
+        <!--android:verticalSpacing="20dp"-->
+        <!--android:listSelector="@android:color/transparent"-->
+        <!--android:numColumns="2"-->
+        <!--android:scrollbars="none"-->
+        <!--app:drag_last_position="true"-->
+        <!--app:drag_scale="1.05"-->
+        <!--app:drag_start_position="0"-->
+        <!--app:scale_mill="200"-->
+        <!--app:vibrator="true"-->
+        <!--/>-->
+
+
 
 
 </RelativeLayout>

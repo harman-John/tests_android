@@ -4,24 +4,25 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.entity.EQModel;
+import jbl.stc.com.view.DragGridView;
+import jbl.stc.com.view.EqGridView;
 
-public class EqGridViewAdapter extends BaseAdapter {
-    private static final String TAG = EqNameGridAdapter.class.getSimpleName();
+public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGridBaseAdapter{
+    private static final String TAG = EqGridViewAdapter.class.getSimpleName();
     private List<EQModel> eqModels = new ArrayList<>();
-    private List<String> eqIndexs=new ArrayList<>();
-    public void setEqModels(List<EQModel> models) {
+    public int mHidePosition = -1;
+     public void setEqModels(List<EQModel> models) {
         this.eqModels.clear();
         this.eqModels.addAll(models);
         notifyDataSetChanged();
-    }
-    public List<String> getEqIndexs(){
-        return  eqIndexs;
     }
     @Override
     public int getCount() {
@@ -52,29 +53,50 @@ public class EqGridViewAdapter extends BaseAdapter {
         }
         final EQModel eqModel =eqModels.get(position);
         viewHolder.tv_eqname.setText(eqModel.eqName);
-        viewHolder.tv_eqname.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (eqModel.isSelected){
-                    eqModel.isSelected=false;
-                    viewHolder.tv_eqname.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_normal);
-                    if (eqIndexs.contains(String.valueOf(position))){
-                        eqIndexs.remove(String.valueOf(position));
-                    }
-                }else{
-                    eqModel.isSelected=true;
-                    viewHolder.tv_eqname.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_selected);
-                    if (!eqIndexs.contains(String.valueOf(position))){
-                        eqIndexs.add(String.valueOf(position));
-                    }
-                }
+        //隐藏被拖动的
+        if (position == mHidePosition) {
+            convertView.setVisibility(View.INVISIBLE);
+        } else {
+            convertView.setVisibility(View.VISIBLE);
+        }
 
-            }
-        });
         return convertView;
+    }
+
+    @Override
+    public void reorderItems(int oldPosition, int newPosition) {
+         if(oldPosition < 0) return;
+
+        EQModel eqModel = eqModels.get(oldPosition);
+        if (oldPosition < newPosition) {
+            for (int i = oldPosition; i < newPosition; i++) {
+                Collections.swap(eqModels, i, i + 1);
+            }
+        } else if (oldPosition > newPosition) {
+            for (int i = oldPosition; i > newPosition; i--) {
+                Collections.swap(eqModels, i, i - 1);
+            }
+        }
+
+        eqModels.set(newPosition, eqModel);
+    }
+
+    @Override
+    public void setHideItem(int hidePosition) {
+        mHidePosition = hidePosition;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void deleteItem(int deletePosition) {
+        if (null != eqModels && deletePosition < eqModels.size()) {
+            eqModels.remove(deletePosition);
+            notifyDataSetChanged();
+        }
     }
 
     private class ViewHolder{
       private TextView  tv_eqname;
+      private ImageView image_view;
     }
 }

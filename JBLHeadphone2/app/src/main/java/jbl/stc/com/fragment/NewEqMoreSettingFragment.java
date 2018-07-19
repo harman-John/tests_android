@@ -2,11 +2,16 @@ package jbl.stc.com.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.ScrollView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +23,19 @@ import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.EQSettingManager;
+import jbl.stc.com.view.CustomScrollView;
+import jbl.stc.com.view.DragGridView;
 import jbl.stc.com.view.EqGridView;
 
 public class NewEqMoreSettingFragment extends BaseFragment implements View.OnClickListener{
 
-
+    private CustomScrollView mScrollView;
     private ImageView closeImageView;
     private ImageView iv_remove;
     private EqGridView eqGridView;
     private EqGridViewAdapter adapter;
     private List<EQModel> eqModelList=new ArrayList<>();
-    private static final String TAG = EqNameGridAdapter.class.getSimpleName();
+    private static final String TAG = NewEqMoreSettingFragment.class.getSimpleName();
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_eq_more_setting_new, container, false);
@@ -41,12 +48,21 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
     private void initView() {
         closeImageView = (ImageView) rootView.findViewById(R.id.closeImageView);
         iv_remove=(ImageView)rootView.findViewById(R.id.iv_remove);
-        eqGridView=(EqGridView)rootView.findViewById(R.id.eqGridView);
-        adapter=new EqGridViewAdapter();
+        eqGridView=(EqGridView) rootView.findViewById(R.id.eqGridView);
+        mScrollView = rootView.findViewById(R.id.scrollview);
+        eqGridView.setScrollView(mScrollView);
+        eqGridView.setMIvRemove(iv_remove);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int heigth = dm.heightPixels;
+        int width = dm.widthPixels;
+        Logger.d(TAG,"height:"+String.valueOf(heigth));
+
+
     }
     private void initEvent() {
         iv_remove.setOnClickListener(this);
         closeImageView.setOnClickListener(this);
+
     }
     private void initValue() {
         eqModelList= EQSettingManager.get().getCompleteEQList(mContext);
@@ -56,9 +72,23 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
             }
         }
         Logger.d(TAG,"size:"+eqModelList.size());
+        /*eqGridView.setLayoutManager(new GridLayoutManager(getActivity(), 2){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+
+            @Override
+            public boolean canScrollHorizontally() {
+                return super.canScrollHorizontally();
+            }
+        });*/
+        adapter=new EqGridViewAdapter();
         adapter.setEqModels(eqModelList);
         eqGridView.setAdapter(adapter);
+
     }
+
 
     @Override
     public void onClick(View v) {
@@ -66,7 +96,7 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
             case R.id.closeImageView:
                 getActivity().onBackPressed();
                 break;
-            case R.id.iv_remove:
+            /*case R.id.iv_remove:
                 List<String> eqIndexs=adapter.getEqIndexs();
                 if (eqIndexs!=null&&eqIndexs.size()>0){
                     for (int i=0;i<eqIndexs.size();i++){
@@ -75,9 +105,10 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
                     }
                     initValue();
                 }
-                break;
+                break;*/
         }
 
 
     }
+
 }
