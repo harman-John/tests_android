@@ -53,7 +53,7 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
         }, 67, textViewTipsOne.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textViewTipsOne.setText(spannableString);
         textViewTipsOne.setMovementMethod(LinkMovementMethod.getInstance());
-        view.findViewById(R.id.image_view_pro_white_menu).setOnClickListener(this);
+        view.findViewById(R.id.image_view_pro_white_back).setOnClickListener(this);
         view.findViewById(R.id.image_view_pro_live_650).setOnClickListener(this);
         view.findViewById(R.id.image_view_pro_live_500).setOnClickListener(this);
         view.findViewById(R.id.image_view_pro_live_400).setOnClickListener(this);
@@ -77,8 +77,8 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
     public void onClick(View v) {
         Bundle bundle = new Bundle();
         switch (v.getId()){
-            case R.id.image_view_pro_white_menu:{
-                switchFragment(new InfoFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            case R.id.image_view_pro_white_back:{
+                getActivity().onBackPressed();
                 return;
             }
             case R.id.image_view_pro_live_650:{

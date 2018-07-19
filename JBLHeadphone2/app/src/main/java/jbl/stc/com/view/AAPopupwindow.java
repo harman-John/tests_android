@@ -62,9 +62,6 @@ public class AAPopupWindow extends PopupWindow implements View.OnClickListener, 
         ancController.setOnSeekArcChangeListener(this);
         offBtn.setOnClickListener(this);
         closeBtn.setOnClickListener(this);
-
-
-
     }
 
     @Override

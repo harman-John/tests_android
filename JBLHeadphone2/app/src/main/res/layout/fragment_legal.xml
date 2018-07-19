@@ -18,7 +18,7 @@
             android:layout_height="45dp"
             android:layout_centerVertical="true"
             android:visibility="visible"
-            android:src="@mipmap/ic_back"
+            android:src="@mipmap/black_arrow_back"
             />
 
         <TextView

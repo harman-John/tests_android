@@ -15,6 +15,8 @@ public class JBLConstant {
     public static final int MAX_MARQUEE_LEN = 30;
     public static final int THUMB_TOUCH_FACTOR = 50;
 
+    public static final String KEY_HALF_CONNECTED = "key_half_connected";
+
 
     public static String PRIVACY_POLICY_URL = "https://www.harman.com/privacy-policy";
     public static String OPEN_SOURCE_URL = "file:///android_asset/OpenSource.txt";
@@ -51,7 +53,7 @@ public class JBLConstant {
     public static final String DEVICE_EVEREST_ELITE_150NC = "EVEREST ELITE 150NC";
     public static final String DEVICE_EVEREST_ELITE_300 = "EVEREST ELITE 300";
     public static final String DEVICE_EVEREST_ELITE_700 = "EVEREST ELITE 700";
-    public static final String DEVICE_EVEREST_ELITE_750NC = "EVEREST ELITE 750NC";
+    public static final String DEVICE_EVEREST_ELITE_750NC = "JBL EVEREST ELITE 750NC";
 
     public static final String DEVICE_LIVE_400BT = "LIVE 400BT";
     public static final String DEVICE_LIVE_500BT = "LIVE 500BT";

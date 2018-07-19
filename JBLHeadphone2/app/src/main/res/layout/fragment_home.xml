@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:focusable="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,12 +21,12 @@
             android:paddingRight="@dimen/margin_top_10dp">
 
             <jbl.stc.com.view.AppImageView
-                android:id="@+id/image_view_home_info"
+                android:id="@+id/image_view_home_back"
                 android:layout_width="@dimen/image_button_width_and_height"
                 android:layout_height="@dimen/image_button_width_and_height"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/icon_setting_normal" />
+                android:src="@mipmap/black_arrow_back" />
 
             <ImageView
                 android:id="@+id/image_view_home_settings"
@@ -134,12 +136,12 @@
                         android:orientation="vertical"
                         android:visibility="visible">
 
-                        <jbl.stc.com.view.AppImageView
+                        <ImageView
                             android:id="@+id/image_view_home_ambient_aware"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
-                            android:src="@drawable/checkbox_ambient_selector" />
+                            android:background="@drawable/checkbox_ambient_selector" />
 
                         <jbl.stc.com.view.PoppinsRegularTextView
                             android:id="@+id/text_view_home_ambient_aware"

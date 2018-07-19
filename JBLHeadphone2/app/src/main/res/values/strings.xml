@@ -175,4 +175,7 @@
     <string name="how_to_pair_tips_next_one">Go to your Bluetooth list and connect JBL Headphones. Come back to the app when headphones connected.</string>
 
     <string name="go_to_bluetooth">Go to Bluetooth</string>
+
+
+    <string name="my_products_tips">Currently no products in the list\nyet,tap + in the right top to\nadd your product.</string>
 </resources>

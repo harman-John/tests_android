@@ -5,140 +5,75 @@
     android:background="@drawable/shape_gradient_discovery">
 
     <RelativeLayout
-        android:id="@+id/rl_title"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_height"
-        android:paddingLeft="@dimen/margin_top_10dp"
-        android:paddingRight="@dimen/margin_top_10dp"
-        >
-        <jbl.stc.com.view.AppImageView
-            android:id="@+id/image_view_discovery_menu_info"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_alignParentLeft="true"
-            android:src="@mipmap/white_menu" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/relative_layout_discovery"
-        android:layout_below="@id/rl_title"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="fill_parent"
+        android:background="@drawable/shape_gradient_discovery"
+        android:clickable="true"
+        android:clipChildren="false"
+        android:focusable="true"
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/relative_layout_discovery_animation"
+            android:id="@+id/relative_layout_dashboard_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <jbl.stc.com.view.JblCircleView
-                android:id="@+id/jbl_circle_view_dashboard"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true" />
+            android:layout_height="@dimen/title_bar_height"
+            android:background="@color/red_discovery">
 
             <ImageView
-                android:id="@+id/image_view_dashboard_logo"
+                android:id="@+id/image_view_dashboard_white_menu"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="TODO"
+                android:src="@mipmap/white_menu" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@mipmap/jbl_logo" />
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/my_products"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/image_view_dashboard_white_plus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:background="@mipmap/white_plus" />
+
         </RelativeLayout>
 
-        <!--<LinearLayout-->
-            <!--android:id="@+id/linear_layout_discovery_tips"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:paddingTop="30dp"-->
-            <!--android:paddingStart="30dp"-->
-            <!--android:orientation="vertical">-->
-
-            <!--<TextView-->
-                <!--style="@android:style/TextAppearance.Large"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:gravity="left"-->
-                <!--android:text="@string/not_found_title"-->
-                <!--android:textColor="@android:color/white"-->
-                <!--android:textSize="20sp"-->
-                <!--android:textStyle="bold" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/text_view_discovery_advice_one"-->
-                <!--style="@android:style/TextAppearance.Large"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="28dp"-->
-                <!--android:gravity="left"-->
-                <!--android:text="@string/advice_one"-->
-                <!--android:textColor="@android:color/white"-->
-                <!--android:textSize="@dimen/txtHelp" />-->
-
-            <!--<TextView-->
-                <!--style="@android:style/TextAppearance.Large"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="@dimen/transparentStrokeWidth"-->
-                <!--android:gravity="left"-->
-                <!--android:text="@string/advice_two"-->
-                <!--android:textColor="@android:color/white"-->
-                <!--android:textSize="@dimen/txtHelp" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/text_view_discovery_advice_three"-->
-                <!--style="@android:style/TextAppearance.Large"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="@dimen/transparentStrokeWidth"-->
-                <!--android:gravity="left"-->
-                <!--android:text="@string/advice_three"-->
-                <!--android:textColor="@android:color/white"-->
-                <!--android:textSize="@dimen/txtHelp" />-->
-
-            <!--<TextView-->
-                <!--style="@android:style/TextAppearance.Large"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="@dimen/transparentStrokeWidth"-->
-                <!--android:gravity="left"-->
-                <!--android:text="@string/advice_four"-->
-                <!--android:textColor="@android:color/white"-->
-                <!--android:textSize="@dimen/txtHelp" />-->
-
-            <!--<TextView-->
-                <!--style="@android:style/TextAppearance.Large"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="@dimen/transparentStrokeWidth"-->
-                <!--android:gravity="left"-->
-                <!--android:text="@string/advice_five"-->
-                <!--android:textColor="@android:color/white"-->
-                <!--android:textSize="@dimen/txtHelp" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/text_view_discovery_try_again"-->
-                <!--style="@android:style/TextAppearance.Large"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="center_horizontal"-->
-                <!--android:layout_marginTop="60dp"-->
-                <!--android:background="@drawable/rectangle_with_round_corner_grey"-->
-                <!--android:paddingBottom="9dp"-->
-                <!--android:paddingLeft="70dp"-->
-                <!--android:paddingRight="70dp"-->
-                <!--android:paddingTop="9dp"-->
-                <!--android:text="@string/try_again"-->
-                <!--android:textColor="@color/orange_discovery"-->
-                <!--android:textSize="16sp" />-->
-        <!--</LinearLayout>-->
-
+        <TextView
+            android:id="@+id/text_view_dashboard_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="148dp"
+            android:text="@string/my_products_tips"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+        <GridView
+            android:id="@+id/grid_view_dashboard"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@id/relative_layout_dashboard_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:numColumns="1" />
     </RelativeLayout>
 
     <FrameLayout
-    android:id="@+id/containerLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+        android:id="@+id/containerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 </RelativeLayout>

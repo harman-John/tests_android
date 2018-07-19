@@ -23,13 +23,13 @@
             android:paddingRight="@dimen/margin_top_10dp">
 
             <ImageView
-                android:id="@+id/image_view_pro_white_menu"
+                android:id="@+id/image_view_pro_white_back"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"
                 android:contentDescription="TODO"
-                android:src="@mipmap/white_menu" />
+                android:src="@mipmap/white_arrow_back" />
 
         </RelativeLayout>
 
