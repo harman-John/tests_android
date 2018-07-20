@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
@@ -38,10 +37,10 @@ import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.view.EqualizerAddView;
 import jbl.stc.com.view.KeyboardLayout;
-import jbl.stc.com.view.SaPopupWindow;
+import jbl.stc.com.view.SmartAmbientPopupWindow;
 
 
-public class TutorialAncDialog extends Dialog implements View.OnClickListener, SaPopupWindow.OnSmartAmbientStatusReceivedListener {
+public class TutorialAncDialog extends Dialog implements View.OnClickListener, SmartAmbientPopupWindow.OnSmartAmbientStatusReceivedListener {
     private OnDialogListener onDialogListener;
 
     private CheckBox checkBoxANC;

@@ -57,7 +57,7 @@ import jbl.stc.com.view.AaPopupWindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.view.BlurringView;
-import jbl.stc.com.view.SaPopupWindow;
+import jbl.stc.com.view.SmartAmbientPopupWindow;
 
 import static java.lang.Integer.valueOf;
 
@@ -92,13 +92,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private LinearLayout linearLayoutBattery;
     private LightX lightX;
     private AaPopupWindow aaPopupWindow;
-    private SaPopupWindow saPopupwindow;
+    private SmartAmbientPopupWindow smartAmbientPopupwindow;
 
     private RelativeLayout linearLayoutNoiseCanceling;
     private RelativeLayout linearLayoutAmbientAware;
     private FrameLayout relative_layout_home_eq_info;
     private String deviceName;
-    private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
+    private SmartAmbientPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
     private View bluredView;
     private MyDevice myDevice;
 
@@ -189,8 +189,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void generateSaPopupWindow() {
-        saPopupwindow = new SaPopupWindow(getActivity());
-        saPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        smartAmbientPopupwindow = new SmartAmbientPopupWindow(getActivity());
+        smartAmbientPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 //dismiss blur view
@@ -199,7 +199,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 }
             }
         });
-        saPopupwindow.setOnSmartAmbientStatusReceivedListener(nativeSaListener);
+        smartAmbientPopupwindow.setOnSmartAmbientStatusReceivedListener(nativeSaListener);
     }
 
 
@@ -309,7 +309,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
-    private void setOnSmartAmbientStatusReceivedListener(SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
+    private void setOnSmartAmbientStatusReceivedListener(SmartAmbientPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
         this.mSaListener = listener;
     }
 
@@ -317,7 +317,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         showSaPopupWindow(view, null);
     }
 
-    public void showSaPopupWindow(View view, SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
+    public void showSaPopupWindow(View view, SmartAmbientPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
         mBlurView.setBlurredView(bluredView);
 //        if (mBlurView.getBackground() == null) {
 //            Bitmap image = BlurBuilder.blur(view);
@@ -338,10 +338,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         if (listener != null) {
             setOnSmartAmbientStatusReceivedListener(listener);
         }
-        saPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
+        smartAmbientPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
     }
 
-    private SaPopupWindow.OnSmartAmbientStatusReceivedListener nativeSaListener = new SaPopupWindow.OnSmartAmbientStatusReceivedListener() {
+    private SmartAmbientPopupWindow.OnSmartAmbientStatusReceivedListener nativeSaListener = new SmartAmbientPopupWindow.OnSmartAmbientStatusReceivedListener() {
         @Override
         public void onSaStatusReceived(boolean isDaEnable, boolean isTtEnable) {
             if (mSaListener != null) {
