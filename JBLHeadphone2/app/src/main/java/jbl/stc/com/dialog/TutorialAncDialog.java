@@ -37,10 +37,10 @@ import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.view.EqualizerAddView;
 import jbl.stc.com.view.KeyboardLayout;
-import jbl.stc.com.view.SmartAmbientPopupWindow;
+import jbl.stc.com.view.SaPopupWindow;
 
 
-public class TutorialAncDialog extends Dialog implements View.OnClickListener, SmartAmbientPopupWindow.OnSmartAmbientStatusReceivedListener {
+public class TutorialAncDialog extends Dialog implements View.OnClickListener, SaPopupWindow.OnSmartAmbientStatusReceivedListener {
     private OnDialogListener onDialogListener;
 
     private CheckBox checkBoxANC;

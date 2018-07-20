@@ -53,11 +53,11 @@ import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.view.AmbientAwarePopupWindow;
+import jbl.stc.com.view.AaPopupWindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.view.BlurringView;
-import jbl.stc.com.view.SmartAmbientPopupWindow;
+import jbl.stc.com.view.SaPopupWindow;
 
 import static java.lang.Integer.valueOf;
 
@@ -91,14 +91,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private CheckBox checkBoxNoiseCancel;
     private LinearLayout linearLayoutBattery;
     private LightX lightX;
-    private AmbientAwarePopupWindow ambientAwarePopupWindow;
-    private SmartAmbientPopupWindow smartAmbientPopupwindow;
+    private AaPopupWindow aaPopupWindow;
+    private SaPopupWindow saPopupwindow;
 
     private RelativeLayout linearLayoutNoiseCanceling;
     private RelativeLayout linearLayoutAmbientAware;
     private FrameLayout relative_layout_home_eq_info;
     private String deviceName;
-    private SmartAmbientPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
+    private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
     private View bluredView;
     private MyDevice myDevice;
 
@@ -189,8 +189,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void generateSaPopupWindow() {
-        smartAmbientPopupwindow = new SmartAmbientPopupWindow(getActivity());
-        smartAmbientPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        saPopupwindow = new SaPopupWindow(getActivity());
+        saPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 //dismiss blur view
@@ -199,7 +199,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 }
             }
         });
-        smartAmbientPopupwindow.setOnSmartAmbientStatusReceivedListener(nativeSaListener);
+        saPopupwindow.setOnSmartAmbientStatusReceivedListener(nativeSaListener);
     }
 
 
@@ -209,12 +209,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void generateAAPopupWindow() {
-        ambientAwarePopupWindow = new AmbientAwarePopupWindow(getActivity(), lightX);
-        ambientAwarePopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        aaPopupWindow = new AaPopupWindow(getActivity(), lightX);
+        aaPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 //dismiss blur view
-                ambientAwarePopupWindow.setAAOff();
+                aaPopupWindow.setAAOff();
                 if (mBlurView != null) {
                     mBlurView.setVisibility(View.GONE);
                 }
@@ -259,10 +259,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onDetach() {
         super.onDetach();
-        if (ambientAwarePopupWindow == null) {
+        if (aaPopupWindow == null) {
             return;
         }
-        ambientAwarePopupWindow.dismiss();
+        aaPopupWindow.dismiss();
     }
 
     @Override
@@ -309,7 +309,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
-    private void setOnSmartAmbientStatusReceivedListener(SmartAmbientPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
+    private void setOnSmartAmbientStatusReceivedListener(SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
         this.mSaListener = listener;
     }
 
@@ -317,7 +317,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         showSaPopupWindow(view, null);
     }
 
-    public void showSaPopupWindow(View view, SmartAmbientPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
+    public void showSaPopupWindow(View view, SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
         mBlurView.setBlurredView(bluredView);
 //        if (mBlurView.getBackground() == null) {
 //            Bitmap image = BlurBuilder.blur(view);
@@ -338,10 +338,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         if (listener != null) {
             setOnSmartAmbientStatusReceivedListener(listener);
         }
-        smartAmbientPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
+        saPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
     }
 
-    private SmartAmbientPopupWindow.OnSmartAmbientStatusReceivedListener nativeSaListener = new SmartAmbientPopupWindow.OnSmartAmbientStatusReceivedListener() {
+    private SaPopupWindow.OnSmartAmbientStatusReceivedListener nativeSaListener = new SaPopupWindow.OnSmartAmbientStatusReceivedListener() {
         @Override
         public void onSaStatusReceived(boolean isDaEnable, boolean isTtEnable) {
             if (mSaListener != null) {
@@ -368,7 +368,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 mBlurView.setAlpha(1f);
             }
         });
-        ambientAwarePopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
+        aaPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
 
         getAAValue();
     }
@@ -423,14 +423,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 }
                 case MSG_AMBIENT_LEVEL: {
                     //for old devices
-                    ambientAwarePopupWindow.updateAAUI(msg.arg1);//AppUtils.levelTransfer(msg.arg1)<---method for new device
+                    aaPopupWindow.updateAAUI(msg.arg1);//AppUtils.levelTransfer(msg.arg1)<---method for new device
                     break;
                 }
                 case MSG_AA_LEFT:
-                    ambientAwarePopupWindow.updateAALeft(msg.arg1);
+                    aaPopupWindow.updateAALeft(msg.arg1);
                     break;
                 case MSG_AA_RIGHT:
-                    ambientAwarePopupWindow.updateAARight(msg.arg1);
+                    aaPopupWindow.updateAARight(msg.arg1);
                     break;
                 case MSG_CURRENT_PRESET: {
                     updateCurrentEQ(msg.arg1);
@@ -657,10 +657,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case AmCmds.CMD_AmbientLevelingNotification: {
 
-                if (ambientAwarePopupWindow == null) {
+                if (aaPopupWindow == null) {
                     return;
                 }
-                ambientAwarePopupWindow.updateAAUI(AppUtils.levelTransfer(Integer.valueOf(values.iterator().next().getValue().toString())));//new devices
+                aaPopupWindow.updateAAUI(AppUtils.levelTransfer(Integer.valueOf(values.iterator().next().getValue().toString())));//new devices
             }
             break;
 
