@@ -1,6 +1,7 @@
 package jbl.stc.com.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -12,6 +13,9 @@ import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.entity.EQModel;
+import jbl.stc.com.manager.EQSettingManager;
+import jbl.stc.com.storage.PreferenceKeys;
+import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.view.DragGridView;
 import jbl.stc.com.view.EqGridView;
 
@@ -19,6 +23,7 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
     private static final String TAG = EqGridViewAdapter.class.getSimpleName();
     private List<EQModel> eqModels = new ArrayList<>();
     public int mHidePosition = -1;
+    private Context context;
      public void setEqModels(List<EQModel> models) {
         this.eqModels.clear();
         this.eqModels.addAll(models);
@@ -42,17 +47,25 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder viewHolder;
-        Context context = parent.getContext();
+        context = parent.getContext();
+        String curEqName= PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, context, "");
         if (convertView == null) {
             convertView = View.inflate(context, R.layout.item_eq_more_setting_grid, null);
             viewHolder = new ViewHolder();
             viewHolder.tv_eqname = (TextView) convertView.findViewById(R.id.tv_eqname);
+            viewHolder.image_view=(ImageView) convertView.findViewById(R.id.image_view);
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         final EQModel eqModel =eqModels.get(position);
         viewHolder.tv_eqname.setText(eqModel.eqName);
+        if (!TextUtils.isEmpty(curEqName)&&curEqName.equals(eqModel.eqName)){
+            viewHolder.image_view.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_selected);
+        }else{
+            viewHolder.image_view.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_normal);
+        }
         //隐藏被拖动的
         if (position == mHidePosition) {
             convertView.setVisibility(View.INVISIBLE);
@@ -90,6 +103,7 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
     @Override
     public void deleteItem(int deletePosition) {
         if (null != eqModels && deletePosition < eqModels.size()) {
+            EQSettingManager.get().deleteEQ(eqModels.get(deletePosition).eqName,context);
             eqModels.remove(deletePosition);
             notifyDataSetChanged();
         }

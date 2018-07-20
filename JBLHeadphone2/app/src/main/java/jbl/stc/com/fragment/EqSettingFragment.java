@@ -53,6 +53,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private RelativeLayout rl_eq_view;
     private LinearLayout linearLayout;
 
+
     private List<EQModel> eqModelList = new ArrayList<>();
     private EQModel currSelectedEq;
     private int currSelectedEqIndex;

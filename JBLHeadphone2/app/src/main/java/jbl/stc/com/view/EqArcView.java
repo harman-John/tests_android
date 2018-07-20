@@ -1,6 +1,8 @@
 package jbl.stc.com.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,13 +15,16 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 
+import jbl.stc.com.R;
 import jbl.stc.com.utils.UiUtils;
 
 public class EqArcView extends View{
 
 
+    private int radius;
     private Paint paint;
     private int screenHeight,screenWidth;
+    private Bitmap bitmap;
     public EqArcView(Context context) {
         super(context);
         init();
@@ -44,17 +49,32 @@ public class EqArcView extends View{
         screenHeight = dm.heightPixels;
         screenWidth =dm.widthPixels;
         Log.d("cyx","screeheight:"+screenHeight+"screenWidth:"+screenWidth);
+        bitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.eq_delete);
+
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        radius = width > height ? width /2 : height / 2;
 
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        RectF rect1 = new RectF(screenWidth- UiUtils.dip2px(getContext(),80), screenHeight-UiUtils.dip2px(getContext(),80), screenWidth, screenHeight);
-        canvas.drawArc(rect1, 0, 90, true, paint);
+        //RectF rect1 = new RectF(screenWidth- UiUtils.dip2px(getContext(),80), screenHeight-UiUtils.dip2px(getContext(),80), screenWidth, screenHeight);
+        //canvas.drawArc(rect1, 0, 90, true, paint);
 
         //canvas.drawRect(screenWidth- UiUtils.dip2px(getContext(),80), screenHeight-UiUtils.dip2px(getContext(),80), screenWidth, screenHeight,paint);
-        Log.d("cyx","StartX:"+(screenWidth- UiUtils.dip2px(getContext(),80))+"StartY:"+(screenHeight-UiUtils.dip2px(getContext(),80)+"EndX:"+screenWidth+"EndY:"+screenHeight));
+        //Log.d("cyx","StartX:"+(screenWidth- UiUtils.dip2px(getContext(),80))+"StartY:"+(screenHeight-UiUtils.dip2px(getContext(),80)+"EndX:"+screenWidth+"EndY:"+screenHeight));
+        //canvas.drawCircle();
 
+        canvas.drawCircle(radius,radius,radius,paint);
+
+        canvas.drawBitmap(bitmap,radius/2-bitmap.getWidth()/4,radius/2-bitmap.getHeight()/4,paint);
     }
 }

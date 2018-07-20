@@ -60,14 +60,17 @@
                 >
 
                 <TextView
+                    android:id="@+id/tv_jazz"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
                     android:text="@string/jazz"
                     android:gravity="center"
+                    android:textSize="16sp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="20dp"
                     android:background="@drawable/shape_circle_eq_name_bg_normal" />
                 <TextView
+                    android:id="@+id/tv_vocal"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
                     android:text="@string/vocal"
@@ -84,6 +87,7 @@
                 >
 
                 <TextView
+                    android:id="@+id/tv_bass"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
                     android:text="@string/bass"
@@ -143,10 +147,13 @@
         />
 
     <jbl.stc.com.view.EqArcView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/eqArcView"
+        android:layout_width="@dimen/eq_trash_circle_diameter"
+        android:layout_height="@dimen/eq_trash_circle_diameter"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/eq_trash_circle_margin"
+        android:layout_marginRight="@dimen/eq_trash_circle_margin"
         android:visibility="gone"
         />
 

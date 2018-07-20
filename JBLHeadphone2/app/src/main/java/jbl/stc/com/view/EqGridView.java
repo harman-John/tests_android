@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
@@ -30,6 +31,7 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -39,6 +41,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.utils.UiUtils;
@@ -46,13 +49,8 @@ import jbl.stc.com.utils.UiUtils;
 
 public class EqGridView extends GridView {
     public static final String TAG = EqGridView.class.getSimpleName();
-    /**
-     * DragGridView的item长按响应的时间， 默认是1000毫秒，也可以自行设置
-     */
-    private long dragResponseMS = 3000;
 
     private CustomScrollView mScrollView;
-
     /**
      * 是否可以拖拽，默认不可以
      */
@@ -83,7 +81,6 @@ public class EqGridView extends GridView {
      * 用于拖拽的镜像，这里直接放入拖动的 Image
      */
     private FrameLayout mDragLayout;
-
     /**
      * 震动器
      */
@@ -172,12 +169,11 @@ public class EqGridView extends GridView {
 
     private boolean mIsVibrator = false;
 
-    private int marginTopHeight=0;
-    private int screenHeight=0;
-    private int screenWidth=0;
-    private int mRawX,mRawY;
-    private ImageView mIvRemove;
-    private List<EQModel> mEqModels=new ArrayList<>();
+    private int marginTopHeight = 0;
+    private int screenHeight = 0;
+    private int screenWidth = 0;
+    private int mRawX, mRawY;
+    private View mEqArcView;
 
     public EqGridView(Context context) {
         this(context, null);
@@ -197,10 +193,10 @@ public class EqGridView extends GridView {
         mIsVibrator = typedArray.getBoolean(R.styleable.DragGridView_vibrator, false);
         typedArray.recycle();
 
-        marginTopHeight=UiUtils.dip2px(getContext(),340);
+        marginTopHeight = UiUtils.dip2px(getContext(), 340);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenHeight = dm.heightPixels;
-        screenWidth =dm.widthPixels;
+        screenWidth = dm.widthPixels;
 
         if (!isInEditMode()) {
             mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -214,20 +210,15 @@ public class EqGridView extends GridView {
 
     }
 
-    public void setScrollView(CustomScrollView scrollView){
+    public void setScrollView(CustomScrollView scrollView) {
         mScrollView = scrollView;
     }
 
-    public void setMIvRemove(ImageView ivRemove){
-            mIvRemove=ivRemove;
-    }
-
-    public void setMEqModels(List<EQModel> eqModels){
-        mEqModels=eqModels;
+    public void setmEqArcView(View eqArcView) {
+        mEqArcView = eqArcView;
     }
 
     private Handler mHandler = new Handler();
-
 
     @Override
     public void setAdapter(ListAdapter adapter) {
@@ -307,15 +298,6 @@ public class EqGridView extends GridView {
         mViewHeight = b - t;
     }
 
-    /**
-     * 设置响应拖拽的毫秒数，默认是1000毫秒
-     *
-     * @param dragResponseMS
-     */
-    public void setDragResponseMS(long dragResponseMS) {
-        this.dragResponseMS = dragResponseMS;
-    }
-
     public boolean setOnItemLongClickListener(final MotionEvent ev) {
         //Logger.d(TAG,"onItemLongClick");
         this.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -323,7 +305,7 @@ public class EqGridView extends GridView {
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int arg2, long arg3) {
 
-                Logger.d(TAG,"FirstVisiblePosition:"+getFirstVisiblePosition());
+                Logger.d(TAG, "FirstVisiblePosition:" + getFirstVisiblePosition());
                 // 根据position获取该item所对应的View
                 mStartDragItemView = getChildAt(mDragPosition - getFirstVisiblePosition());
                 //mStartDragItemView.findViewById(R.id.image_view_select).setVisibility(View.VISIBLE);
@@ -335,22 +317,22 @@ public class EqGridView extends GridView {
                 mPoint2ItemTop = mRawY - mStartDragItemView.getTop();
                 mPoint2ItemLeft = mDownX - mStartDragItemView.getLeft();
 
-                Logger.d(TAG,"mPoint2ItemTop:"+mPoint2ItemTop+"mPoint2ItemLeft:"+mOffset2Left+"mStartDragItemView.Top:"+mStartDragItemView.getTop());
+                Logger.d(TAG, "mPoint2ItemTop:" + mPoint2ItemTop + "mPoint2ItemLeft:" + mOffset2Left + "mStartDragItemView.Top:" + mStartDragItemView.getTop());
 
                 mOffset2Top = (int) (ev.getRawY() - mDownY);
                 mOffset2Left = (int) (ev.getRawX() - mDownX);
 
-                Logger.d(TAG,"mOffset2Top:"+mOffset2Top+"mOffset2Left:"+mOffset2Left);
+                Logger.d(TAG, "mOffset2Top:" + mOffset2Top + "mOffset2Left:" + mOffset2Left);
 
 
-                Logger.d(TAG,"getHeight():"+getHeight()+"screenHeigth:"+screenHeight+"screenWidth:"+screenWidth);
+                Logger.d(TAG, "getHeight():" + getHeight() + "screenHeigth:" + screenHeight + "screenWidth:" + screenWidth);
 
                 // 获取DragGridView自动向上滚动的偏移量，小于这个值，DragGridView向下滚动
                 //mDownScrollBorder = getHeight() / 5;
                 // 获取DragGridView自动向下滚动的偏移量，大于这个值，DragGridView向上滚动
                 mDownScrollBorder = 50;
-                mUpScrollBorder = screenHeight * 4 / 5 - 95 ;
-                Logger.d(TAG,"mDownScrollBorder:"+mDownScrollBorder+"mUpScrollBorder:"+mUpScrollBorder);
+                mUpScrollBorder = screenHeight * 4 / 5 - 95;
+                Logger.d(TAG, "mDownScrollBorder:" + mDownScrollBorder + "mUpScrollBorder:" + mUpScrollBorder);
 
                 // 开启mDragItemView绘图缓存
                 //mStartDragItemView.setDrawingCacheEnabled(true);
@@ -362,19 +344,21 @@ public class EqGridView extends GridView {
                 // 这一步很关键，释放绘图缓存，避免出现重复的镜像
                 //mStartDragItemView.destroyDrawingCache();
 
-
-
-
                 isDrag = true; // 设置可以拖拽
                 if (mIsVibrator) mVibrator.vibrate(50); // 震动一下
                 mStartDragItemView.setVisibility(View.INVISIBLE);// 隐藏该item
                 mScrollView.setScrollStop(true);
                 // 根据我们按下的点显示item镜像
-                createDragImage(mDragBitmap, mDownX, mDownY,mRawX,mRawY,140);
-                mIvRemove.setVisibility(View.VISIBLE);
-                mIvRemove.setImageResource(R.mipmap.eq_delete);
+                createDragImage(mDragBitmap, mDownX, mDownY, mRawX, mRawY, 140);
+                mEqArcView.setVisibility(View.VISIBLE);
+                Animation scaleOn = AnimationUtils.loadAnimation(JBLApplication.getJBLApplicationContext(), R.anim.anim_scale_on);
+                mEqArcView.setAnimation(scaleOn);
+
+
                 return false;
-            };
+            }
+
+            ;
         });
         return super.onInterceptTouchEvent(ev);
     }
@@ -387,6 +371,7 @@ public class EqGridView extends GridView {
         }
         return super.onInterceptTouchEvent(ev);
     }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
@@ -394,12 +379,12 @@ public class EqGridView extends GridView {
                 mDownX = (int) ev.getX();
                 mDownY = (int) ev.getY();
                 mRawX = (int) ev.getRawX();
-                mRawY =(int) ev.getRawY();
-                Logger.d(TAG,"mDownX:"+String.valueOf(mDownX)+"mDownY:"+String.valueOf(mDownY));
-                Logger.d(TAG,"mRawX:"+String.valueOf(ev.getRawX())+"mRawY:"+String.valueOf(ev.getRawY()));
+                mRawY = (int) ev.getRawY();
+                Logger.d(TAG, "mDownX:" + String.valueOf(mDownX) + "mDownY:" + String.valueOf(mDownY));
+                Logger.d(TAG, "mRawX:" + String.valueOf(ev.getRawX()) + "mRawY:" + String.valueOf(ev.getRawY()));
                 // 根据按下的X,Y坐标获取所点击item的position
                 mDragPosition = pointToPosition(mDownX, mDownY);
-                Logger.d(TAG,"mDragPosition:"+mDragPosition);
+                Logger.d(TAG, "mDragPosition:" + mDragPosition);
                 //如果是前mDragStartPosition不执行长按
                 if (mDragPosition < mDragStartPosition) {
                     return super.dispatchTouchEvent(ev);
@@ -413,20 +398,14 @@ public class EqGridView extends GridView {
                     return super.dispatchTouchEvent(ev);
                 }
 
-                // 使用Handler延迟dragResponseMS执行mLongClickRunnable
-                //mHandler.postDelayed(mLongClickRunnable, dragResponseMS);
-
-
                 break;
             case MotionEvent.ACTION_MOVE:
                 int moveX = (int) ev.getX();
                 int moveY = (int) ev.getY();
-
-                // 如果我们在按下的item上面移动，只要不超过item的边界我们就不移除mRunnable
                 if (!isTouchInItem(mStartDragItemView, moveX, moveY)) {
-                //    Logger.d(TAG,"notInTouch");
-                }else{
-                //    Logger.d(TAG,"InTouch");
+                    //    Logger.d(TAG,"notInTouch");
+                } else {
+                    //    Logger.d(TAG,"InTouch");
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -472,9 +451,9 @@ public class EqGridView extends GridView {
                     mRawX = (int) ev.getRawX();
                     mRawY = (int) ev.getRawY();
 
-                    Logger.d(TAG,"TouchEvent rawX:"+mRawX+"TouchEvent rawY:"+mRawY);
+                    Logger.d(TAG, "TouchEvent rawX:" + mRawX + "TouchEvent rawY:" + mRawY);
                     // 拖动item
-                    onDragItem(moveX, moveY ,mRawX ,mRawY);
+                    onDragItem(moveX, moveY, mRawX, mRawY);
                     break;
                 case MotionEvent.ACTION_UP:
                     onStopDrag((int) ev.getX(), (int) ev.getY());
@@ -494,7 +473,7 @@ public class EqGridView extends GridView {
      * @param downX  按下的点相对父控件的X坐标
      * @param downY  按下的点相对父控件的X坐标
      */
-    private void createDragImage(Bitmap bitmap, int downX, int downY ,int rawX ,int rawY,int size) {
+    private void createDragImage(Bitmap bitmap, int downX, int downY, int rawX, int rawY, int size) {
         mWindowLayoutParams = new WindowManager.LayoutParams();
         mWindowLayoutParams.format = PixelFormat.TRANSLUCENT; // 图片之外的其他地方透明
         mWindowLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;
@@ -502,35 +481,34 @@ public class EqGridView extends GridView {
         //mWindowLayoutParams.y = (int) (downY - mPoint2ItemTop * mDragScale + mOffset2Top - mStatusHeight);
 
         mWindowLayoutParams.x = (int) (downX - mPoint2ItemLeft * mDragScale + mOffset2Left);
-        mWindowLayoutParams.y = (int) (rawY- mPoint2ItemTop * mDragScale + mOffset2Top - mStatusHeight);
+        mWindowLayoutParams.y = (int) (rawY - mPoint2ItemTop * mDragScale + mOffset2Top - mStatusHeight);
 
-        Logger.d(TAG,"createDragImage.x:"+mWindowLayoutParams.x+"createDragImage.y"+mWindowLayoutParams.y+"rawY:"+rawY);
+        Logger.d(TAG, "createDragImage.x:" + mWindowLayoutParams.x + "createDragImage.y" + mWindowLayoutParams.y + "rawY:" + rawY);
 
         mWindowLayoutParams.alpha = 1.0f; // 透明度
         //mWindowLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         //mWindowLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         //mWindowLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         //mWindowLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        mWindowLayoutParams.width = UiUtils.dip2px(getContext(),size);
-        mWindowLayoutParams.height = UiUtils.dip2px(getContext(),size);
+        mWindowLayoutParams.width = UiUtils.dip2px(getContext(), size);
+        mWindowLayoutParams.height = UiUtils.dip2px(getContext(), size);
         mWindowLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
 
-        WindowManager.LayoutParams layoutParams=new WindowManager.LayoutParams();
-        layoutParams.gravity=Gravity.CENTER;
-        TextView textView=(mStartDragItemView.findViewById(R.id.tv_eqname));
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.gravity = Gravity.CENTER;
+        TextView textView = (mStartDragItemView.findViewById(R.id.tv_eqname));
         mDragImageView = new ImageView(getContext());
         mDragImageView.setImageBitmap(bitmap);
         mDragImageView.setBackgroundResource(R.drawable.drag_bubble);
         mDragImageView.setLayoutParams(layoutParams);
-        mDragTextView =new TextView(getContext());
+        mDragTextView = new TextView(getContext());
         mDragTextView.setText(textView.getText().toString());
         mDragTextView.setGravity(Gravity.CENTER);
         mDragTextView.setLayoutParams(layoutParams);
         mDragLayout = new FrameLayout(getContext());
         mDragLayout.addView(mDragImageView);
         mDragLayout.addView(mDragTextView);
-
         mWindowManager.addView(mDragLayout, mWindowLayoutParams);
 
     }
@@ -543,22 +521,21 @@ public class EqGridView extends GridView {
             mWindowManager.removeView(mDragLayout);
             mDragLayout = null;
             mDragImageView = null;
-            mDragTextView =null;
+            mDragTextView = null;
         }
     }
 
-    private boolean IsDeleteArea(int x, int y){
+    private boolean IsDeleteArea(int x, int y) {
 
-        int deleteIconSize = UiUtils.dip2px(getContext(),25);
+        int deleteIconSize = UiUtils.dip2px(getContext(), 25);
         int eqIconSize = UiUtils.dip2px(getContext(), 110);
-        Logger.d(TAG,"deleteIconSize:"+ (screenWidth - deleteIconSize - eqIconSize ) +"removeIcon centerY:"+(screenHeight-UiUtils.dip2px(getContext(),25) - eqIconSize));
+        Logger.d(TAG, "deleteIconSize:" + (screenWidth - deleteIconSize - eqIconSize) + "removeIcon centerY:" + (screenHeight - UiUtils.dip2px(getContext(), 25) - eqIconSize));
         if (y > (screenHeight - deleteIconSize - eqIconSize + 130) &&
-                x > screenWidth - deleteIconSize - eqIconSize + 130){
+                x > screenWidth - deleteIconSize - eqIconSize + 130) {
             return true;
         }
         return false;
         /*int deleteIconSize = UiUtils.dip2px(getContext(),25);
-
         Logger.d(TAG,"deleteIconSize:"+ (deleteIconSize) +"removeIcon centerY:"+(screenHeight-UiUtils.dip2px(getContext(),25)));
         if (y > (screenHeight - deleteIconSize ) && x > (screenWidth - deleteIconSize)){
             return true;
@@ -570,17 +547,15 @@ public class EqGridView extends GridView {
     /**
      * 拖动item，在里面实现了item镜像的位置更新，item的相互交换以及GridView的自行滚动
      */
-    private void onDragItem(int moveX, int moveY ,int rawX, int rawY) {
+    private void onDragItem(int moveX, int moveY, int rawX, int rawY) {
         /*mWindowLayoutParams.x = moveX - mPoint2ItemLeft + mOffset2Left;
         mWindowLayoutParams.y = moveY - mPoint2ItemTop + mOffset2Top - mStatusHeight;
-
         mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置*/
-
         mWindowLayoutParams.x = (int) (moveX - mPoint2ItemLeft + mOffset2Left);
-        mWindowLayoutParams.y = (int) (rawY- mPoint2ItemTop + mOffset2Top - mStatusHeight);
+        mWindowLayoutParams.y = (int) (rawY - mPoint2ItemTop + mOffset2Top - mStatusHeight);
         mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
 
-        Logger.d(TAG,"onDragItem  x:"+mWindowLayoutParams.x+"onDragItem y:"+mWindowLayoutParams.y);
+        Logger.d(TAG, "onDragItem  x:" + mWindowLayoutParams.x + "onDragItem y:" + mWindowLayoutParams.y);
 
         onSwapItem(moveX, moveY);
 
@@ -588,63 +563,33 @@ public class EqGridView extends GridView {
 
         int currentY = mRawY;
         int currentX = mRawX;
-        int deleteIconSize = UiUtils.dip2px(getContext(),25);
+        int deleteIconSize = UiUtils.dip2px(getContext(), 25);
         int eqIconSize = UiUtils.dip2px(getContext(), 110);
-        if (!(currentX > screenWidth - deleteIconSize - eqIconSize + 130)){
-            // GridView自动滚动
+        if (!(currentX > screenWidth - deleteIconSize - eqIconSize + 130)) {
+            // ScrollView自动滚动
             mHandler.post(mScrollRunnable);
-
         }
 
         System.out.println("--Bright---RY-->" + currentY + "---RX---->" + currentX);
-        if (IsDeleteArea(currentX,currentY)){
-
-            Logger.d(TAG,"IsDeleteArea:True");
-
-            mIvRemove.setVisibility(View.VISIBLE);
-            mIvRemove.setImageResource(R.mipmap.icon_remove_eq);
+        if (IsDeleteArea(currentX, currentY)) {
+            Logger.d(TAG, "IsDeleteArea:True");
             //startScaleAnimation();
 
-        }else {
-            Logger.d(TAG,"IsDeleteArea:false");
-            mIvRemove.setVisibility(View.VISIBLE);
-            mIvRemove.setImageResource(R.mipmap.eq_delete);
-            mDragImageView.clearAnimation();
-            mIsScaleAnima=false;
-            mWindowLayoutParams.width = UiUtils.dip2px(getContext(),140);
-            mWindowLayoutParams.height = UiUtils.dip2px(getContext(),140);
-            mDragLayout.setLayoutParams(mWindowLayoutParams);
-        }
-
-        /*if (moveY > (mViewHeight)) {
-            if (mIsVibrator) mVibrator.vibrate(50);
-            //缩小
-            if (!mIsScaleAnima) {
-                ScaleAnimation scaleAnim = new ScaleAnimation(1.0f, .5f, 1.0f, .5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                TranslateAnimation translateAnim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.25f);
-                AnimationSet anim = new AnimationSet(false);
-                anim.addAnimation(scaleAnim);
-                anim.addAnimation(translateAnim);
-                anim.setDuration(mScaleMill);
-                anim.setFillAfter(true);
-
-                mDragImageView.clearAnimation();
-                mDragImageView.startAnimation(anim);
-                mIsScaleAnima = true;
-
-            }
         } else {
-            if (mIsScaleAnima) {
-
-                mDragImageView.clearAnimation();
-                mIsScaleAnima = false;
-            }
-        }*/
+            Logger.d(TAG, "IsDeleteArea:false");
+            //mDragImageView.clearAnimation();
+            /*mWindowLayoutParams.width = UiUtils.dip2px(getContext(), 140);
+            mWindowLayoutParams.height = UiUtils.dip2px(getContext(), 140);
+            mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
+            mIsScaleAnima = false;*/
+        }
     }
 
-    private void startScaleAnimation() {
-        if (!mIsScaleAnima){
-            ScaleAnimation scaleAnim = new ScaleAnimation(1.0f, 0.5f, 1.0f, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+    private int oldWith = 140;
+    private int oldHeight = 140;
+    private void startScaleAnimation(int dValue) {
+        if (!mIsScaleAnima) {
+            /*ScaleAnimation scaleAnim = new ScaleAnimation(1.0f, 0.5f, 1.0f, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             TranslateAnimation translateAnim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.25f);
             AnimationSet anim = new AnimationSet(false);
             anim.addAnimation(scaleAnim);
@@ -652,18 +597,16 @@ public class EqGridView extends GridView {
             anim.setDuration(mScaleMill);
             anim.setFillAfter(true);
             mDragImageView.clearAnimation();
-            mDragImageView.startAnimation(anim);
-            mIsScaleAnima=true;
-            mWindowLayoutParams.width = UiUtils.dip2px(getContext(),70);
-            mWindowLayoutParams.height = UiUtils.dip2px(getContext(),70);
-            mDragLayout.setLayoutParams(mWindowLayoutParams);
+            mDragImageView.startAnimation(anim);*/
+            mWindowLayoutParams.width = UiUtils.dip2px(getContext(), oldWith-=dValue);
+            mWindowLayoutParams.height = UiUtils.dip2px(getContext(), oldHeight-=dValue);
+            mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
+            mIsScaleAnima = true;
         }
     }
 
-
-
     /**
-     * 当moveY的值大于向上滚动的边界值，触发GridView自动向上滚动 当moveY的值小于向下滚动的边界值，触发GridView自动向下滚动
+     * 当moveY的值大于向上滚动的边界值，触发ScrollView自动向上滚动 当moveY的值小于向下滚动的边界值，触发ScrollView自动向下滚动
      * 否则不进行滚动
      */
     private Runnable mScrollRunnable = new Runnable() {
@@ -671,12 +614,12 @@ public class EqGridView extends GridView {
         @Override
         public void run() {
             int scrollY;
-            Logger.d(TAG,"mScrollView Y:"+mScrollView.getScrollY());
+            Logger.d(TAG, "mScrollView Y:" + mScrollView.getScrollY());
             if (getFirstVisiblePosition() == 0 || getLastVisiblePosition() == getCount() - 1) {
                 mHandler.removeCallbacks(mScrollRunnable);
             }
 
-            int currentY= mRawY - mPoint2ItemTop + mOffset2Top - mStatusHeight;
+            int currentY = mRawY - mPoint2ItemTop + mOffset2Top - mStatusHeight;
 
             if (currentY > mUpScrollBorder) {
                 scrollY = speed;
@@ -689,11 +632,10 @@ public class EqGridView extends GridView {
                 mHandler.removeCallbacks(mScrollRunnable);
             }
 
-            Logger.d(TAG,"currentY:"+currentY+"---scrollY:"+scrollY+"-----mUpScrollBorder:"+mUpScrollBorder+"-----mDownScrollBorder:"+mDownScrollBorder);
+            Logger.d(TAG, "currentY:" + currentY + "---scrollY:" + scrollY + "-----mUpScrollBorder:" + mUpScrollBorder + "-----mDownScrollBorder:" + mDownScrollBorder);
             mScrollView.smoothScrollBy(0, scrollY);
         }
     };
-
 
 
     /**
@@ -705,7 +647,7 @@ public class EqGridView extends GridView {
     private void onSwapItem(int moveX, int moveY) {
         // 获取我们手指移动到的那个item的position
         final int tempPosition = pointToPosition(moveX, moveY);
-        Logger.d(TAG,"tempPosition:"+tempPosition+"mDragStartPosition:"+mDragStartPosition);
+        Logger.d(TAG, "tempPosition:" + tempPosition + "mDragStartPosition:" + mDragStartPosition);
 
         //如果是前mDragStartPosition位不交换
         if (tempPosition < mDragStartPosition) {
@@ -830,23 +772,20 @@ public class EqGridView extends GridView {
         }
         mDragAdapter.setHideItem(-1);
         removeDragImage();
-        Logger.d(TAG,"moveY:"+String.valueOf(moveY)+"mViewHeight:"+String.valueOf(mViewHeight));
-        /*if (moveY > (mViewHeight)) {
-            mIsScaleAnima = false;
-            mDragAdapter.deleteItem(mDragPosition);
-            mIvRemove.setVisibility(View.GONE);
-        }*/
-        int currentY=mRawY;
-        int currentX=mRawX;
-        if (IsDeleteArea(currentX,currentY)){
+        Logger.d(TAG, "moveY:" + String.valueOf(moveY) + "mViewHeight:" + String.valueOf(mViewHeight));
+        int currentY = mRawY;
+        int currentX = mRawX;
+        if (IsDeleteArea(currentX, currentY)) {
             if (mIsVibrator) mVibrator.vibrate(50);
             mIsScaleAnima = false;
             mDragAdapter.deleteItem(mDragPosition);
         }
         mScrollView.setScrollStop(false);
-        mIvRemove.setVisibility(View.GONE);
         mStartDragItemView.findViewById(R.id.image_view_select).setVisibility(View.GONE);
         mStartDragItemView.findViewById(R.id.image_view).setVisibility(View.VISIBLE);
+        Animation scaleOff = AnimationUtils.loadAnimation(JBLApplication.getJBLApplicationContext(), R.anim.anim_scale_off);
+        mEqArcView.setAnimation(scaleOff);
+        mEqArcView.setVisibility(View.GONE);
     }
 
     /**

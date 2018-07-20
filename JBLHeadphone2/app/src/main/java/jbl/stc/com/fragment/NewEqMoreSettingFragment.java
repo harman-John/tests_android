@@ -3,6 +3,7 @@ package jbl.stc.com.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +25,11 @@ import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.EQSettingManager;
+import jbl.stc.com.storage.PreferenceKeys;
+import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.view.CustomScrollView;
 import jbl.stc.com.view.DragGridView;
+import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.EqGridView;
 
 public class NewEqMoreSettingFragment extends BaseFragment implements View.OnClickListener{
@@ -35,6 +40,8 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
     private EqGridView eqGridView;
     private EqGridViewAdapter adapter;
     private List<EQModel> eqModelList=new ArrayList<>();
+    private EqArcView mEqArcView;
+    private TextView tv_jazz,tv_vocal,tv_bass;
     private static final String TAG = NewEqMoreSettingFragment.class.getSimpleName();
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,17 +53,28 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
         return rootView;
     }
     private void initView() {
+        String curEqName=PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, "");
+        tv_jazz=(TextView)rootView.findViewById(R.id.tv_jazz);
+        tv_vocal=(TextView)rootView.findViewById(R.id.tv_vocal);
+        tv_bass=(TextView) rootView.findViewById(R.id.tv_bass);
+        if (!TextUtils.isEmpty(curEqName)&&curEqName.equals(getResources().getString(R.string.jazz))){
+            tv_jazz.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_selected);
+        }else if (!TextUtils.isEmpty(curEqName)&&curEqName.equals(getResources().getString(R.string.vocal))){
+            tv_vocal.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_selected);
+        }else if (!TextUtils.isEmpty(curEqName)&&curEqName.equals(getResources().getString(R.string.bass))){
+            tv_bass.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_selected);
+        }
         closeImageView = (ImageView) rootView.findViewById(R.id.closeImageView);
         iv_remove=(ImageView)rootView.findViewById(R.id.iv_remove);
         eqGridView=(EqGridView) rootView.findViewById(R.id.eqGridView);
         mScrollView = rootView.findViewById(R.id.scrollview);
+        mEqArcView =rootView.findViewById(R.id.eqArcView);
+        eqGridView.setmEqArcView(mEqArcView);
         eqGridView.setScrollView(mScrollView);
-        eqGridView.setMIvRemove(iv_remove);
-        DisplayMetrics dm = getResources().getDisplayMetrics();
+        /*DisplayMetrics dm = getResources().getDisplayMetrics();
         int heigth = dm.heightPixels;
         int width = dm.widthPixels;
-        Logger.d(TAG,"height:"+String.valueOf(heigth));
-
+        Logger.d(TAG,"height:"+String.valueOf(heigth))；*/
 
     }
     private void initEvent() {
@@ -72,17 +90,6 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
             }
         }
         Logger.d(TAG,"size:"+eqModelList.size());
-        /*eqGridView.setLayoutManager(new GridLayoutManager(getActivity(), 2){
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-
-            @Override
-            public boolean canScrollHorizontally() {
-                return super.canScrollHorizontally();
-            }
-        });*/
         adapter=new EqGridViewAdapter();
         adapter.setEqModels(eqModelList);
         eqGridView.setAdapter(adapter);
@@ -96,16 +103,6 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
             case R.id.closeImageView:
                 getActivity().onBackPressed();
                 break;
-            /*case R.id.iv_remove:
-                List<String> eqIndexs=adapter.getEqIndexs();
-                if (eqIndexs!=null&&eqIndexs.size()>0){
-                    for (int i=0;i<eqIndexs.size();i++){
-                        int index=Integer.valueOf(eqIndexs.get(i));
-                        EQSettingManager.get().deleteEQ(eqModelList.get(index).eqName,mContext);
-                    }
-                    initValue();
-                }
-                break;*/
         }
 
 
