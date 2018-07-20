@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.mtp.MtpConstants;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -125,10 +126,6 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     private void updateConnectedStatusAdapter(List<BluetoothDevice> deviceList) {
-        if (getSpecifiedDevice() == null || getSpecifiedDevice().getName() == null) {
-            Logger.i(TAG, "Specified device is not found");
-            return;
-        }
         for (MyDevice myDevice : lists) {
             myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
         }
@@ -140,10 +137,14 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         for (MyDevice myDeviceA2dp : myDeviceListA2dp) {
             for (MyDevice myDevice : lists) {
                 if (myDeviceA2dp.equals(myDevice)){
-                    String mainDeviceKey = getSpecifiedDevice().getName() +"-"+getSpecifiedDevice().getAddress();
-                    if (mainDeviceKey.equalsIgnoreCase(myDeviceA2dp.deviceKey)) {
-                        myDevice.connectStatus = ConnectStatus.A2DP_CONNECTED;
-                    } else {
+                    if (getSpecifiedDevice() != null){
+                        String mainDeviceKey = getSpecifiedDevice().getName() +"-"+getSpecifiedDevice().getAddress();
+                        if (mIsConnected && mainDeviceKey.equalsIgnoreCase(myDeviceA2dp.deviceKey)) {
+                            myDevice.connectStatus = ConnectStatus.A2DP_CONNECTED;
+                        } else {
+                            myDevice.connectStatus = ConnectStatus.A2DP_HALF_CONNECTED;
+                        }
+                    }else{
                         myDevice.connectStatus = ConnectStatus.A2DP_HALF_CONNECTED;
                     }
                 }
@@ -214,18 +215,27 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             if (isUpdatingFirmware) {
                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_OTA_FRAGMENT, 200);
             } else {
-                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
+                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                if (!(fr != null && fr instanceof HomeFragment)){
+                    dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
+                }
             }
 
         } else {
+            Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+            if (fr != null && fr instanceof HomeFragment){
+                MyDevice myDevice = ((HomeFragment)fr).getMyDeviceInHome();
+                if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED){
+                    removeAllFragment();
+                }
+            }
             updateDisconnectedAdapter();
-            removeAllFragment();
             myGridAdapter.setMyAdapterList(lists);
         }
     }
 
     public void checkDevices(List<BluetoothDevice> deviceList) {
-        if (mIsConnected) {
+//        if (mIsConnected) {
             super.checkDevices(deviceList);
             if (hasNewDevice(deviceList)) {
                 initMyGridAdapterList();
@@ -235,7 +245,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 updateConnectedStatusAdapter(deviceList);
                 myGridAdapter.setMyAdapterList(lists);
             }
-        }
+//        }
     }
 
     public boolean isConnected() {
@@ -323,11 +333,13 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 }
                 case MSG_SHOW_DISCOVERY: {
                     Log.i(TAG, "show discovery page");
-                    Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                    if (fr == null) {
-                        switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    } else if (!(fr instanceof DiscoveryFragment)) {
-                        switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    if (lists.size() == 0) {
+                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                        if (fr == null) {
+                            switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                        } else if (!(fr instanceof DiscoveryFragment)) {
+                            switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                        }
                     }
                     break;
                 }

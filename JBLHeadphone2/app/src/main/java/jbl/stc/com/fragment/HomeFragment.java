@@ -184,8 +184,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         return view;
     }
 
-    private void getDeviceEQ() {
-
+    public MyDevice getMyDeviceInHome() {
+        return myDevice;
     }
 
     private void generateSaPopupWindow() {

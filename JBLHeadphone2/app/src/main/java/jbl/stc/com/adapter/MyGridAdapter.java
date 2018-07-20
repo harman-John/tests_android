@@ -149,17 +149,12 @@ public class MyGridAdapter extends BaseAdapter {
 //                    }
                     MyDevice myDevice = mLists.get(msg.arg1);
                     //                            && DashboardActivity.getDashboardActivity().isConnected()
-                    if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+                    if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED
+                            || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                         Logger.d(TAG, "Show home fragment");
-                        DashboardActivity.getDashboardActivity().goHomeFragment(myDevice);
-                    }else if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
                         DashboardActivity.getDashboardActivity().goHomeFragment(myDevice);
                     }else {
                         Fragment fr = DashboardActivity.getDashboardActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                        if (fr == null){
-                            Logger.d(TAG,"fr is null");
-                            return;
-                        }
                         if ( fr instanceof  UnableConnectFragment){
                             Logger.d(TAG,"fr is already UnableConnectFragment");
                             return;
