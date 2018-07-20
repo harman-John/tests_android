@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.Action;
@@ -28,7 +27,6 @@ import com.avnera.smartdigitalheadset.Bluetooth;
 import com.avnera.smartdigitalheadset.BluetoothSocketWrapper;
 import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
-import com.avnera.smartdigitalheadset.Log;
 import com.avnera.smartdigitalheadset.ModuleId;
 import com.avnera.smartdigitalheadset.USB;
 import com.avnera.smartdigitalheadset.USBSocket;
@@ -38,7 +36,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,6 +47,7 @@ import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.AlertsDialog;
 import jbl.stc.com.fragment.CalibrationFragment;
 import jbl.stc.com.fragment.HomeFragment;
+import jbl.stc.com.listener.A2dpObserver;
 import jbl.stc.com.listener.AppLightXDelegate;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AnalyticsManager;
@@ -130,9 +128,6 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     public void connectDeviceStatus(boolean isConnected){
         Logger.i(TAG, "connectDeviceStatus isConnected = "+isConnected);
-        if (isConnected){
-            AppUtils.addConnectedBeforeDevice(getApplicationContext(),specifiedDevice.getName()+"-"+specifiedDevice.getAddress());
-        }
     }
 
     protected synchronized void initUSB() {
@@ -241,11 +236,20 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         }
     };
 
-    private void startA2DPCheck(){
+
+    public void checkDevices(List<BluetoothDevice> deviceList){
+
+    }
+
+    public void startA2DPCheck(){
         BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBtAdapter != null && mBtAdapter.isEnabled()) {
             mBtAdapter.getProfileProxy(this, mListener, BluetoothProfile.A2DP);
         }
+    }
+
+    public BluetoothDevice getSpecifiedDevice() {
+        return specifiedDevice;
     }
 
     private BluetoothDevice specifiedDevice = null;
@@ -256,22 +260,33 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         public void onServiceConnected(int profile, BluetoothProfile proxy) {
             if(profile == BluetoothProfile.A2DP) {
                 List<BluetoothDevice> deviceList = proxy.getConnectedDevices();
-                Logger.d(TAG, " A2DP connected deviceList = "+deviceList +",size = "+deviceList.size()+",position ="+position);
-                if (deviceList.size() > 0
-                        && position < deviceList.size()
-                        && deviceList.get(position).getName().toUpperCase().contains("JBL Everest".toUpperCase())) {
-                    mHandler.removeCallbacks(a2dpRunable);
-                    specifiedDevice = deviceList.get(position);
-                    initAudioManager();
-                    mBluetooth.start();
-                    isFound = true;
-                    position = 0;
-                    Logger.d(TAG, " A2DP connected first device = "+deviceList+",position ="+position);
-                }else{
-                    if (position < deviceList.size()-1) {
-                        position++;
-                    }else position = 0;
+
+                for (BluetoothDevice bluetoothDevice: deviceList) {
+                    Logger.d(TAG, "A2DP connected device, name = " + bluetoothDevice.getName()
+                            + ",address = " + bluetoothDevice.getAddress()
+                            + ",position =" + position);
+                    AppUtils.addToMyDevices(getApplicationContext(),bluetoothDevice.getName(),bluetoothDevice.getAddress());
                 }
+                if (!isConnected && !isFound) {
+                    if (deviceList.size() > 0
+                            && position < deviceList.size()
+                            && deviceList.get(position).getName().toUpperCase().contains("JBL Everest".toUpperCase())) {
+                        mHandler.removeCallbacks(a2dpRunable);
+                        specifiedDevice = deviceList.get(position);
+                        initAudioManager();
+                        mBluetooth.start();
+                        isFound = true;
+                        position = 0;
+                        Logger.d(TAG, "A2DP use first device to connect, name = " + specifiedDevice.getName()
+                                + ",address = " + specifiedDevice.getAddress()
+                                + ",position = " + position);
+                    } else {
+                        if (position < deviceList.size() - 1) {
+                            position++;
+                        } else position = 0;
+                    }
+                }
+                checkDevices(deviceList);
             }
         }
 
@@ -542,6 +557,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         mIsConnectedPhysically = true;
         if (mLightX != null) {
             AvneraManager.getAvenraManager(DeviceManagerActivity.this).setLightX(mLightX);
+            mLightX.readConfigModelNumber();
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -891,6 +907,11 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     @Override
     public void lightXReadConfigResult(final LightX lightX, final Command command, final boolean success, final String value) {
+        switch (command){
+            case ConfigModelNumber: {
+                AppUtils.setModelNumber(getApplicationContext(), value);
+            }
+        }
         if (appLightXDelegate != null) {
             runOnUiThread(new Runnable() {
                 @Override

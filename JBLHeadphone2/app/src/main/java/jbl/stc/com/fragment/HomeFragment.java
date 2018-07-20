@@ -3,8 +3,6 @@ package jbl.stc.com.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,7 +29,6 @@ import com.avnera.audiomanager.responseResult;
 
 import com.avnera.smartdigitalheadset.Command;
 
-import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Utility;
 
@@ -43,9 +40,11 @@ import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.AmCmds;
+import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.CreateEqTipsDialog;
+import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
@@ -54,19 +53,19 @@ import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.utils.BlurBuilder;
-import jbl.stc.com.view.AAPopupwindow;
+import jbl.stc.com.view.AAPopupWindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
-import jbl.stc.com.view.AppImageView;
-import jbl.stc.com.view.SaPopupwindow;
+import jbl.stc.com.view.BlurringView;
+import jbl.stc.com.view.SaPopupWindow;
 
 import static java.lang.Integer.valueOf;
 
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = HomeFragment.class.getSimpleName();
-    private View view, mBlurView;
+    private View view;
+    private BlurringView mBlurView;
     private CreateEqTipsDialog createEqTipsDialog;
 
     private HomeHandler homeHandler = new HomeHandler(Looper.getMainLooper());
@@ -92,13 +91,16 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private CheckBox checkBoxNoiseCancel;
     private LinearLayout linearLayoutBattery;
     private LightX lightX;
-    private AAPopupwindow aaPopupwindow;
-    private SaPopupwindow saPopupwindow;
+    private AAPopupWindow aaPopupWindow;
+    private SaPopupWindow saPopupwindow;
 
     private RelativeLayout linearLayoutNoiseCanceling;
     private RelativeLayout linearLayoutAmbientAware;
     private FrameLayout relative_layout_home_eq_info;
     private String deviceName;
+    private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
+    private View bluredView;
+    private MyDevice myDevice;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,18 +113,27 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         view = inflater.inflate(R.layout.fragment_home,
                 container, false);
         Log.i(TAG, "onCreateView");
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            myDevice = bundle.getParcelable(JBLConstant.KEY_MY_DEVICE);
+        }
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         generateAAPopupWindow();
         generateSaPopupWindow();
         view.findViewById(R.id.image_view_home_settings).setOnClickListener(this);
-        view.findViewById(R.id.image_view_home_info).setOnClickListener(this);
+        view.findViewById(R.id.image_view_home_back).setOnClickListener(this);
         textViewDeviceName = view.findViewById(R.id.text_view_home_device_name);
 
         imageViewDevice = view.findViewById(R.id.image_view_home_device_image);
+        bluredView = view.findViewById(R.id.relative_Layout_home);
         relative_layout_home_eq_info = (FrameLayout) view.findViewById(R.id.relative_layout_home_eq_info);
         relative_layout_home_eq_info.setVisibility(View.VISIBLE);
-        relative_layout_home_eq_info.setOnClickListener(this);
-
+        if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
+            setEqMenuColor(false);
+        }else{
+            setEqMenuColor(true);
+            relative_layout_home_eq_info.setOnClickListener(this);
+        }
         textViewCurrentEQ = view.findViewById(R.id.text_view_home_eq_name);
         linearLayoutBattery = view.findViewById(R.id.linear_layout_home_battery);
         progressBarBattery = view.findViewById(R.id.progress_bar_battery);
@@ -142,39 +153,43 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
         });
         linearLayoutNoiseCanceling = view.findViewById(R.id.relative_layout_home_noise_cancel);
-        String modelNumber = AppUtils.getModelNumber(getActivity());
-        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_NOISE_CANCEL)) {
+        if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_NOISE_CANCEL)) {
             linearLayoutNoiseCanceling.setVisibility(View.GONE);
         } else {
             linearLayoutNoiseCanceling.setVisibility(View.VISIBLE);
             checkBoxNoiseCancel = view.findViewById(R.id.image_view_home_noise_cancel);
-            checkBoxNoiseCancel.setOnClickListener(this);
+            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+                checkBoxNoiseCancel.setOnClickListener(this);
+            }
         }
 
-        linearLayoutAmbientAware = view.findViewById(R.id.linear_layout_home_ambient_aware);
-        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_AMBIENT_AWARE)) {
+        linearLayoutAmbientAware = view.findViewById(R.id.relative_layout_home_ambient_aware);
+        if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_AMBIENT_AWARE)) {
             linearLayoutAmbientAware.setVisibility(View.GONE);
         } else {
             view.findViewById(R.id.image_view_home_ambient_aware).setOnClickListener(this);
-            if (modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
-                    || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
-                    || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
+            if (myDevice.deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
+                    || myDevice.deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
+                    || myDevice.deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
                 TextView textViewAmbientAware = view.findViewById(R.id.text_view_home_ambient_aware);
                 textViewAmbientAware.setText(R.string.smart_ambient);
             }
         }
-        getRawSteps();
-        deviceName=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
-        updateDeviceNameAndImage(deviceName,imageViewDevice,textViewDeviceName);
+        if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+            getRawSteps();
+        }
+        deviceName = myDevice.deviceName;
+//        deviceName = PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
+        updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
         return view;
     }
 
-    private void getDeviceEQ() {
-
+    public MyDevice getMyDeviceInHome() {
+        return myDevice;
     }
 
     private void generateSaPopupWindow() {
-        saPopupwindow = new SaPopupwindow(getActivity());
+        saPopupwindow = new SaPopupWindow(getActivity());
         saPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -184,50 +199,55 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 }
             }
         });
+        saPopupwindow.setOnSmartAmbientStatusReceivedListener(nativeSaListener);
     }
 
 
-    private void getRawSteps(){
+    private void getRawSteps() {
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext())
                 .getRawStepsByCmd(AvneraManager.getAvenraManager(JBLApplication.getJBLApplicationContext()).getLightX());//get raw steps count of connected device
     }
-    private void generateAAPopupWindow(){
-        aaPopupwindow = new AAPopupwindow(getActivity(), lightX);
-        aaPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+
+    private void generateAAPopupWindow() {
+        aaPopupWindow = new AAPopupWindow(getActivity(), lightX);
+        aaPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 //dismiss blur view
-                aaPopupwindow.setAAOff();
+                aaPopupWindow.setAAOff();
                 if (mBlurView != null) {
                     mBlurView.setVisibility(View.GONE);
                 }
-                if (DashboardActivity.getDashboardActivity().tutorialAncDialog!= null){
+                if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null) {
                     DashboardActivity.getDashboardActivity().tutorialAncDialog.setTextViewTips(R.string.tutorial_tips_one);
                     DashboardActivity.getDashboardActivity().tutorialAncDialog.showEqInfo();
                 }
             }
         });
     }
+
     @Override
     public void onResume() {
         super.onResume();
         AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
         Log.d(TAG, "onResume" + DeviceConnectionManager.getInstance().getCurrentDevice());
-        switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
-            case NONE:
-                break;
-            case Connected_USBDevice:
-                linearLayoutBattery.setVisibility(View.VISIBLE);
-                progressBarBattery.setProgress(100);
-                textViewBattery.setText("100%");
-                break;
-            case Connected_BluetoothDevice:
-                linearLayoutBattery.setVisibility(View.VISIBLE);
-                ANCControlManager.getANCManager(getActivity()).getBatterLeverl(lightX);
-                homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
-                break;
+        if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+            switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
+                case NONE:
+                    break;
+                case Connected_USBDevice:
+                    linearLayoutBattery.setVisibility(View.VISIBLE);
+                    progressBarBattery.setProgress(100);
+                    textViewBattery.setText("100%");
+                    break;
+                case Connected_BluetoothDevice:
+                    linearLayoutBattery.setVisibility(View.VISIBLE);
+                    ANCControlManager.getANCManager(getActivity()).getBatterLeverl(lightX);
+                    homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
+                    break;
+            }
+            getDeviceInfo();
         }
-        getDeviceInfo();
     }
 
     @Override
@@ -239,21 +259,22 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onDetach() {
         super.onDetach();
-        if(aaPopupwindow == null){
+        if (aaPopupWindow == null) {
             return;
         }
-        aaPopupwindow.dismiss();
+        aaPopupWindow.dismiss();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_home_ambient_aware: {
-
-                if (AppUtils.isOldDevice(deviceName)){
-                    showAncPopupWindow(view);
-                }else if (AppUtils.isNewDevice(deviceName)){
-                    showSaPopupWindow();
+                if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+                    if (AppUtils.isOldDevice(deviceName)) {
+                        showAncPopupWindow(view);
+                    } else if (AppUtils.isNewDevice(deviceName)) {
+                        showSaPopupWindow(view);
+                    }
                 }
                 break;
             }
@@ -261,12 +282,16 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 break;
             }
-            case R.id.image_view_home_info: {
-                switchFragment(new InfoFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+            case R.id.image_view_home_back: {
+                getActivity().onBackPressed();
                 break;
             }
             case R.id.image_view_home_settings: {
-                switchFragment(new SettingsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                SettingsFragment settingsFragment = new SettingsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(JBLConstant.KEY_MY_DEVICE,myDevice);
+                settingsFragment.setArguments(bundle);
+                switchFragment(settingsFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
             case R.id.image_view_home_noise_cancel: {
@@ -276,7 +301,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
-    public void setANC(){
+    public void setANC() {
         if (checkBoxNoiseCancel.isChecked()) {
             ANCControlManager.getANCManager(getActivity()).setANCValue(lightX, true);
         } else {
@@ -284,12 +309,21 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
-    private void showSaPopupWindow() {
-        if (mBlurView.getBackground() == null) {
-            Bitmap image = BlurBuilder.blur(view);
-            mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
-        }
+    private void setOnSmartAmbientStatusReceivedListener(SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
+        this.mSaListener = listener;
+    }
 
+    private void showSaPopupWindow(View view) {
+        showSaPopupWindow(view, null);
+    }
+
+    public void showSaPopupWindow(View view, SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
+        mBlurView.setBlurredView(bluredView);
+//        if (mBlurView.getBackground() == null) {
+//            Bitmap image = BlurBuilder.blur(view);
+//            mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
+//        }
+        mBlurView.invalidate();
         mBlurView.setVisibility(View.VISIBLE);
         mBlurView.setAlpha(0f);
         mBlurView.animate().alpha(1f).setDuration(500).setListener(new AnimatorListenerAdapter() {
@@ -301,16 +335,28 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 mBlurView.setAlpha(1f);
             }
         });
-
+        if (listener != null) {
+            setOnSmartAmbientStatusReceivedListener(listener);
+        }
         saPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
     }
 
-    public void showAncPopupWindow(View view) {
-        if (mBlurView.getBackground() == null) {
-            Bitmap image = BlurBuilder.blur(view);
-            mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
+    private SaPopupWindow.OnSmartAmbientStatusReceivedListener nativeSaListener = new SaPopupWindow.OnSmartAmbientStatusReceivedListener() {
+        @Override
+        public void onSaStatusReceived(boolean isDaEnable, boolean isTtEnable) {
+            if (mSaListener != null) {
+                mSaListener.onSaStatusReceived(isDaEnable, isTtEnable);
+            }
         }
+    };
 
+    public void showAncPopupWindow(View view) {
+//        if (mBlurView.getBackground() == null) {
+//            Bitmap image = BlurBuilder.blur(view);
+//            mBlurView.setBackground(new BitmapDrawable(getActivity().getResources(), image));
+//        }
+        mBlurView.setBlurredView(bluredView);
+        mBlurView.invalidate();
         mBlurView.setVisibility(View.VISIBLE);
         mBlurView.setAlpha(0f);
         mBlurView.animate().alpha(1f).setDuration(500).setListener(new AnimatorListenerAdapter() {
@@ -322,7 +368,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 mBlurView.setAlpha(1f);
             }
         });
-        aaPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
+        aaPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
 
         getAAValue();
     }
@@ -377,14 +423,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 }
                 case MSG_AMBIENT_LEVEL: {
                     //for old devices
-                    aaPopupwindow.updateAAUI(msg.arg1);//AppUtils.levelTransfer(msg.arg1)<---method for new device
+                    aaPopupWindow.updateAAUI(msg.arg1);//AppUtils.levelTransfer(msg.arg1)<---method for new device
                     break;
                 }
                 case MSG_AA_LEFT:
-                    aaPopupwindow.updateAALeft(msg.arg1);
+                    aaPopupWindow.updateAALeft(msg.arg1);
                     break;
                 case MSG_AA_RIGHT:
-                    aaPopupwindow.updateAARight(msg.arg1);
+                    aaPopupWindow.updateAARight(msg.arg1);
                     break;
                 case MSG_CURRENT_PRESET: {
                     updateCurrentEQ(msg.arg1);
@@ -392,7 +438,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 }
                 case MSG_RAW_STEP: {
                     int rawSteps = msg.arg1 - 1;
-                    Logger.d(TAG , "received raw steps call back rawSteps = " + rawSteps);
+                    Logger.d(TAG, "received raw steps call back rawSteps = " + rawSteps);
                     ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRawSteps(rawSteps);
                     break;
                 }
@@ -410,6 +456,16 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             checkBoxNoiseCancel.setChecked(onOff);
         if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null) {
             DashboardActivity.getDashboardActivity().tutorialAncDialog.setChecked(onOff);
+        }
+    }
+
+    public void setEqMenuColor(boolean onOff) {
+        if (relative_layout_home_eq_info != null) {
+            if (onOff) {
+                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
+            } else {
+                relative_layout_home_eq_info.setBackgroundColor(getResources().getColor(R.color.gray_aa_bg));
+            }
         }
     }
 
@@ -493,9 +549,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         AccessoryInfo accessoryInfo = am.getAccessoryStatus();
         PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), getActivity());
         deviceName = accessoryInfo.getModelNumber();
-        AppUtils.setModelNumber(getActivity(), deviceName);
+        AppUtils.setModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext(), deviceName);
         Log.d(TAG, "modelName : " + accessoryInfo.getModelNumber());
-        updateDeviceNameAndImage(deviceName,imageViewDevice,textViewDeviceName);
+        updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
         String version = accessoryInfo.getFirmwareRev();
         if (version.length() >= 5) {
             Log.d(TAG, "currentVersion : " + version);
@@ -557,9 +613,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 sendMessageTo(MSG_CURRENT_PRESET, values.iterator().next().getValue().toString());
                 break;
             }
-            case AmCmds.CMD_GrEqBandGains:{
+            case AmCmds.CMD_GrEqBandGains: {
                 String value = values.iterator().next().getValue().toString();
-                Logger.d(TAG,"GrEqBandGains:"+value);
+                Logger.d(TAG, "GrEqBandGains:" + value);
                 break;
             }
             case AmCmds.CMD_FirmwareVersion: {
@@ -601,10 +657,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case AmCmds.CMD_AmbientLevelingNotification: {
 
-                if (aaPopupwindow == null) {
+                if (aaPopupWindow == null) {
                     return;
                 }
-                aaPopupwindow.updateAAUI(AppUtils.levelTransfer(Integer.valueOf(values.iterator().next().getValue().toString())));//new devices
+                aaPopupWindow.updateAAUI(AppUtils.levelTransfer(Integer.valueOf(values.iterator().next().getValue().toString())));//new devices
             }
             break;
 
@@ -641,7 +697,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 case AppAwarenessRawSteps:
 //                    readAppReturn = Utility.getUnsignedInt(var4, 0);
                     int rawSteps = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0) - 1;
-                    Logger.d(TAG , "received raw steps call back rawSteps = " + rawSteps);
+                    Logger.d(TAG, "received raw steps call back rawSteps = " + rawSteps);
                     ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRawSteps(rawSteps);
 
                     break;
@@ -663,7 +719,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     int minor = var4[1];
                     int revision = var4[2];
                     Log.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision);
-                    PreferenceUtils.setString(AppUtils.getModelNumber(getActivity()), PreferenceKeys.APP_VERSION, major + "." + minor + "." + revision, getActivity());
+                    PreferenceUtils.setString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, major + "." + minor + "." + revision, getActivity());
                     break;
             }
         } else {
@@ -735,8 +791,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 case ConfigModelNumber:
                     deviceName = var4;
-                    AppUtils.setModelNumber(getActivity(), deviceName);
-                    updateDeviceNameAndImage(deviceName,imageViewDevice,textViewDeviceName);
+                    AppUtils.setModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext(), deviceName);
+                    updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
                     homeHandler.sendEmptyMessageDelayed(MSG_SEND_CMD_GET_FIRMWARE, 200);
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                         case Connected_USBDevice:

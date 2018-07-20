@@ -1,6 +1,5 @@
 package jbl.stc.com.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -11,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -24,8 +22,10 @@ import java.util.StringTokenizer;
 
 import jbl.stc.com.BuildConfig;
 import jbl.stc.com.R;
+import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
-import jbl.stc.com.fragment.BaseFragment;
+import jbl.stc.com.entity.MyDevice;
+import jbl.stc.com.listener.A2dpObserver;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -56,7 +56,7 @@ public class AppUtils {
     public static final int EQ_BAND_NUMBER = 10;
     private static final String DEVICE_NAME_PREFIX = "JBL Everest";
 
-    public static String getJBLDeviceName(Context context){
+    public static String getJBLDeviceName(Context context) {
         return PreferenceUtils.getString(JBLConstant.JBL_DEVICE_NAME, context, "");
     }
 
@@ -246,6 +246,7 @@ public class AppUtils {
      * This function called must after HomeFragment showed.
      * Because not prepare to set Mode is in HomeFragment.
      * So before HomeFragment showed must not use this function.
+     *
      * @param context
      * @return
      */
@@ -260,35 +261,37 @@ public class AppUtils {
         }
         return modelNumber;
     }
-    public static void setJBLDeviceName(Context context, String value){
+
+    public static void setJBLDeviceName(Context context, String value) {
         PreferenceUtils.setString(PreferenceKeys.JBL_DEVICE_NAME, value, context);
     }
+
     public static boolean is750Device(Context context) {
         return getModelNumber(context).contains("750");
     }
 
     public static boolean isOldDevice(String deviceName) {
-        boolean isOldDevice=false;
-        if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_REFLECT_AWARE).toUpperCase())||
-                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase())||
-                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase())||
-                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase())||
-                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase())||
-                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())){
-            isOldDevice=true;
+        boolean isOldDevice = false;
+        if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_REFLECT_AWARE).toUpperCase()) ||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase()) ||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase()) ||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase()) ||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase()) ||
+                deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())) {
+            isOldDevice = true;
         }
-        return  isOldDevice;
+        return isOldDevice;
     }
 
     public static boolean isNewDevice(String deviceName) {
-        boolean isNewDevice=false;
+        boolean isNewDevice = false;
         if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_500BT).toUpperCase()) ||
                 deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_400BT).toUpperCase()) ||
                 deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_650BTNC).toUpperCase()) ||
                 deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_FREE_GA).toUpperCase())) {
-            isNewDevice=true;
+            isNewDevice = true;
         }
-        return  isNewDevice;
+        return isNewDevice;
     }
 
     public static int levelTransfer(int ambLevel150) {
@@ -309,15 +312,53 @@ public class AppUtils {
         return 0;
     }
 
-    public static void setModelNumber(Context context,String value){
+    public static void setModelNumber(Context context, String value) {
         PreferenceUtils.setString(PreferenceKeys.MODEL, value, context);
     }
 
-    public static void addConnectedBeforeDevice(Context context, String deviceInfo){
-        Set<String> connectedBeforeDevices = PreferenceUtils.getStringSet(context, PreferenceKeys.CONNECTED_BEFORE_DEVICES);
-        connectedBeforeDevices.add(deviceInfo);
-        PreferenceUtils.setStringSet(context,PreferenceKeys.CONNECTED_BEFORE_DEVICES,connectedBeforeDevices);
-        Logger.i(TAG,"deviceSet = "+connectedBeforeDevices);
+    public static void addToMyDevices(Context context, String deviceName, String mac) {
+        String device = deviceName + "-" + mac;
+        Set<String> myDevices = PreferenceUtils.getStringSet(context, PreferenceKeys.MY_DEVICES);
+        if (!myDevices.contains(device)) {
+            myDevices.add(device);
+            PreferenceUtils.setStringSet(context, PreferenceKeys.MY_DEVICES, myDevices);
+            Logger.i(TAG, "Add device: " + device +",size: "+ myDevices.size());
+        }
+    }
+
+    public static MyDevice getMyDevice(String value){
+        MyDevice myDevice = new MyDevice();
+        myDevice.deviceKey = value;
+        myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
+        if (value.toUpperCase().contains(JBLConstant.DEVICE_LIVE_650BTNC)) {
+            myDevice.deviceName = JBLConstant.DEVICE_LIVE_650BTNC;
+            myDevice.deviceIcon = R.mipmap.everest_elite_700_icon;
+        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_LIVE_400BT)) {
+            myDevice.deviceName = JBLConstant.DEVICE_LIVE_400BT;
+            myDevice.deviceIcon = R.mipmap.everest_elite_700_icon;
+        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_LIVE_500BT)) {
+            myDevice.deviceName = JBLConstant.DEVICE_LIVE_500BT;
+            myDevice.deviceIcon = R.mipmap.everest_elite_700_icon;
+        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_750NC)) {
+            myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_750NC;
+            myDevice.deviceIcon = R.mipmap.everest_elite_750nc_icon;
+        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
+            myDevice.deviceName = JBLConstant.DEVICE_REFLECT_AWARE;
+            myDevice.deviceIcon = R.mipmap.reflect_aware_icon;
+        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_150NC)) {
+            myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_150NC;
+            myDevice.deviceIcon = R.mipmap.everest_elite_150nc_icon;
+        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_700)) {
+            myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_700;
+            myDevice.deviceIcon = R.mipmap.everest_elite_700_icon;
+        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_100)) {
+            myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_100;
+            myDevice.deviceIcon = R.mipmap.everest_elite_100_icon;
+        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_300)) {
+            myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_300;
+            myDevice.deviceIcon = R.mipmap.everest_elite_300_icon;
+        }
+        return myDevice;
     }
 
     public static int[] parseVersionFromASCIIbuffer(byte[] bytes) {

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_gradient_discovery">
+
+    <RelativeLayout
+        android:id="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:layout_alignParentTop="true"
+        android:paddingLeft="@dimen/margin_top_10dp"
+        android:paddingRight="@dimen/margin_top_10dp">
+
+        <jbl.stc.com.view.AppImageView
+            android:id="@+id/image_view_discovery_back"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignParentLeft="true"
+            android:src="@mipmap/white_arrow_back" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative_layout_discovery"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_title">
+
+        <RelativeLayout
+            android:id="@+id/relative_layout_discovery_animation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <jbl.stc.com.view.JblCircleView
+                android:id="@+id/jbl_circle_view_dashboard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true" />
+
+            <ImageView
+                android:id="@+id/image_view_dashboard_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/jbl_logo" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+</RelativeLayout>

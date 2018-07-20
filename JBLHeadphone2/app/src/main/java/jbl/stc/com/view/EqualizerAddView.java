@@ -1,6 +1,7 @@
 package jbl.stc.com.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -91,6 +92,7 @@ public class EqualizerAddView extends View {
     public static final int DRAW_INTERVAL = 250;
     private int STEP = AppUtils.EQ_VIEW_DEFAULT_STEP;
     private boolean hasDrag = false;
+    private int mShowType;
 
     public void setOnEqChangeListener(OnEqChangeListener onEqChangeListener) {
         this.mOnEqChangeListener = onEqChangeListener;
@@ -102,14 +104,25 @@ public class EqualizerAddView extends View {
 
     public EqualizerAddView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
+        this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        getAttrs(context,attrs,0);
+        initView(context);
     }
 
     public EqualizerAddView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        getAttrs(context,attrs,defStyleAttr);
         initView(context);
     }
 
+    private void getAttrs(Context context,AttributeSet attrs,int defStyleAttr){
+        if(attrs != null){
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.EqualizerAddView, defStyleAttr, 0);
+            mShowType = a.getInt(R.styleable.EqualizerAddView_show_type, 0);
+            a.recycle();
+        }
+    }
     public void initView(Context context) {
         mContext = context;
         pointX = new ArrayList<>();
@@ -265,7 +278,11 @@ public class EqualizerAddView extends View {
         Log.d(TAG, "CenterHeight:" + String.valueOf((mHeight - marginTop - marginBottom) / 2));
         //draw center horizontal line
         mLinePaint.reset();
-        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
+        if(mShowType == 1){
+            mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.transparent));
+        }else {
+            mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
+        }
         mLinePaint.setAntiAlias(true);
         mLinePaint.setStyle(Paint.Style.FILL);
         mLinePaint.setPathEffect(new DashPathEffect(new float[]{dp2px(5), dp2px(5)}, 0));
@@ -276,7 +293,11 @@ public class EqualizerAddView extends View {
 
         //draw vertical line
         mLinePaint.reset();
-        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
+        if(mShowType == 1){
+            mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.transparent));
+        }else {
+            mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
+        }
         mLinePaint.setAntiAlias(true);
         mLinePaint.setStyle(Paint.Style.FILL);
         mLinePaint.setStrokeWidth(1);
@@ -287,7 +308,11 @@ public class EqualizerAddView extends View {
 
         //draw horizontal line
         mLinePaint.reset();
-        mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
+        if(mShowType == 1){
+            mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.transparent));
+        }else {
+            mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
+        }
         mLinePaint.setAntiAlias(true);
         mLinePaint.setStyle(Paint.Style.FILL);
         mLinePaint.setStrokeWidth(dp2px(1));
@@ -296,10 +321,14 @@ public class EqualizerAddView extends View {
     }
 
     private void drawText(Canvas canvas) {
-        if (touchX > 0 && touchY > 0) {
-            mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_10));
-        } else {
-            mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_80));
+        if(mShowType == 1){
+            mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.transparent));
+        }else {
+            if (touchX > 0 && touchY > 0) {
+                mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_10));
+            } else {
+                mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_80));
+            }
         }
         //draw text
         for (int i = 0; i < mEqFreqArray.length; i++) {
@@ -311,8 +340,11 @@ public class EqualizerAddView extends View {
                 canvas.drawText(getShowName(i), startVerticalX - dp2px(6), mHeight - marginBottom / 2, mTextPaint);
             }
         }
-
-        mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_80));
+        if(mShowType == 1){
+            mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.transparent));
+        }else {
+            mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_80));
+        }
         float lowStartX = getRelativelyX(lowTextStart);
         canvas.drawText("LOW", lowStartX, textMarginBottom, mTextPaint);
         float midStartX = getRelativelyX(midTextStart);

@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:background="@mipmap/ic_back" />
+            android:background="@mipmap/black_arrow_back" />
 
         <ImageView
             android:id="@+id/image_view_page_two_close"
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
             android:layout_marginTop="30dp"
-            android:background="@drawable/rectangle_with_round_corner_view_page_oragne"
+            android:background="@drawable/rectangle_with_round_corner_view_page_orange"
             android:gravity="bottom"
             android:paddingBottom="7dp"
             android:paddingLeft="60dp"

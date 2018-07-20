@@ -80,4 +80,15 @@
         <!--是否振动-->
         <attr name="vibrator" format="boolean"/>
     </declare-styleable>
+    <declare-styleable name="EqualizerAddView">
+        <attr name="show_type">
+            <flag name="normal" value="0" />
+            <flag name="only_line" value="1" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="BlurringView">
+        <attr name="blurRadius" format="integer"/>
+        <attr name="downsampleFactor" format="integer"/>
+        <attr name="overlayColor" format="color"/>
+    </declare-styleable>
 </resources>

@@ -3,8 +3,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:clickable="true"
     android:background="@color/page_background"
+    android:clickable="true"
     android:focusable="true">
 
     <RelativeLayout
@@ -20,15 +20,15 @@
             android:layout_height="45dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_back"
+            android:src="@mipmap/black_arrow_back"
             android:visibility="visible" />
 
         <TextView
             android:id="@+id/settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_settings"
             android:layout_centerInParent="true"
+            android:text="@string/text_settings"
             android:textColor="@color/title_text_color"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -40,21 +40,21 @@
         android:id="@+id/deviceName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:layout_below="@id/titleBar"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
         android:text="@string/deviceName"
-        android:textSize="18sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#030D1C"
-        android:textStyle="bold"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <RelativeLayout
         android:id="@+id/rl_deviceImage"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/deviceName"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/margin_top_10dp"
         android:background="@drawable/shape_dashboard_device_circle"
         android:clickable="false">
@@ -73,9 +73,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayoutVersion"
         android:layout_below="@id/rl_deviceImage"
         android:layout_marginTop="15dp"
-        android:layout_above="@+id/linearLayoutVersion"
         android:fadingEdge="vertical"
         android:scrollbars="vertical">
 
@@ -89,25 +89,26 @@
                 android:id="@+id/relative_layout_settings_smart_button"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height">
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
-                    android:background="@android:color/white"/>
+                    android:layout_marginStart="30dp"
+                    android:background="@android:color/white" />
+
                 <TextView
                     android:id="@+id/text_view_settings_smart_button"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_item_height"
-                    android:gravity="start|center_vertical"
                     android:drawableRight="@mipmap/settings_arrow"
+                    android:gravity="start|center_vertical"
                     android:paddingLeft="@dimen/settings_item_padding_left"
                     android:paddingRight="@dimen/settings_item_padding_right"
                     android:text="@string/text_smart_button"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    />
+                    android:textStyle="bold" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -118,23 +119,22 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
-                    android:background="@android:color/white"/>
+                    android:layout_marginStart="30dp"
+                    android:background="@android:color/white" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_item_height"
-                    android:orientation="horizontal"
-                    >
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/text_view_settings_auto_off"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:gravity="center_vertical"
-                        android:layout_alignParentLeft="true"
                         android:paddingLeft="@dimen/settings_item_padding_left"
                         android:text="@string/text_auto_off_feature"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -142,24 +142,24 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:visibility="gone"
                         android:id="@+id/tv_toggleautoOff"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:gravity="center_vertical"
                         android:drawableRight="@mipmap/settings_arrow"
+                        android:gravity="center_vertical"
                         android:paddingRight="@dimen/settings_item_padding_right"
-                        android:text="5min"/>
+                        android:text="5min"
+                        android:visibility="gone" />
 
                     <Switch
                         android:id="@+id/toggleAutoOffTimer"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
                         android:paddingLeft="6dp"
                         android:paddingRight="@dimen/settings_item_padding_right"
-                        android:layout_alignParentRight="true"
                         android:saveEnabled="true"
                         android:switchMinWidth="0dp"
                         android:text=""
@@ -178,17 +178,18 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
-                    android:background="@android:color/white"/>
+                    android:layout_marginStart="30dp"
+                    android:background="@android:color/white" />
+
                 <TextView
                     android:id="@+id/text_view_settings_sound_x_setup"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_item_height"
-                    android:paddingRight="@dimen/settings_item_padding_right"
                     android:drawableRight="@mipmap/settings_arrow"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/settings_item_padding_left"
+                    android:paddingRight="@dimen/settings_item_padding_right"
                     android:text="@string/sound_x_setup"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textSize="16sp"
@@ -203,17 +204,18 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
-                    android:background="@android:color/white"/>
+                    android:layout_marginStart="30dp"
+                    android:background="@android:color/white" />
+
                 <TextView
                     android:id="@+id/text_view_settings_smart_assistant"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_item_height"
-                    android:paddingRight="@dimen/settings_item_padding_right"
                     android:drawableRight="@mipmap/settings_arrow"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/settings_item_padding_left"
+                    android:paddingRight="@dimen/settings_item_padding_right"
                     android:text="@string/smart_assistant"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textSize="16sp"
@@ -224,12 +226,14 @@
                 android:id="@+id/relative_layout_settings_voice_prompt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
-                    android:background="@android:color/white"/>
+                    android:layout_marginStart="30dp"
+                    android:background="@android:color/white" />
+
                 <LinearLayout
                     android:id="@+id/voice_prompt_layout"
                     android:layout_width="match_parent"
@@ -241,8 +245,8 @@
                         android:id="@+id/text_view_settings_voice_prompt"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="center_vertical"
                         android:layout_weight="0.95"
+                        android:gravity="center_vertical"
                         android:paddingLeft="@dimen/settings_item_padding_left"
                         android:text="@string/text_voice_prompt"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -253,10 +257,10 @@
                         android:id="@+id/toggleVoicePrompt"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_weight="0.05"
                         android:gravity="center_vertical"
                         android:paddingLeft="6dp"
                         android:paddingRight="@dimen/settings_item_padding_right"
-                        android:layout_weight="0.05"
                         android:saveEnabled="true"
                         android:switchMinWidth="0dp"
                         android:text=""
@@ -275,17 +279,18 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
-                    android:background="@android:color/white"/>
+                    android:layout_marginStart="30dp"
+                    android:background="@android:color/white" />
+
                 <TextView
                     android:id="@+id/text_view_settings_true_note"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_item_height"
-                    android:paddingRight="@dimen/settings_item_padding_right"
                     android:drawableRight="@mipmap/settings_arrow"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/settings_item_padding_left"
+                    android:paddingRight="@dimen/settings_item_padding_right"
                     android:text="@string/true_note"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textSize="16sp"
@@ -296,20 +301,22 @@
                 android:id="@+id/relative_layout_settings_user_manual"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
-                    android:background="@android:color/white"/>
+                    android:layout_marginStart="30dp"
+                    android:background="@android:color/white" />
+
                 <TextView
                     android:id="@+id/text_view_settings_user_manual"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_item_height"
-                    android:paddingRight="@dimen/settings_item_padding_right"
                     android:drawableRight="@mipmap/settings_arrow"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/settings_item_padding_left"
+                    android:paddingRight="@dimen/settings_item_padding_right"
                     android:text="@string/user_manual"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textSize="16sp"
@@ -325,18 +332,18 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
-                    android:background="@android:color/white"/>
+                    android:layout_marginStart="30dp"
+                    android:background="@android:color/white" />
 
                 <TextView
                     android:id="@+id/text_view_settings_product_help"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_item_height"
-                    android:paddingRight="@dimen/settings_item_padding_right"
                     android:drawableRight="@mipmap/settings_arrow"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/settings_item_padding_left"
+                    android:paddingRight="@dimen/settings_item_padding_right"
                     android:text="@string/text_product_help"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textSize="16sp"
@@ -347,32 +354,35 @@
                 android:id="@+id/relative_layout_settings_firmware"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="30dp"
                     android:layout_marginEnd="30dp"
-                    android:background="@android:color/white"/>
+                    android:layout_marginStart="30dp"
+                    android:background="@android:color/white" />
+
                 <TextView
                     android:id="@+id/text_view_settings_firmware"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_item_height"
                     android:layout_marginTop="@dimen/margin5dp"
+                    android:drawableRight="@mipmap/settings_arrow"
                     android:gravity="start|center_vertical"
                     android:paddingLeft="@dimen/settings_item_padding_left"
                     android:paddingRight="@dimen/settings_item_padding_right"
                     android:text="@string/firmware"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:drawableRight="@mipmap/settings_arrow"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </RelativeLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:background="@android:color/white"/>
+                android:layout_marginStart="30dp"
+                android:background="@android:color/white" />
         </LinearLayout>
     </ScrollView>
 

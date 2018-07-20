@@ -2,6 +2,8 @@ package jbl.stc.com.fragment;
 
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
@@ -12,17 +14,32 @@ import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.utils.BreathLight;
 
 public class UnableConnectFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = UnableConnectFragment.class.getSimpleName();
     private View view;
+    private RelativeLayout relativeLayoutDeviceIcon;
     private ImageView imageViewDeviceIcon;
     private TextView textViewDeviceName;
+    private TextView textViewTipsTwo;
+    private TextView textViewTipsThree;
+    private TextView textViewTipsFour;
+    private TextView textViewTipsFive;
+    private LinearLayout linearLayoutTips;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,9 +50,17 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_unable_connect,
                 container, false);
-        view.findViewById(R.id.image_view_unable_white_menu).setOnClickListener(this);
+        view.findViewById(R.id.image_view_unable_back).setOnClickListener(this);
         imageViewDeviceIcon = view.findViewById(R.id.image_view_unable_device_icon);
+        relativeLayoutDeviceIcon = view.findViewById(R.id.relative_layout_unable_breathing_lamp);
+        linearLayoutTips = view.findViewById(R.id.linear_layout_unable_tips);
+        linearLayoutTips.setVisibility(View.GONE);
+        relativeLayoutDeviceIcon.setOnClickListener(this);
         textViewDeviceName = view.findViewById(R.id.text_view_unable_device_name);
+        textViewTipsTwo = view.findViewById(R.id.text_view_unable_advice_two);
+        textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
+        textViewTipsFour = view.findViewById(R.id.text_view_unable_advice_four);
+        textViewTipsFive = view.findViewById(R.id.text_view_unable_advice_five);
         String deviceModelName = getArguments().getString(JBLConstant.DEVICE_MODEL_NAME);
         if (deviceModelName != null){
             switch (deviceModelName){
@@ -86,42 +111,71 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
                 }
             }
         }
-        TextView textViewAdviceOne = view.findViewById(R.id.text_view_unable_advice_three);
-        SpannableString spannableString = new SpannableString(getString(R.string.advice_three));
-        spannableString.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View arg0) {
+        if (textViewDeviceName.getText().equals(JBLConstant.DEVICE_REFLECT_AWARE)){
+            textViewTipsTwo.setText(R.string.advice_reflect_aware);
+            textViewTipsThree.setVisibility(View.GONE);
+            textViewTipsFour.setVisibility(View.GONE);
+            textViewTipsFive.setVisibility(View.GONE);
+        }else {
+            textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
+            SpannableString spannableString = new SpannableString(getString(R.string.advice_three));
+            spannableString.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(View arg0) {
+                    DashboardActivity.getDashboardActivity().switchFragment(new HowToPairFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                }
 
-            }
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setColor(getResources().getColor(android.R.color.white));
+                    ds.setUnderlineText(true);
+                    ds.setFakeBoldText(true);
+                    ds.clearShadowLayer();
+                }
 
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setColor(getResources().getColor(android.R.color.white));
-                ds.setUnderlineText(true);
-                ds.setFakeBoldText(true);
-                ds.clearShadowLayer();
-            }
+            }, 66, textViewTipsThree.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            textViewTipsThree.setText(spannableString);
+            textViewTipsThree.setMovementMethod(LinkMovementMethod.getInstance());
+        }
 
-        }, 66, 92, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textViewAdviceOne.setText(spannableString);
-        textViewAdviceOne.setMovementMethod(LinkMovementMethod.getInstance());
+        breathLight = new BreathLight(getActivity(),
+                relativeLayoutDeviceIcon,
+                R.anim.breathing_lamp_fade_in,
+                R.anim.breathing_lamp_fade_out);
+
+        breathLight.startBreathing(0);
+
         return view;
     }
 
+    private BreathLight breathLight;
+    private Handler handler = new Handler();
     @Override
     public void onResume() {
         super.onResume();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                breathLight.stopBreathing();
+                linearLayoutTips.setVisibility(View.VISIBLE);
+            }
+        },2000);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.image_view_unable_white_menu:{
-                switchFragment(new InfoFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            case R.id.image_view_unable_back:{
+                getActivity().onBackPressed();
+                break;
+            }
+            case R.id.relative_layout_unable_breathing_lamp:{
+
                 break;
             }
         }
 
     }
+
 }
