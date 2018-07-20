@@ -328,6 +328,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 }
                 case MSG_SHOW_HOME_FRAGMENT: {
                     Log.i(TAG, "show homeFragment");
+                    removeAllFragment();
                     goHomeFragment(getMyDeviceA2dpConnected());
                     break;
                 }
@@ -337,7 +338,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                         if (fr == null) {
                             switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                        } else if (!(fr instanceof DiscoveryFragment)) {
+                        } else if (!((fr instanceof DiscoveryFragment) || (fr instanceof TurnOnBtTipsFragment))) {
                             switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                         }
                     }
@@ -487,6 +488,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                             }
                             if (fr instanceof TurnOnBtTipsFragment) {
                                 removeAllFragment();
+                            }
+                            if (lists.size() == 0){
+                                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY,2000);
                             }
                             break;
                         }

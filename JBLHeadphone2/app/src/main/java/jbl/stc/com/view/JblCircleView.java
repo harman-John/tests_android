@@ -187,7 +187,7 @@ public class JblCircleView extends View {
                 mRadius.set(i, radius + 3);
         }
 
-        if (mRadius.get(mRadius.size() - 1) >= mWidth) {
+        if (mRadius.size()>0 && mRadius.get(mRadius.size() - 1) >= mWidth) {
             des = 1;
             mAlphas.clear();
             mRadius.clear();
