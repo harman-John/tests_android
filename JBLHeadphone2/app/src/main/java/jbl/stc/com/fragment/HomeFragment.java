@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -57,6 +58,7 @@ import jbl.stc.com.view.AaPopupWindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.view.BlurringView;
+import jbl.stc.com.view.NotConnectedPopupWindow;
 import jbl.stc.com.view.SaPopupWindow;
 
 import static java.lang.Integer.valueOf;
@@ -128,9 +130,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         bluredView = view.findViewById(R.id.relative_Layout_home);
         relative_layout_home_eq_info = (FrameLayout) view.findViewById(R.id.relative_layout_home_eq_info);
         relative_layout_home_eq_info.setVisibility(View.VISIBLE);
-        if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
+        if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             setEqMenuColor(false);
-        }else{
+            relative_layout_home_eq_info.setAlpha((float) 0.5);
+        } else {
             setEqMenuColor(true);
             relative_layout_home_eq_info.setOnClickListener(this);
         }
@@ -160,6 +163,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             checkBoxNoiseCancel = view.findViewById(R.id.image_view_home_noise_cancel);
             if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
                 checkBoxNoiseCancel.setOnClickListener(this);
+            }else{
+                linearLayoutNoiseCanceling.setAlpha((float) 0.5);
             }
         }
 
@@ -168,6 +173,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             linearLayoutAmbientAware.setVisibility(View.GONE);
         } else {
             view.findViewById(R.id.image_view_home_ambient_aware).setOnClickListener(this);
+            if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+                linearLayoutAmbientAware.setAlpha((float) 0.5);
+            }
             if (myDevice.deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
                     || myDevice.deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
                     || myDevice.deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
@@ -247,6 +255,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
             }
             getDeviceInfo();
+        } else if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+            if (!PreferenceUtils.getBoolean(PreferenceKeys.SHOW_NC_POP, mContext)) {
+                PreferenceUtils.setBoolean(PreferenceKeys.SHOW_NC_POP, true, mContext);
+                showNCPopupWindow(view);
+            }
         }
     }
 
@@ -289,7 +302,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             case R.id.image_view_home_settings: {
                 SettingsFragment settingsFragment = new SettingsFragment();
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(JBLConstant.KEY_MY_DEVICE,myDevice);
+                bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
                 settingsFragment.setArguments(bundle);
                 switchFragment(settingsFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
@@ -373,6 +386,32 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         getAAValue();
     }
 
+
+    public void showNCPopupWindow(View view) {
+        NotConnectedPopupWindow notConnectedPopupWindow = new NotConnectedPopupWindow(getActivity());
+        notConnectedPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                aaPopupWindow.setAAOff();
+                if (mBlurView != null) {
+                    mBlurView.setVisibility(View.GONE);
+                }
+            }
+        });
+        mBlurView.setBlurredView(bluredView);
+        mBlurView.invalidate();
+        mBlurView.setVisibility(View.VISIBLE);
+        mBlurView.setAlpha(0f);
+        mBlurView.animate().alpha(1f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mBlurView.setVisibility(View.VISIBLE);
+                mBlurView.setAlpha(1f);
+            }
+        });
+        notConnectedPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
+    }
 
     private void getDeviceInfo() {
 

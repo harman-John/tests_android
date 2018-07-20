@@ -79,8 +79,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             toggleVoicePrompt.setOnClickListener(this);
             textViewFirmware.setOnClickListener(this);
             view.findViewById(R.id.voice_prompt_layout).setOnClickListener(this);
-            view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);
+            view.findViewById(R.id.relative_layout_settings_product_help).setOnClickListener(this);
             view.findViewById(R.id.text_view_settings_smart_button).setOnClickListener(this);
+        }else{
+            view.findViewById(R.id.scroll_view_settings).setAlpha((float) 0.5);
         }
         toggleAutoOffTimer = (Switch) view.findViewById(R.id.toggleAutoOffTimer);
         Logger.i(TAG, "myDevice deviceName is " + myDevice.deviceName);

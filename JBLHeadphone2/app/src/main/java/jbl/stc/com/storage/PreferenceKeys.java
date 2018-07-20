@@ -10,6 +10,7 @@ public class PreferenceKeys {
     public static final String SHOW_TUTORIAL_FIRST_TIME = "show_tutorial_first_time";
     public static final String IS_FIRST_LAUNCHER = "first_launcher";
     public static final String IS_FIRST_CONNECTED = "first_connected";
+    public static final String SHOW_NC_POP = "show_nc_pop";
 
     public static final String MY_DEVICES = "connected_before_devices";
 
