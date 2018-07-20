@@ -235,6 +235,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     public void checkDevices(List<BluetoothDevice> deviceList) {
+        Logger.i(TAG,"checkDevices");
 //        if (mIsConnected) {
             super.checkDevices(deviceList);
             if (hasNewDevice(deviceList)) {

@@ -576,12 +576,17 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     @Override
     public void bluetoothDeviceDisconnected(Bluetooth bluetooth, BluetoothDevice
             bluetoothDevice) {
-        Logger.d(TAG,"bluetoothDeviceDisconnected");
+        if (bluetoothDevice != null) {
+            Logger.d(TAG, "bluetoothDeviceDisconnected bluetoothDevice is not null,name = "+bluetoothDevice.getName());
+        }
+        if (specifiedDevice != null){
+            Logger.d(TAG, "bluetoothDeviceDisconnected specifiedDevice is not null,name = "+specifiedDevice.getName());
+        }
         if (bluetoothDevice != null
                 && AppUtils.isMatchDeviceName(bluetoothDevice.getName())
-                && !AppUtils.is150NC(getApplicationContext())
                 && specifiedDevice != null
-                && specifiedDevice.getAddress().equalsIgnoreCase(bluetoothDevice.getAddress())) {
+                && specifiedDevice.getAddress().equalsIgnoreCase(bluetoothDevice.getAddress())
+                && !specifiedDevice.getName().toUpperCase().contains(JBLConstant.DEVICE_150NC)) {
             Logger.d(TAG, " -------> [bluetoothDeviceDisconnected] -------");
             disconnectDevice();
         }
