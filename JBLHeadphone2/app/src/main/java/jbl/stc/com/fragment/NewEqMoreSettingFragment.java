@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -31,7 +32,12 @@ import jbl.stc.com.view.CustomScrollView;
 import jbl.stc.com.view.DragGridView;
 import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.EqGridView;
-
+/**
+ * @name JBLHeadphone2
+ * @class name：jbl.stc.com.view
+ * @class describe
+ * Created by Wayne on 7/20/18.
+ */
 public class NewEqMoreSettingFragment extends BaseFragment implements View.OnClickListener{
 
     private CustomScrollView mScrollView;
@@ -42,6 +48,7 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
     private List<EQModel> eqModelList=new ArrayList<>();
     private EqArcView mEqArcView;
     private TextView tv_jazz,tv_vocal,tv_bass;
+    private LinearLayout ll_view;
     private static final String TAG = NewEqMoreSettingFragment.class.getSimpleName();
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,6 +78,7 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
         mEqArcView =rootView.findViewById(R.id.eqArcView);
         eqGridView.setmEqArcView(mEqArcView);
         eqGridView.setScrollView(mScrollView);
+        ll_view=(LinearLayout)rootView.findViewById(R.id.ll_view);
         /*DisplayMetrics dm = getResources().getDisplayMetrics();
         int heigth = dm.heightPixels;
         int width = dm.widthPixels;

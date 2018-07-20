@@ -65,5 +65,6 @@
     <dimen name="product_list_text_size">12sp</dimen>
     <dimen name="product_list_margin">15dp</dimen>
     <dimen name="eq_trash_circle_diameter">150dp</dimen>
+    <dimen name="eq_delete_area">45dp</dimen>
     <dimen name="eq_trash_circle_margin">-75dp</dimen>
 </resources>

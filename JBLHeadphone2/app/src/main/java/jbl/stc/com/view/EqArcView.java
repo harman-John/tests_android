@@ -17,7 +17,12 @@ import android.view.View;
 
 import jbl.stc.com.R;
 import jbl.stc.com.utils.UiUtils;
-
+/**
+ * @name JBLHeadphone2
+ * @class name：jbl.stc.com.view
+ * @class describe
+ * Created by Vicky on 7/20/18.
+ */
 public class EqArcView extends View{
 
 
