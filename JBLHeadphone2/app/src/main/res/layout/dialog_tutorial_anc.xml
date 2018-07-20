@@ -19,7 +19,6 @@
         android:layout_marginStart="@dimen/margin_top_10dp"
         android:layout_marginTop="@dimen/margin_top_10dp"
         android:background="@drawable/shape_circle_eq_name_bg_selected"
-        android:focusableInTouchMode="true"
         android:gravity="center"
         android:visibility="gone">
 
