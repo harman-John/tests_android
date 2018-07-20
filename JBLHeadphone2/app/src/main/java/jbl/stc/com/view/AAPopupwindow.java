@@ -26,16 +26,16 @@ import jbl.stc.com.utils.AppUtils;
  * @class describe
  * Created by Wayne on 6/26/18.
  */
-public class AAPopupWindow extends PopupWindow implements View.OnClickListener, AwarenessChangeListener,ANCController.OnSeekArcChangeListener{
+public class AaPopupWindow extends PopupWindow implements View.OnClickListener, AwarenessChangeListener,ANCController.OnSeekArcChangeListener{
 
-    private static final String TAG = AAPopupWindow.class.getSimpleName();
+    private static final String TAG = AaPopupWindow.class.getSimpleName();
     private ANCController ancController;
     private CircularInsideLayout circularInsideLayout;
     private View offBtn, closeBtn;
     private LightX lightX;
     private ANCAwarenessPreset lastsavedAwarenessState;
     private boolean isRequestingLeftANC, isRequestingRightANC;
-    public AAPopupWindow(Context context, LightX lightX) {
+    public AaPopupWindow(Context context, LightX lightX) {
         super(context);
         this.lightX = lightX;
         init(context);

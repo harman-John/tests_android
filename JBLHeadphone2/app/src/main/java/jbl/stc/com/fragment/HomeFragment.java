@@ -53,7 +53,7 @@ import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.view.AAPopupWindow;
+import jbl.stc.com.view.AaPopupWindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.view.BlurringView;
@@ -91,7 +91,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private CheckBox checkBoxNoiseCancel;
     private LinearLayout linearLayoutBattery;
     private LightX lightX;
-    private AAPopupWindow aaPopupWindow;
+    private AaPopupWindow aaPopupWindow;
     private SaPopupWindow saPopupwindow;
 
     private RelativeLayout linearLayoutNoiseCanceling;
@@ -209,7 +209,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void generateAAPopupWindow() {
-        aaPopupWindow = new AAPopupWindow(getActivity(), lightX);
+        aaPopupWindow = new AaPopupWindow(getActivity(), lightX);
         aaPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
