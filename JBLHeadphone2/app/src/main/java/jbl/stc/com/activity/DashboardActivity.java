@@ -9,11 +9,9 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -41,7 +39,6 @@ import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
-import jbl.stc.com.listener.A2dpObserver;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.ota.CheckUpdateAvailable;
@@ -120,22 +117,31 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     private void updateDisconnectedAdapter() {
         for (MyDevice myDevice : lists) {
-            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED){
                 myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
                 break;
             }
         }
     }
 
-    private void updateHalfConnectedAdapter(List<BluetoothDevice> deviceList) {
+    private void updateConnectedStatusAdapter(List<BluetoothDevice> deviceList) {
         if (getSpecifiedDevice() == null || getSpecifiedDevice().getName() == null) {
             Logger.i(TAG, "Specified device is not found");
             return;
         }
+        for (MyDevice myDevice : lists) {
+            myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
+        }
+        List<MyDevice> myDeviceListA2dp = new ArrayList<>();
         for (BluetoothDevice bluetoothDevice : deviceList) {
+            String key = bluetoothDevice.getName()+"-"+bluetoothDevice.getAddress();
+            myDeviceListA2dp.add(AppUtils.getMyDevice(key));
+        }
+        for (MyDevice myDeviceA2dp : myDeviceListA2dp) {
             for (MyDevice myDevice : lists) {
-                if (bluetoothDevice.getName().toUpperCase().contains(myDevice.deviceName.toUpperCase())) {
-                    if (getSpecifiedDevice().getName().toUpperCase().contains(myDevice.deviceName.toUpperCase())) {
+                if (myDeviceA2dp.equals(myDevice)){
+                    String mainDeviceKey = getSpecifiedDevice().getName() +"-"+getSpecifiedDevice().getAddress();
+                    if (mainDeviceKey.equalsIgnoreCase(myDeviceA2dp.deviceKey)) {
                         myDevice.connectStatus = ConnectStatus.A2DP_CONNECTED;
                     } else {
                         myDevice.connectStatus = ConnectStatus.A2DP_HALF_CONNECTED;
@@ -205,28 +211,30 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
         mIsConnected = isConnected;
         if (isConnected) {
-            if (!isUpdatingFirmware) {
-                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
+            if (isUpdatingFirmware) {
+                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_OTA_FRAGMENT, 200);
             } else {
                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
             }
 
         } else {
             updateDisconnectedAdapter();
-            dashboardHandler.removeMessages(MSG_SHOW_MY_PRODUCTS);
-            dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
+            removeAllFragment();
+            myGridAdapter.setMyAdapterList(lists);
         }
     }
 
     public void checkDevices(List<BluetoothDevice> deviceList) {
-        super.checkDevices(deviceList);
-        if (hasNewDevice(deviceList)) {
-            initMyGridAdapterList();
-            updateHalfConnectedAdapter(deviceList);
-            showMyProducts();
-        } else {
-            updateHalfConnectedAdapter(deviceList);
-            myGridAdapter.setMyAdapterList(lists);
+        if (mIsConnected) {
+            super.checkDevices(deviceList);
+            if (hasNewDevice(deviceList)) {
+                initMyGridAdapterList();
+                updateConnectedStatusAdapter(deviceList);
+                showMyProducts();
+            } else {
+                updateConnectedStatusAdapter(deviceList);
+                myGridAdapter.setMyAdapterList(lists);
+            }
         }
     }
 
@@ -282,6 +290,11 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         textViewTips.setVisibility(View.GONE);
     }
 
+    @Override
+    public void startA2DPCheck() {
+        super.startA2DPCheck();
+    }
+
     public static DashboardActivity getDashboardActivity() {
         return dashboardActivity;
     }
@@ -298,6 +311,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             switch (msg.what) {
                 case MSG_SHOW_MY_PRODUCTS: {
                     showMyProducts();
+                    startA2DPCheck();
                     dashboardHandler.removeMessages(MSG_START_SCAN);
                     dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT, 2000);
                     break;
@@ -328,7 +342,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     break;
                 }
                 case MSG_START_SCAN: {
-                    startScan();
+                    if (isConnected()) {
+                        startA2DPCheck();
+                    }
                     dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
                     break;
                 }
@@ -336,13 +352,11 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
     }
 
-    private void startScan() {
-        if (isConnected()) {
-            super.startA2DPCheck();
-        }
-    }
-
     public void goHomeFragment(MyDevice myDevice) {
+        Logger.d(TAG,"goHomeFragment");
+        dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
+        dashboardHandler.removeMessages(MSG_SHOW_MY_PRODUCTS);
+        dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
         dashboardHandler.removeMessages(MSG_START_SCAN);
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if (isConnected()) {
@@ -360,7 +374,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
         HomeFragment homeFragment = new HomeFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(JBLConstant.KEY_HALF_CONNECTED, myDevice);
+        bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
         homeFragment.setArguments(bundle);
         if (fr == null) {
             switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);

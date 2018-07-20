@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -116,7 +115,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         Log.i(TAG, "onCreateView");
         Bundle bundle = getArguments();
         if (bundle != null) {
-            myDevice = bundle.getParcelable(JBLConstant.KEY_HALF_CONNECTED);
+            myDevice = bundle.getParcelable(JBLConstant.KEY_MY_DEVICE);
         }
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         generateAAPopupWindow();
@@ -290,7 +289,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             case R.id.image_view_home_settings: {
                 SettingsFragment settingsFragment = new SettingsFragment();
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(JBLConstant.KEY_HALF_CONNECTED,myDevice);
+                bundle.putParcelable(JBLConstant.KEY_MY_DEVICE,myDevice);
                 settingsFragment.setArguments(bundle);
                 switchFragment(settingsFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;

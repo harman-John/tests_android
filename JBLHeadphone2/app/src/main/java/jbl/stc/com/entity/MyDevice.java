@@ -44,4 +44,12 @@ public class MyDevice implements Parcelable {
         dest.writeInt(deviceIcon);
         dest.writeInt(connectStatus);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this.deviceKey.equalsIgnoreCase(((MyDevice)obj).deviceKey)){
+            return true;
+        }
+        return super.equals(obj);
+    }
 }

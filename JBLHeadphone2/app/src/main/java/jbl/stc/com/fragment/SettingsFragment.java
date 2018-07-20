@@ -35,7 +35,6 @@ import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
-import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.FirmwareUtil;
 
 public class SettingsFragment extends BaseFragment implements View.OnClickListener {
@@ -65,7 +64,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        myDevice = getArguments().getParcelable(JBLConstant.KEY_HALF_CONNECTED);
+        myDevice = getArguments().getParcelable(JBLConstant.KEY_MY_DEVICE);
         if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
             DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
         }

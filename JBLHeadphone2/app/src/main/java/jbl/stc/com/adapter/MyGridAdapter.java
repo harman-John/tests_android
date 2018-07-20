@@ -148,8 +148,11 @@ public class MyGridAdapter extends BaseAdapter {
 //                        breathLightMap.get(key).stopBreathing();
 //                    }
                     MyDevice myDevice = mLists.get(msg.arg1);
-                    if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED
-                            ||myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+                    //                            && DashboardActivity.getDashboardActivity().isConnected()
+                    if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+                        Logger.d(TAG, "Show home fragment");
+                        DashboardActivity.getDashboardActivity().goHomeFragment(myDevice);
+                    }else if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
                         DashboardActivity.getDashboardActivity().goHomeFragment(myDevice);
                     }else {
                         Fragment fr = DashboardActivity.getDashboardActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
