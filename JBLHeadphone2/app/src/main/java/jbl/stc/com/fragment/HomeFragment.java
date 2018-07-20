@@ -53,7 +53,7 @@ import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.view.AaPopupWindow;
+import jbl.stc.com.view.AmbientAwarePopupWindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.view.BlurringView;
@@ -91,7 +91,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private CheckBox checkBoxNoiseCancel;
     private LinearLayout linearLayoutBattery;
     private LightX lightX;
-    private AaPopupWindow aaPopupWindow;
+    private AmbientAwarePopupWindow ambientAwarePopupWindow;
     private SmartAmbientPopupWindow smartAmbientPopupwindow;
 
     private RelativeLayout linearLayoutNoiseCanceling;
@@ -209,12 +209,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void generateAAPopupWindow() {
-        aaPopupWindow = new AaPopupWindow(getActivity(), lightX);
-        aaPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        ambientAwarePopupWindow = new AmbientAwarePopupWindow(getActivity(), lightX);
+        ambientAwarePopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 //dismiss blur view
-                aaPopupWindow.setAAOff();
+                ambientAwarePopupWindow.setAAOff();
                 if (mBlurView != null) {
                     mBlurView.setVisibility(View.GONE);
                 }
@@ -259,10 +259,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onDetach() {
         super.onDetach();
-        if (aaPopupWindow == null) {
+        if (ambientAwarePopupWindow == null) {
             return;
         }
-        aaPopupWindow.dismiss();
+        ambientAwarePopupWindow.dismiss();
     }
 
     @Override
@@ -368,7 +368,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 mBlurView.setAlpha(1f);
             }
         });
-        aaPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
+        ambientAwarePopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
 
         getAAValue();
     }
@@ -423,14 +423,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 }
                 case MSG_AMBIENT_LEVEL: {
                     //for old devices
-                    aaPopupWindow.updateAAUI(msg.arg1);//AppUtils.levelTransfer(msg.arg1)<---method for new device
+                    ambientAwarePopupWindow.updateAAUI(msg.arg1);//AppUtils.levelTransfer(msg.arg1)<---method for new device
                     break;
                 }
                 case MSG_AA_LEFT:
-                    aaPopupWindow.updateAALeft(msg.arg1);
+                    ambientAwarePopupWindow.updateAALeft(msg.arg1);
                     break;
                 case MSG_AA_RIGHT:
-                    aaPopupWindow.updateAARight(msg.arg1);
+                    ambientAwarePopupWindow.updateAARight(msg.arg1);
                     break;
                 case MSG_CURRENT_PRESET: {
                     updateCurrentEQ(msg.arg1);
@@ -657,10 +657,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case AmCmds.CMD_AmbientLevelingNotification: {
 
-                if (aaPopupWindow == null) {
+                if (ambientAwarePopupWindow == null) {
                     return;
                 }
-                aaPopupWindow.updateAAUI(AppUtils.levelTransfer(Integer.valueOf(values.iterator().next().getValue().toString())));//new devices
+                ambientAwarePopupWindow.updateAAUI(AppUtils.levelTransfer(Integer.valueOf(values.iterator().next().getValue().toString())));//new devices
             }
             break;
 
