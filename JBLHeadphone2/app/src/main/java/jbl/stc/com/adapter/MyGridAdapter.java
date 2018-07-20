@@ -85,11 +85,14 @@ public class MyGridAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         if (mLists.get(position).connectStatus == ConnectStatus.A2DP_CONNECTED){
-            viewHolder.relativeLayoutBreathingIcon.setAlpha(1);
+            viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(255);
+            viewHolder.imageViewIcon.setImageAlpha(255);
         } else if (mLists.get(position).connectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
-            viewHolder.relativeLayoutBreathingIcon.setAlpha((float) 0.8);
+            viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(128);
+            viewHolder.imageViewIcon.setImageAlpha(255);
         } else {
-            viewHolder.relativeLayoutBreathingIcon.setAlpha((float) 0.4);
+            viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(128);
+            viewHolder.imageViewIcon.setImageAlpha(128);
         }
         viewHolder.textViewDeviceName.setText(mLists.get(position).deviceName);
 
