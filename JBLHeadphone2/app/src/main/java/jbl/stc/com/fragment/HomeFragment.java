@@ -509,6 +509,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void updateCurrentEQ(int index) {
+        Logger.d(TAG,"eqIndex:"+index);
         switch (index) {
             case 0: {
                 textViewCurrentEQ.setText(getString(R.string.off));

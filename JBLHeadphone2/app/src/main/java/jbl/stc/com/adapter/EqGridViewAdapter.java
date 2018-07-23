@@ -7,15 +7,21 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.avnera.smartdigitalheadset.GraphicEQPreset;
+import com.avnera.smartdigitalheadset.LightX;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.entity.EQModel;
+import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.utils.ToastUtil;
 import jbl.stc.com.view.DragGridView;
 import jbl.stc.com.view.EqGridView;
 
@@ -24,9 +30,21 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
     private List<EQModel> eqModels = new ArrayList<>();
     public int mHidePosition = -1;
     private Context context;
-     public void setEqModels(List<EQModel> models) {
+    private LightX lightX;
+    public DeleteAllCustomeEQListener deleteAllCustomeEQListener;
+
+    public void setDeleteAllCustomeEQListener(DeleteAllCustomeEQListener deleteAllCustomeEQListener) {
+        this.deleteAllCustomeEQListener=deleteAllCustomeEQListener;
+    }
+
+    public interface DeleteAllCustomeEQListener{
+        void DeleteAllCustomeEQ();
+    }
+
+    public void setEqModels(List<EQModel> models, LightX lightX) {
         this.eqModels.clear();
         this.eqModels.addAll(models);
+        this.lightX=lightX;
         notifyDataSetChanged();
     }
     @Override
@@ -102,15 +120,42 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
 
     @Override
     public void deleteItem(int deletePosition) {
-        if (null != eqModels && deletePosition < eqModels.size()) {
-            EQSettingManager.get().deleteEQ(eqModels.get(deletePosition).eqName,context);
-            eqModels.remove(deletePosition);
-            notifyDataSetChanged();
-        }
+        String deleteEqName=eqModels.get(deletePosition).eqName;
+        String curEqName= PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, context, "");
+          if (null != eqModels &&eqModels.size()>0&& deletePosition < eqModels.size()) {
+                EQSettingManager.OperationStatus operationStatus = EQSettingManager.get().deleteEQ(eqModels.get(deletePosition).eqName,context);
+                eqModels.remove(deletePosition);
+              if (!TextUtils.isEmpty(curEqName)&&!(curEqName.equals(context.getResources().getString(R.string.jazz)))
+                      &&!(curEqName.equals(context.getResources().getString(R.string.vocal)))&&
+                      !(curEqName.equals(context.getResources().getString(R.string.bass)))){
+                  if (operationStatus == EQSettingManager.OperationStatus.DELETED) {
+                      if (eqModels!=null&&eqModels.size()>0){
+                          if (curEqName.equals(deleteEqName)){
+                              int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(eqModels.get(0));
+                              ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
+                              PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModels.get(0).eqName,context);
+                            }
+                          }else{
+                          //deleteAllCustomeEQListener.DeleteAllCustomeEQ();
+                          int[] eqValueArray = new int[]{0,0,0,0,0,0,0,0,0,0};
+                          ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
+                          PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,context.getResources().getString(R.string.off),context);
+
+                      }
+                  }
+              }
+
+              notifyDataSetChanged();
+            }
+
+
     }
 
     private class ViewHolder{
       private TextView  tv_eqname;
       private ImageView image_view;
     }
+
+
+
 }

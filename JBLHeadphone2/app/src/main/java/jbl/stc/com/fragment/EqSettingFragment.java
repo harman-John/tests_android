@@ -214,6 +214,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
         equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
         //CommandManager.get().setGrEqBandGains(currSelectedEq.id, eqValueArray);
+        ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
         AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
         if (fromUser) {
             eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);

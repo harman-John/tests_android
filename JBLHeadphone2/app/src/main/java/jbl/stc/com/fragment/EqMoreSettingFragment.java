@@ -22,10 +22,10 @@ import jbl.stc.com.listener.OnEqIndexChangeListener;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.view.DragGridView;
+import jbl.stc.com.view.EqGridView;
 
 
-
-public class EqMoreSettingFragment extends BaseFragment implements View.OnClickListener {
+public class EqMoreSettingFragment extends BaseFragment implements View.OnClickListener{
     private ImageView closeImageView;
     private DragGridView eqGridView;
 
@@ -156,4 +156,5 @@ public class EqMoreSettingFragment extends BaseFragment implements View.OnClickL
                 break;
         }
     }
+
 }

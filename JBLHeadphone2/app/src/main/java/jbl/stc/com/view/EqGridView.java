@@ -595,17 +595,28 @@ public class EqGridView extends GridView {
         System.out.println("CurrentY" + currentY + "CurrentX" + currentX);
         if (IsDeleteArea(currentX, currentY)) {
             Logger.d(TAG, "IsDeleteArea:True");
-            //startScaleAnimation();
+            mIsScaleAnima=true;
+            for (int i=1;i<4;i++){
+                mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize-10*i);
+                mWindowLayoutParams.height = UiUtils.dip2px(getContext(), mDragLayoutSize-10*i);
+                mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
+            }
 
         } else {
             Logger.d(TAG, "IsDeleteArea:false");
             // ScrollView自动滚动
             mHandler.post(mScrollRunnable);
+            if (mIsScaleAnima){
+                mIsScaleAnima=false;
+                for (int i=1;i<4;i++){
+                    mWindowLayoutParams.width = UiUtils.dip2px(getContext(), (mDragLayoutSize-30)+10*i);
+                    mWindowLayoutParams.height = UiUtils.dip2px(getContext(), (mDragLayoutSize-30)+10*i);
+                    mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
+                }
+            }
         }
     }
 
-    private int oldWith = 140;
-    private int oldHeight = 140;
     private void startScaleAnimation(int dValue) {
         if (!mIsScaleAnima) {
             /*ScaleAnimation scaleAnim = new ScaleAnimation(1.0f, 0.5f, 1.0f, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -617,11 +628,6 @@ public class EqGridView extends GridView {
             anim.setFillAfter(true);
             mDragImageView.clearAnimation();
             mDragImageView.startAnimation(anim);*/
-            mWindowLayoutParams.width = UiUtils.dip2px(getContext(), oldWith-=dValue);
-            mWindowLayoutParams.height = UiUtils.dip2px(getContext(), oldHeight-=dValue);
-            mDragLayout.setLeft(mDragLayout.getLeft());
-//            mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
-            mIsScaleAnima = true;
         }
     }
 
