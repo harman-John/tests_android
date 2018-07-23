@@ -1,10 +1,8 @@
 package jbl.stc.com.fragment;
 
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,9 +13,12 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.Status;
 import com.avnera.audiomanager.responseResult;
+import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
+import com.avnera.smartdigitalheadset.Utility;
 
 import java.util.ArrayList;
 
@@ -55,6 +56,8 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     private String deviceNameStr;
     private TextView textViewFirmware;
     private MyDevice myDevice;
+    private TextView textViewFwVersion;
+    private ImageView imageViewDownload;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -149,6 +152,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         updateDeviceNameAndImage(deviceNameStr, deviceImage, textViewDeviceName);
         if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
             ANCControlManager.getANCManager(getActivity()).getVoicePrompt(lightX);
+            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
         }
         updateUI();
         showOta(FirmwareUtil.isUpdatingFirmWare.get());
@@ -156,10 +160,20 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     }
 
     public void showOta(boolean hasUpdate) {
+        imageViewDownload = view.findViewById(R.id.image_view_settings_download);
+        textViewFwVersion = view.findViewById(R.id.text_view_settings_firmware_version);
         if (hasUpdate && textViewFirmware != null) {
-            Drawable nav_up = ContextCompat.getDrawable(getActivity(), R.mipmap.download);
-            nav_up.setBounds(0, 0, nav_up.getMinimumWidth(), nav_up.getMinimumHeight());
-            textViewFirmware.setCompoundDrawables(null, null, nav_up, null);
+            imageViewDownload.setVisibility(View.VISIBLE);
+            textViewFwVersion.setVisibility(View.GONE);
+        }else{
+            imageViewDownload.setVisibility(View.GONE);
+            textViewFwVersion.setVisibility(View.VISIBLE);
+            String firmwareVersion = PreferenceUtils.getString(myDevice.deviceName, PreferenceKeys.APP_VERSION, getActivity(),"");
+            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+                textViewFwVersion.setText(firmwareVersion);
+            }else{
+                textViewFwVersion.setText("");
+            }
         }
     }
 
@@ -277,10 +291,50 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         }
     }
 
+    private int reTry = 1;
+    @Override
+    public void lightXAppReadResult(LightX var1, Command command, boolean success, byte[] buffer) {
+        super.lightXAppReadResult(var1, command, success, buffer);
+        if (success) {
+            boolean boolValue;
+            switch (command) {
+                case AppOnEarDetectionWithAutoOff:
+                    boolValue = Utility.getBoolean(buffer, 0);
+                    toggleAutoOffTimer.setChecked(boolValue);
+                    break;
+                case AppVoicePromptEnable:
+                    boolValue = Utility.getBoolean(buffer, 0);
+                    toggleVoicePrompt.setChecked(boolValue);
+                    break;
+                case AppFirmwareVersion:
+                    int major = buffer[0];
+                    int minor = buffer[1];
+                    int revision = buffer[2];
+                    Log.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision);
+                    String version = major + "." + minor + "." + revision;
+                    textViewFwVersion.setText(version);
+                    break;
+            }
+        }else if (reTry <= 10) {
+            switch (command) {
+                case AppFirmwareVersion:
+                    textViewFwVersion.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
+                            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
+                            ++reTry;
+                        }
+                    }, 150 * reTry);
+                    break;
+            }
+        }
+    }
+
     @Override
     public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
         Logger.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
-        if (values == null || (values != null && values.size() == 0)) {
+        if (values == null || values.size() == 0) {
             return;
         }
         values.iterator().next().getValue().toString();
@@ -308,6 +362,12 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 } else {
                     toggleAutoOffTimer.setChecked(false);
                 }
+                break;
+            }
+            case AmCmds.CMD_FirmwareVersion:{
+                AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager(getActivity()).getAudioManager().getAccessoryStatus();
+                String version = accessoryInfo.getFirmwareRev();
+                textViewFwVersion.setText(version);
                 break;
             }
         }

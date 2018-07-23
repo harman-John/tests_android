@@ -34,6 +34,7 @@ import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Utility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
@@ -51,6 +52,7 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
+import jbl.stc.com.manager.Cmd150Manager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -656,6 +658,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             case AmCmds.CMD_GrEqBandGains: {
                 String value = values.iterator().next().getValue().toString();
                 Logger.d(TAG, "GrEqBandGains:" + value);
+                for (int i =0;i< values.size();i++) {
+                    Logger.d(TAG,"name = "+ values.get(i).getName());
+                    byte[] v = (byte[]) (values.get(i).getValue());
+                    Logger.d(TAG,"name = "+ Arrays.toString(v));
+                }
                 break;
             }
             case AmCmds.CMD_FirmwareVersion: {

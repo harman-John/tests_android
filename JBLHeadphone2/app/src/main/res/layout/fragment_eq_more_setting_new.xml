@@ -34,107 +34,102 @@
 
     <jbl.stc.com.view.CustomScrollView
         android:id="@+id/scrollview"
-        android:layout_below="@id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        >
+        android:layout_below="@id/titleBar"
+        android:scrollbars="vertical">
+
         <LinearLayout
             android:id="@+id/ll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
-                android:layout_marginTop="20dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="Presets"
-                />
+                android:text="Presets" />
+
             <LinearLayout
                 android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                >
+                android:layout_marginTop="20dp">
 
                 <TextView
                     android:id="@+id/tv_jazz"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
-                    android:text="@string/jazz"
-                    android:gravity="center"
-                    android:textSize="16sp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="20dp"
-                    android:background="@drawable/shape_circle_eq_name_bg_normal" />
+                    android:background="@drawable/shape_circle_eq_name_bg_normal"
+                    android:gravity="center"
+                    android:text="@string/jazz"
+                    android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/tv_vocal"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
-                    android:text="@string/vocal"
-                    android:gravity="center"
                     android:layout_gravity="center_vertical"
-                    android:background="@drawable/shape_circle_eq_name_bg_normal" />
+                    android:background="@drawable/shape_circle_eq_name_bg_normal"
+                    android:gravity="center"
+                    android:text="@string/vocal" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="20dp"
                 android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                >
+                android:layout_marginTop="20dp">
 
                 <TextView
                     android:id="@+id/tv_bass"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
-                    android:text="@string/bass"
-                    android:gravity="center"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="20dp"
-                    android:background="@drawable/shape_circle_eq_name_bg_normal" />
+                    android:background="@drawable/shape_circle_eq_name_bg_normal"
+                    android:gravity="center"
+                    android:text="@string/bass" />
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
-                android:layout_marginTop="20dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="Custom"
-                />
+                android:text="Custom" />
 
             <jbl.stc.com.view.EqGridView
                 android:id="@+id/eqGridView"
                 android:layout_width="240dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
                 android:background="@color/transparent"
-                android:gravity="center_horizontal"
-                android:horizontalSpacing="20dp"
-                android:verticalSpacing="20dp"
-                android:listSelector="@android:color/transparent"
-                android:numColumns="2"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
+                android:gravity="center_horizontal"
+                android:horizontalSpacing="20dp"
+                android:listSelector="@android:color/transparent"
+                android:numColumns="2"
                 android:scrollbars="none"
+                android:verticalSpacing="20dp"
                 app:drag_last_position="true"
                 app:drag_scale="1.00"
                 app:drag_start_position="0"
                 app:scale_mill="200"
-                app:vibrator="true"
-                />
+                app:vibrator="true" />
 
         </LinearLayout>
 
     </jbl.stc.com.view.CustomScrollView>
-
-
 
 
     <ImageView
@@ -144,8 +139,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:src="@mipmap/eq_delete"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <jbl.stc.com.view.EqArcView
         android:id="@+id/eqArcView"
@@ -155,33 +149,30 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="@dimen/eq_trash_circle_margin"
         android:layout_marginRight="@dimen/eq_trash_circle_margin"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 
     <!--<jbl.stc.com.view.EqGridView-->
-        <!--android:layout_above="@id/iv_remove"-->
-        <!--android:layout_below="@id/titleBar"-->
-        <!--android:id="@+id/eqGridView"-->
-        <!--android:layout_width="240dp"-->
-        <!--android:layout_marginTop="20dp"-->
-        <!--android:layout_marginBottom="20dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:background="@color/transparent"-->
-        <!--android:horizontalSpacing="20dp"-->
-        <!--android:verticalSpacing="20dp"-->
-        <!--android:listSelector="@android:color/transparent"-->
-        <!--android:numColumns="2"-->
-        <!--android:scrollbars="none"-->
-        <!--app:drag_last_position="true"-->
-        <!--app:drag_scale="1.05"-->
-        <!--app:drag_start_position="0"-->
-        <!--app:scale_mill="200"-->
-        <!--app:vibrator="true"-->
-        <!--/>-->
-
-
+    <!--android:layout_above="@id/iv_remove"-->
+    <!--android:layout_below="@id/titleBar"-->
+    <!--android:id="@+id/eqGridView"-->
+    <!--android:layout_width="240dp"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:layout_marginBottom="20dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:background="@color/transparent"-->
+    <!--android:horizontalSpacing="20dp"-->
+    <!--android:verticalSpacing="20dp"-->
+    <!--android:listSelector="@android:color/transparent"-->
+    <!--android:numColumns="2"-->
+    <!--android:scrollbars="none"-->
+    <!--app:drag_last_position="true"-->
+    <!--app:drag_scale="1.05"-->
+    <!--app:drag_start_position="0"-->
+    <!--app:scale_mill="200"-->
+    <!--app:vibrator="true"-->
+    <!--/>-->
 
 
 </RelativeLayout>
