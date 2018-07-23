@@ -366,10 +366,9 @@
 
                 <TextView
                     android:id="@+id/text_view_settings_firmware"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/settings_item_height"
                     android:layout_marginTop="@dimen/margin5dp"
-                    android:drawableRight="@mipmap/settings_arrow"
                     android:gravity="start|center_vertical"
                     android:paddingLeft="@dimen/settings_item_padding_left"
                     android:paddingRight="@dimen/settings_item_padding_right"
@@ -377,6 +376,32 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/text_view_settings_firmware_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/settings_item_height"
+                    android:layout_marginTop="@dimen/margin5dp"
+                    android:gravity="end|center_vertical"
+                    android:visibility="gone"
+                    android:layout_alignParentRight="true"
+                    android:paddingLeft="@dimen/settings_item_padding_left"
+                    android:paddingRight="@dimen/settings_item_padding_right"
+                    android:text="0.0.0"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textSize="14sp" />
+                <ImageView
+                    android:id="@+id/image_view_settings_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/margin5dp"
+                    android:gravity="end|center_vertical"
+                    android:src="@mipmap/download"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:paddingStart="@dimen/settings_item_padding_left"
+                    android:paddingEnd="@dimen/settings_item_padding_right"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textSize="14sp" />
             </RelativeLayout>
 
             <View
