@@ -30,11 +30,12 @@ import com.avnera.audiomanager.responseResult;
 
 import com.avnera.smartdigitalheadset.Command;
 
+import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Utility;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
@@ -46,6 +47,7 @@ import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.CreateEqTipsDialog;
+import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.logger.Logger;
@@ -53,6 +55,7 @@ import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.Cmd150Manager;
+import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -85,6 +88,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private final static int MSG_AA_RIGHT = 33;
 
     private final static int MSG_SEND_CMD_GET_FIRMWARE = 7;
+    private final static int MSG_UPDATE_CUSTOME_EQ = 8;
 
     private final long timeInterval = 30 * 1000L, pollingTime = 1000L;
     private ProgressBar progressBarBattery;
@@ -165,7 +169,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             checkBoxNoiseCancel = view.findViewById(R.id.image_view_home_noise_cancel);
             if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
                 checkBoxNoiseCancel.setOnClickListener(this);
-            }else{
+            } else {
                 linearLayoutNoiseCanceling.setAlpha((float) 0.5);
             }
         }
@@ -487,6 +491,20 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
                     break;
                 }
+                case MSG_UPDATE_CUSTOME_EQ:{
+                    application.deviceInfo.eqOn = true;
+                    String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(), null);
+                    if (name != null) {
+                        textViewCurrentEQ.setText(name);
+                        if (textViewCurrentEQ.getText().length() >= JBLConstant.MAX_MARQUEE_LEN) {
+                            textViewCurrentEQ.setSelected(true);
+                            textViewCurrentEQ.setMarqueeRepeatLimit(-1);
+                        }
+                    } else {
+                        textViewCurrentEQ.setText(getString(R.string.custom_eq));
+                    }
+                    break;
+                }
             }
         }
     }
@@ -511,7 +529,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void updateCurrentEQ(int index) {
-        Logger.d(TAG,"eqIndex:"+index);
+        Logger.d(TAG, "eqIndex:" + index);
+        //ANCControlManager.getANCManager(getContext()).getAppGraphicEQPresetBandSettings(lightX, GraphicEQPreset.Jazz,9);
         switch (index) {
             case 0: {
                 textViewCurrentEQ.setText(getString(R.string.off));
@@ -537,8 +556,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 break;
             }
             case 4: {
-                //ANCControlManager.getANCManager(getContext()).getAppGraphicEQBand(GraphicEQPreset.User,lightX);
-                application.deviceInfo.eqOn = true;
+                //ANCControlManager.getANCManager(getContext()).getAppGraphicEQBand(GraphicEQPreset.User, lightX);
+                ANCControlManager.getANCManager(getContext()).getAppGraphicEQPresetBandSettings(lightX,GraphicEQPreset.User,10);
+                /*application.deviceInfo.eqOn = true;
                 String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(), null);
                 if (name != null) {
                     textViewCurrentEQ.setText(name);
@@ -548,7 +568,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     }
                 } else {
                     textViewCurrentEQ.setText(getString(R.string.custom_eq));
-                }
+                }*/
                 break;
             }
             default:
@@ -656,8 +676,20 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 break;
             }
             case AmCmds.CMD_GrEqBandGains: {
-                String value = values.iterator().next().getValue().toString();
-                Logger.d(TAG, "GrEqBandGains:" + value);
+                Log.d(TAG, "EqBand command aaaa=" + command + ",values=" + values + ",status=" + status);
+                if (values!=null&&values.size()>0){
+                   /* Logger.d(TAG,"name = "+ values.get(0).getName());
+                    byte[] v = (byte[]) (values.get(0).getValue());
+                    Logger.d(TAG,"value = "+ Arrays.toString(v));*/
+
+                    Logger.d(TAG,"name = "+ values.iterator().next().getName().toString());
+                    byte[] v = (byte[]) (values.iterator().next().getValue());
+                    Logger.d(TAG,"value = "+ Arrays.toString(v));
+                    int presetIndext=v[0];
+                    int numBands=v[4];
+                    int value=v[8];
+                    Logger.d(TAG,"presetIndext:"+presetIndext+"numBands:"+numBands+"value:"+value);
+                }
                 break;
             }
             case AmCmds.CMD_FirmwareVersion: {
@@ -677,9 +709,71 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 Log.d(TAG, "CMD_RawRight =" + values.iterator().next().getValue().toString());
                 sendMessageTo(MSG_AA_RIGHT, values.iterator().next().getValue().toString());
                 break;
+            case AmCmds.CMD_GraphicEqPresetBandSettings: {
+                Log.d(TAG, "EqBand command aaaa=" + command + ",values=" + values + ",status=" + status);
+                /*if (values!=null&&values.size()>0){
+                    for (int i=0;i<values.size();i++){
+                        Logger.d(TAG,"EqBand name = "+ values.get(i).getName());
+                        byte[] v = (byte[]) (values.get(i).getValue());
+                        Logger.d(TAG,"EqBand value = "+ Arrays.toString(v));
+                    }
+                }*/
+                if (values!=null){
+                    byte[] v = (byte[]) (values.iterator().next().getValue());
+                    parseCustomeEQ(v);
+                }
+
+                break;
+            }
 
         }
 
+    }
+
+    private void parseCustomeEQ(byte[] v) {
+        if (v!=null&&v.length==48){
+            Logger.d(TAG,"EqBand value1 = "+ Arrays.toString(v));
+            int[] eqArray=new int[10];
+            eqArray[0]=v[8];
+            eqArray[1]=v[12];
+            eqArray[2]=v[16];
+            eqArray[3]=v[20];
+            eqArray[4]=v[24];
+            eqArray[5]=v[28];
+            eqArray[6]=v[32];
+            eqArray[7]=v[36];
+            eqArray[8]=v[40];
+            eqArray[9]=v[44];
+            String eqName=PreferenceUtils.getString(PreferenceKeys.MODEL, getContext(), null)+" EQ";
+            List<EQModel> models=EQSettingManager.get().getCompleteEQList(getActivity());
+            boolean isHave=false;
+            if(models!=null&&models.size()>0){
+                for (EQModel eqModel:models){
+                    if (EQSettingManager.get().isTheSameEQ(eqModel,eqArray)){
+                        isHave=true;
+                        PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModel.eqName,getContext());
+                        sendMessageTo(MSG_UPDATE_CUSTOME_EQ,null);
+                        Logger.d(TAG,"Have the same EQ:"+eqModel.eqName);
+                        break;
+                    }
+                }
+                if (!isHave){
+                    Logger.d(TAG,"create a new EQ");
+                    EQModel eqModel=EQSettingManager.get().getCustomeEQModelFromValues(eqArray,eqName);
+                    EQSettingManager.get().addCustomEQ(eqModel, getContext());
+                    PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModel.eqName,getContext());
+                    sendMessageTo(MSG_UPDATE_CUSTOME_EQ,null);
+                }
+
+            }else{
+                Logger.d(TAG,"create a new EQ");
+                EQModel eqModel=EQSettingManager.get().getCustomeEQModelFromValues(eqArray,eqName);
+                EQSettingManager.get().addCustomEQ(eqModel, getContext());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModel.eqName,getContext());
+                sendMessageTo(MSG_UPDATE_CUSTOME_EQ,null);
+            }
+
+        }
     }
 
     @Override
@@ -763,6 +857,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     Log.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision);
                     PreferenceUtils.setString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, major + "." + minor + "." + revision, getActivity());
                     break;
+
+                case AppGraphicEQPresetBandSettings: {
+                    Logger.d(TAG,"Eq band:"+Arrays.toString(var4));
+                    int preset = Utility.getInt(var4, 0);
+                    int numBands = Utility.getInt(var4, 4);
+                    parseCustomeEQ(var4);
+                }
+                break;
             }
         } else {
             switch (command) {
