@@ -72,6 +72,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
         }
         view = inflater.inflate(R.layout.fragment_settings, container, false);
+        view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         textViewFirmware = view.findViewById(R.id.text_view_settings_firmware);
         textViewDeviceName = view.findViewById(R.id.deviceName);
         deviceImage = view.findViewById(R.id.deviceImage);
@@ -225,7 +226,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 mHandler.postDelayed(enableVoicePromptRunnable, 1000);
                 break;
             }
-            case R.id.text_view_settings_firmware: {
+            case R.id.relative_layout_settings_firmware: {
                 switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
