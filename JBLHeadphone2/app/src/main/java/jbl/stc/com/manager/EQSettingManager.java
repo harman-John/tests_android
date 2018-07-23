@@ -379,6 +379,47 @@ public class EQSettingManager implements EqDbKey {
         return model;
     }
 
+    public EQModel getCustomeEQModelFromValues(int[] eqArray,String eqName){
+        float[] pointY = new float[10];
+        float[] pointX = {32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000};
+        EQModel eqModel =new EQModel();
+        eqModel.eqName=eqName;
+        eqModel.value_32=eqArray[0];
+        pointY[0]=eqModel.value_32;
+        eqModel.value_64=eqArray[1];
+        pointY[1]=eqModel.value_64;
+        eqModel.value_125=eqArray[2];
+        pointY[2]=eqModel.value_125;
+        eqModel.value_250=eqArray[3];
+        pointY[3]=eqModel.value_250;
+        eqModel.value_500=eqArray[4];
+        pointY[4]=eqModel.value_500;
+        eqModel.value_1000=eqArray[5];
+        pointY[5]=eqModel.value_1000;
+        eqModel.value_2000=eqArray[6];
+        pointY[6]=eqModel.value_2000;
+        eqModel.value_4000=eqArray[7];
+        pointY[7]=eqModel.value_4000;
+        eqModel.value_8000=eqArray[8];
+        pointY[8]=eqModel.value_8000;
+        eqModel.value_16000=eqArray[9];
+        pointY[9]=eqModel.value_16000;
+        eqModel.setPointY(pointY);
+        eqModel.setPointX(pointX);
+        eqModel.eqType = 4;
+        return  eqModel;
+    }
+
+    public boolean isTheSameEQ(EQModel eqModel,int[] eqArray){
+        boolean isSame=false;
+        if (eqModel.value_32==eqArray[0]&&eqModel.value_64==eqArray[1]&&eqModel.value_125==eqArray[2]&&eqModel.value_250==eqArray[3]
+                &&eqModel.value_500==eqArray[4]&&eqModel.value_1000==eqArray[5]&&eqModel.value_2000==eqArray[6]&&eqModel.value_4000==eqArray[7]
+                &&eqModel.value_8000==eqArray[8]&&eqModel.value_16000==eqArray[9]){
+            isSame=true;
+        }
+        return  isSame;
+    }
+
     public EQModel getEQModelFromValues(EQModel model, int[] values) {
         if (values.length == 10) {
             model.value_32 = values[0];

@@ -31,16 +31,6 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
     public int mHidePosition = -1;
     private Context context;
     private LightX lightX;
-    public DeleteAllCustomeEQListener deleteAllCustomeEQListener;
-
-    public void setDeleteAllCustomeEQListener(DeleteAllCustomeEQListener deleteAllCustomeEQListener) {
-        this.deleteAllCustomeEQListener=deleteAllCustomeEQListener;
-    }
-
-    public interface DeleteAllCustomeEQListener{
-        void DeleteAllCustomeEQ();
-    }
-
     public void setEqModels(List<EQModel> models, LightX lightX) {
         this.eqModels.clear();
         this.eqModels.addAll(models);
@@ -136,9 +126,8 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
                               PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModels.get(0).eqName,context);
                             }
                           }else{
-                          //deleteAllCustomeEQListener.DeleteAllCustomeEQ();
                           int[] eqValueArray = new int[]{0,0,0,0,0,0,0,0,0,0};
-                          ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
+                          ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.Off, eqValueArray, lightX);
                           PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,context.getResources().getString(R.string.off),context);
 
                       }

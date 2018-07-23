@@ -355,20 +355,28 @@ public class ANCControlManager {
     }
 
     public void getAppGraphicEQBand(GraphicEQPreset presetType, LightX lightX){
-        /*for (int i = 0; i < kGraphicEQNumBands; i++) {
+        for (int i = 0; i < kGraphicEQNumBands; i++) {
             if (lightX != null)
                 lightX.readAppGraphicEQBand(presetType,i);
             else {
                 Cmd150Manager.getInstance().getEqBandGains(AvneraManager.getAvenraManager(context).getAudioManager(), eqPresetToInt(presetType), i);
             }
-        }*/
+        }
 
-        if (lightX != null)
+        /*if (lightX != null)
             lightX.readAppGraphicEQBand(presetType,0);
         else {
             Cmd150Manager.getInstance().getEqBandGains(AvneraManager.getAvenraManager(context).getAudioManager(), eqPresetToInt(presetType), 0);
-        }
+        }*/
 
+    }
+
+    public void getAppGraphicEQPresetBandSettings(LightX lightX, GraphicEQPreset preset,int count) {
+        if (lightX != null) {
+            lightX.readAppGraphicEQPresetBandSettings(preset);
+        } else {
+            Cmd150Manager.getInstance().getAppGraphicEQPresetBandSettings(AvneraManager.getAvenraManager(context).getAudioManager(), eqPresetToInt(preset),9);
+        }
     }
 
     private int eqPresetToInt(GraphicEQPreset preset) {

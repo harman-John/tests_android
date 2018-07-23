@@ -349,4 +349,14 @@ public class Cmd150Manager implements BaseManager {
     }
 
 
+    public void getAppGraphicEQPresetBandSettings(Object object ,int preset,int count){
+        if (object == null) {
+            Log.i(TAG, "is not 150NC device");
+            return;
+        }
+        Log.d(TAG, "get command is:" + AmCmds.CMD_GraphicEqPresetBandSettings + "params are:" + "preset:" + preset );
+        ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_GraphicEqPresetBandSettings, preset,count);
+    }
+
+
 }

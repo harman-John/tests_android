@@ -41,7 +41,7 @@ import jbl.stc.com.view.EqGridView;
  * @class describe
  * Created by Vicky on 7/20/18.
  */
-public class NewEqMoreSettingFragment extends BaseFragment implements View.OnClickListener,EqGridViewAdapter.DeleteAllCustomeEQListener{
+public class NewEqMoreSettingFragment extends BaseFragment implements View.OnClickListener{
 
     private CustomScrollView mScrollView;
     private ImageView closeImageView;
@@ -106,7 +106,6 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
         adapter=new EqGridViewAdapter();
         adapter.setEqModels(eqModelList,lightX);
         eqGridView.setAdapter(adapter);
-        adapter.setDeleteAllCustomeEQListener(this);
     }
 
 
@@ -118,11 +117,6 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
                 break;
         }
 
-
     }
 
-    @Override
-    public void DeleteAllCustomeEQ() {
-        //PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getResources().getString(R.string.off),getContext());
-    }
 }
