@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -111,7 +112,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private View bluredView;
     private MyDevice myDevice;
     private TextView titleEqText;
-    private int eqSelectIndex;
+    private float mPosY,mCurPosY;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -200,7 +201,35 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         deviceName = myDevice.deviceName;
 //        deviceName = PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
         updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
+        initEvent();
         return view;
+    }
+
+    private void initEvent() {
+        relative_layout_home_eq_info.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+
+                    case MotionEvent.ACTION_DOWN:
+                        mPosY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        mCurPosY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                       if (mCurPosY - mPosY < 0
+                                && (Math.abs(mCurPosY - mPosY) > 25)) {
+                            //向上滑动
+                           switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                        }
+
+                        break;
+                }
+                return true;
+            }
+
+        });
     }
 
     public MyDevice getMyDeviceInHome() {
