@@ -69,6 +69,7 @@
                     android:background="@drawable/shape_circle_eq_name_bg_normal"
                     android:gravity="center"
                     android:text="@string/jazz"
+                    android:alpha="0.5"
                     android:textSize="16sp" />
 
                 <TextView
@@ -78,6 +79,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="@drawable/shape_circle_eq_name_bg_normal"
                     android:gravity="center"
+                    android:alpha="0.5"
                     android:text="@string/vocal" />
             </LinearLayout>
 
@@ -95,6 +97,7 @@
                     android:layout_marginRight="20dp"
                     android:background="@drawable/shape_circle_eq_name_bg_normal"
                     android:gravity="center"
+                    android:alpha="0.5"
                     android:text="@string/bass" />
             </LinearLayout>
 
