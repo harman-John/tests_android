@@ -31,7 +31,7 @@ public class PoppinsRegularEditText extends AppCompatEditText {
 
     private void init(Context context) {
         AssetManager assetManager = context.getAssets();
-        Typeface typeface = Typeface.createFromAsset(assetManager, "fonts/Poppins-Regular.ttf");
+        Typeface typeface = Typeface.createFromAsset(assetManager, "OpenSans-Regular.ttf");
         setTypeface(typeface);
     }
 

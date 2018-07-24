@@ -40,7 +40,7 @@
         android:layout_centerHorizontal="true"
         android:orientation="vertical">
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="59dp"
             android:layout_gravity="center_horizontal"
@@ -55,7 +55,7 @@
             android:layout_marginRight="16dp"
             android:background="@color/grey_turn_on_bt"/>
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="59dp"
             android:layout_gravity="center_horizontal"
@@ -68,7 +68,7 @@
             android:layout_height="1dp"
             android:background="@color/grey_turn_on_bt"/>
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="59dp"
             android:layout_gravity="center_horizontal"
@@ -83,7 +83,7 @@
             android:layout_marginRight="16dp"
             android:background="@color/grey_turn_on_bt"/>
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
@@ -93,7 +93,7 @@
 
     </LinearLayout>
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:layout_below="@id/ll_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
         />
 
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/text_view_get_started"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

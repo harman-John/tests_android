@@ -19,7 +19,7 @@
             android:layout_height="320dp"
             android:background="@mipmap/turn_on_bluetooth" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_splash_turn_on_bt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,16 +28,18 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_splash_turn_on_bt_detail_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:textStyle="normal"
             android:text="@string/turn_on_bluetooth_detail_1" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="normal"
             android:text="@string/turn_on_bluetooth_detail_2" />
     </LinearLayout>
 </RelativeLayout>

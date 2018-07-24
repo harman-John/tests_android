@@ -40,10 +40,10 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_smart_button,
                 container, false);
-        ambient = (RelativeLayout) view.findViewById(R.id.ambientLayout);
-        noise = (RelativeLayout) view.findViewById(R.id.noiceCancelling);
+        ambient =  view.findViewById(R.id.relative_layout_smart_button_ambient_aware);
+        noise = view.findViewById(R.id.relative_layout_smart_button_noise_cancelling);
         iv_check_ambient=(ImageView)view.findViewById(R.id.iv_check_ambient);
-        iv_check_noiceCancelling=(ImageView)view.findViewById(R.id.iv_check_noiceCancelling);
+        iv_check_noiceCancelling=(ImageView)view.findViewById(R.id.iv_check_noiseCancelling);
         view.findViewById(R.id.image_view_back).setOnClickListener(this);
         ambient.setOnClickListener(this);
         noise.setOnClickListener(this);
@@ -106,14 +106,14 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
             case R.id.image_view_back:
                 getActivity().onBackPressed();
                 break;
-            case R.id.ambientLayout:
+            case R.id.relative_layout_smart_button_ambient_aware:
                 iv_check_noiceCancelling.setVisibility(View.GONE);
                 iv_check_ambient.setVisibility(View.VISIBLE);
                 iv_check_ambient.setImageResource(R.mipmap.selected_orange);
                 writeProgrammableIndexButton(false);
                 AnalyticsManager.getInstance(getActivity()).reportSmartButtonChange(getString(R.string.ambientAware));
                 break;
-            case R.id.noiceCancelling:
+            case R.id.relative_layout_smart_button_noise_cancelling:
                 iv_check_noiceCancelling.setVisibility(View.VISIBLE);
                 iv_check_noiceCancelling.setImageResource(R.mipmap.selected_orange);
                 iv_check_ambient.setVisibility(View.GONE);

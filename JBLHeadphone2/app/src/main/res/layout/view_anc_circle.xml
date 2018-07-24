@@ -26,7 +26,7 @@
             android:background="@mipmap/btn_awareness_high"
             android:orientation="vertical">
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/highTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             android:background="@mipmap/btn_awareness_mid"
             android:orientation="vertical">
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/mediumTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             android:background="@mipmap/btn_awareness_low"
             android:orientation="vertical">
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/lowTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                 android:textSize="15sp" />
         </RelativeLayout>
     </jbl.stc.com.view.CircularInsideLayout>
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -121,7 +121,7 @@
             app:thumb2_start="@integer/thumb2Angle"
             app:thumb2_text="@dimen/thumb2Text" />
     </FrameLayout>
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/text_view_page_two_off"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

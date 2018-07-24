@@ -15,11 +15,11 @@
         android:paddingLeft="@dimen/margin_top_10dp"
         android:paddingRight="@dimen/margin_top_10dp">
 
-        <jbl.stc.com.view.PoppinsMediumTextView
-            style="@style/PoppinsMediumTextStyle"
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:textStyle="normal"
             android:text="@string/title_eq_setting" />
 
         <jbl.stc.com.view.AppImageView
@@ -46,12 +46,13 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
+                android:textStyle="normal"
                 android:text="Presets" />
 
             <LinearLayout
@@ -60,19 +61,20 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp">
 
-                <TextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/tv_jazz"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="20dp"
+                    android:textStyle="normal"
                     android:background="@drawable/shape_circle_eq_name_bg_normal"
                     android:gravity="center"
                     android:text="@string/jazz"
                     android:alpha="0.5"
                     android:textSize="16sp" />
 
-                <TextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/tv_vocal"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
@@ -80,6 +82,7 @@
                     android:background="@drawable/shape_circle_eq_name_bg_normal"
                     android:gravity="center"
                     android:alpha="0.5"
+                    android:textStyle="normal"
                     android:text="@string/vocal" />
             </LinearLayout>
 
@@ -89,7 +92,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp">
 
-                <TextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/tv_bass"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
@@ -98,15 +101,17 @@
                     android:background="@drawable/shape_circle_eq_name_bg_normal"
                     android:gravity="center"
                     android:alpha="0.5"
+                    android:textStyle="normal"
                     android:text="@string/bass" />
             </LinearLayout>
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
+                android:textStyle="normal"
                 android:text="Custom" />
 
             <jbl.stc.com.view.EqGridView

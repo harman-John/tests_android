@@ -23,7 +23,7 @@
             android:src="@mipmap/black_arrow_back"
             android:visibility="visible" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -56,7 +56,7 @@
                 android:layout_marginStart="30dp"
                 android:background="@android:color/white" />
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_product_help_item_one"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
@@ -65,7 +65,7 @@
                 android:paddingEnd="@dimen/settings_item_padding_right"
                 android:paddingStart="@dimen/settings_item_padding_left"
                 android:text="@string/online_user_manual"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </RelativeLayout>

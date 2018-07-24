@@ -21,12 +21,13 @@
         android:layout_centerInParent="true"
         android:visibility="gone"
         />
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/tv_eqname"
         android:layout_width="110dp"
         android:layout_height="110dp"
         android:text="@string/bass"
         android:textSize="16sp"
+        android:textStyle="normal"
         android:textColor="@color/eq_panel_name_text"
         android:gravity="center"
         android:layout_centerInParent="true"

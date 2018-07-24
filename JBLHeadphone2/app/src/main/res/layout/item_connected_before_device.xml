@@ -7,7 +7,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/text_view_item_connected_before_device_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

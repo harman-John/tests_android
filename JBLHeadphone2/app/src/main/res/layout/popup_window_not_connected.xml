@@ -12,7 +12,7 @@
         android:background="@drawable/shape_round_corner"
         android:orientation="vertical">
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -23,7 +23,7 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
@@ -48,7 +48,7 @@
             android:textAllCaps="false"
             android:background="@drawable/rectangle_with_round_corner_orange"/>
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_not_connected_popup_keep_using"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

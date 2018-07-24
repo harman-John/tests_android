@@ -51,7 +51,7 @@
                 android:layout_alignParentTop="true"
                 android:orientation="vertical">
 
-                <TextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/text_view_home_device_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
                             android:background="@drawable/checkbox_noise_cancel_selector"
                             android:button="@android:color/transparent" />
 
-                        <jbl.stc.com.view.PoppinsRegularTextView
+                        <jbl.stc.com.view.CustomFontTextView
                             style="@style/PoppinsRegularTextStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -123,6 +123,7 @@
                             android:layout_marginTop="8dp"
                             android:gravity="center_horizontal"
                             android:lineSpacingExtra="-5dp"
+                            android:textStyle="normal"
                             android:text="@string/text_noise_canceling"
                             android:textColor="#5B697E" />
                     </RelativeLayout>
@@ -143,7 +144,7 @@
                             android:layout_centerHorizontal="true"
                             android:background="@drawable/checkbox_ambient_selector" />
 
-                        <jbl.stc.com.view.PoppinsRegularTextView
+                        <jbl.stc.com.view.CustomFontTextView
                             android:id="@+id/text_view_home_ambient_aware"
                             style="@style/PoppinsRegularTextStyle"
                             android:layout_width="wrap_content"
@@ -153,6 +154,7 @@
                             android:layout_marginTop="8dp"
                             android:gravity="center_horizontal"
                             android:text="@string/text_ambient_aware"
+                            android:textStyle="normal"
                             android:textColor="#5B697E" />
                     </RelativeLayout>
 
@@ -177,7 +179,7 @@
                 android:paddingLeft="@dimen/page_padding_left"
                 android:paddingRight="@dimen/page_padding_right">
 
-                <jbl.stc.com.view.PoppinsRegularTextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/titleEqText"
                     style="@style/PoppinsRegularTextStyle"
                     android:layout_width="wrap_content"
@@ -198,7 +200,7 @@
                     android:layout_toRightOf="@+id/titleEqText"
                     android:background="@color/white" />
 
-                <jbl.stc.com.view.PoppinsRegularTextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/text_view_home_eq_name"
                     style="@style/PoppinsRegularTextStyle"
                     android:layout_width="wrap_content"
@@ -209,6 +211,7 @@
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="@string/off"
+                    android:textStyle="normal"
                     android:textColor="@color/white"
                     android:textSize="20dp" />
 

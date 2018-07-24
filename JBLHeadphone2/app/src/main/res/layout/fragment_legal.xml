@@ -21,13 +21,14 @@
             android:src="@mipmap/black_arrow_back"
             />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/agree_to_eula"
             android:textColor="@color/black"
+            android:textStyle="normal"
             android:textSize="18sp"/>
     </RelativeLayout>
     <ScrollView
@@ -37,13 +38,14 @@
         android:layout_marginTop="25dp"
         android:scrollbars="vertical"
         android:fadingEdge="vertical">
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view"
             android:background="@color/grey_eual"
             android:textColor="@android:color/black"
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:scrollbars="vertical"
+            android:textStyle="normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </ScrollView>
@@ -56,12 +58,13 @@
         android:paddingBottom="10dp"
         android:visibility="gone"
         android:background="@color/background">
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/eula_agree_and_start"
             android:textColor="@color/white"
             android:textSize="18sp"
+            android:textStyle="normal"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 </LinearLayout>

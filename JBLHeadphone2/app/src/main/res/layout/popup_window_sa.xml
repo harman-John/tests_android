@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/smart_ambient"
@@ -56,7 +56,7 @@
                 android:layout_alignParentRight="true"
                 android:orientation="vertical"
                 >
-                <TextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/daylight_ambient_tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                     android:textColor="@color/smart_audio_popup_text_color1"
                     />
 
-                <TextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/daylight_ambient_tv_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
                 android:layout_alignParentRight="true"
                 android:orientation="vertical"
                 >
-                <TextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/talk_through_tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
                     android:textColor="@color/smart_audio_popup_text_color1"
                     />
 
-                <TextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/talk_through_tv_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -16,11 +16,12 @@
             android:paddingLeft="@dimen/page_padding_left"
             android:paddingRight="@dimen/page_padding_right">
 
-            <jbl.stc.com.view.PoppinsMediumTextView
+            <jbl.stc.com.view.CustomFontTextView
                 style="@style/PoppinsMediumTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:textStyle="normal"
                 android:text="@string/title_eq" />
 
             <jbl.stc.com.view.AppImageView
@@ -42,7 +43,7 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <jbl.stc.com.view.PoppinsMediumTextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/titleText"
                 style="@style/PoppinsMediumTextStyle"
                 android:layout_width="match_parent"
@@ -50,15 +51,17 @@
                 android:layout_marginBottom="@dimen/text_margin_top_small"
                 android:gravity="center"
                 android:text="Start with my own EQ"
+                android:textStyle="normal"
                 android:visibility="visible" />
 
-            <jbl.stc.com.view.PoppinsRegularTextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/messageText"
                 style="@style/PoppinsRegularTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
+                android:textStyle="normal"
                 android:text="@string/dialog_message_create_my_own_eq"
                 android:visibility="visible" />
 
@@ -69,20 +72,22 @@
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
-                <jbl.stc.com.view.PoppinsRegularTextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/buttonCancel"
                     style="@style/ButtonTextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/app_button_height"
+                    android:textStyle="normal"
                     android:layout_marginRight="10dp"
                     android:text="Cancel"
                     android:visibility="gone" />
 
-                <jbl.stc.com.view.PoppinsRegularTextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/buttonConfirm"
                     style="@style/ButtonTextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/app_button_height"
+                    android:textStyle="normal"
                     android:layout_marginLeft="10dp"
                     android:text="Create my own EQ" />
             </LinearLayout>

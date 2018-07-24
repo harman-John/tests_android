@@ -6,9 +6,10 @@
     android:background="@drawable/shape_gradient_legal">
 
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textStyle="normal"
         android:text="Show JBL brand Story"/>
 </RelativeLayout>

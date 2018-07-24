@@ -55,7 +55,7 @@
                 android:layout_marginStart="30dp"
                 android:background="@android:color/white" />
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_info_my_product"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
@@ -64,7 +64,6 @@
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
                 android:text="@string/my_products"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -75,7 +74,7 @@
                 android:layout_marginStart="30dp"
                 android:background="@android:color/white" />
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_info_product_help"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
@@ -84,7 +83,6 @@
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
                 android:text="@string/text_product_help"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -96,7 +94,7 @@
                 android:background="@android:color/white" />
 
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_jbl_com"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
@@ -105,7 +103,6 @@
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
                 android:text="@string/text_jbl_com"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -116,7 +113,7 @@
                 android:layout_marginStart="30dp"
                 android:background="@android:color/white" />
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_open_source_license"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
@@ -125,7 +122,6 @@
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
                 android:text="@string/text_open_source_license"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -136,7 +132,7 @@
                 android:layout_marginStart="30dp"
                 android:background="@android:color/white" />
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_eula"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
@@ -145,7 +141,6 @@
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
                 android:text="@string/text_eula"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -156,7 +151,7 @@
                 android:layout_marginStart="30dp"
                 android:background="@android:color/white" />
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_harman_privacy_policy"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_item_height"
@@ -165,7 +160,6 @@
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
                 android:text="@string/text_harman_privacy_policy"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -187,13 +181,14 @@
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_info_app_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:textStyle="normal"
             android:text="@string/app_version"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+             />
     </LinearLayout>
 
 </RelativeLayout>

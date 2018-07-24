@@ -18,9 +18,8 @@
             android:layout_centerInParent="true"
             android:src="@drawable/shape_circle_eq_name_bg_selected" />
 
-        <jbl.stc.com.view.PoppinsRegularTextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_grid_eq_name"
-            style="@style/PoppinsRegularTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -30,6 +29,7 @@
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:text="Bass"
+            android:textStyle="normal"
             android:textColor="@color/eq_panel_name_text" />
 
         <ImageView

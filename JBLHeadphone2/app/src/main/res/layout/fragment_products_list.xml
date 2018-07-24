@@ -57,7 +57,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                        <TextView
+                        <jbl.stc.com.view.CustomFontTextView
                             android:id="@+id/text_view_product_tips_zero"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
-                        <TextView
+                        <jbl.stc.com.view.CustomFontTextView
                             android:id="@+id/text_view_product_tips_one"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/text_view_product_list_zero" />
 
-                        <TextView
+                        <jbl.stc.com.view.CustomFontTextView
                             android:id="@+id/text_view_product_tips_two"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -90,14 +90,14 @@
                             android:layout_marginStart="30dp"
                             android:layout_marginTop="15dp"
                             android:text="@string/my_products_tips_two"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+
                             android:textColor="@color/white"
                             android:textSize="14sp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/text_view_product_list_one" />
 
-                        <TextView
+                        <jbl.stc.com.view.CustomFontTextView
                             android:id="@+id/text_view_product_tips_three"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                             android:layout_marginTop="15dp"
                             android:layout_marginBottom="50dp"
                             android:text="@string/my_products_tips_three"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+
                             android:textColor="@color/white"
                             android:textSize="14sp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -134,7 +134,7 @@
                                 android:gravity="center"
                                 android:orientation="vertical">
 
-                                <TextView
+                                <jbl.stc.com.view.CustomFontTextView
                                     android:id="@+id/text_view_pro_device_1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -178,7 +178,7 @@
                                 android:gravity="center"
                                 android:orientation="vertical">
 
-                                <TextView
+                                <jbl.stc.com.view.CustomFontTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/live_500bt"
@@ -227,7 +227,7 @@
                                 android:gravity="center"
                                 android:orientation="vertical">
 
-                                <TextView
+                                <jbl.stc.com.view.CustomFontTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/live_400bt"
@@ -270,7 +270,7 @@
                                 android:gravity="center"
                                 android:orientation="vertical">
 
-                                <TextView
+                                <jbl.stc.com.view.CustomFontTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:singleLine="true"
@@ -322,7 +322,7 @@
                                 android:gravity="center"
                                 android:orientation="vertical">
 
-                                <TextView
+                                <jbl.stc.com.view.CustomFontTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/reflect_aware"
@@ -365,7 +365,7 @@
                                 android:gravity="center"
                                 android:orientation="vertical">
 
-                                <TextView
+                                <jbl.stc.com.view.CustomFontTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:singleLine="true"
@@ -417,7 +417,7 @@
                                 android:gravity="center"
                                 android:orientation="vertical">
 
-                                <TextView
+                                <jbl.stc.com.view.CustomFontTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/everest_elite_700"
@@ -460,7 +460,7 @@
                                 android:gravity="center"
                                 android:orientation="vertical">
 
-                                <TextView
+                                <jbl.stc.com.view.CustomFontTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/everest_elite_100"
@@ -511,7 +511,7 @@
                                 android:gravity="center"
                                 android:orientation="vertical">
 
-                                <TextView
+                                <jbl.stc.com.view.CustomFontTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/everest_elite_300"
@@ -555,7 +555,7 @@
                                 android:gravity="center"
                                 android:orientation="vertical">
 
-                                <TextView
+                                <jbl.stc.com.view.CustomFontTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/everest_elite_100"
@@ -587,7 +587,7 @@
 
                 <TableRow android:gravity="center">
 
-                    <TextView
+                    <jbl.stc.com.view.CustomFontTextView
                         android:id="@+id/text_view_product_list_tips_end"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -597,7 +597,7 @@
                         android:paddingEnd="30dp"
                         android:paddingStart="30dp"
                         android:text="@string/All_product_lists"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+
                         android:textColor="@color/white"
                         android:textSize="14sp" />
                 </TableRow>

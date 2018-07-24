@@ -36,7 +36,7 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_unable_device_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
         android:paddingStart="30dp"
         android:weightSum="1">
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_unable_advice_two"
             style="@android:style/TextAppearance.Large"
             android:layout_width="wrap_content"
@@ -91,7 +91,7 @@
             android:textColor="@android:color/white"
             android:textSize="14sp" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_unable_advice_three"
             style="@android:style/TextAppearance.Large"
             android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
             android:textColor="@android:color/white"
             android:textSize="14sp" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_unable_advice_four"
             style="@android:style/TextAppearance.Large"
             android:layout_width="wrap_content"
@@ -113,7 +113,7 @@
             android:textColor="@android:color/white"
             android:textSize="14sp" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_unable_advice_five"
             style="@android:style/TextAppearance.Large"
             android:layout_width="wrap_content"

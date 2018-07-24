@@ -20,11 +20,12 @@
             android:layout_centerVertical="true"
             android:src="@mipmap/black_arrow_back" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/text_auto_off_feature"
+            android:textStyle="normal"
             android:layout_centerInParent="true"
             android:textSize="18sp"
             />
@@ -53,12 +54,12 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp">
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:text="@string/five_minute"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textStyle="normal"
                 android:textSize="14sp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
@@ -90,12 +91,12 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp">
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:text="@string/ten_minute"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textStyle="normal"
                 android:textSize="14sp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
@@ -127,12 +128,12 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp">
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:text="@string/thirty_minute"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textStyle="normal"
                 android:textSize="14sp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
@@ -165,12 +166,12 @@
             android:layout_marginRight="30dp"
             >
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:text="@string/never"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textStyle="normal"
                 android:textSize="14sp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"

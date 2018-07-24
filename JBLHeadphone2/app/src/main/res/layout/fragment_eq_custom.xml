@@ -13,10 +13,11 @@
         android:paddingLeft="@dimen/margin_top_10dp"
         android:paddingRight="@dimen/margin_top_10dp">
 
-        <jbl.stc.com.view.PoppinsMediumTextView
+        <jbl.stc.com.view.CustomFontTextView
             style="@style/PoppinsMediumTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="normal"
             android:layout_centerInParent="true"
             android:text="@string/title_eq_edit" />
 
@@ -53,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <jbl.stc.com.view.PoppinsRegularTextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/firstTimeAddEqTipText"
                 style="@style/PoppinsRegularTextStyle"
                 android:layout_width="wrap_content"
@@ -65,6 +66,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="8dp"
+                android:textStyle="normal"
                 android:text="@string/eq_add_first_time_tip"
                 android:visibility="gone" />
         </FrameLayout>

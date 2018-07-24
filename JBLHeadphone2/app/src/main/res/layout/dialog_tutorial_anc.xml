@@ -43,7 +43,7 @@
             android:layout_alignParentTop="true"
             android:orientation="vertical">
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_tutorial_dialog_device_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                         android:background="@drawable/checkbox_noise_cancel_selector"
                         android:button="@android:color/transparent" />
 
-                    <jbl.stc.com.view.PoppinsRegularTextView
+                    <jbl.stc.com.view.CustomFontTextView
                         style="@style/PoppinsRegularTextStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                         android:layout_centerHorizontal="true"
                         android:src="@drawable/checkbox_ambient_selector" />
 
-                    <jbl.stc.com.view.PoppinsRegularTextView
+                    <jbl.stc.com.view.CustomFontTextView
                         android:id="@+id/text_view_tutorial_dialog_ambient_aware"
                         style="@style/PoppinsRegularTextStyle"
                         android:layout_width="wrap_content"
@@ -172,7 +172,7 @@
             android:paddingLeft="@dimen/page_padding_left"
             android:paddingRight="@dimen/page_padding_right">
 
-            <jbl.stc.com.view.PoppinsRegularTextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_tutorial_dialog_eq"
                 style="@style/PoppinsRegularTextStyle"
                 android:layout_width="wrap_content"
@@ -193,7 +193,7 @@
                 android:layout_toRightOf="@+id/text_view_tutorial_dialog_eq"
                 android:background="@color/white" />
 
-            <jbl.stc.com.view.PoppinsRegularTextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_tutorial_dialog_eq_name"
                 style="@style/PoppinsRegularTextStyle"
                 android:layout_width="wrap_content"
@@ -229,7 +229,7 @@
          />
 
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/text_view_tutorial_dialog_skip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -240,7 +240,7 @@
         android:text="skip"
         android:textColor="@color/white" />
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/text_view_tutorial_dialog_tips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -262,7 +262,7 @@
         android:layout_marginStart="12dp"
         android:visibility="invisible">
 
-        <jbl.stc.com.view.PoppinsRegularTextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_tutorial_dialog_eq_grey"
             style="@style/PoppinsRegularTextStyle"
             android:layout_width="wrap_content"
@@ -293,7 +293,7 @@
                 app:show_type="only_line"
                 />
 
-            <jbl.stc.com.view.PoppinsRegularTextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/tutorial_firstTimeAddEqTipText"
                 style="@style/PoppinsRegularTextStyle"
                 android:layout_width="wrap_content"

@@ -49,26 +49,26 @@
         android:padding="30dp"
         android:orientation="vertical">
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:text="@string/how_to_pair_tips_zero" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="@string/how_to_pair_tips_one" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_how_to_pair_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/how_to_pair_tips_two" />
     </LinearLayout>
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/text_view_how_to_pair_next"
         android:layout_width="180dp"
         android:layout_height="wrap_content"

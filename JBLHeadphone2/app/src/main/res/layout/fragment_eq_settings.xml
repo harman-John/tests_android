@@ -21,11 +21,12 @@
             android:paddingLeft="@dimen/margin_top_10dp"
             android:paddingRight="@dimen/margin_top_10dp">
 
-            <jbl.stc.com.view.PoppinsMediumTextView
+            <jbl.stc.com.view.CustomFontTextView
                 style="@style/PoppinsMediumTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:textStyle="normal"
                 android:text="@string/title_eq_setting" />
 
             <jbl.stc.com.view.AppImageView
@@ -74,7 +75,7 @@
                 android:paddingLeft="@dimen/page_padding_left"
                 android:paddingRight="@dimen/page_padding_right">
 
-                <jbl.stc.com.view.PoppinsRegularTextView
+                <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/text_view_eq_settings_eq_name"
                     style="@style/PoppinsRegularTextStyle"
                     android:layout_width="match_parent"
@@ -83,6 +84,7 @@
                     android:layout_marginRight="@dimen/image_button_width_and_height"
                     android:ellipsize="end"
                     android:singleLine="true"
+                    android:textStyle="normal"
                     android:text="@string/create_eq_default_name"
                     android:textColor="#FFFFFF" />
 

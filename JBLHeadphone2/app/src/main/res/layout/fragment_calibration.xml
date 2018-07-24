@@ -18,19 +18,20 @@
             android:layout_centerVertical="true"
             android:background="@mipmap/white_arrow_back" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="17dp"
             android:textColor="@color/white"
             android:textSize="18sp"
+            android:textStyle="normal"
             android:text="@string/text_calibration_title" />
 
     </RelativeLayout>
 
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/txtConnectMessage"
         style="@android:style/TextAppearance.Large"
         android:layout_width="wrap_content"
@@ -43,7 +44,7 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/txthelp"
         style="@android:style/TextAppearance.Medium"
         android:layout_width="wrap_content"
@@ -72,7 +73,7 @@
             android:layout_centerHorizontal="true"
             android:background="@drawable/whitecircle">
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/txtChangeMessage"
                 style="@android:style/TextAppearance.Large"
                 android:layout_width="wrap_content"
@@ -96,7 +97,7 @@
 
     </RelativeLayout>
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/txtCalibrating"
         android:visibility="gone"
         android:layout_alignParentBottom="true"
@@ -107,11 +108,12 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:text="@string/calibrating"
+        android:textStyle="normal"
         android:textColor="@color/white"
         android:textSize="24sp"
         />
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/tv_calibratingDone"
         android:visibility="gone"
         android:layout_alignParentBottom="true"

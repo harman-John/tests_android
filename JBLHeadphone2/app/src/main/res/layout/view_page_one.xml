@@ -43,18 +43,19 @@
                 android:background="@drawable/checkbox_noise_cancel_selector"
                 android:button="@android:color/transparent" />
 
-            <TextView
+            <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_page_one_noise_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:textStyle="normal"
                 android:text="@string/noise_cancel_1"
                 android:textSize="16sp" />
 
         </LinearLayout>
 
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_weight="1"
             android:layout_height="0dp"
             android:layout_marginEnd="80dp"

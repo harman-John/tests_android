@@ -49,13 +49,13 @@
         android:padding="30dp"
         android:orientation="vertical">
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:text="@string/how_to_pair_tips_next_zero" />
 
-        <TextView
+        <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -63,7 +63,7 @@
 
     </LinearLayout>
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/text_view_how_to_pair_next_go_bt_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

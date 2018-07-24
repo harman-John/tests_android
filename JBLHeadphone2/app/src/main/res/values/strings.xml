@@ -35,6 +35,10 @@
     <string name="harman_privacy_policy">Harman Privacy Statement</string>
 
 
+    <string name="font_name_open_sans">OpenSans</string>
+    <string name="font_name_open_sans_semi">OpenSans-Semibold</string>
+    <string name="font_name_open_sans_bold">OpenSans-bold</string>
+
     <string name="true_note">TruNote</string>
     <string name="sound_x_setup">SoundX setup</string>
     <string name="smart_assistant">Smart assistant</string>
@@ -117,8 +121,8 @@
     <string name="smart_ambient">Smart Ambient</string>
     <string name="smart_ambient_button_assignment">Smart Ambient\nButton assignment</string>
     <string name="noise_cancelling">Noise Cancellation</string>
-    <string name="amibient">Use the smart button on your headphones \n to turn Ambient  Awareness on and off.</string>
-    <string name="noise_cancel_tip">Use the smart button on your headphones \n to turn Noise Cancellation on and off.</string>
+    <string name="ambient">Use the smart button on your\nheadphones to turn Ambient\nAwareness on and off.</string>
+    <string name="noise_cancel_tip">Use the smart button on your\nheadphones to turn Noise Cancelling\non and off.</string>
 
     <string name="IE_no_calibration">Your headphones don\'t support Calibration.</string>
 

@@ -4,6 +4,14 @@ package jbl.stc.com.constant;
  * Created by inhrawat on 9/14/2015.
  */
 public class JBLConstant {
+
+
+    public static final String OPEN_SANS_BOLD = "OpenSans-Bold.ttf";
+    public static final String OPEN_SANS_REGULAR = "OpenSans-Regular.ttf";
+    public static final String OPEN_SANS_SEMI_BOLD = "OpenSans-Semibold.ttf";
+    public static final String OPEN_SANS_ITALIC = "OpenSans-Italic.ttf";
+
+
     public static final int HEADSETTING_FRAGMENT = 1;
     public static final int EqSettings_FRAGMENT = 2;
     public static final int SettingsSmartButton_FRAGMENT = 3;
