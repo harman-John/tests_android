@@ -105,14 +105,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/eq_panel_background"
+        android:background="@color/gray_dee2e6"
         >
         <android.support.v7.widget.RecyclerView
             android:id="@+id/eqRecycleView"
             android:layout_width="240dp"
             android:layout_height="fill_parent"
             android:layout_centerHorizontal="true"
-            android:background="@color/eq_panel_background"
+            android:background="@color/gray_dee2e6"
             android:gravity="center_horizontal"
             android:horizontalSpacing="20dp"
             android:listSelector="@android:color/transparent"

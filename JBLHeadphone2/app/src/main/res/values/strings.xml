@@ -188,4 +188,5 @@
     <string name="not_connected_content">To access all functions for JBL Everest elite 750NC, please disconnect another JBL headphones from your mobile.</string>
 
     <string name="not_connected_keep_using">Keep using like this</string>
+    <string name="searching_for_product">Searching for product ...</string>
 </resources>

@@ -3,49 +3,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/shape_gradient_discovery"
+    android:background="@color/gray_dee2e6"
     android:clickable="true"
     android:focusable="true"
     android:orientation="vertical">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:orientation="vertical">
+        android:fadingEdge="vertical"
+        android:scrollbars="vertical">
 
-        <RelativeLayout
-            android:id="@+id/titleBar"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_height"
-            android:paddingLeft="@dimen/margin_top_10dp"
-            android:paddingRight="@dimen/margin_top_10dp">
-
-            <ImageView
-                android:id="@+id/image_view_pro_white_back"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
-                android:contentDescription="TODO"
-                android:src="@mipmap/white_arrow_back" />
-
-        </RelativeLayout>
-
-        <ScrollView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:fadingEdge="vertical"
-            android:scrollbars="vertical">
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
 
+            <RelativeLayout
+                android:id="@+id/titleBar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/title_bar_height"
+                android:paddingLeft="@dimen/margin_top_10dp"
+                android:paddingRight="@dimen/margin_top_10dp">
+
+                <ImageView
+                    android:id="@+id/image_view_pro_white_back"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="TODO"
+                    android:src="@mipmap/ic_close" />
+
+            </RelativeLayout>
 
             <TableLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
+                android:paddingTop="50dp"
                 android:shrinkColumns="1">
 
                 <TableRow
@@ -53,9 +51,9 @@
                     android:layout_height="wrap_content">
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <jbl.stc.com.view.CustomFontTextView
                             android:id="@+id/text_view_product_tips_zero"
@@ -65,7 +63,6 @@
                             android:layout_marginStart="30dp"
                             android:layout_marginTop="20dp"
                             android:text="@string/my_products_tips_zero"
-                            android:textColor="@color/white"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -77,8 +74,8 @@
                             android:layout_marginStart="30dp"
                             android:layout_marginTop="24dp"
                             android:text="@string/my_products_tips_one"
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
+                            android:textSize="16sp"
+                            android:textStyle="normal"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/text_view_product_list_zero" />
 
@@ -90,9 +87,8 @@
                             android:layout_marginStart="30dp"
                             android:layout_marginTop="15dp"
                             android:text="@string/my_products_tips_two"
-
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
+                            android:textSize="16sp"
+                            android:textStyle="normal"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/text_view_product_list_one" />
@@ -101,14 +97,13 @@
                             android:id="@+id/text_view_product_tips_three"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="50dp"
                             android:layout_marginEnd="30dp"
                             android:layout_marginStart="30dp"
                             android:layout_marginTop="15dp"
-                            android:layout_marginBottom="50dp"
                             android:text="@string/my_products_tips_three"
-
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
+                            android:textSize="16sp"
+                            android:textStyle="normal"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/text_view_product_list_tips_two" />
@@ -139,8 +134,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/live_650bt_nc"
-                                    android:textColor="@color/white"
-                                    android:textSize="@dimen/product_list_text_size" />
+                                    android:textSize="@dimen/font_14sp"
+                                    android:textStyle="bold" />
 
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
@@ -182,8 +177,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/live_500bt"
-                                    android:textColor="@color/white"
-                                    android:textSize="@dimen/product_list_text_size" />
+                                    android:textSize="@dimen/font_14sp"
+                                    android:textStyle="bold" />
 
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
@@ -231,8 +226,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/live_400bt"
-                                    android:textColor="@color/white"
-                                    android:textSize="@dimen/product_list_text_size" />
+                                    android:textSize="@dimen/font_14sp"
+                                    android:textStyle="bold" />
 
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
@@ -275,8 +270,8 @@
                                     android:layout_height="wrap_content"
                                     android:singleLine="true"
                                     android:text="@string/everest_elite_750nc"
-                                    android:textColor="@color/white"
-                                    android:textSize="@dimen/product_list_text_size" />
+                                    android:textSize="@dimen/font_14sp"
+                                    android:textStyle="bold" />
 
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
@@ -326,8 +321,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/reflect_aware"
-                                    android:textColor="@color/white"
-                                    android:textSize="@dimen/product_list_text_size" />
+                                    android:textSize="@dimen/font_14sp"
+                                    android:textStyle="bold" />
 
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
@@ -370,8 +365,8 @@
                                     android:layout_height="wrap_content"
                                     android:singleLine="true"
                                     android:text="@string/everest_elite_150nc"
-                                    android:textColor="@color/white"
-                                    android:textSize="@dimen/product_list_text_size" />
+                                    android:textSize="@dimen/font_14sp"
+                                    android:textStyle="bold" />
 
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
@@ -421,8 +416,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/everest_elite_700"
-                                    android:textColor="@color/white"
-                                    android:textSize="@dimen/product_list_text_size" />
+                                    android:textSize="@dimen/font_14sp"
+                                    android:textStyle="bold" />
 
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
@@ -464,8 +459,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/everest_elite_100"
-                                    android:textColor="@color/white"
-                                    android:textSize="@dimen/product_list_text_size" />
+                                    android:textSize="@dimen/font_14sp"
+                                    android:textStyle="bold" />
 
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
@@ -515,8 +510,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/everest_elite_300"
-                                    android:textColor="@color/white"
-                                    android:textSize="@dimen/product_list_text_size" />
+                                    android:textSize="@dimen/font_14sp"
+                                    android:textStyle="bold" />
 
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
@@ -559,7 +554,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/everest_elite_100"
-                                    android:textColor="@color/white" />
+                                    android:textSize="@dimen/font_14sp"
+                                    android:textStyle="bold" />
 
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
@@ -592,16 +588,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="10dp"
                         android:layout_marginBottom="20dp"
+                        android:layout_marginTop="10dp"
                         android:paddingEnd="30dp"
                         android:paddingStart="30dp"
                         android:text="@string/All_product_lists"
-
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/font_14sp"
+                        android:textStyle="normal" />
                 </TableRow>
             </TableLayout>
-        </ScrollView>
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

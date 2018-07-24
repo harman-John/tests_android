@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    android:background="@color/page_background">
+    android:background="@color/gray_dee2e6">
 
 
     <RelativeLayout

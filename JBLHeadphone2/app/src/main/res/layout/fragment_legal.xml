@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:background="@color/page_background"
+    android:background="@color/gray_dee2e6"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -34,13 +34,13 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grey_eual"
+        android:background="@color/gray_dee2e6"
         android:layout_marginTop="25dp"
         android:scrollbars="vertical"
         android:fadingEdge="vertical">
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view"
-            android:background="@color/grey_eual"
+            android:background="@color/gray_dee2e6"
             android:textColor="@android:color/black"
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
