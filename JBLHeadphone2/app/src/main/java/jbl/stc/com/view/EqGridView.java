@@ -181,7 +181,7 @@ public class EqGridView extends GridView {
     private int screenWidth = 0;
     private int mRawX, mRawY;
     private View mEqArcView;
-    private TextView mdragImage;
+    private View mdragImage;
 
     public EqGridView(Context context) {
         this(context, null);
@@ -224,7 +224,7 @@ public class EqGridView extends GridView {
         mEqArcView = eqArcView;
     }
 
-    public void setmTVDragImage(TextView tv_dragImage){
+    public void setmTVDragImage(View tv_dragImage){
         mdragImage=tv_dragImage;
     }
 

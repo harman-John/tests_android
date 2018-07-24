@@ -23,6 +23,7 @@
 
             <jbl.stc.com.view.CustomFontTextView
                 style="@style/PoppinsMediumTextStyle"
+                android:textSize="18sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -77,6 +78,7 @@
 
                 <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/text_view_eq_settings_eq_name"
+                    android:textSize="20sp"
                     style="@style/PoppinsRegularTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -84,7 +86,7 @@
                     android:layout_marginRight="@dimen/image_button_width_and_height"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:textStyle="normal"
+                    android:textStyle="bold"
                     android:text="@string/create_eq_default_name"
                     android:textColor="#FFFFFF" />
 
