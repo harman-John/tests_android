@@ -174,16 +174,16 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingLeft="@dimen/page_padding_left"
                 android:paddingRight="@dimen/page_padding_right">
 
                 <jbl.stc.com.view.PoppinsRegularTextView
                     android:id="@+id/titleEqText"
                     style="@style/PoppinsRegularTextStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="@string/title_eq"
+                    android:gravity="center"
                     android:textColor="@color/white"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -193,7 +193,6 @@
                     android:layout_width="@dimen/divider_size"
                     android:layout_height="45dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="13dp"
                     android:layout_marginRight="13dp"
                     android:layout_toRightOf="@+id/titleEqText"
                     android:background="@color/white" />

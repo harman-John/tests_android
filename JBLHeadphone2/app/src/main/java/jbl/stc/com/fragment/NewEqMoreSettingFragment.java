@@ -45,13 +45,12 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
 
     private CustomScrollView mScrollView;
     private ImageView closeImageView;
-    private ImageView iv_remove;
     private EqGridView eqGridView;
     private EqGridViewAdapter adapter;
     private List<EQModel> eqModelList=new ArrayList<>();
     private EqArcView mEqArcView;
     private TextView tv_jazz,tv_vocal,tv_bass;
-    private LinearLayout ll_view;
+    private TextView tv_dragImage;
     private LightX lightX;
     private static final String TAG = NewEqMoreSettingFragment.class.getSimpleName();
     @Override
@@ -76,14 +75,14 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
         }else if (!TextUtils.isEmpty(curEqName)&&curEqName.equals(getResources().getString(R.string.bass))){
             tv_bass.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_selected);
         }
+        tv_dragImage=(TextView)rootView.findViewById(R.id.tv_dragImage);
         closeImageView = (ImageView) rootView.findViewById(R.id.closeImageView);
-        iv_remove=(ImageView)rootView.findViewById(R.id.iv_remove);
         eqGridView=(EqGridView) rootView.findViewById(R.id.eqGridView);
         mScrollView = rootView.findViewById(R.id.scrollview);
         mEqArcView =rootView.findViewById(R.id.eqArcView);
         eqGridView.setmEqArcView(mEqArcView);
         eqGridView.setScrollView(mScrollView);
-        ll_view=(LinearLayout)rootView.findViewById(R.id.ll_view);
+
         /*DisplayMetrics dm = getResources().getDisplayMetrics();
         int heigth = dm.heightPixels;
         int width = dm.widthPixels;
@@ -91,7 +90,6 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
 
     }
     private void initEvent() {
-        iv_remove.setOnClickListener(this);
         closeImageView.setOnClickListener(this);
 
     }

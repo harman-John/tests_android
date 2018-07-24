@@ -18,6 +18,7 @@ public class PreferenceKeys {
 
     public static final String CURR_EQ_TYPE = "eqType";//current Graphic EQ preset type
     public static String CURR_EQ_NAME = "eqName";//current selected EQ name
+    public static String CURR_EQ_NAME_EXCLUSIVE_OFF = "eqNameExclusiveOFF";//current selected EQ name exvlusive off
     public static final String CONNECT_DEVICE_NAME = "connectDeviceName";
     public static final String CONNECT_DEVICE_TYPE = "connectDeviceType";
 

@@ -117,16 +117,18 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
           if (null != eqModels &&eqModels.size()>0&& deletePosition < eqModels.size()) {
                 EQSettingManager.OperationStatus operationStatus = EQSettingManager.get().deleteEQ(eqModels.get(deletePosition).eqName,context);
                 eqModels.remove(deletePosition);
-              if (!TextUtils.isEmpty(curEqName)&&!(curEqName.equals(context.getResources().getString(R.string.jazz)))
+              if (!TextUtils.isEmpty(curEqName)&&!(curEqName.equals(context.getResources().getString(R.string.off)))&&
+                      !(curEqName.equals(context.getResources().getString(R.string.jazz)))
                       &&!(curEqName.equals(context.getResources().getString(R.string.vocal)))&&
                       !(curEqName.equals(context.getResources().getString(R.string.bass)))){
                   if (operationStatus == EQSettingManager.OperationStatus.DELETED) {
-                      if (eqModels!=null&&eqModels.size()>0){
-                          if (curEqName.equals(deleteEqName)){
+                          if (eqModels!=null&&eqModels.size()>0){
+                              if (curEqName.equals(deleteEqName)){
                               int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(eqModels.get(0));
                               ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
                               PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModels.get(0).eqName,context);
-                            }
+                              PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, eqModels.get(0).eqName, context);
+                             }
                           }else{
                           int[] eqValueArray = new int[]{0,0,0,0,0,0,0,0,0,0};
                           ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.Off, eqValueArray, lightX);

@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -109,6 +110,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
     private View bluredView;
     private MyDevice myDevice;
+    private TextView titleEqText;
+    private int eqSelectIndex;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -136,6 +139,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         bluredView = view.findViewById(R.id.relative_Layout_home);
         relative_layout_home_eq_info = (FrameLayout) view.findViewById(R.id.relative_layout_home_eq_info);
         relative_layout_home_eq_info.setVisibility(View.VISIBLE);
+        titleEqText=(TextView) view.findViewById(R.id.titleEqText);
+        titleEqText.setOnClickListener(this);
         if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             setEqMenuColor(false);
             relative_layout_home_eq_info.setAlpha((float) 0.5);
@@ -317,7 +322,54 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 setANC();
                 break;
             }
+            case R.id.titleEqText:{
+                turnOnOffEq();
+                break;
+            }
         }
+    }
+
+    Runnable applyRunnable = new Runnable() {
+        @Override
+        public void run() {
+            ANCControlManager.getANCManager(getContext()).getCurrentPreset(lightX);
+        }
+    };
+
+    private void turnOnOffEq() {
+        String curEqName=PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME,getActivity(),getString(R.string.off));
+        String curEqNameExclusiveOff=PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,getActivity(),"");
+        if (curEqName.equals(getString(R.string.off))){
+            // turn on the eq
+            Logger.d(TAG,"turn on the eq");
+            if (TextUtils.isEmpty(curEqNameExclusiveOff)){
+                List<EQModel> eqModels=EQSettingManager.get().getCompleteEQList(getContext());
+                Logger.d(TAG,"eqSize:"+eqModels.size());
+                if (eqModels!=null&&eqModels.size()<5){
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz, lightX);
+                }else if (eqModels!=null &&eqModels.size()>=5){
+                    ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModels.get(4)), lightX);
+                }
+            }else{
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,curEqNameExclusiveOff,getActivity());
+                if (curEqNameExclusiveOff.equals(getString(R.string.jazz))){
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz, lightX);
+                }else if (curEqNameExclusiveOff.equals(getString(R.string.vocal))){
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Vocal, lightX);
+                }else if (curEqNameExclusiveOff.equals(getString(R.string.bass))){
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Bass, lightX);
+                }else {
+                    EQModel eqModel=EQSettingManager.get().getEQModelByName(curEqNameExclusiveOff,getActivity());
+                    ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModel), lightX);
+                }
+            }
+        }else{
+            //turn off the eq
+            Logger.d(TAG,"turn off the eq");
+            ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Off, lightX);
+        }
+        homeHandler.removeCallbacks(applyRunnable);
+        homeHandler.postDelayed(applyRunnable,800);
     }
 
     public void setANC() {
@@ -492,8 +544,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 }
                 case MSG_UPDATE_CUSTOME_EQ:{
+                    relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                     application.deviceInfo.eqOn = true;
                     String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(), null);
+                    PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,name,getActivity());
+                    Logger.d(TAG,"turnOnEq name:"+name);
                     if (name != null) {
                         textViewCurrentEQ.setText(name);
                         if (textViewCurrentEQ.getText().length() >= JBLConstant.MAX_MARQUEE_LEN) {
@@ -508,7 +563,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
         }
     }
-
 
     private void updateANC(boolean onOff) {
         if (checkBoxNoiseCancel != null)
@@ -540,6 +594,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case 1: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getString(R.string.jazz),getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,getString(R.string.jazz),getActivity());
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.jazz));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
@@ -547,6 +602,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case 2: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getString(R.string.vocal),getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,getString(R.string.vocal),getActivity());
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.vocal));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
@@ -554,6 +610,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case 3: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getString(R.string.bass),getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,getString(R.string.bass),getActivity());
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.bass));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
@@ -562,17 +619,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             case 4: {
                 //ANCControlManager.getANCManager(getContext()).getAppGraphicEQBand(GraphicEQPreset.User, lightX);
                 ANCControlManager.getANCManager(getContext()).getAppGraphicEQPresetBandSettings(lightX,GraphicEQPreset.User,10);
-                /*application.deviceInfo.eqOn = true;
-                String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(), null);
-                if (name != null) {
-                    textViewCurrentEQ.setText(name);
-                    if (textViewCurrentEQ.getText().length() >= JBLConstant.MAX_MARQUEE_LEN) {
-                        textViewCurrentEQ.setSelected(true);
-                        textViewCurrentEQ.setMarqueeRepeatLimit(-1);
-                    }
-                } else {
-                    textViewCurrentEQ.setText(getString(R.string.custom_eq));
-                }*/
                 break;
             }
             default:
