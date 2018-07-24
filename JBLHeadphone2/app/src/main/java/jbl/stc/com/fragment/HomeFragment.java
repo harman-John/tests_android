@@ -533,23 +533,27 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         //ANCControlManager.getANCManager(getContext()).getAppGraphicEQPresetBandSettings(lightX, GraphicEQPreset.Jazz,9);
         switch (index) {
             case 0: {
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getString(R.string.off),getActivity());
                 textViewCurrentEQ.setText(getString(R.string.off));
                 relative_layout_home_eq_info.setBackgroundColor(getResources().getColor(R.color.gray_aa_bg));
                 break;
             }
             case 1: {
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getString(R.string.jazz),getActivity());
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.jazz));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 2: {
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getString(R.string.vocal),getActivity());
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.vocal));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 3: {
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getString(R.string.bass),getActivity());
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.bass));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
@@ -751,7 +755,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 for (EQModel eqModel:models){
                     if (EQSettingManager.get().isTheSameEQ(eqModel,eqArray)){
                         isHave=true;
-                        PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModel.eqName,getContext());
+                        PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModel.eqName,getActivity());
                         sendMessageTo(MSG_UPDATE_CUSTOME_EQ,null);
                         Logger.d(TAG,"Have the same EQ:"+eqModel.eqName);
                         break;
@@ -761,7 +765,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     Logger.d(TAG,"create a new EQ");
                     EQModel eqModel=EQSettingManager.get().getCustomeEQModelFromValues(eqArray,eqName);
                     EQSettingManager.get().addCustomEQ(eqModel, getContext());
-                    PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModel.eqName,getContext());
+                    PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModel.eqName,getActivity());
                     sendMessageTo(MSG_UPDATE_CUSTOME_EQ,null);
                 }
 
@@ -769,7 +773,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 Logger.d(TAG,"create a new EQ");
                 EQModel eqModel=EQSettingManager.get().getCustomeEQModelFromValues(eqArray,eqName);
                 EQSettingManager.get().addCustomEQ(eqModel, getContext());
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModel.eqName,getContext());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModel.eqName,getActivity());
                 sendMessageTo(MSG_UPDATE_CUSTOME_EQ,null);
             }
 
