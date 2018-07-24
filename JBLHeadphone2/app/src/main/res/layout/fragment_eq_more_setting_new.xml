@@ -140,16 +140,6 @@
 
     </jbl.stc.com.view.CustomScrollView>
 
-
-    <ImageView
-        android:id="@+id/iv_remove"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:src="@mipmap/eq_delete"
-        android:visibility="gone" />
-
     <jbl.stc.com.view.EqArcView
         android:id="@+id/eqArcView"
         android:layout_width="@dimen/eq_trash_circle_diameter"
@@ -160,6 +150,17 @@
         android:layout_marginRight="@dimen/eq_trash_circle_margin"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/tv_dragImage"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/drag_bubble"
+        android:gravity="center"
+        android:text="@string/bass" />
 
     <!--<jbl.stc.com.view.EqGridView-->
     <!--android:layout_above="@id/iv_remove"-->

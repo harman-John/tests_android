@@ -181,6 +181,7 @@ public class EqGridView extends GridView {
     private int screenWidth = 0;
     private int mRawX, mRawY;
     private View mEqArcView;
+    private TextView mdragImage;
 
     public EqGridView(Context context) {
         this(context, null);
@@ -221,6 +222,10 @@ public class EqGridView extends GridView {
 
     public void setmEqArcView(View eqArcView) {
         mEqArcView = eqArcView;
+    }
+
+    public void setmTVDragImage(TextView tv_dragImage){
+        mdragImage=tv_dragImage;
     }
 
     private Handler mHandler = new Handler();
@@ -504,22 +509,14 @@ public class EqGridView extends GridView {
         mWindowLayoutParams = new WindowManager.LayoutParams();
         mWindowLayoutParams.format = PixelFormat.TRANSLUCENT; // 图片之外的其他地方透明
         mWindowLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;
-
-        //mWindowLayoutParams.x = (int) (downX - mPoint2ItemLeft * mDragScale + mOffset2Left);
-        //mWindowLayoutParams.y = (int) (rawY - mPoint2ItemTop * mDragScale + mOffset2Top - mStatusHeight);
         mWindowLayoutParams.x = (int) (mRawX  - UiUtils.dip2px(getContext(), mDragLayoutSize)/2);
         mWindowLayoutParams.y = (int) (mRawY - UiUtils.dip2px(getContext(), mDragLayoutSize)/2 - mStatusHeight);
         Logger.d(TAG, "createDragImage.x:" + mWindowLayoutParams.x + "createDragImage.y" + mWindowLayoutParams.y + "rawY:" + rawY);
         mWindowLayoutParams.alpha = 1.0f; // 透明度
-        //mWindowLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        //mWindowLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        //mWindowLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        //mWindowLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize);
         mWindowLayoutParams.height = UiUtils.dip2px(getContext(), mDragLayoutSize);
         mWindowLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
         layoutParams.gravity = Gravity.CENTER;
         TextView textView = (mStartDragItemView.findViewById(R.id.tv_eqname));
@@ -536,6 +533,13 @@ public class EqGridView extends GridView {
         mDragLayout.addView(mDragImageView);
         mDragLayout.addView(mDragTextView);
         mWindowManager.addView(mDragLayout, mWindowLayoutParams);
+
+        /*mdragImage.setVisibility(View.VISIBLE);
+        int marginTop=(int) (mRawY - mdragImage.getHeight()/2 - mStatusHeight);
+        int marginBottom=(int) (screenHeight-marginTop-mdragImage.getHeight());
+        int marginLeft=(int) (mRawX  - mdragImage.getWidth()/2);
+        int marginRight=(int) (screenWidth-marginLeft-mdragImage.getWidth());
+        mdragImage.setPadding(marginLeft,marginTop,marginRight,marginBottom);*/
     }
 
     /**
@@ -552,14 +556,6 @@ public class EqGridView extends GridView {
 
     private boolean IsDeleteArea(int x, int y) {
 
-        /*int deleteIconSize = UiUtils.dip2px(getContext(), 25);
-        int eqIconSize = UiUtils.dip2px(getContext(), 110);
-        Logger.d(TAG, "deleteIconSize:" + (screenWidth - deleteIconSize - eqIconSize) + "removeIcon centerY:" + (screenHeight - UiUtils.dip2px(getContext(), 25) - eqIconSize));
-        if (y > (screenHeight - deleteIconSize - eqIconSize + 130) &&
-                x > screenWidth - deleteIconSize - eqIconSize + 130) {
-            return true;
-        }
-        return false;*/
         int deleteIconSize = (int)mEqArcView.getWidth()/2;
         Logger.d(TAG,"DeleteArea CurrentX:"+x+"DeleteArea CurrentY:"+y+"deleteIconSize:"+ deleteIconSize +"screenHeight:"+screenHeight+"screenWidth:"+screenWidth);
         if (y > (screenHeight - deleteIconSize ) && x > (screenWidth - deleteIconSize)){
@@ -573,8 +569,6 @@ public class EqGridView extends GridView {
      * 拖动item，在里面实现了item镜像的位置更新，item的相互交换以及GridView的自行滚动
      */
     private void onDragItem(int moveX, int moveY, int rawX, int rawY ) {
-        //mWindowLayoutParams.x = (int) (moveX - mPoint2ItemLeft + mOffset2Left);
-        //mWindowLayoutParams.y = (int) (rawY - mPoint2ItemTop + mOffset2Top - mStatusHeight);
         mWindowLayoutParams.x = (int) (mRawX  - UiUtils.dip2px(getContext(), mDragLayoutSize)/2);
         mWindowLayoutParams.y = (int) (mRawY - UiUtils.dip2px(getContext(), mDragLayoutSize)/2 - mStatusHeight);
         mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
@@ -587,12 +581,6 @@ public class EqGridView extends GridView {
 
         int currentY = mRawY;
         int currentX = mRawX;
-        /*int deleteIconSize = UiUtils.dip2px(getContext(), 25);
-        int eqIconSize = UiUtils.dip2px(getContext(), 110);
-        if (!(currentX > screenWidth - deleteIconSize - eqIconSize + 130)) {
-            // ScrollView自动滚动
-            mHandler.post(mScrollRunnable);
-        }*/
         System.out.println("CurrentY" + currentY + "CurrentX" + currentX);
         if (IsDeleteArea(currentX, currentY)) {
             Logger.d(TAG, "IsDeleteArea:True");

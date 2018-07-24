@@ -211,7 +211,10 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         currSelectedEq.isSelected = true;
         eqAdapter.setEqModels(eqModelList);
         PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, currSelectedEq.eqName, mContext);
-        int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
+        if (!currSelectedEq.eqName.equals(getResources().getString(R.string.off))){
+            PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, currSelectedEq.eqName, mContext);
+        }
+        //int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
         equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
         AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
         if (fromUser) {
