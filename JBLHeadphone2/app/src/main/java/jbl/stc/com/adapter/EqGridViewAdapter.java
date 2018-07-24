@@ -71,8 +71,10 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
         viewHolder.tv_eqname.setText(eqModel.eqName);
         if (!TextUtils.isEmpty(curEqName)&&curEqName.equals(eqModel.eqName)){
             viewHolder.image_view.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_selected);
+            viewHolder.tv_eqname.setTextColor(context.getResources().getColor(R.color.white));
         }else{
             viewHolder.image_view.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_normal);
+            viewHolder.tv_eqname.setTextColor(context.getResources().getColor(R.color.eq_panel_name_text));
         }
         //隐藏被拖动的
         if (position == mHidePosition) {

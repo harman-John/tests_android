@@ -530,6 +530,7 @@ public class EqGridView extends GridView {
         mDragTextView = new TextView(getContext());
         mDragTextView.setText(textView.getText().toString());
         mDragTextView.setGravity(Gravity.CENTER);
+        mDragTextView.setPadding(UiUtils.dip2px(getContext(),15),0,UiUtils.dip2px(getContext(),15),0);
         mDragTextView.setLayoutParams(layoutParams);
         mDragLayout = new FrameLayout(getContext());
         mDragLayout.addView(mDragImageView);
