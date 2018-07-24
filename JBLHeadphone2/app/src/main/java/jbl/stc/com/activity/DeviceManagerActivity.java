@@ -36,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,7 +75,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     public void setAppLightXDelegate(AppLightXDelegate appLightXDelegate) {
         this.appLightXDelegate = appLightXDelegate;
-        Logger.e(TAG, "setAppLightXDelegate = "+appLightXDelegate.toString());
+        Logger.e(TAG, "setAppLightXDelegate = " + appLightXDelegate.toString());
     }
 
     public AppLightXDelegate getAppLightXDelegate() {
@@ -84,7 +85,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.d(TAG,"onCreate");
+        Logger.d(TAG, "onCreate");
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_USB_PERMISSION);
@@ -109,16 +110,16 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     @Override
     protected void onResume() {
         super.onResume();
-        Logger.d(TAG,"onResume");
+        Logger.d(TAG, "onResume");
         try {
 //            Intent intent = getIntent();
 //            String action = intent.getAction();
 //            if (!TextUtils.isEmpty(action) && "android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action)) {
-                synchronized (this) {
-                    if (!FirmwareUtil.isUpdatingFirmWare.get()) {
-                        initUSB();
-                    }
+            synchronized (this) {
+                if (!FirmwareUtil.isUpdatingFirmWare.get()) {
+                    initUSB();
                 }
+            }
 //            }
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,12 +127,12 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         donSendCallback = false;
     }
 
-    public void connectDeviceStatus(boolean isConnected){
-        Logger.i(TAG, "connectDeviceStatus isConnected = "+isConnected);
+    public void connectDeviceStatus(boolean isConnected) {
+        Logger.i(TAG, "connectDeviceStatus isConnected = " + isConnected);
     }
 
     protected synchronized void initUSB() {
-        if (isConnected){
+        if (isConnected) {
             Logger.d(TAG, "Already connected");
             return;
         }
@@ -173,9 +174,9 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         }
     }
 
-    private void close150NCManager(){
-        if (bt150Manager != null){
-            bt150Manager.setDelegate( null);
+    private void close150NCManager() {
+        if (bt150Manager != null) {
+            bt150Manager.setDelegate(null);
             bt150Manager = null;
         }
     }
@@ -184,9 +185,9 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
      * <p>Initialize or reset library. Its used when app start or headphone timeout a command from app<p/>
      */
     private void initializeOrResetLibrary() {
-        Logger.d(TAG,"initializeOrResetLibrary");
+        Logger.d(TAG, "initializeOrResetLibrary");
         if (mBluetooth != null) {
-            Logger.d(TAG,"discovery mBluetooth is not null");
+            Logger.d(TAG, "discovery mBluetooth is not null");
             return;
         }
 
@@ -199,7 +200,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             Logger.d(TAG, "initializeOrResetLibrary Exception while disconnecting bluetooth library");
         }
 
-        Logger.d(TAG,"begin to initializeOrResetLibrary ...");
+        Logger.d(TAG, "begin to initializeOrResetLibrary ...");
         try {
             if (bt150Manager == null)
                 bt150Manager = new audioManager();
@@ -208,40 +209,40 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         } catch (Exception e) {
             showExitDialog("Unable to enable Bluetooth.");
         }
-        mHandler.postDelayed(a2dpRunable,500);
+        mHandler.postDelayed(a2dpRunable, 500);
     }
 
-    private void initAudioManager(){
-        if (bt150Manager != null){
-            Logger.d(TAG,"150nc initManager");
-            byte[] bytes = AmToolUtil.INSTANCE.readAssertResource(this,AmToolUtil.COMMAND_FILE);
-            bt150Manager.initManager(this, this, this, AmToolUtil.COMMAND_FILE,bytes);
+    private void initAudioManager() {
+        if (bt150Manager != null) {
+            Logger.d(TAG, "150nc initManager");
+            byte[] bytes = AmToolUtil.INSTANCE.readAssertResource(this, AmToolUtil.COMMAND_FILE);
+            bt150Manager.initManager(this, this, this, AmToolUtil.COMMAND_FILE, bytes);
         }
     }
 
     private Runnable a2dpRunable = new Runnable() {
         @Override
         public void run() {
-            if (isConnected){
-                Logger.d(TAG,"device is connected, return");
+            if (isConnected) {
+                Logger.d(TAG, "device is connected, return");
                 return;
             }
             if (isFound) {
-                Logger.d(TAG,"device is found, return");
+                Logger.d(TAG, "device is found, return");
                 return;
             }
-            Logger.d(TAG,"startA2DPCheck ... isConnected = "+isConnected);
+            Logger.d(TAG, "startA2DPCheck ... isConnected = " + isConnected);
             startA2DPCheck();
-            mHandler.postDelayed(a2dpRunable,2000);
+            mHandler.postDelayed(a2dpRunable, 2000);
         }
     };
 
 
-    public void checkDevices(List<BluetoothDevice> deviceList){
+    public void checkDevices(Set<String> deviceList) {
 
     }
 
-    public void startA2DPCheck(){
+    public void startA2DPCheck() {
         BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBtAdapter != null && mBtAdapter.isEnabled()) {
             mBtAdapter.getProfileProxy(this, mListener, BluetoothProfile.A2DP);
@@ -255,17 +256,27 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     private BluetoothDevice specifiedDevice = null;
     private static boolean isFound = false;
     private int position = 0;
+    private Set<String> devicesSet = new HashSet<>();
     private BluetoothProfile.ServiceListener mListener = new BluetoothProfile.ServiceListener() {
         @Override
         public void onServiceConnected(int profile, BluetoothProfile proxy) {
-            if(profile == BluetoothProfile.A2DP) {
+            if (profile == BluetoothProfile.A2DP) {
                 List<BluetoothDevice> deviceList = proxy.getConnectedDevices();
-
-                for (BluetoothDevice bluetoothDevice: deviceList) {
+                String temp = null;
+                for (String key: devicesSet){
+                    if (key.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)){
+                        temp = key;
+                    }
+                }
+                devicesSet.clear();
+                if (temp != null)
+                    devicesSet.add(temp);
+                for (BluetoothDevice bluetoothDevice : deviceList) {
                     Logger.d(TAG, "A2DP connected device, name = " + bluetoothDevice.getName()
                             + ",address = " + bluetoothDevice.getAddress()
                             + ",position =" + position);
-                    AppUtils.addToMyDevices(getApplicationContext(),bluetoothDevice.getName(),bluetoothDevice.getAddress());
+                    devicesSet.add(bluetoothDevice.getName() + "-" + bluetoothDevice.getAddress());
+                    AppUtils.addToMyDevices(getApplicationContext(), bluetoothDevice.getName(), bluetoothDevice.getAddress());
                 }
                 if (!isConnected && !isFound) {
                     if (deviceList.size() > 0
@@ -286,7 +297,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                         } else position = 0;
                     }
                 }
-                checkDevices(deviceList);
+                checkDevices(devicesSet);
             }
         }
 
@@ -317,7 +328,6 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             }
             mBluetoothDevice = null;
         } catch (Exception e) {
-            e.printStackTrace();
             mBluetooth = null;
             mBluetoothDevice = null;
             Logger.d(TAG, "disconnectBluetoothLibrary Exception while disconnecting bluetooth library");
@@ -460,8 +470,8 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                 if (resultCode == RESULT_CANCELED) {
                     showExitDialog("Unable to enable Bluetooth.");
                 } else {
-                    if (mBluetooth == null){
-                        Logger.d(TAG,"mBluetooth is null");
+                    if (mBluetooth == null) {
+                        Logger.d(TAG, "mBluetooth is null");
                         return;
                     }
                     Logger.d(TAG, "discoverBluetoothDevices");
@@ -486,21 +496,21 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     @Override
     public void bluetoothAdapterChangedState(Bluetooth bluetooth, int currentState,
                                              int previousState) {
-        Logger.d(TAG,"bluetoothAdapterChangedState");
+        Logger.d(TAG, "bluetoothAdapterChangedState");
         if (currentState != BluetoothAdapter.STATE_ON) {
             Logger.e(TAG, "The Bluetooth adapter is not enabled, cannot communicate with LightX device");
             // Could ask the user if it's ok to call bluetooth.enableBluetoothAdapter() here, otherwise abort
-            if (specifiedDevice!=null && specifiedDevice.getName()!= null && specifiedDevice.getName().equalsIgnoreCase("150NC") && !disconnected) {
+            if (specifiedDevice != null && specifiedDevice.getName() != null && specifiedDevice.getName().equalsIgnoreCase("150NC") && !disconnected) {
 
                 Message message = new Message();
                 message.what = MSG_DISCONNECTED;
-                if (specifiedDevice!= null) {
+                if (specifiedDevice != null) {
                     HashMap value = new HashMap();
                     value.put(specifiedDevice.getAddress(), specifiedDevice.getName());
                     message.obj = value;
                 }
                 myHandler.removeMessages(MSG_DISCONNECTED);
-                myHandler.sendMessageDelayed(message,5000);
+                myHandler.sendMessageDelayed(message, 5000);
             }
         }
     }
@@ -514,31 +524,31 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     @Override
     public void bluetoothDeviceConnected(Bluetooth bluetooth, BluetoothDevice
             bluetoothDevice, BluetoothSocket bluetoothSocket) {
-        Logger.d(TAG,"bluetoothDeviceConnected");
-		if (bluetoothDevice != null && AppUtils.isMatchDeviceName(bluetoothDevice.getName())
-				&& !bluetoothDevice.getName().contains(JBLConstant.DEVICE_150NC)
+        Logger.d(TAG, "bluetoothDeviceConnected");
+        if (bluetoothDevice != null && AppUtils.isMatchDeviceName(bluetoothDevice.getName())
+                && !bluetoothDevice.getName().contains(JBLConstant.DEVICE_150NC)
                 && specifiedDevice != null
                 && specifiedDevice.getAddress().equalsIgnoreCase(bluetoothDevice.getAddress())) {
-	        FirmwareUtil.disconnectHeadphoneText = getResources().getString(R.string.plsConnect);
-	        Logger.d(TAG, "Connected");
-	        AnalyticsManager.getInstance(getApplicationContext()).reportDeviceConnect(bluetoothDevice.getName());
-	        synchronized (this) {
-	            /** set device type **/
-	            DeviceConnectionManager.getInstance().setCurrentDevice(ConnectedDeviceType.Connected_BluetoothDevice);
-	            showCommunicationIssue = true;
-	            mHandler.removeCallbacks(resetRunnable);
-	            mHandler.removeCallbacks(runnableToast);
-	            AppUtils.setJBLDeviceName(this,bluetoothDevice.getName());
+            FirmwareUtil.disconnectHeadphoneText = getResources().getString(R.string.plsConnect);
+            Logger.d(TAG, "Connected");
+            AnalyticsManager.getInstance(getApplicationContext()).reportDeviceConnect(bluetoothDevice.getName());
+            synchronized (this) {
+                /** set device type **/
+                DeviceConnectionManager.getInstance().setCurrentDevice(ConnectedDeviceType.Connected_BluetoothDevice);
+                showCommunicationIssue = true;
+                mHandler.removeCallbacks(resetRunnable);
+                mHandler.removeCallbacks(runnableToast);
+                AppUtils.setJBLDeviceName(this, bluetoothDevice.getName());
 //	            EQSettingManager.EQKeyNAME = bluetoothDevice.getAddress();
                 connectLightX(bluetooth, bluetoothDevice, bluetoothSocket);
-	            isNeedShowDashboard = true;
-	            Logger.d(TAG, "bluetoothDeviceConnected ....");
-	            resetTime = RESET_TIME;
-	        }	
-		}
+                isNeedShowDashboard = true;
+                Logger.d(TAG, "bluetoothDeviceConnected ....");
+                resetTime = RESET_TIME;
+            }
+        }
     }
 
-    private void connectLightX(Bluetooth bluetooth, BluetoothDevice bluetoothDevice, BluetoothSocket bluetoothSocket){
+    private void connectLightX(Bluetooth bluetooth, BluetoothDevice bluetoothDevice, BluetoothSocket bluetoothSocket) {
         if (mLightX != null && mLightX.getSocket().equals(bluetoothSocket)) {
             Logger.d(TAG, "bluetoothDeviceConnected() received for extant LightX/socket pair.  Ignoring.");
         } else {
@@ -577,10 +587,10 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     public void bluetoothDeviceDisconnected(Bluetooth bluetooth, BluetoothDevice
             bluetoothDevice) {
         if (bluetoothDevice != null) {
-            Logger.d(TAG, "bluetoothDeviceDisconnected bluetoothDevice is not null,name = "+bluetoothDevice.getName());
+            Logger.d(TAG, "bluetoothDeviceDisconnected bluetoothDevice is not null,name = " + bluetoothDevice.getName());
         }
-        if (specifiedDevice != null){
-            Logger.d(TAG, "bluetoothDeviceDisconnected specifiedDevice is not null,name = "+specifiedDevice.getName());
+        if (specifiedDevice != null) {
+            Logger.d(TAG, "bluetoothDeviceDisconnected specifiedDevice is not null,name = " + specifiedDevice.getName());
         }
         if (bluetoothDevice != null
                 && AppUtils.isMatchDeviceName(bluetoothDevice.getName())
@@ -592,7 +602,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         }
     }
 
-    private void disconnectDevice(){
+    private void disconnectDevice() {
         synchronized (this) {
             /** set device type **/
             DeviceConnectionManager.getInstance().setCurrentDevice(ConnectedDeviceType.NONE);
@@ -600,7 +610,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             isConnected = false;
             disconnected = true;
             Logger.d(TAG, "Disconnected");
-            if (specifiedDevice!= null)
+            if (specifiedDevice != null)
                 AnalyticsManager.getInstance(getApplicationContext()).reportDeviceDisconnect(specifiedDevice.getName());
 
             runOnUiThread(new Runnable() {
@@ -643,10 +653,10 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     public void bluetoothDeviceDiscovered(Bluetooth bluetooth, BluetoothDevice bluetoothDevice) {
 //        Logger.d(TAG,"bluetoothDeviceDiscovered ");
         if (bluetoothDevice != null && AppUtils.isMatchDeviceName(bluetoothDevice.getName())
-				&& !bluetoothDevice.getName().contains(JBLConstant.DEVICE_150NC)
+                && !bluetoothDevice.getName().contains(JBLConstant.DEVICE_150NC)
                 && specifiedDevice != null
                 && specifiedDevice.getAddress().equalsIgnoreCase(bluetoothDevice.getAddress())) {
-            Logger.d(TAG,"bluetoothDeviceDiscovered connect");
+            Logger.d(TAG, "bluetoothDeviceDiscovered connect");
             connect(bluetoothDevice);
         }
     }
@@ -662,10 +672,10 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     @Override
     public void lightXAppReadResult(final LightX lightX, final Command command, final boolean success, final byte[] buffer) {
-        Logger.d(TAG,"command:"+command.toString()+"result:"+(success?"true":"false"));
+        Logger.d(TAG, "command:" + command.toString() + "result:" + (success ? "true" : "false"));
         try {
             if (appLightXDelegate != null) {
-                Logger.d(TAG,"appLightXDelegate != null");
+                Logger.d(TAG, "appLightXDelegate != null");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -676,7 +686,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             } else if (success) {
                 switch (command) {
                     case App_0xB3:
-                        Logger.d(TAG,"calibration");
+                        Logger.d(TAG, "calibration");
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -912,7 +922,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     @Override
     public void lightXReadConfigResult(final LightX lightX, final Command command, final boolean success, final String value) {
-        switch (command){
+        switch (command) {
             case ConfigModelNumber: {
                 AppUtils.setModelNumber(getApplicationContext(), value);
             }
@@ -980,6 +990,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             connectDeviceStatus(false);
             isConnected = false;
             disconnected = true;
+            devicesSet.remove(usbDevice.getProductName() + "-" + usbDevice.getDeviceId());
             Logger.d(TAG, "usbDetached Initializing Bluetooth.");
             if (DeviceConnectionManager.getInstance().getCurrentDevice() != ConnectedDeviceType.Connected_BluetoothDevice)
                 if (mLightX != null) {
@@ -1083,11 +1094,13 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                         mLightX.close();
                         mLightX = null;
                     }
-
+                    specifiedDevice = null;
                     mLightX = new LightX(ModuleId.USB, this, usbSocket);
                     mLightX.mIs750Device = AppUtils.is750Device(DeviceManagerActivity.this);
                     mIsConnectedPhysically = false;
-                    Logger.d(TAG, "USB Connected");
+                    Logger.d(TAG, "USB getDeviceId " + usbDevice.getDeviceId());
+                    Logger.d(TAG, "USB getProductId " + usbDevice.getProductId());
+                    Logger.d(TAG, "USB getVendorId " + usbDevice.getVendorId());
                     DeviceConnectionManager.getInstance().setCurrentDevice(ConnectedDeviceType.Connected_USBDevice);
                     new Thread(new Runnable() {
                         @Override
@@ -1101,16 +1114,19 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                         PreferenceKeys.CURR_EQ_NAME = "eqName";
                     }
                     if (usbDevice != null) {//Remove this condition
-                        AppUtils.setJBLDeviceName(this,usbDevice.getDeviceName());
+                        AppUtils.setJBLDeviceName(this, usbDevice.getDeviceName());
                     }
                     AvneraManager.getAvenraManager(this).setLightX(mLightX);
                     if (appLightXDelegate != null) {
                         appLightXDelegate.isLightXintialize();
                     }
                     isConnected = true;
-                    connectDeviceStatus(isConnected);
                     Logger.d(TAGReconnect, "USB connected");
                     isNeedShowDashboard = true;
+                    AppUtils.addToMyDevices(getApplicationContext(), usbDevice.getProductName(), String.valueOf(usbDevice.getDeviceId()));
+                    devicesSet.add(usbDevice.getProductName() + "-" + usbDevice.getDeviceId());
+                    checkDevices(devicesSet);
+                    connectDeviceStatus(isConnected);
                 }
 //                onWindowFocusChanged(false);
                 if (usbDevice != null) {
@@ -1126,11 +1142,11 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     @Override
     public void usbDeviceDisconnected(USB usb, UsbDevice usbDevice) {
-        if (DeviceConnectionManager.getInstance().getCurrentDevice() != ConnectedDeviceType.Connected_BluetoothDevice){
-            if (mLightX != null){
+        if (DeviceConnectionManager.getInstance().getCurrentDevice() != ConnectedDeviceType.Connected_BluetoothDevice) {
+            if (mLightX != null) {
                 mLightX.close();
                 mLightX = null;
-                Logger.i(TAG,"usbDeviceDisconnected set lightX null");
+                Logger.i(TAG, "usbDeviceDisconnected set lightX null");
                 AvneraManager.getAvenraManager(getApplicationContext()).setLightX(null);
             }
         }
@@ -1141,16 +1157,16 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     @Override
     public void receivedAdminEvent(@NotNull AdminEvent event, final Object value) {
-        Logger.d(TAG, " ========> [receivedAdminEvent]   <======== value = " + value +",event = "+event);
-        switch (event){
+        Logger.d(TAG, " ========> [receivedAdminEvent]   <======== value = " + value + ",event = " + event);
+        switch (event) {
             /**
              * AccessoryReady
              * when call "connectDevice", if connected, will receive this event.
              * When received AccessoryReady, app can update UI,show Aware Home, and communicate with accessory.
              */
-            case AccessoryReady:{
-                if (specifiedDevice!= null && specifiedDevice.getName().contains(JBLConstant.DEVICE_150NC)&& value == null
-                      || specifiedDevice!= null&& value!= null &&((HashMap)value).containsKey(specifiedDevice.getAddress())  ) {
+            case AccessoryReady: {
+                if (specifiedDevice != null && specifiedDevice.getName().contains(JBLConstant.DEVICE_150NC) && value == null
+                        || specifiedDevice != null && value != null && ((HashMap) value).containsKey(specifiedDevice.getAddress())) {
 
                     AccessoryInfo accessoryInfo = bt150Manager.getAccessoryStatus();
                     PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), getApplicationContext());
@@ -1159,7 +1175,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     message.what = MSG_CONNECTED;
                     message.obj = value;
                     myHandler.removeMessages(MSG_CONNECTED);
-                    myHandler.sendMessageDelayed(message,200);
+                    myHandler.sendMessageDelayed(message, 200);
                     Logger.d(TAG, " ========> AccessoryReady <======== ");
                 }
                 break;
@@ -1168,15 +1184,15 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
              * Accessory is connected, do nothing.
              * This event comes earlier than AccessoryReady.
              */
-            case AccessoryConnected:{
-                Logger.d(TAG , " ========> [receivedAdminEvent] AccessoryConnected");
+            case AccessoryConnected: {
+                Logger.d(TAG, " ========> [receivedAdminEvent] AccessoryConnected");
                 break;
             }
             /**
              * Not used now.
              */
-            case AccessoryNotReady:{
-                Logger.d(TAG , " ========> [receivedAdminEvent] AccessoryNotReady");
+            case AccessoryNotReady: {
+                Logger.d(TAG, " ========> [receivedAdminEvent] AccessoryNotReady");
                 break;
             }
             /**
@@ -1187,23 +1203,23 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             case AccessoryVanished:
             case AccessoryAppeared:
                 break;
-            case AccessoryDisconnected:{
-                if (specifiedDevice!= null && specifiedDevice.getName().contains(JBLConstant.DEVICE_150NC)
-                        && value!= null &&((HashMap)value).containsKey(specifiedDevice.getAddress())
-                        ||specifiedDevice!= null && specifiedDevice.getName().contains(JBLConstant.DEVICE_150NC) && value == null) {
+            case AccessoryDisconnected: {
+                if (specifiedDevice != null && specifiedDevice.getName().contains(JBLConstant.DEVICE_150NC)
+                        && value != null && ((HashMap) value).containsKey(specifiedDevice.getAddress())
+                        || specifiedDevice != null && specifiedDevice.getName().contains(JBLConstant.DEVICE_150NC) && value == null) {
                     Message message = new Message();
                     message.what = MSG_DISCONNECTED;
                     message.obj = value;
                     myHandler.removeMessages(MSG_DISCONNECTED);
-                    myHandler.sendMessageDelayed(message,200);
+                    myHandler.sendMessageDelayed(message, 200);
                 }
                 break;
             }
             case TimeOut:
                 disconnectDevice();
                 break;
-            default:{
-                Logger.d(TAG , " ========> [receivedAdminEvent] default :" + event);
+            default: {
+                Logger.d(TAG, " ========> [receivedAdminEvent] default :" + event);
                 break;
             }
         }
@@ -1211,6 +1227,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     /**
      * Receive response.
+     *
      * @param command
      * @param values
      * @param status
@@ -1229,29 +1246,30 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
 
     /**
      * Receive status
+     *
      * @param name
      * @param value
      */
     @Override
-    public void receivedStatus(@NotNull final StatusEvent name,@NotNull final Object value) {
-        switch (name){
+    public void receivedStatus(@NotNull final StatusEvent name, @NotNull final Object value) {
+        switch (name) {
             /**
              * Get this event when discovering.
              * The param value is a list of mac address.
              */
-            case DeviceList:{
-                Map<String,String> pairedDevices  = (Map<String,String>) value;
+            case DeviceList: {
+                Map<String, String> pairedDevices = (Map<String, String>) value;
                 for (Map.Entry<String, String> entry : pairedDevices.entrySet()) {
-                    if (entry.getValue()!= null
+                    if (entry.getValue() != null
                             && entry.getValue().toUpperCase().contains("JBL Everest".toUpperCase())
                             && entry.getValue().contains(JBLConstant.DEVICE_150NC)
-                            && specifiedDevice!= null
-                            && specifiedDevice.getAddress().equalsIgnoreCase(entry.getKey())){
-                        Status status = bt150Manager.connectDevice(entry.getKey(),false);
-                        if (status == Status.AccessoryNotConnected){
+                            && specifiedDevice != null
+                            && specifiedDevice.getAddress().equalsIgnoreCase(entry.getKey())) {
+                        Status status = bt150Manager.connectDevice(entry.getKey(), false);
+                        if (status == Status.AccessoryNotConnected) {
                             disconnectDevice();
                         }
-                        Logger.d(TAG," ========> [receivedStatus] found device, connect device:" + entry.getKey() + "," + entry.getValue()+",status="+status);
+                        Logger.d(TAG, " ========> [receivedStatus] found device, connect device:" + entry.getKey() + "," + entry.getValue() + ",status=" + status);
                     }
                 }
                 break;
@@ -1259,24 +1277,24 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             /**
              * Get this event when device is doing OTA.
              */
-            case UpdateProgress:{
+            case UpdateProgress: {
                 break;
             }
             /**
              * Get this event when finished one OTA step.
              * OTA steps {@see CmdManager.updateImage}
              */
-            case ImageUpdateComplete:{
+            case ImageUpdateComplete: {
                 break;
             }
             /**
              * Get this event when finished one OTA step.
              * OTA steps {@see CmdManager.updateImage}
              */
-            case ImageUpdateFinalize:{
+            case ImageUpdateFinalize: {
                 break;
             }
-            default:{
+            default: {
 
             }
         }
@@ -1302,20 +1320,21 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         });
     }
 
-    private MyHandler  myHandler =  new MyHandler();
+    private MyHandler myHandler = new MyHandler();
     private final static int MSG_CONNECTED = 0;
     private final static int MSG_DISCONNECTED = 1;
-    private class MyHandler extends Handler{
+
+    private class MyHandler extends Handler {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch(msg.what){
+            switch (msg.what) {
                 case MSG_CONNECTED: {
                     connectedToDevice(msg.obj);
                     break;
                 }
-                case MSG_DISCONNECTED:{
+                case MSG_DISCONNECTED: {
                     disconnectToDevice(msg.obj);
                     break;
                 }
@@ -1326,8 +1345,8 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         }
     }
 
-    private void connectedToDevice(final Object value){
-        Logger.d(TAG, " MSG_CONNECTED value = "+value);
+    private void connectedToDevice(final Object value) {
+        Logger.d(TAG, " MSG_CONNECTED value = " + value);
         FirmwareUtil.disconnectHeadphoneText = getResources().getString(R.string.plsConnect);
         synchronized (this) {
             DeviceConnectionManager.getInstance().setCurrentDevice(ConnectedDeviceType.Connected_BluetoothDevice);
@@ -1350,19 +1369,19 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                 }
             });
             isConnected = true;
-            Logger.d(TAG, " isConnected = "+isConnected);
+            Logger.d(TAG, " isConnected = " + isConnected);
             isNeedShowDashboard = true;
             resetTime = RESET_TIME_FOR_150NC;
         }
     }
 
-    private void disconnectToDevice(final Object value){
+    private void disconnectToDevice(final Object value) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Logger.d(TAG , " MSG_DISCONNECTED value = "+value);
+                Logger.d(TAG, " MSG_DISCONNECTED value = " + value);
                 if (appLightXDelegate != null) {
-                    appLightXDelegate.receivedAdminEvent(AdminEvent.AccessoryDisconnected,value);
+                    appLightXDelegate.receivedAdminEvent(AdminEvent.AccessoryDisconnected, value);
                 }
                 disconnectDevice();
             }

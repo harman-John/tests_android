@@ -31,6 +31,8 @@ import jbl.stc.com.R;
 import jbl.stc.com.adapter.MyGridAdapter;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.data.ConnectedDeviceType;
+import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.TutorialAncDialog;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.entity.FirmwareModel;
@@ -65,8 +67,6 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     public static boolean isUpdatingFirmware = false;
     public static CopyOnWriteArrayList<FirmwareModel> mFwlist = new CopyOnWriteArrayList<>();
-
-    private boolean mIsConnected = false;
 
     public TutorialAncDialog tutorialAncDialog;
 
@@ -125,27 +125,34 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
     }
 
-    private void updateConnectedStatusAdapter(List<BluetoothDevice> deviceList) {
+    private void updateConnectedStatusAdapter(Set<String> deviceList) {
         for (MyDevice myDevice : lists) {
             myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
         }
         List<MyDevice> myDeviceListA2dp = new ArrayList<>();
-        for (BluetoothDevice bluetoothDevice : deviceList) {
-            String key = bluetoothDevice.getName()+"-"+bluetoothDevice.getAddress();
+        for (String key : deviceList) {
             myDeviceListA2dp.add(AppUtils.getMyDevice(key));
         }
         for (MyDevice myDeviceA2dp : myDeviceListA2dp) {
             for (MyDevice myDevice : lists) {
                 if (myDeviceA2dp.equals(myDevice)){
-                    if (getSpecifiedDevice() != null){
-                        String mainDeviceKey = getSpecifiedDevice().getName() +"-"+getSpecifiedDevice().getAddress();
-                        if (mIsConnected && mainDeviceKey.equalsIgnoreCase(myDeviceA2dp.deviceKey)) {
+                    Logger.i(TAG,"name = "+myDevice.deviceName);
+                    if (myDevice.deviceName.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
+                        Logger.i(TAG,"isConnected = "+isConnected);
+                        if (isConnected){
                             myDevice.connectStatus = ConnectStatus.A2DP_CONNECTED;
+                        }
+                    }else {
+                        if (getSpecifiedDevice() != null) {
+                            String mainDeviceKey = getSpecifiedDevice().getName() + "-" + getSpecifiedDevice().getAddress();
+                            if (isConnected && mainDeviceKey.equalsIgnoreCase(myDeviceA2dp.deviceKey)) {
+                                myDevice.connectStatus = ConnectStatus.A2DP_CONNECTED;
+                            } else {
+                                myDevice.connectStatus = ConnectStatus.A2DP_HALF_CONNECTED;
+                            }
                         } else {
                             myDevice.connectStatus = ConnectStatus.A2DP_HALF_CONNECTED;
                         }
-                    }else{
-                        myDevice.connectStatus = ConnectStatus.A2DP_HALF_CONNECTED;
                     }
                 }
             }
@@ -161,12 +168,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         return null;
     }
 
-    private boolean hasNewDevice(List<BluetoothDevice> deviceList) {
-        Set<String> set1 = new HashSet<>();
-        for (BluetoothDevice bluetoothDevice : deviceList) {
-            String device = bluetoothDevice.getName() + "-" + bluetoothDevice.getAddress();
-            set1.add(device);
-        }
+    private boolean hasNewDevice(Set<String> deviceList) {
+        Set<String> set1 = new HashSet<>(deviceList);
         Set<String> set2 = new HashSet<>();
         for (MyDevice myDevice : lists) {
             String device = myDevice.deviceKey;
@@ -176,6 +179,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         if (set2.size() == set1.size()) {
             return false;
         }
+        Logger.i(TAG,"has new Device");
         return true;
     }
 
@@ -210,7 +214,6 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         super.connectDeviceStatus(isConnected);
         Log.d(TAG, " connectDeviceStatus isConnected = " + isConnected);
 
-        mIsConnected = isConnected;
         if (isConnected) {
             if (isUpdatingFirmware) {
                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_OTA_FRAGMENT, 200);
@@ -234,23 +237,21 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
     }
 
-    public void checkDevices(List<BluetoothDevice> deviceList) {
-        Logger.i(TAG,"checkDevices");
-//        if (mIsConnected) {
-            super.checkDevices(deviceList);
-            if (hasNewDevice(deviceList)) {
-                initMyGridAdapterList();
-                updateConnectedStatusAdapter(deviceList);
-                showMyProducts();
-            } else {
-                updateConnectedStatusAdapter(deviceList);
-                myGridAdapter.setMyAdapterList(lists);
-            }
-//        }
+    public void checkDevices(Set<String> deviceList) {
+        Logger.i(TAG,"checkDevices deviceList = "+deviceList);
+        super.checkDevices(deviceList);
+        if (hasNewDevice(deviceList)) {
+            initMyGridAdapterList();
+            updateConnectedStatusAdapter(deviceList);
+            showMyProducts();
+        } else {
+            updateConnectedStatusAdapter(deviceList);
+            myGridAdapter.setMyAdapterList(lists);
+        }
     }
 
     public boolean isConnected() {
-        return mIsConnected;
+        return isConnected;
     }
 
     @Override
@@ -285,6 +286,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             AppUtils.hideFromForeground(this);
         } else {
             if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+                Logger.i(TAG,"onBackPressed MSG_START_SCAN");
                 dashboardHandler.removeMessages(MSG_START_SCAN);
                 dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
             }
@@ -322,7 +324,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             switch (msg.what) {
                 case MSG_SHOW_MY_PRODUCTS: {
                     showMyProducts();
-                    startA2DPCheck();
+//                    if (DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.Connected_BluetoothDevice) {
+                        startA2DPCheck();
+//                    }
                     dashboardHandler.removeMessages(MSG_START_SCAN);
                     dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT, 2000);
                     break;
