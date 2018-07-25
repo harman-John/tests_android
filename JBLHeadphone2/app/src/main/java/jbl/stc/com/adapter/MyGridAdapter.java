@@ -1,12 +1,19 @@
 package jbl.stc.com.adapter;
 
+import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.view.DragEvent;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -14,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -101,35 +109,14 @@ public class MyGridAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Logger.i(TAG,"v = "+ v+",position = "+position);
-
-//                if (!breathLightMap.containsKey(position)){
-//                    BreathLight breathLight = new BreathLight(mContext,
-//                            viewHolder.relativeLayoutBreathingIcon,
-//                            R.anim.breathing_lamp_fade_in,
-//                            R.anim.breathing_lamp_fade_out);
-//                    breathLight.startBreathing(position);
-//                    breathLightMap.put(position,breathLight);
-//                }
-//
-//
-//                for (Integer key: breathLightMap.keySet()){
-//                    if (key == position){
-//                        breathLightMap.get(key).startBreathing(position);
-//                        break;
-//                    }
-//                }
-
                 Message msg = new Message();
                 msg.what = MSG_SHOW_FRAGMENT;
                 msg.arg1 = position;
-//                cbHandler.sendMessageDelayed(msg,2000);
                 cbHandler.sendMessage(msg);
             }
         });
         return convertView;
     }
-
-//    private Map<Integer,BreathLight> breathLightMap = new HashMap<>();
     private class ViewHolder {
         private TextView textViewDeviceName;
         private ImageView imageViewIcon;
