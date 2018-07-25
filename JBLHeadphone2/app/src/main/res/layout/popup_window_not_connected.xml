@@ -35,31 +35,33 @@
 
         <Button
             android:id="@+id/button_not_connected_popup_go_to_bluetooth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="180dp"
+            android:layout_height="45dp"
             android:layout_gravity="center_horizontal"
             android:text="@string/go_to_bluetooth"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:layout_marginTop="15dp"
             android:textSize="18sp"
-            android:textColor="@color/orange"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:textAllCaps="false"
-            android:background="@drawable/rectangle_with_round_corner_orange"/>
+            android:background="@drawable/rectangle_with_round_corner_view_page_orange"/>
 
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_not_connected_popup_keep_using"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="180dp"
+            android:layout_height="45dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
             android:layout_gravity="center_horizontal"
+            android:gravity="center"
             android:text="@string/not_connected_keep_using"
             android:textStyle="bold"
             android:textColor="@color/smart_audio_popup_text_color1"
+            android:background="@drawable/rectangle_with_round_corner_orange"
             android:textSize="14sp"/>
     </LinearLayout>
 

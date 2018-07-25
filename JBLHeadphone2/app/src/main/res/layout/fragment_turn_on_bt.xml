@@ -21,25 +21,38 @@
 
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_splash_turn_on_bt"
-            android:layout_width="wrap_content"
+            android:layout_width="340dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="39dp"
             android:text="@string/turn_on_bluetooth"
+            android:gravity="left"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_splash_turn_on_bt_detail_1"
-            android:layout_width="wrap_content"
+            android:layout_width="340dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:gravity="left"
             android:textStyle="normal"
             android:text="@string/turn_on_bluetooth_detail_1" />
 
         <jbl.stc.com.view.CustomFontTextView
-            android:layout_width="wrap_content"
+            android:layout_width="340dp"
             android:layout_height="wrap_content"
             android:textStyle="normal"
+            android:gravity="left"
             android:text="@string/turn_on_bluetooth_detail_2" />
+
+        <jbl.stc.com.view.CustomFontTextView
+            android:id="@+id/tv_stillsee"
+            android:layout_width="340dp"
+            android:layout_height="wrap_content"
+            android:textStyle="normal"
+            android:gravity="left"
+            android:text="@string/turn_on_bluetooth_detail_3" />
+
+
     </LinearLayout>
 </RelativeLayout>

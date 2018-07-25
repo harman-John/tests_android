@@ -660,6 +660,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getString(R.string.off),getActivity());
                 textViewCurrentEQ.setText(getString(R.string.off));
                 relative_layout_home_eq_info.setBackgroundColor(getResources().getColor(R.color.gray_aa_bg));
+                relative_layout_home_eq_info.setAlpha((float) 0.5);
                 break;
             }
             case 1: {
