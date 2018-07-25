@@ -31,6 +31,7 @@ import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.view.CustomFontTextView;
 import jbl.stc.com.view.CustomScrollView;
 import jbl.stc.com.view.DragGridView;
 import jbl.stc.com.view.EqArcView;
@@ -50,7 +51,7 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
     private List<EQModel> eqModelList=new ArrayList<>();
     private EqArcView mEqArcView;
     private TextView tv_jazz,tv_vocal,tv_bass;
-    private TextView tv_dragImage;
+    private CustomFontTextView tv_dragImage;
     private LightX lightX;
     private static final String TAG = NewEqMoreSettingFragment.class.getSimpleName();
     @Override
@@ -75,7 +76,7 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
         }else if (!TextUtils.isEmpty(curEqName)&&curEqName.equals(getResources().getString(R.string.bass))){
             tv_bass.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_selected);
         }
-        tv_dragImage=(TextView)rootView.findViewById(R.id.tv_dragImage);
+        tv_dragImage=(CustomFontTextView)rootView.findViewById(R.id.tv_dragImage);
         closeImageView = (ImageView) rootView.findViewById(R.id.closeImageView);
         eqGridView=(EqGridView) rootView.findViewById(R.id.eqGridView);
         mScrollView = rootView.findViewById(R.id.scrollview);

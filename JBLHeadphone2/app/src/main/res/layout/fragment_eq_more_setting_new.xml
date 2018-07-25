@@ -20,6 +20,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textStyle="normal"
+            android:textSize="18sp"
+            android:textColor="@color/white"
             android:text="@string/title_eq_setting" />
 
         <jbl.stc.com.view.AppImageView
@@ -53,6 +55,8 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:textStyle="normal"
+                android:textSize="14sp"
+                android:textColor="#4C596B"
                 android:text="Presets" />
 
             <LinearLayout
@@ -72,7 +76,9 @@
                     android:gravity="center"
                     android:text="@string/jazz"
                     android:alpha="0.5"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="@color/eq_panel_name_text"
+                    />
 
                 <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/tv_vocal"
@@ -83,7 +89,10 @@
                     android:gravity="center"
                     android:alpha="0.5"
                     android:textStyle="normal"
-                    android:text="@string/vocal" />
+                    android:textSize="16sp"
+                    android:textColor="@color/eq_panel_name_text"
+                    android:text="@string/vocal"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -102,6 +111,8 @@
                     android:gravity="center"
                     android:alpha="0.5"
                     android:textStyle="normal"
+                    android:textSize="16sp"
+                    android:textColor="@color/eq_panel_name_text"
                     android:text="@string/bass" />
             </LinearLayout>
 
@@ -112,6 +123,8 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:textStyle="normal"
+                android:textSize="14sp"
+                android:textColor="#4C596B"
                 android:text="Custom" />
 
             <jbl.stc.com.view.EqGridView
@@ -150,16 +163,19 @@
         android:layout_marginRight="@dimen/eq_trash_circle_margin"
         android:visibility="gone" />
 
-    <TextView
+    <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/tv_dragImage"
-        android:layout_centerInParent="true"
         android:visibility="gone"
+        android:layout_centerInParent="true"
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_gravity="center_vertical"
         android:layout_marginRight="20dp"
         android:background="@drawable/drag_bubble"
         android:gravity="center"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:textColor="@color/eq_panel_name_text"
         android:text="@string/bass" />
 
     <!--<jbl.stc.com.view.EqGridView-->

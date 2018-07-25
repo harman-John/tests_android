@@ -130,9 +130,9 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
                               PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, eqModels.get(0).eqName, context);
                              }
                           }else{
-                          int[] eqValueArray = new int[]{0,0,0,0,0,0,0,0,0,0};
-                          ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.Off, eqValueArray, lightX);
-                          PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,context.getResources().getString(R.string.off),context);
+                              ANCControlManager.getANCManager(context).applyPresetWithoutBand(GraphicEQPreset.Off, lightX);
+                              PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,context.getResources().getString(R.string.off),context);
+                              PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,context.getResources().getString(R.string.jazz),context);
 
                       }
                   }

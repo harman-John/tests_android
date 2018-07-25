@@ -37,6 +37,12 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
         this.onEqItemSelectedListener = onEqItemSelectedListener;
     }
 
+    public void setSelectedIndex(int index){
+        if (onEqItemSelectedListener != null) {
+            onEqItemSelectedListener.onSelected(index);
+        }
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = View.inflate(parent.getContext(), R.layout.item_eq_name_grid, null);

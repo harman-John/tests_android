@@ -60,6 +60,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private int eqType;
     private LightX lightX;
     private Handler mHandler = new Handler();
+    private float mPosX=0,mCurPosX;
 
 
     @Override
@@ -129,6 +130,45 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 }
                 return true;
             }
+        });
+
+        equalizerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+
+                    case MotionEvent.ACTION_DOWN:
+                        mPosX = event.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        mCurPosX = event.getX();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (mCurPosX - mPosX > 0
+                                && (Math.abs(mCurPosX - mPosX) > 25)) {
+                            //向右滑動  减小
+                            if (currSelectedEqIndex>=1){
+                                eqAdapter.setSelectedIndex(currSelectedEqIndex-1);
+                            }else{
+                                eqAdapter.setSelectedIndex(eqModelList.size()-1);
+                            }
+
+
+                        } else if (mCurPosX - mPosX < 0
+                                && (Math.abs(mCurPosX - mPosX) > 25)) {
+                            //向左滑动  增大
+                            if (currSelectedEqIndex<eqModelList.size()-1){
+                                eqAdapter.setSelectedIndex(currSelectedEqIndex+1);
+                            }else{
+                                eqAdapter.setSelectedIndex(0);
+                            }
+                        }
+
+                        break;
+                }
+                return true;
+            }
+
         });
     }
 
