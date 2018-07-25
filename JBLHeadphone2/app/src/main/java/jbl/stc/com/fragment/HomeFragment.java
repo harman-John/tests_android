@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -206,10 +207,46 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initEvent() {
+
+        final GestureDetector.OnGestureListener gestureListener=new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (e1.getY() - e2.getY() > 25&& Math.abs(velocityX) > 25) {
+                    switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                }
+                return false;
+            }
+        };
+        final GestureDetector gestureDetector=new GestureDetector(gestureListener);
         relative_layout_home_eq_info.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
+                /*switch (event.getAction()) {
 
                     case MotionEvent.ACTION_DOWN:
                         mPosY = event.getY();
@@ -225,11 +262,15 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         }
 
                         break;
-                }
-                return true;
+                }*/
+                //return true;
+                return gestureDetector.onTouchEvent(event);
+
             }
 
         });
+
+
     }
 
     public MyDevice getMyDeviceInHome() {
