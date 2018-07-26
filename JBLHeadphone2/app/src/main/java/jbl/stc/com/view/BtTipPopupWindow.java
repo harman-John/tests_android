@@ -15,11 +15,16 @@ import android.widget.TextView;
 
 import jbl.stc.com.R;
 
+/**
+ * @name JBLHeadphone2
+ * @class name：jbl.stc.com.view
+ * @class describe
+ * Created by Vicky on 7/25/18.
+ */
 public class BtTipPopupWindow extends PopupWindow implements View.OnClickListener {
 
     private Button buttonGoToBluetooth;
     private Context mContext;
-    private ImageView aa_popup_close_arrow;
 
     public BtTipPopupWindow(Context context) {
         super(context);
@@ -38,8 +43,7 @@ public class BtTipPopupWindow extends PopupWindow implements View.OnClickListene
         setAnimationStyle(R.style.style_down_to_top);
         buttonGoToBluetooth = (Button) popupWindow_view.findViewById(R.id.button_go_to_settings);
         buttonGoToBluetooth.setOnClickListener(this);
-        aa_popup_close_arrow = (ImageView) popupWindow_view.findViewById(R.id.aa_popup_close_arrow);
-        aa_popup_close_arrow.setOnClickListener(this);
+        popupWindow_view.findViewById(R.id.aa_popup_close_arrow).setOnClickListener(this);
     }
 
     @Override

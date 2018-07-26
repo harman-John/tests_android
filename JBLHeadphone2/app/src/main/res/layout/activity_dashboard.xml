@@ -20,7 +20,7 @@
             android:layout_height="@dimen/title_bar_height"
             android:background="@color/red_discovery">
 
-            <ImageView
+            <jbl.stc.com.view.AppImageView
                 android:id="@+id/image_view_dashboard_white_menu"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
@@ -39,7 +39,7 @@
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
-            <ImageView
+            <jbl.stc.com.view.AppImageView
                 android:id="@+id/image_view_dashboard_white_plus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

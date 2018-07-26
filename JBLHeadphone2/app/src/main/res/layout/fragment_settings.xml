@@ -14,7 +14,7 @@
         android:paddingLeft="@dimen/margin_top_10dp"
         android:paddingRight="@dimen/margin_top_10dp">
 
-        <ImageView
+        <jbl.stc.com.view.AppImageView
             android:id="@+id/image_view_settings_back"
             android:layout_width="45dp"
             android:layout_height="45dp"
@@ -392,7 +392,6 @@
                     android:layout_centerVertical="true"
                     android:paddingStart="@dimen/settings_item_padding_left"
                     android:paddingEnd="@dimen/settings_item_padding_right"
-
                     android:textSize="14sp" />
             </RelativeLayout>
 

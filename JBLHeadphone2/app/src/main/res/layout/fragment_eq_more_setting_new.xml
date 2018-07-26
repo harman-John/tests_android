@@ -177,28 +177,5 @@
         android:textStyle="normal"
         android:textColor="@color/eq_panel_name_text"
         android:text="@string/bass" />
-
-    <!--<jbl.stc.com.view.EqGridView-->
-    <!--android:layout_above="@id/iv_remove"-->
-    <!--android:layout_below="@id/titleBar"-->
-    <!--android:id="@+id/eqGridView"-->
-    <!--android:layout_width="240dp"-->
-    <!--android:layout_marginTop="20dp"-->
-    <!--android:layout_marginBottom="20dp"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_centerHorizontal="true"-->
-    <!--android:background="@color/transparent"-->
-    <!--android:horizontalSpacing="20dp"-->
-    <!--android:verticalSpacing="20dp"-->
-    <!--android:listSelector="@android:color/transparent"-->
-    <!--android:numColumns="2"-->
-    <!--android:scrollbars="none"-->
-    <!--app:drag_last_position="true"-->
-    <!--app:drag_scale="1.05"-->
-    <!--app:drag_start_position="0"-->
-    <!--app:scale_mill="200"-->
-    <!--app:vibrator="true"-->
-    <!--/>-->
-
-
+    
 </RelativeLayout>

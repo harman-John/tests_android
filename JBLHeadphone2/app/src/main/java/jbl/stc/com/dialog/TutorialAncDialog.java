@@ -35,6 +35,7 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.EqualizerAddView;
 import jbl.stc.com.view.KeyboardLayout;
 import jbl.stc.com.view.SaPopupWindow;
@@ -58,7 +59,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     private ImageView imageViewAbientAware;
     private TextView textViewAmbientAware;
     private View viewDivider;
-    private ImageView imageViewArrowUp;
+    private AppImageView imageViewArrowUp;
     private TextView textViewEq;
     private TextView textViewEqGrey;
     private String modelNumber;
@@ -66,7 +67,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     private KeyboardLayout mKeyboardLayout;
     private FrameLayout tutorialEqualizerLayout;
     private RelativeLayout mTutorialEqSystemParentLayout;
-    private ImageView tripleUpArrow;
+    private AppImageView tripleUpArrow;
 
     private final static String TAG =  TutorialAncDialog.class.getSimpleName();
 
