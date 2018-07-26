@@ -3,6 +3,7 @@ package jbl.stc.com.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -36,6 +37,7 @@ import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Utility;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,6 +67,7 @@ import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.view.AaPopupWindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
+import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.BlurringView;
 import jbl.stc.com.view.NotConnectedPopupWindow;
 import jbl.stc.com.view.SaPopupWindow;
@@ -113,7 +116,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private View bluredView;
     private MyDevice myDevice;
     private TextView titleEqText;
-    private float mPosY,mCurPosY;
+    private AppImageView image_view_ota_download;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -141,7 +144,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         bluredView = view.findViewById(R.id.relative_Layout_home);
         relative_layout_home_eq_info = (FrameLayout) view.findViewById(R.id.relative_layout_home_eq_info);
         relative_layout_home_eq_info.setVisibility(View.VISIBLE);
-        titleEqText=(TextView) view.findViewById(R.id.titleEqText);
+        titleEqText = (TextView) view.findViewById(R.id.titleEqText);
         titleEqText.setOnClickListener(this);
         if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             setEqMenuColor(false);
@@ -154,6 +157,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         linearLayoutBattery = view.findViewById(R.id.linear_layout_home_battery);
         progressBarBattery = view.findViewById(R.id.progress_bar_battery);
         textViewBattery = view.findViewById(R.id.text_view_battery_level);
+        image_view_ota_download = view.findViewById(R.id.image_view_ota_download);
+        image_view_ota_download.setOnClickListener(this);
 
         mBlurView = view.findViewById(R.id.view_home_blur);
         createEqTipsDialog = new CreateEqTipsDialog(getActivity());
@@ -206,9 +211,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         return view;
     }
 
+    public void showOta(boolean hasUpdate) {
+        if (hasUpdate) {
+            imageViewDevice.setVisibility(View.VISIBLE);
+        } else {
+            imageViewDevice.setVisibility(View.GONE);
+        }
+    }
+
     private void initEvent() {
 
-        final GestureDetector.OnGestureListener gestureListener=new GestureDetector.OnGestureListener() {
+        final GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
                 return false;
@@ -236,13 +249,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (e1.getY() - e2.getY() > 25&& Math.abs(velocityX) > 25) {
+                if (e1.getY() - e2.getY() > 25 && Math.abs(velocityX) > 25) {
                     switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 }
                 return false;
             }
         };
-        final GestureDetector gestureDetector=new GestureDetector(gestureListener);
+        final GestureDetector gestureDetector = new GestureDetector(gestureListener);
         relative_layout_home_eq_info.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -392,9 +405,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 setANC();
                 break;
             }
-            case R.id.titleEqText:{
+            case R.id.titleEqText: {
                 turnOnOffEq();
                 break;
+            }
+            case R.id.image_view_ota_download: {
+                switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
             }
         }
     }
@@ -407,39 +423,39 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     };
 
     private void turnOnOffEq() {
-        String curEqName=PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME,getActivity(),getString(R.string.off));
-        String curEqNameExclusiveOff=PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,getActivity(),"");
-        if (curEqName.equals(getString(R.string.off))){
+        String curEqName = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(), getString(R.string.off));
+        String curEqNameExclusiveOff = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getActivity(), "");
+        if (curEqName.equals(getString(R.string.off))) {
             // turn on the eq
-            Logger.d(TAG,"turn on the eq");
-            if (TextUtils.isEmpty(curEqNameExclusiveOff)){
-                List<EQModel> eqModels=EQSettingManager.get().getCompleteEQList(getContext());
-                Logger.d(TAG,"eqSize:"+eqModels.size());
-                if (eqModels!=null&&eqModels.size()<5){
+            Logger.d(TAG, "turn on the eq");
+            if (TextUtils.isEmpty(curEqNameExclusiveOff)) {
+                List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(getContext());
+                Logger.d(TAG, "eqSize:" + eqModels.size());
+                if (eqModels != null && eqModels.size() < 5) {
                     ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz, lightX);
-                }else if (eqModels!=null &&eqModels.size()>=5){
+                } else if (eqModels != null && eqModels.size() >= 5) {
                     ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModels.get(4)), lightX);
                 }
-            }else{
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,curEqNameExclusiveOff,getActivity());
-                if (curEqNameExclusiveOff.equals(getString(R.string.jazz))){
+            } else {
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, curEqNameExclusiveOff, getActivity());
+                if (curEqNameExclusiveOff.equals(getString(R.string.jazz))) {
                     ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz, lightX);
-                }else if (curEqNameExclusiveOff.equals(getString(R.string.vocal))){
+                } else if (curEqNameExclusiveOff.equals(getString(R.string.vocal))) {
                     ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Vocal, lightX);
-                }else if (curEqNameExclusiveOff.equals(getString(R.string.bass))){
+                } else if (curEqNameExclusiveOff.equals(getString(R.string.bass))) {
                     ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Bass, lightX);
-                }else {
-                    EQModel eqModel=EQSettingManager.get().getEQModelByName(curEqNameExclusiveOff,getActivity());
+                } else {
+                    EQModel eqModel = EQSettingManager.get().getEQModelByName(curEqNameExclusiveOff, getActivity());
                     ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModel), lightX);
                 }
             }
-        }else{
+        } else {
             //turn off the eq
-            Logger.d(TAG,"turn off the eq");
+            Logger.d(TAG, "turn off the eq");
             ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Off, lightX);
         }
         homeHandler.removeCallbacks(applyRunnable);
-        homeHandler.postDelayed(applyRunnable,800);
+        homeHandler.postDelayed(applyRunnable, 800);
     }
 
     public void setANC() {
@@ -613,12 +629,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
                     break;
                 }
-                case MSG_UPDATE_CUSTOME_EQ:{
+                case MSG_UPDATE_CUSTOME_EQ: {
                     relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                     application.deviceInfo.eqOn = true;
                     String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(), null);
-                    PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,name,getActivity());
-                    Logger.d(TAG,"turnOnEq name:"+name);
+                    PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, name, getActivity());
+                    Logger.d(TAG, "turnOnEq name:" + name);
                     if (name != null) {
                         textViewCurrentEQ.setText(name);
                         if (textViewCurrentEQ.getText().length() >= JBLConstant.MAX_MARQUEE_LEN) {
@@ -657,31 +673,30 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         //ANCControlManager.getANCManager(getContext()).getAppGraphicEQPresetBandSettings(lightX, GraphicEQPreset.Jazz,9);
         switch (index) {
             case 0: {
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getString(R.string.off),getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.off), getActivity());
                 textViewCurrentEQ.setText(getString(R.string.off));
                 relative_layout_home_eq_info.setBackgroundColor(getResources().getColor(R.color.gray_aa_bg));
-                relative_layout_home_eq_info.setAlpha((float) 0.5);
                 break;
             }
             case 1: {
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getString(R.string.jazz),getActivity());
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,getString(R.string.jazz),getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.jazz), getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.jazz), getActivity());
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.jazz));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 2: {
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getString(R.string.vocal),getActivity());
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,getString(R.string.vocal),getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.vocal), getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.vocal), getActivity());
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.vocal));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 3: {
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,getString(R.string.bass),getActivity());
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,getString(R.string.bass),getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.bass), getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.bass), getActivity());
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.bass));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
@@ -689,7 +704,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case 4: {
                 //ANCControlManager.getANCManager(getContext()).getAppGraphicEQBand(GraphicEQPreset.User, lightX);
-                ANCControlManager.getANCManager(getContext()).getAppGraphicEQPresetBandSettings(lightX,GraphicEQPreset.User,10);
+                ANCControlManager.getANCManager(getContext()).getAppGraphicEQPresetBandSettings(lightX, GraphicEQPreset.User, 10);
                 break;
             }
             default:
@@ -711,9 +726,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         if (value == 255) {
             progressBarBattery.setProgress(100);
             textViewBattery.setText("100%");
+            progressBarBattery.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_not_charge));
         } else {
             progressBarBattery.setProgress(value);
             textViewBattery.setText(String.format("%s%%", String.valueOf(value)));
+            if (value > 0 && value <= 15) {
+                progressBarBattery.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_red_charge));
+            } else if (value > 15 && value <= 30) {
+                progressBarBattery.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_orange_charge));
+            } else if (value > 30) {
+                progressBarBattery.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_not_charge));
+            }
         }
     }
 
@@ -798,18 +821,18 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case AmCmds.CMD_GrEqBandGains: {
                 Log.d(TAG, "EqBand command aaaa=" + command + ",values=" + values + ",status=" + status);
-                if (values!=null&&values.size()>0){
+                if (values != null && values.size() > 0) {
                    /* Logger.d(TAG,"name = "+ values.get(0).getName());
                     byte[] v = (byte[]) (values.get(0).getValue());
                     Logger.d(TAG,"value = "+ Arrays.toString(v));*/
 
-                    Logger.d(TAG,"name = "+ values.iterator().next().getName().toString());
+                    Logger.d(TAG, "name = " + values.iterator().next().getName().toString());
                     byte[] v = (byte[]) (values.iterator().next().getValue());
-                    Logger.d(TAG,"value = "+ Arrays.toString(v));
-                    int presetIndext=v[0];
-                    int numBands=v[4];
-                    int value=v[8];
-                    Logger.d(TAG,"presetIndext:"+presetIndext+"numBands:"+numBands+"value:"+value);
+                    Logger.d(TAG, "value = " + Arrays.toString(v));
+                    int presetIndext = v[0];
+                    int numBands = v[4];
+                    int value = v[8];
+                    Logger.d(TAG, "presetIndext:" + presetIndext + "numBands:" + numBands + "value:" + value);
                 }
                 break;
             }
@@ -839,7 +862,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         Logger.d(TAG,"EqBand value = "+ Arrays.toString(v));
                     }
                 }*/
-                if (values!=null){
+                if (values != null) {
                     byte[] v = (byte[]) (values.iterator().next().getValue());
                     parseCustomeEQ(v);
                 }
@@ -852,46 +875,46 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void parseCustomeEQ(byte[] v) {
-        if (v!=null&&v.length==48){
-            Logger.d(TAG,"EqBand value1 = "+ Arrays.toString(v));
-            int[] eqArray=new int[10];
-            eqArray[0]=v[8];
-            eqArray[1]=v[12];
-            eqArray[2]=v[16];
-            eqArray[3]=v[20];
-            eqArray[4]=v[24];
-            eqArray[5]=v[28];
-            eqArray[6]=v[32];
-            eqArray[7]=v[36];
-            eqArray[8]=v[40];
-            eqArray[9]=v[44];
-            String eqName=PreferenceUtils.getString(PreferenceKeys.MODEL, getContext(), null)+" EQ";
-            List<EQModel> models=EQSettingManager.get().getCompleteEQList(getActivity());
-            boolean isHave=false;
-            if(models!=null&&models.size()>0){
-                for (EQModel eqModel:models){
-                    if (EQSettingManager.get().isTheSameEQ(eqModel,eqArray)){
-                        isHave=true;
-                        PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModel.eqName,getActivity());
-                        sendMessageTo(MSG_UPDATE_CUSTOME_EQ,null);
-                        Logger.d(TAG,"Have the same EQ:"+eqModel.eqName);
+        if (v != null && v.length == 48) {
+            Logger.d(TAG, "EqBand value1 = " + Arrays.toString(v));
+            int[] eqArray = new int[10];
+            eqArray[0] = v[8];
+            eqArray[1] = v[12];
+            eqArray[2] = v[16];
+            eqArray[3] = v[20];
+            eqArray[4] = v[24];
+            eqArray[5] = v[28];
+            eqArray[6] = v[32];
+            eqArray[7] = v[36];
+            eqArray[8] = v[40];
+            eqArray[9] = v[44];
+            String eqName = PreferenceUtils.getString(PreferenceKeys.MODEL, getContext(), null) + " EQ";
+            List<EQModel> models = EQSettingManager.get().getCompleteEQList(getActivity());
+            boolean isHave = false;
+            if (models != null && models.size() > 0) {
+                for (EQModel eqModel : models) {
+                    if (EQSettingManager.get().isTheSameEQ(eqModel, eqArray)) {
+                        isHave = true;
+                        PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, getActivity());
+                        sendMessageTo(MSG_UPDATE_CUSTOME_EQ, null);
+                        Logger.d(TAG, "Have the same EQ:" + eqModel.eqName);
                         break;
                     }
                 }
-                if (!isHave){
-                    Logger.d(TAG,"create a new EQ");
-                    EQModel eqModel=EQSettingManager.get().getCustomeEQModelFromValues(eqArray,eqName);
+                if (!isHave) {
+                    Logger.d(TAG, "create a new EQ");
+                    EQModel eqModel = EQSettingManager.get().getCustomeEQModelFromValues(eqArray, eqName);
                     EQSettingManager.get().addCustomEQ(eqModel, getContext());
-                    PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModel.eqName,getActivity());
-                    sendMessageTo(MSG_UPDATE_CUSTOME_EQ,null);
+                    PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, getActivity());
+                    sendMessageTo(MSG_UPDATE_CUSTOME_EQ, null);
                 }
 
-            }else{
-                Logger.d(TAG,"create a new EQ");
-                EQModel eqModel=EQSettingManager.get().getCustomeEQModelFromValues(eqArray,eqName);
+            } else {
+                Logger.d(TAG, "create a new EQ");
+                EQModel eqModel = EQSettingManager.get().getCustomeEQModelFromValues(eqArray, eqName);
                 EQSettingManager.get().addCustomEQ(eqModel, getContext());
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModel.eqName,getActivity());
-                sendMessageTo(MSG_UPDATE_CUSTOME_EQ,null);
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, getActivity());
+                sendMessageTo(MSG_UPDATE_CUSTOME_EQ, null);
             }
 
         }
@@ -980,7 +1003,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
 
                 case AppGraphicEQPresetBandSettings: {
-                    Logger.d(TAG,"Eq band:"+Arrays.toString(var4));
+                    Logger.d(TAG, "Eq band:" + Arrays.toString(var4));
                     int preset = Utility.getInt(var4, 0);
                     int numBands = Utility.getInt(var4, 4);
                     parseCustomeEQ(var4);

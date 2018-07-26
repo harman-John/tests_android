@@ -127,7 +127,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     private void updateDisconnectedAdapter() {
         for (MyDevice myDevice : lists) {
-            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED){
+            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
                 myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
                 break;
             }
@@ -144,14 +144,14 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
         for (MyDevice myDeviceA2dp : myDeviceListA2dp) {
             for (MyDevice myDevice : lists) {
-                if (myDeviceA2dp.equals(myDevice)){
-                    Logger.i(TAG,"name = "+myDevice.deviceName);
+                if (myDeviceA2dp.equals(myDevice)) {
+                    Logger.i(TAG, "name = " + myDevice.deviceName);
                     if (myDevice.deviceName.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
-                        Logger.i(TAG,"isConnected = "+isConnected);
-                        if (isConnected){
+                        Logger.i(TAG, "isConnected = " + isConnected);
+                        if (isConnected) {
                             myDevice.connectStatus = ConnectStatus.A2DP_CONNECTED;
                         }
-                    }else {
+                    } else {
                         if (getSpecifiedDevice() != null) {
                             String mainDeviceKey = getSpecifiedDevice().getName() + "-" + getSpecifiedDevice().getAddress();
                             if (isConnected && mainDeviceKey.equalsIgnoreCase(myDeviceA2dp.deviceKey)) {
@@ -188,7 +188,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         if (set2.size() == set1.size()) {
             return false;
         }
-        Logger.i(TAG,"has new Device");
+        Logger.i(TAG, "has new Device");
         return true;
     }
 
@@ -228,16 +228,16 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_OTA_FRAGMENT, 200);
             } else {
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (!(fr != null && fr instanceof HomeFragment)){
+                if (!(fr != null && fr instanceof HomeFragment)) {
                     dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
                 }
             }
 
         } else {
             Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-            if (fr != null && fr instanceof HomeFragment){
-                MyDevice myDevice = ((HomeFragment)fr).getMyDeviceInHome();
-                if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED){
+            if (fr != null && fr instanceof HomeFragment) {
+                MyDevice myDevice = ((HomeFragment) fr).getMyDeviceInHome();
+                if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
                     removeAllFragment();
                 }
             }
@@ -246,22 +246,22 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         }
     }
 
-    public void removeDeviceList(String key){
+    public void removeDeviceList(String key) {
         MyDevice temp = null;
-        for(MyDevice myDevice: lists) {
+        for (MyDevice myDevice : lists) {
             if (myDevice.deviceKey.equalsIgnoreCase(key)) {
                 temp = myDevice;
                 break;
             }
         }
-        if (temp!= null)
+        if (temp != null)
             lists.remove(temp);
-        AppUtils.removeMyDevice(mContext,key);
+        AppUtils.removeMyDevice(mContext, key);
         super.removeDeviceList(key);
     }
 
     public void checkDevices(Set<String> deviceList) {
-        Logger.i(TAG,"checkDevices deviceList = "+deviceList);
+        Logger.i(TAG, "checkDevices deviceList = " + deviceList);
         super.checkDevices(deviceList);
         if (hasNewDevice(deviceList)) {
             initMyGridAdapterList();
@@ -309,7 +309,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             AppUtils.hideFromForeground(this);
         } else {
             if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-                Logger.i(TAG,"onBackPressed MSG_START_SCAN");
+                Logger.i(TAG, "onBackPressed MSG_START_SCAN");
                 dashboardHandler.removeMessages(MSG_START_SCAN);
                 dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
             }
@@ -348,7 +348,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 case MSG_SHOW_MY_PRODUCTS: {
                     showMyProducts();
 //                    if (DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.Connected_BluetoothDevice) {
-                        startA2DPCheck();
+                    startA2DPCheck();
 //                    }
                     dashboardHandler.removeMessages(MSG_START_SCAN);
                     dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT, 2000);
@@ -394,7 +394,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     public void goHomeFragment(MyDevice myDevice) {
-        Logger.d(TAG,"goHomeFragment");
+        Logger.d(TAG, "goHomeFragment");
         dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
         dashboardHandler.removeMessages(MSG_SHOW_MY_PRODUCTS);
         dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
@@ -428,6 +428,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if (fr != null && fr instanceof SettingsFragment) {
             ((SettingsFragment) fr).showOta(isUpdateAvailable);
+        } else if (fr != null && fr instanceof HomeFragment) {
+            ((HomeFragment) fr).showOta(isUpdateAvailable);
         }
     }
 
@@ -517,8 +519,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                             if (fr instanceof TurnOnBtTipsFragment) {
                                 removeAllFragment();
                             }
-                            if (lists.size() == 0){
-                                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY,2000);
+                            if (lists.size() == 0) {
+                                dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 2000);
                             }
                             break;
                         }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:clickable="true"
-    android:focusable="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true">
 
     <RelativeLayout
         android:id="@+id/relative_Layout_home"
@@ -61,26 +61,41 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <RelativeLayout
-                    android:layout_width="240dp"
-                    android:layout_height="240dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="@dimen/margin_top_10dp"
-                    android:background="@drawable/shape_dashboard_device_circle"
-                    android:clickable="false">
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_top_10dp">
 
-                    <ImageView
-                        android:id="@+id/image_view_home_device_image"
+                    <RelativeLayout
+                        android:layout_width="240dp"
+                        android:layout_height="240dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@drawable/shape_dashboard_device_circle"
+                        android:clickable="false">
+
+                        <ImageView
+                            android:id="@+id/image_view_home_device_image"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:clickable="false"
+                            android:scaleType="fitCenter"
+                            android:src="@mipmap/everest_elite_150nc_icon" />
+                    </RelativeLayout>
+
+                    <jbl.stc.com.view.AppImageView
+                        android:id="@+id/image_view_ota_download"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:clickable="false"
-                        android:scaleType="fitCenter"
-                        android:src="@mipmap/everest_elite_150nc_icon" />
-                </RelativeLayout>
+                        android:layout_gravity="right|top"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="20dp"
+                        android:src="@mipmap/download" />
+                </FrameLayout>
+
 
                 <include
                     layout="@layout/layout_battery"
@@ -123,9 +138,9 @@
                             android:layout_marginTop="8dp"
                             android:gravity="center_horizontal"
                             android:lineSpacingExtra="-5dp"
-                            android:textStyle="normal"
                             android:text="@string/text_noise_canceling"
-                            android:textColor="#5B697E" />
+                            android:textColor="#5B697E"
+                            android:textStyle="normal" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -154,8 +169,8 @@
                             android:layout_marginTop="8dp"
                             android:gravity="center_horizontal"
                             android:text="@string/text_ambient_aware"
-                            android:textStyle="normal"
-                            android:textColor="#5B697E" />
+                            android:textColor="#5B697E"
+                            android:textStyle="normal" />
                     </RelativeLayout>
 
                 </LinearLayout>
@@ -184,8 +199,8 @@
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="@string/title_eq"
                     android:gravity="center"
+                    android:text="@string/title_eq"
                     android:textColor="@color/white"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -210,9 +225,9 @@
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="@string/off"
-                    android:textStyle="normal"
                     android:textColor="@color/white"
-                    android:textSize="20dp" />
+                    android:textSize="20dp"
+                    android:textStyle="normal" />
 
                 <jbl.stc.com.view.AppImageView
                     android:id="@+id/arrowUpImage"
@@ -238,9 +253,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
+        android:visibility="gone"
         app:blurRadius="11"
         app:downsampleFactor="6"
-        app:overlayColor="@color/blur_overlay_color"
-        android:visibility="gone"/>
+        app:overlayColor="@color/blur_overlay_color" />
 
 </RelativeLayout>

@@ -75,4 +75,6 @@
     <color name="outerCircle">#b2b0b2</color>
     <color name="gray_dee2e6">#DEE2E6</color>
     <color name="tutorial_transparent">#88000000</color>
+    <color name="orange_charge">#FF9420</color>
+    <color name="red_charge">#FF3623</color>
 </resources>
