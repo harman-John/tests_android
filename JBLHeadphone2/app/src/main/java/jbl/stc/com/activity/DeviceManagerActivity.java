@@ -46,6 +46,7 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.ConnectedDeviceType;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.AlertsDialog;
+import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.CalibrationFragment;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.listener.A2dpObserver;
@@ -155,7 +156,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     }
 
     private void USBLib(UsbManager usbManager, UsbDevice device) {
-        mHandler.removeCallbacks(runnableToast);
+//        mHandler.removeCallbacks(runnableToast);
         mHandler.removeCallbacks(resetRunnable);
         mUSB = new USB(this, this);
         mUSB.sUSBVendorIds.add(JBLConstant.USB_VENDOR_ID);
@@ -247,6 +248,10 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         if (mBtAdapter != null && mBtAdapter.isEnabled()) {
             mBtAdapter.getProfileProxy(this, mListener, BluetoothProfile.A2DP);
         }
+    }
+
+    public void removeDeviceList(String key){
+        devicesSet.remove(key);
     }
 
     public BluetoothDevice getSpecifiedDevice() {
@@ -537,7 +542,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                 DeviceConnectionManager.getInstance().setCurrentDevice(ConnectedDeviceType.Connected_BluetoothDevice);
                 showCommunicationIssue = true;
                 mHandler.removeCallbacks(resetRunnable);
-                mHandler.removeCallbacks(runnableToast);
+//                mHandler.removeCallbacks(runnableToast);
                 AppUtils.setJBLDeviceName(this, bluetoothDevice.getName());
 //	            EQSettingManager.EQKeyNAME = bluetoothDevice.getAddress();
                 connectLightX(bluetooth, bluetoothDevice, bluetoothSocket);
@@ -627,9 +632,9 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             Logger.d(TAG, "ResetDisconnect " + resetTime);
             Logger.d(TAGReconnect, "Bluetooth disconnected");
             //            checkForUSB_WhenBluetoothDisconnected();
-            if (resetTime == RESET_TIME) {
-                mHandler.postDelayed(runnableToast, 5 * 1000);
-            }
+//            if (resetTime == RESET_TIME) {
+//                mHandler.postDelayed(runnableToast, 5 * 1000);
+//            }
             --resetTime;
             mHandler.removeCallbacks(resetRunnable);
             mHandler.postDelayed(resetRunnable, resetTime);
@@ -637,17 +642,17 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     }
 
     Handler handlerDelayToast = new Handler();
-    Runnable runnableToast = new Runnable() {
-        @Override
-        public void run() {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    AlertsDialog.showToast(DeviceManagerActivity.this, getString(R.string.taking_longer_time));
-                }
-            });
-        }
-    };
+//    Runnable runnableToast = new Runnable() {
+//        @Override
+//        public void run() {
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    AlertsDialog.showToast(DeviceManagerActivity.this, getString(R.string.taking_longer_time));
+//                }
+//            });
+//        }
+//    };
 
     @Override
     public void bluetoothDeviceDiscovered(Bluetooth bluetooth, BluetoothDevice bluetoothDevice) {
@@ -1352,7 +1357,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             DeviceConnectionManager.getInstance().setCurrentDevice(ConnectedDeviceType.Connected_BluetoothDevice);
             showCommunicationIssue = true;
             mHandler.removeCallbacks(resetRunnable);
-            handlerDelayToast.removeCallbacks(runnableToast);
+//            handlerDelayToast.removeCallbacks(runnableToast);
             AppUtils.setJBLDeviceName(getApplicationContext(), specifiedDevice.getName());
             AnalyticsManager.getInstance(getApplicationContext()).reportDeviceConnect(bt150Manager.getAccessoryStatus().getName());
 //            EQSettingManager.EQKeyNAME = specifiedDevice == null ? "" : specifiedDevice.getAddress();

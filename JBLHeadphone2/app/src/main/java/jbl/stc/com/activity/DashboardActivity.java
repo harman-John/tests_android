@@ -16,7 +16,10 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -51,6 +54,8 @@ import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.utils.InsertPredefinePreset;
 import jbl.stc.com.utils.OTAUtil;
+import jbl.stc.com.view.DeleteView;
+import jbl.stc.com.view.MyDragGridView;
 
 public class DashboardActivity extends DeviceManagerActivity implements View.OnClickListener, OnDownloadedListener {
     private static final String TAG = DashboardActivity.class.getSimpleName() + "aa";
@@ -70,10 +75,11 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     public TutorialAncDialog tutorialAncDialog;
 
-    private GridView gridView;
+    private MyDragGridView gridView;
     private List<MyDevice> lists;
     private MyGridAdapter myGridAdapter;
     private TextView textViewTips;
+    private DeleteView viewDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,12 +94,15 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     private void initView() {
+        viewDelete = findViewById(R.id.delete_view);
         textViewTips = findViewById(R.id.text_view_dashboard_tips);
         gridView = findViewById(R.id.grid_view_dashboard);
         myGridAdapter = new MyGridAdapter();
         lists = new ArrayList<>();
         initMyGridAdapterList();
         myGridAdapter.setMyAdapterList(lists);
+        gridView.setDeleteView(viewDelete);
+        gridView.setMenuBar((RelativeLayout) findViewById(R.id.relative_layout_dashboard_title));
         gridView.setAdapter(myGridAdapter);
         if (lists.size() == 0) {
             gridView.setVisibility(View.GONE);
@@ -235,6 +244,19 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             updateDisconnectedAdapter();
             myGridAdapter.setMyAdapterList(lists);
         }
+    }
+
+    public void removeDeviceList(String key){
+        MyDevice temp = null;
+        for(MyDevice myDevice: lists) {
+            if (myDevice.deviceKey.equalsIgnoreCase(key)) {
+                temp = myDevice;
+                break;
+            }
+        }
+        if (temp!= null)
+            lists.remove(temp);
+        super.removeDeviceList(key);
     }
 
     public void checkDevices(Set<String> deviceList) {

@@ -326,6 +326,16 @@ public class AppUtils {
         }
     }
 
+    public static void removeMyDevice(Context context, String key) {
+        Set<String> myDevices = PreferenceUtils.getStringSet(context, PreferenceKeys.MY_DEVICES);
+        if (myDevices.contains(key)) {
+            myDevices.remove(key);
+            PreferenceUtils.setStringSet(context,PreferenceKeys.MY_DEVICES, myDevices);
+            Logger.i(TAG, "remove device: " + key +",size: "+ myDevices.size());
+        }
+    }
+
+
     public static MyDevice getMyDevice(String value){
         MyDevice myDevice = new MyDevice();
         myDevice.deviceKey = value;

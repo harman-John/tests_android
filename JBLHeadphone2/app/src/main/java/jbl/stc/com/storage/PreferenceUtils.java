@@ -90,4 +90,5 @@ public class PreferenceUtils {
         Set<String>  defaultSet = new HashSet<>();
         return PreferenceManager.getDefaultSharedPreferences(context).getStringSet(key,defaultSet);
     }
+
 }

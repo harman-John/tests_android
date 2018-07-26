@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/shape_gradient_discovery">
@@ -61,14 +62,23 @@
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold" />
-        <GridView
+
+        <jbl.stc.com.view.MyDragGridView
             android:id="@+id/grid_view_dashboard"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_below="@id/relative_layout_dashboard_title"
+            android:background="@android:color/transparent"
+            android:cacheColorHint="@android:color/transparent"
+            android:listSelector="@android:color/transparent"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
-            android:numColumns="1" />
+            android:numColumns="1"
+            app:drag_last_position="true"
+            app:drag_scale="1.05"
+            app:drag_start_position="0"
+            app:scale_mill="200"
+            app:vibrator="true" />
     </RelativeLayout>
 
     <FrameLayout
@@ -77,4 +87,14 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
+
+    <jbl.stc.com.view.DeleteView
+        android:id="@+id/delete_view"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="-75dp"
+        android:layout_marginRight="-75dp"
+        android:visibility="gone" />
 </RelativeLayout>

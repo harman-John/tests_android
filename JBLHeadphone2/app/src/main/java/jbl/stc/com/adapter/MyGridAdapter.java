@@ -34,11 +34,16 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.UnableConnectFragment;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.view.DragGridView;
+import jbl.stc.com.view.MyDragGridView;
 
-public class MyGridAdapter extends BaseAdapter {
+public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGridBaseAdapter{
     private static final String TAG = MyGridAdapter.class.getSimpleName();
     private List<MyDevice> mLists = new ArrayList<>();
     private Context mContext;
+
+    public int mHidePosition = -1;
     public void setMyAdapterList(List<MyDevice> lists){
         Collections.sort(lists, new Comparator<MyDevice>() {
 
@@ -115,8 +120,47 @@ public class MyGridAdapter extends BaseAdapter {
                 cbHandler.sendMessage(msg);
             }
         });
+        if (position == mHidePosition) {
+            viewHolder.relativeLayoutBreathingIcon.setVisibility(View.INVISIBLE);
+        } else {
+            viewHolder.relativeLayoutBreathingIcon.setVisibility(View.VISIBLE);
+        }
         return convertView;
     }
+
+    @Override
+    public void reorderItems(int oldPosition, int newPosition) {
+//        MyDevice temp = mLists.get(oldPosition);
+//        if (oldPosition < newPosition) {
+//            for (int i = oldPosition; i < newPosition; i++) {
+//                Collections.swap(mLists, i, i + 1);
+//            }
+//        } else if (oldPosition > newPosition) {
+//            for (int i = oldPosition; i > newPosition; i--) {
+//                Collections.swap(mLists, i, i - 1);
+//            }
+//        }
+//
+//        mLists.set(newPosition, temp);
+    }
+
+    @Override
+    public void setHideItem(int hidePosition) {
+        mHidePosition = hidePosition;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void deleteItem(int deletePosition) {
+        if (null != mLists && deletePosition < mLists.size()) {
+            String key = mLists.get(deletePosition).deviceKey;
+            AppUtils.removeMyDevice(mContext,key);
+            mLists.remove(deletePosition);
+            DashboardActivity.getDashboardActivity().removeDeviceList(key);
+            notifyDataSetChanged();
+        }
+    }
+
     private class ViewHolder {
         private TextView textViewDeviceName;
         private ImageView imageViewIcon;
