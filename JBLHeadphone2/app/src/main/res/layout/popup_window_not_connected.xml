@@ -38,6 +38,7 @@
             android:layout_width="180dp"
             android:layout_height="45dp"
             android:layout_gravity="center_horizontal"
+            android:gravity="center"
             android:text="@string/go_to_bluetooth"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
@@ -46,7 +47,8 @@
             android:textColor="@color/white"
             android:textStyle="bold"
             android:textAllCaps="false"
-            android:background="@drawable/rectangle_with_round_corner_view_page_orange"/>
+            android:background="@drawable/eq_drag_bg"
+            />
 
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_not_connected_popup_keep_using"

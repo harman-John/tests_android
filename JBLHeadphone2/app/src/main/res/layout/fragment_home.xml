@@ -28,7 +28,7 @@
                 android:layout_centerVertical="true"
                 android:src="@mipmap/black_arrow_back" />
 
-            <ImageView
+            <jbl.stc.com.view.AppImageView
                 android:id="@+id/image_view_home_settings"
                 android:layout_width="@dimen/image_button_width_and_height"
                 android:layout_height="@dimen/image_button_width_and_height"
@@ -214,7 +214,7 @@
                     android:textColor="@color/white"
                     android:textSize="20dp" />
 
-                <ImageView
+                <jbl.stc.com.view.AppImageView
                     android:id="@+id/arrowUpImage"
                     android:layout_width="@dimen/image_button_width_and_height"
                     android:layout_height="@dimen/image_button_width_and_height"

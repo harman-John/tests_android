@@ -12,7 +12,7 @@
         android:paddingLeft="@dimen/margin_top_10dp"
         android:paddingRight="@dimen/margin_top_10dp"
         >
-        <ImageView
+        <jbl.stc.com.view.AppImageView
             android:id="@+id/back_btn"
             android:layout_width="45dp"
             android:layout_height="45dp"

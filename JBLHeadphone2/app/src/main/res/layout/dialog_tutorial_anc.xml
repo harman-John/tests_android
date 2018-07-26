@@ -63,7 +63,7 @@
                 android:layout_marginTop="@dimen/margin_top_10dp"
                 android:clickable="false">
 
-                <ImageView
+                <jbl.stc.com.view.AppImageView
                     android:id="@+id/image_view_tutorial_dialog_device_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
                     android:orientation="vertical"
                     android:visibility="visible">
 
-                    <jbl.stc.com.view.AppImageView
+                    <ImageView
                         android:id="@+id/image_view_tutorial_dialog_ambient_aware"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -207,7 +207,7 @@
                 android:textColor="@color/white"
                 android:textSize="20dp" />
 
-            <ImageView
+            <jbl.stc.com.view.AppImageView
                 android:id="@+id/image_view_tutorial_dialog_arrow_up"
                 android:layout_width="@dimen/image_button_width_and_height"
                 android:layout_height="@dimen/image_button_width_and_height"
@@ -217,7 +217,7 @@
                 android:src="@mipmap/white_arrow_back" />
         </RelativeLayout>
     </FrameLayout>
-     <ImageView
+     <jbl.stc.com.view.AppImageView
          android:id="@+id/eq_tutorial_triple_up_arrows_img"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"

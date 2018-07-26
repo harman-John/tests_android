@@ -23,7 +23,7 @@
             android:textSize="@dimen/normal_text_size"
             android:textStyle="bold" />
 
-        <ImageView
+        <jbl.stc.com.view.AppImageView
             android:id="@+id/aa_popup_close_arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

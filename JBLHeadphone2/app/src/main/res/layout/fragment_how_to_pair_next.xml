@@ -15,7 +15,7 @@
         android:paddingLeft="@dimen/margin_top_10dp"
         android:paddingRight="@dimen/margin_top_10dp">
 
-        <ImageView
+        <jbl.stc.com.view.AppImageView
             android:id="@+id/image_view_how_to_pair_next_close"
             android:layout_width="45dp"
             android:layout_height="45dp"
@@ -24,7 +24,7 @@
             android:layout_marginEnd="10dp"
             android:src="@mipmap/ic_close" />
 
-        <ImageView
+        <jbl.stc.com.view.AppImageView
             android:id="@+id/image_view_how_to_pair_next_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

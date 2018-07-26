@@ -29,6 +29,7 @@ import jbl.stc.com.listener.OnHeadphoneconnectListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.CalibrationManager;
+import jbl.stc.com.view.AppImageView;
 
 
 public class CalibrationFragment extends BaseFragment implements OnHeadphoneconnectListener,View.OnClickListener {
@@ -40,7 +41,7 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
     ProgressBar progressBar;
     int timing = 10 * 1000;
     private View informationLayout;
-    private ImageView imageViewBack;
+    private AppImageView imageViewBack;
     private TextView tv_calibratingDone;
     private ImageView iv_complete;
 
