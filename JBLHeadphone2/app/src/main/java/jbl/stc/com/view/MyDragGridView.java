@@ -227,6 +227,7 @@ public class MyDragGridView extends GridView {
             isDrag = true; // 设置可以拖拽
             if (mIsVibrator) mVibrator.vibrate(50); // 震动一下
             showDeleteView();
+            mDragAdapter.setHideItem(mDragPosition);
             mStartDragItemView.setVisibility(View.INVISIBLE);// 隐藏该item
             // 根据我们按下的点显示item镜像
             createDragImage(mDragBitmap, mDownX, mDownY);
@@ -470,7 +471,8 @@ public class MyDragGridView extends GridView {
 
         mDragImageView = new ImageView(getContext());
         mDragImageView.setImageBitmap(bitmap);
-        mDragImageView.setBackgroundResource(R.drawable.shape_product_circle);
+//        mDragImageView.setAlpha((float) 0.5);
+//        mDragImageView.setBackgroundResource(R.drawable.shape_product_circle);
 
 
         mDragLayout = new FrameLayout(getContext());
