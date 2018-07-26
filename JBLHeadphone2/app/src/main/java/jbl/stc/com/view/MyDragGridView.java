@@ -506,10 +506,10 @@ public class MyDragGridView extends GridView {
         mHandler.post(mScrollRunnable);
 
 
-        //如果拖拽到删除区域删除
+        //drag to this area and loose, then delete
         if (isInViewArea(mDeleteView,moveX,moveY)) {
 //            if (mIsVibrator) mVibrator.vibrate(50);
-            //缩小
+            //shrink
             if (!mIsScaleAnima) {
                 ScaleAnimation scaleAnim = new ScaleAnimation(1.0f, .5f, 1.0f, .5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
                 TranslateAnimation translateAnim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.25f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.25f);

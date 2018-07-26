@@ -154,7 +154,6 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
     public void deleteItem(int deletePosition) {
         if (null != mLists && deletePosition < mLists.size()) {
             String key = mLists.get(deletePosition).deviceKey;
-            AppUtils.removeMyDevice(mContext,key);
             mLists.remove(deletePosition);
             DashboardActivity.getDashboardActivity().removeDeviceList(key);
             notifyDataSetChanged();

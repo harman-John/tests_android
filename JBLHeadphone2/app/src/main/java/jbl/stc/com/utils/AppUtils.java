@@ -330,6 +330,7 @@ public class AppUtils {
         Set<String> myDevices = PreferenceUtils.getStringSet(context, PreferenceKeys.MY_DEVICES);
         if (myDevices.contains(key)) {
             myDevices.remove(key);
+            PreferenceUtils.clearStringSet(context);
             PreferenceUtils.setStringSet(context,PreferenceKeys.MY_DEVICES, myDevices);
             Logger.i(TAG, "remove device: " + key +",size: "+ myDevices.size());
         }

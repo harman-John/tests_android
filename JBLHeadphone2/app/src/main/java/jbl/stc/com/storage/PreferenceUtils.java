@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import jbl.stc.com.constant.JBLConstant;
+
 /**
  * PreferenceUtils
  * Created by darren.lu on 08/06/2017.
@@ -83,12 +85,16 @@ public class PreferenceUtils {
     }
 
     public static void setStringSet(Context context, String key, Set<String> values) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet(key, values).apply();
+        context.getSharedPreferences(JBLConstant.MY_DEVICES_NAME,0).edit().putStringSet(key, values).apply();
     }
 
     public static Set<String> getStringSet(Context context, String key) {
         Set<String>  defaultSet = new HashSet<>();
-        return PreferenceManager.getDefaultSharedPreferences(context).getStringSet(key,defaultSet);
+        return context.getSharedPreferences(JBLConstant.MY_DEVICES_NAME,0).getStringSet(key,defaultSet);
+    }
+
+    public static void clearStringSet(Context context) {
+        context.getSharedPreferences(JBLConstant.MY_DEVICES_NAME,0).edit().clear().apply();
     }
 
 }

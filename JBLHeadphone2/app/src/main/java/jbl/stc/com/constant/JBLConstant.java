@@ -5,6 +5,7 @@ package jbl.stc.com.constant;
  */
 public class JBLConstant {
 
+    public static final String MY_DEVICES_NAME = "my_devices_name";
 
     public static final String OPEN_SANS_BOLD = "OpenSans-Bold.ttf";
     public static final String OPEN_SANS_REGULAR = "OpenSans-Regular.ttf";
