@@ -2,18 +2,22 @@ package jbl.stc.com.fragment;
 
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import jbl.stc.com.R;
 import jbl.stc.com.legal.LegalApi;
+import jbl.stc.com.view.BtTipPopupWindow;
 
 public class TurnOnBtTipsFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = TurnOnBtTipsFragment.class.getSimpleName();
     private View view;
     private RelativeLayout relativeLayoutTurnOnBt;
+    private TextView tv_stillsee;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +28,8 @@ public class TurnOnBtTipsFragment extends BaseFragment implements View.OnClickLi
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_turn_on_bt,
                 container, false);
-        relativeLayoutTurnOnBt = view.findViewById(R.id.relative_layout_splash_turn_on_bt);
+        tv_stillsee = view.findViewById(R.id.tv_stillsee);
+        tv_stillsee.setOnClickListener(this);
         return view;
     }
 
@@ -36,7 +41,10 @@ public class TurnOnBtTipsFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.relative_layout_splash_turn_on_bt:{
+            case R.id.tv_stillsee:{
+
+                BtTipPopupWindow btTipPopupWindow=new BtTipPopupWindow(getActivity());
+                btTipPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
                 break;
             }
         }

@@ -91,8 +91,11 @@
     <string name="advice_five">4. Pause music on your product</string>
     <string name="try_again">Try again</string>
     <string name="turn_on_bluetooth">Turn on Bluetooth</string>
-    <string name="turn_on_bluetooth_detail_1">Turn on Bluetooth from your control</string>
-    <string name="turn_on_bluetooth_detail_2">center. The Bluetooth icon will turn blue.</string>
+    <string name="turn_on_bluetooth_detail_1">Turn on Bluetooth from your control center.</string>
+    <string name="turn_on_bluetooth_detail_2">The Bluetooth icon will turn blue.</string>
+    <string name="turn_on_bluetooth_detail_3"><u>Still see this screen?</u></string>
+    <string name="turn_on_bluetooth_still_see">Still see this screen</string>
+    <string name="turn_on_bluetooth_still_see_detail">If you still see this screen,try to turn off and then turn on Bluetooth again from mobile settings</string>
 
     <string name="turn_on_off_noise_cancel">Turn on and off noise\ncanceling</string>
     <string name="ambient_aware_tips">Once noise cancelling is on,\nadjust ambient awareness\nusing presets or sliders</string>
