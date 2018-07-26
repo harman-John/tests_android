@@ -257,6 +257,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         if (temp != null)
             lists.remove(temp);
         AppUtils.removeMyDevice(mContext, key);
+        if (AppUtils.getMyDeviceSize(mContext) == 0){
+            textViewTips.setVisibility(View.VISIBLE);
+        }
         super.removeDeviceList(key);
     }
 

@@ -130,18 +130,18 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
 
     @Override
     public void reorderItems(int oldPosition, int newPosition) {
-//        MyDevice temp = mLists.get(oldPosition);
-//        if (oldPosition < newPosition) {
-//            for (int i = oldPosition; i < newPosition; i++) {
-//                Collections.swap(mLists, i, i + 1);
-//            }
-//        } else if (oldPosition > newPosition) {
-//            for (int i = oldPosition; i > newPosition; i--) {
-//                Collections.swap(mLists, i, i - 1);
-//            }
-//        }
-//
-//        mLists.set(newPosition, temp);
+        MyDevice temp = mLists.get(oldPosition);
+        if (oldPosition < newPosition) {
+            for (int i = oldPosition; i < newPosition; i++) {
+                Collections.swap(mLists, i, i + 1);
+            }
+        } else if (oldPosition > newPosition) {
+            for (int i = oldPosition; i > newPosition; i--) {
+                Collections.swap(mLists, i, i - 1);
+            }
+        }
+
+        mLists.set(newPosition, temp);
     }
 
     @Override
@@ -153,10 +153,13 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
     @Override
     public void deleteItem(int deletePosition) {
         if (null != mLists && deletePosition < mLists.size()) {
-            String key = mLists.get(deletePosition).deviceKey;
-            mLists.remove(deletePosition);
-            DashboardActivity.getDashboardActivity().removeDeviceList(key);
-            notifyDataSetChanged();
+            MyDevice myDevice = mLists.get(deletePosition);
+            if (myDevice.connectStatus == ConnectStatus.A2DP_UNCONNECTED) {
+                String key = myDevice.deviceKey;
+                mLists.remove(deletePosition);
+                DashboardActivity.getDashboardActivity().removeDeviceList(key);
+                notifyDataSetChanged();
+            }
         }
     }
 

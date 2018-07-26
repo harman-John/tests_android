@@ -336,6 +336,9 @@ public class AppUtils {
         }
     }
 
+    public static int getMyDeviceSize(Context context) {
+       return PreferenceUtils.getStringSet(context, PreferenceKeys.MY_DEVICES).size();
+    }
 
     public static MyDevice getMyDevice(String value){
         MyDevice myDevice = new MyDevice();
