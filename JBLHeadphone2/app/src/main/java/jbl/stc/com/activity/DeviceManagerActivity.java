@@ -280,8 +280,9 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     Logger.d(TAG, "A2DP connected device, name = " + bluetoothDevice.getName()
                             + ",address = " + bluetoothDevice.getAddress()
                             + ",position =" + position);
-                    devicesSet.add(bluetoothDevice.getName() + "-" + bluetoothDevice.getAddress());
-                    AppUtils.addToMyDevices(getApplicationContext(), bluetoothDevice.getName(), bluetoothDevice.getAddress());
+                    String key = bluetoothDevice.getName() + "-" + bluetoothDevice.getAddress();
+                    devicesSet.add(key);
+                    AppUtils.addToMyDevices(getApplicationContext(), key);
                 }
                 if (!isConnected && !isFound) {
                     if (deviceList.size() > 0
@@ -1128,7 +1129,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     isConnected = true;
                     Logger.d(TAGReconnect, "USB connected");
                     isNeedShowDashboard = true;
-                    AppUtils.addToMyDevices(getApplicationContext(), usbDevice.getProductName(), String.valueOf(usbDevice.getDeviceId()));
+                    AppUtils.addToMyDevices(getApplicationContext(), usbDevice.getProductName()+"-"+String.valueOf(usbDevice.getDeviceId()));
                     devicesSet.add(usbDevice.getProductName() + "-" + usbDevice.getDeviceId());
                     checkDevices(devicesSet);
                     connectDeviceStatus(isConnected);

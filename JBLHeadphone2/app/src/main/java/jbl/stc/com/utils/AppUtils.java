@@ -316,13 +316,12 @@ public class AppUtils {
         PreferenceUtils.setString(PreferenceKeys.MODEL, value, context);
     }
 
-    public static void addToMyDevices(Context context, String deviceName, String mac) {
-        String device = deviceName + "-" + mac;
+    public static void addToMyDevices(Context context, String key) {
         Set<String> myDevices = PreferenceUtils.getStringSet(context, PreferenceKeys.MY_DEVICES);
-        if (!myDevices.contains(device)) {
-            myDevices.add(device);
+        if (!myDevices.contains(key)) {
+            myDevices.add(key);
             PreferenceUtils.setStringSet(context, PreferenceKeys.MY_DEVICES, myDevices);
-            Logger.i(TAG, "Add device: " + device +",size: "+ myDevices.size());
+            Logger.i(TAG, "Add device: " + key +",size: "+ myDevices.size());
         }
     }
 

@@ -227,6 +227,7 @@ public class MyDragGridView extends GridView {
             isDrag = true; // 设置可以拖拽
             if (mIsVibrator) mVibrator.vibrate(50); // 震动一下
             showDeleteView();
+
             mDragAdapter.setHideItem(mDragPosition);
             mStartDragItemView.setVisibility(View.INVISIBLE);// 隐藏该item
             // 根据我们按下的点显示item镜像
@@ -457,7 +458,8 @@ public class MyDragGridView extends GridView {
      * @param downX  按下的点相对父控件的X坐标
      * @param downY  按下的点相对父控件的X坐标
      */
-    private void createDragImage(Bitmap bitmap, int downX, int downY) {
+    private synchronized void createDragImage(Bitmap bitmap, int downX, int downY) {
+        removeDragImage();
         mWindowLayoutParams = new WindowManager.LayoutParams();
         mWindowLayoutParams.format = PixelFormat.TRANSLUCENT; // 图片之外的其他地方透明
         mWindowLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;
@@ -489,6 +491,7 @@ public class MyDragGridView extends GridView {
             mWindowManager.removeView(mDragLayout);
             mDragLayout = null;
             mDragImageView = null;
+            mWindowLayoutParams = null;
         }
     }
 
