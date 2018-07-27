@@ -49,7 +49,6 @@
             android:textAllCaps="false"
             android:background="@drawable/eq_drag_bg"
             />
-
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_not_connected_popup_keep_using"
             android:layout_width="180dp"

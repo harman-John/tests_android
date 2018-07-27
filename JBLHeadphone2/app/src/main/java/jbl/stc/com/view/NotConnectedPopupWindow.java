@@ -20,7 +20,6 @@ import jbl.stc.com.activity.JBLApplication;
 
 public class NotConnectedPopupWindow extends PopupWindow implements View.OnClickListener {
 
-    private Button buttonGoToBluetooth;
     private TextView textViewKeepUsing;
     private Context mContext;
 
@@ -39,10 +38,9 @@ public class NotConnectedPopupWindow extends PopupWindow implements View.OnClick
         setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
         setFocusable(true);
         setAnimationStyle(R.style.style_down_to_top);
-        buttonGoToBluetooth = popupWindow_view.findViewById(R.id.button_not_connected_popup_go_to_bluetooth);
+        popupWindow_view.findViewById(R.id.button_not_connected_popup_go_to_bluetooth).setOnClickListener(this);
         textViewKeepUsing = popupWindow_view.findViewById(R.id.text_view_not_connected_popup_keep_using);
 
-        buttonGoToBluetooth.setOnClickListener(this);
         textViewKeepUsing.setOnClickListener(this);
     }
 

@@ -85,4 +85,11 @@
         <attr name="downsampleFactor" format="integer"/>
         <attr name="overlayColor" format="color"/>
     </declare-styleable>
+    <declare-styleable name="ShaderView">
+        <attr name="drawableColor" format="color"/>
+        <attr name="shaderColor" format="color"/>
+        <attr name="text" format="string"/>
+        <attr name="height" format="dimension"/>
+        <attr name="width" format="dimension"/>
+    </declare-styleable>
 </resources>
