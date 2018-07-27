@@ -39,16 +39,19 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@id/relative_layout_home_eq_info"
+            android:layout_below="@id/titleBar"
             android:layout_centerInParent="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
                 android:orientation="vertical">
 
                 <jbl.stc.com.view.CustomFontTextView
@@ -64,36 +67,29 @@
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginTop="@dimen/margin_top_10dp">
 
-                    <RelativeLayout
+                    <ImageView
+                        android:id="@+id/image_view_home_device_image"
                         android:layout_width="240dp"
                         android:layout_height="240dp"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
                         android:background="@drawable/shape_dashboard_device_circle"
-                        android:clickable="false">
-
-                        <ImageView
-                            android:id="@+id/image_view_home_device_image"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:clickable="false"
-                            android:scaleType="fitCenter"
-                            android:src="@mipmap/everest_elite_150nc_icon" />
-                    </RelativeLayout>
+                        android:clickable="false"
+                        android:scaleType="fitCenter"
+                        android:src="@mipmap/everest_elite_150nc_icon" />
 
                     <jbl.stc.com.view.AppImageView
                         android:id="@+id/image_view_ota_download"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:layout_gravity="right|top"
                         android:layout_marginRight="30dp"
                         android:layout_marginTop="20dp"
-                        android:src="@mipmap/download" />
+                        android:src="@mipmap/download"
+                        android:visibility="gone" />
                 </FrameLayout>
 
 
