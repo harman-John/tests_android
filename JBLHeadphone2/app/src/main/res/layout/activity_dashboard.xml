@@ -36,9 +36,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:text="@string/my_products"
-                android:textStyle="normal"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textStyle="normal" />
 
             <jbl.stc.com.view.AppImageView
                 android:id="@+id/image_view_dashboard_white_plus"
@@ -55,25 +55,26 @@
             android:id="@+id/text_view_dashboard_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginEnd="@dimen/marginLRBorder"
+            android:layout_marginStart="@dimen/marginLRBorder"
             android:layout_marginTop="148dp"
-            android:text="@string/my_products_tips"
             android:textColor="@color/white"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <jbl.stc.com.view.MyDragGridView
             android:id="@+id/grid_view_dashboard"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_below="@id/relative_layout_dashboard_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
             android:background="@android:color/transparent"
             android:cacheColorHint="@android:color/transparent"
             android:listSelector="@android:color/transparent"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
             android:numColumns="1"
             app:drag_last_position="true"
             app:drag_scale="1.05"

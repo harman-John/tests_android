@@ -184,7 +184,8 @@
     <string name="go_to_bluetooth">Go to Bluetooth</string>
 
 
-    <string name="my_products_tips">Currently no products in the list\nyet,tap + in the right top to\nadd your product.</string>
+    <string name="my_products_tips_front">Currently no products in the list yet, tap </string>
+    <string name="my_products_tips_end"> in the right top to add your product.</string>
 
 
     <string name="not_connected_title">App can only connect with one pair of headphones</string>

@@ -34,4 +34,7 @@
 
     <dimen name="marginTop10dp">10dp</dimen>
 
+
+    <dimen name="marginLRBorder">30dp</dimen>
+
 </resources>

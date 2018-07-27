@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.mtp.MtpConstants;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,8 +14,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ImageSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -96,6 +102,16 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private void initView() {
         viewDelete = findViewById(R.id.delete_view);
         textViewTips = findViewById(R.id.text_view_dashboard_tips);
+
+        Drawable drawable = getResources().getDrawable(R.mipmap.white_plus);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        SpannableString spannableString = new SpannableString("+");
+        ImageSpan imageSpan = new ImageSpan(drawable, ImageSpan.ALIGN_BOTTOM);
+        spannableString.setSpan(imageSpan, 0, spannableString.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        textViewTips.append(getString(R.string.my_products_tips_front));
+        textViewTips.append(spannableString);
+        textViewTips.append(getString(R.string.my_products_tips_end));
+
         gridView = findViewById(R.id.grid_view_dashboard);
         myGridAdapter = new MyGridAdapter();
         lists = new ArrayList<>();
