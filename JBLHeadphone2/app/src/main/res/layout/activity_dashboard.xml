@@ -26,8 +26,9 @@
                 android:layout_height="45dp"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"
+                android:layout_marginStart="@dimen/marginTop10dp"
                 android:contentDescription="TODO"
-                android:src="@mipmap/white_menu" />
+                android:src="@mipmap/app_menu" />
 
             <jbl.stc.com.view.CustomFontTextView
                 android:layout_width="wrap_content"
