@@ -156,14 +156,14 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
         }
         updateUI();
-        showOta(FirmwareUtil.isUpdatingFirmWare.get());
+        showOta(false);
         return view;
     }
 
     public void showOta(boolean hasUpdate) {
         imageViewDownload = view.findViewById(R.id.image_view_settings_download);
         textViewFwVersion = view.findViewById(R.id.text_view_settings_firmware_version);
-        if (hasUpdate && textViewFirmware != null) {
+        if (hasUpdate) {
             imageViewDownload.setVisibility(View.VISIBLE);
             textViewFwVersion.setVisibility(View.GONE);
         }else{

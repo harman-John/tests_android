@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import jbl.stc.com.BuildConfig;
+
 /**
  * Created by intahmad on 8/11/2015.
  */
@@ -125,11 +127,20 @@ public class FirmwareUtil {
                     return true;
                 } else if (Integer.parseInt(liveArray[1]) == Integer.parseInt(currentArray[1])) {
                     // Checking for third Index
-                    if (Integer.parseInt(liveArray[2]) >= Integer
-                            .parseInt(currentArray[2])) {
-                        return true;
-                    } else {
-                        return false;
+                    if (BuildConfig.DEBUG) {
+                        if (Integer.parseInt(liveArray[2]) >= Integer
+                                .parseInt(currentArray[2])) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }else{
+                        if (Integer.parseInt(liveArray[2]) > Integer
+                                .parseInt(currentArray[2])) {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
                 } else {
                     return false;
