@@ -1,11 +1,12 @@
 package jbl.stc.com.view;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-public class ImageViewLR extends ImageView {
+public class ImageViewLR extends AppCompatImageView {
     public ImageViewLR(Context context) {
         super(context);
     }
@@ -16,10 +17,6 @@ public class ImageViewLR extends ImageView {
 
     public ImageViewLR(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    public ImageViewLR(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
