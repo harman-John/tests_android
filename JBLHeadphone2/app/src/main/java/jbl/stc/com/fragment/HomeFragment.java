@@ -3,6 +3,7 @@ package jbl.stc.com.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.UiAutomation;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -64,6 +66,7 @@ import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.AaPopupWindow;
 
 import jbl.stc.com.utils.FirmwareUtil;
@@ -208,14 +211,36 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 //        deviceName = PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
         updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
         initEvent();
+        setDeviceImageHeight();
         return view;
+    }
+
+    private void setDeviceImageHeight() {
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int screenheigth = dm.heightPixels;
+        int screenwidth = dm.widthPixels;
+        int statusHeight = UiUtils.getStatusHeight(getActivity());
+        int height = (int) (screenheigth - UiUtils.dip2px(getActivity(), 200) - statusHeight) / 2;
+        Logger.d(TAG, "height:" + linearLayoutBattery.getHeight());
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imageViewDevice.getLayoutParams();
+        params.height = height;
+        params.width = height;
+        imageViewDevice.setLayoutParams(params);
+        int marginTop = (int) (height / 2 - height / 2 * Math.sin(45 * 3.14 / 180) - UiUtils.dip2px(getActivity(), 35) / 2);
+        int marginRight = (int) (height / 2 - height / 2 * Math.cos(45 * 3.14 / 180) - UiUtils.dip2px(getActivity(), 35) / 2);
+        image_view_ota_download.setTop(marginTop);
+        image_view_ota_download.setRight(marginRight);
+        FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) image_view_ota_download.getLayoutParams();
+        params1.topMargin = marginTop;
+        params1.rightMargin = marginRight;
+        image_view_ota_download.setLayoutParams(params1);
     }
 
     public void showOta(boolean hasUpdate) {
         if (hasUpdate) {
-            imageViewDevice.setVisibility(View.VISIBLE);
+            image_view_ota_download.setVisibility(View.VISIBLE);
         } else {
-            imageViewDevice.setVisibility(View.GONE);
+            image_view_ota_download.setVisibility(View.GONE);
         }
     }
 

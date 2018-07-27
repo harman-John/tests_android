@@ -36,24 +36,26 @@ import jbl.stc.com.view.CustomScrollView;
 import jbl.stc.com.view.DragGridView;
 import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.EqGridView;
+
 /**
  * @name JBLHeadphone2
  * @class name：jbl.stc.com.view
  * @class describe
  * Created by Vicky on 7/20/18.
  */
-public class NewEqMoreSettingFragment extends BaseFragment implements View.OnClickListener{
+public class NewEqMoreSettingFragment extends BaseFragment implements View.OnClickListener {
 
     private CustomScrollView mScrollView;
     private ImageView closeImageView;
     private EqGridView eqGridView;
     private EqGridViewAdapter adapter;
-    private List<EQModel> eqModelList=new ArrayList<>();
+    private List<EQModel> eqModelList = new ArrayList<>();
     private EqArcView mEqArcView;
-    private TextView tv_jazz,tv_vocal,tv_bass;
+    private TextView tv_jazz, tv_vocal, tv_bass;
     private CustomFontTextView tv_dragImage;
     private LightX lightX;
     private static final String TAG = NewEqMoreSettingFragment.class.getSimpleName();
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_eq_more_setting_new, container, false);
@@ -64,25 +66,28 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
         AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_EQ_MORE);
         return rootView;
     }
+
     private void initView() {
-        String curEqName=PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, "");
-        tv_jazz=(TextView)rootView.findViewById(R.id.tv_jazz);
-        tv_vocal=(TextView)rootView.findViewById(R.id.tv_vocal);
-        tv_bass=(TextView) rootView.findViewById(R.id.tv_bass);
-        if (!TextUtils.isEmpty(curEqName)&&curEqName.equals(getResources().getString(R.string.jazz))){
+        String curEqName = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, "");
+        tv_jazz = (TextView) rootView.findViewById(R.id.tv_jazz);
+        tv_vocal = (TextView) rootView.findViewById(R.id.tv_vocal);
+        tv_bass = (TextView) rootView.findViewById(R.id.tv_bass);
+        if (!TextUtils.isEmpty(curEqName) && curEqName.equals(getResources().getString(R.string.jazz))) {
             tv_jazz.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_selected);
-        }else if (!TextUtils.isEmpty(curEqName)&&curEqName.equals(getResources().getString(R.string.vocal))){
+        } else if (!TextUtils.isEmpty(curEqName) && curEqName.equals(getResources().getString(R.string.vocal))) {
             tv_vocal.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_selected);
-        }else if (!TextUtils.isEmpty(curEqName)&&curEqName.equals(getResources().getString(R.string.bass))){
+        } else if (!TextUtils.isEmpty(curEqName) && curEqName.equals(getResources().getString(R.string.bass))) {
             tv_bass.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_selected);
         }
-        tv_dragImage=(CustomFontTextView)rootView.findViewById(R.id.tv_dragImage);
+        tv_dragImage = (CustomFontTextView) rootView.findViewById(R.id.tv_dragImage);
         closeImageView = (ImageView) rootView.findViewById(R.id.closeImageView);
-        eqGridView=(EqGridView) rootView.findViewById(R.id.eqGridView);
+        eqGridView = (EqGridView) rootView.findViewById(R.id.eqGridView);
         mScrollView = rootView.findViewById(R.id.scrollview);
-        mEqArcView =rootView.findViewById(R.id.eqArcView);
+        mEqArcView = rootView.findViewById(R.id.eqArcView);
+        tv_dragImage = rootView.findViewById(R.id.tv_dragImage);
         eqGridView.setmEqArcView(mEqArcView);
         eqGridView.setScrollView(mScrollView);
+        eqGridView.setmTVDragImage(tv_dragImage);
 
         /*DisplayMetrics dm = getResources().getDisplayMetrics();
         int heigth = dm.heightPixels;
@@ -90,27 +95,29 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
         Logger.d(TAG,"height:"+String.valueOf(heigth))；*/
 
     }
+
     private void initEvent() {
         closeImageView.setOnClickListener(this);
 
     }
+
     private void initValue() {
-        eqModelList= EQSettingManager.get().getCompleteEQList(mContext);
-        if (eqModelList!=null&&eqModelList.size()>=4){
-            for(int i=0;i<4;i++){
+        eqModelList = EQSettingManager.get().getCompleteEQList(mContext);
+        if (eqModelList != null && eqModelList.size() >= 4) {
+            for (int i = 0; i < 4; i++) {
                 eqModelList.remove(0);
             }
         }
-        Logger.d(TAG,"size:"+eqModelList.size());
-        adapter=new EqGridViewAdapter();
-        adapter.setEqModels(eqModelList,lightX);
+        Logger.d(TAG, "size:" + eqModelList.size());
+        adapter = new EqGridViewAdapter();
+        adapter.setEqModels(eqModelList, lightX);
         eqGridView.setAdapter(adapter);
     }
 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.closeImageView:
                 getActivity().onBackPressed();
                 break;

@@ -66,7 +66,6 @@ public class EqGridView extends GridView {
     private int mDragPosition;
     private View mStartDragItemView = null;
     private Button mDragImageView;
-    private TextView mDragTextView;
     private FrameLayout mDragLayout;
     private int mDragLayoutSize = 140;
     private Vibrator mVibrator;
@@ -98,7 +97,7 @@ public class EqGridView extends GridView {
     private int screenWidth = 0;
     private int mRawX, mRawY;
     private View mEqArcView;
-    private View mdragImage;
+    private CustomFontTextView mdragImage;
 
     public EqGridView(Context context) {
         this(context, null);
@@ -141,7 +140,7 @@ public class EqGridView extends GridView {
         mEqArcView = eqArcView;
     }
 
-    public void setmTVDragImage(View tv_dragImage) {
+    public void setmTVDragImage(CustomFontTextView tv_dragImage) {
         mdragImage = tv_dragImage;
     }
 
@@ -391,19 +390,6 @@ public class EqGridView extends GridView {
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
         layoutParams.gravity = Gravity.CENTER;
         TextView textView = (mStartDragItemView.findViewById(R.id.tv_eqname));
-        /*mDragImageView = new ImageView(getContext());
-        mDragImageView.setImageBitmap(bitmap);
-        mDragImageView.setBackgroundResource(R.drawable.drag_bubble);
-        mDragImageView.setLayoutParams(layoutParams);
-        mDragTextView = new TextView(getContext());
-        mDragTextView.setText(textView.getText().toString());
-        mDragTextView.setGravity(Gravity.CENTER);
-        mDragTextView.setPadding(UiUtils.dip2px(getContext(), 15), 0, UiUtils.dip2px(getContext(), 15), 0);
-        mDragTextView.setLayoutParams(layoutParams);
-        mDragLayout = new FrameLayout(getContext());
-        mDragLayout.addView(mDragImageView);
-        mDragLayout.addView(mDragTextView);
-        mWindowManager.addView(mDragLayout, mWindowLayoutParams);*/
 
         mDragImageView = new Button(getContext());
         mDragImageView.setBackgroundResource(R.drawable.drag_bubble);
@@ -415,12 +401,14 @@ public class EqGridView extends GridView {
         mWindowManager.addView(mDragLayout, mWindowLayoutParams);
 
 
-        /*mdragImage.setVisibility(View.VISIBLE);
-        int marginTop=(int) (mRawY - mdragImage.getHeight()/2 - mStatusHeight);
+        /*TextView textView = (mStartDragItemView.findViewById(R.id.tv_eqname));
+        mdragImage.setVisibility(View.VISIBLE);
+        mdragImage.setText(textView.getText().toString());
+        int marginTop=(int) (mRawY - mdragImage.getHeight()/2);
         int marginBottom=(int) (screenHeight-marginTop-mdragImage.getHeight());
         int marginLeft=(int) (mRawX  - mdragImage.getWidth()/2);
         int marginRight=(int) (screenWidth-marginLeft-mdragImage.getWidth());
-        mdragImage.setPadding(marginLeft,marginTop,marginRight,marginBottom);*/
+        mdragImage.setPadding(marginLeft,marginTop,0,0);*/
     }
 
 
@@ -449,8 +437,7 @@ public class EqGridView extends GridView {
     private void onDragItem(int moveX, int moveY, int rawX, int rawY) {
         mWindowLayoutParams.x = (int) (mRawX - UiUtils.dip2px(getContext(), mDragLayoutSize) / 2);
         mWindowLayoutParams.y = (int) (mRawY - UiUtils.dip2px(getContext(), mDragLayoutSize) / 2 - mStatusHeight);
-        mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams);
-
+        mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams);  //update the location
         Logger.d(TAG, "onDragItem  x:" + mWindowLayoutParams.x + "onDragItem y:" + mWindowLayoutParams.y);
 
         onSwapItem(moveX, moveY);
