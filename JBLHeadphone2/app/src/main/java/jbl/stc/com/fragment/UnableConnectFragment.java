@@ -28,12 +28,14 @@ import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.utils.BreathLight;
+import jbl.stc.com.view.ImageViewLR;
+import jbl.stc.com.view.RelativeLayoutImage;
 
 public class UnableConnectFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = UnableConnectFragment.class.getSimpleName();
     private View view;
-    private RelativeLayout relativeLayoutDeviceIcon;
-    private ImageView imageViewDeviceIcon;
+    private RelativeLayoutImage relativeLayoutDeviceIcon;
+    private ImageViewLR imageViewDeviceIcon;
     private TextView textViewDeviceName;
     private TextView textViewTipsTwo;
     private TextView textViewTipsThree;
