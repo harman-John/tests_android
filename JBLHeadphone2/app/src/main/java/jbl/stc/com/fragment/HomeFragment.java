@@ -332,7 +332,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 if (mBlurView != null) {
                     mBlurView.setVisibility(View.GONE);
                 }
-                if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null) {
+                if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null && DashboardActivity.getDashboardActivity().tutorialAncDialog.isShowing()) {
                     DashboardActivity.getDashboardActivity().tutorialAncDialog.setTextViewTips(R.string.tutorial_tips_one);
                     DashboardActivity.getDashboardActivity().tutorialAncDialog.showEqInfo();
                 }
