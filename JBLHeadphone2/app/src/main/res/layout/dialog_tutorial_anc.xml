@@ -99,35 +99,35 @@
                 <RelativeLayout
                     android:id="@+id/relative_layout_tutorial_dialog_noise_cancel"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="128dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
                     <CheckBox
                         android:id="@+id/image_view_tutorial_dialog_noise_cancel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="81dp"
+                        android:layout_height="81dp"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/checkbox_noise_cancel_selector"
                         android:button="@android:color/transparent" />
 
                     <jbl.stc.com.view.CustomFontTextView
-                        style="@style/PoppinsRegularTextStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_below="@id/image_view_tutorial_dialog_noise_cancel"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
                         android:gravity="center_horizontal"
                         android:lineSpacingExtra="-5dp"
                         android:text="@string/text_noise_canceling"
+                        android:textStyle="normal"
                         android:textColor="@color/white" />
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/relative_layout_tutorial_dialog_ambient_aware"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="128dp"
                     android:layout_marginLeft="30dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
@@ -135,23 +135,24 @@
 
                     <ImageView
                         android:id="@+id/image_view_tutorial_dialog_ambient_aware"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="81dp"
+                        android:layout_height="81dp"
                         android:layout_centerHorizontal="true"
                         android:src="@drawable/checkbox_ambient_selector" />
 
                     <jbl.stc.com.view.CustomFontTextView
                         android:id="@+id/text_view_tutorial_dialog_ambient_aware"
-                        style="@style/PoppinsRegularTextStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_below="@id/image_view_tutorial_dialog_ambient_aware"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
                         android:gravity="center_horizontal"
                         android:lineSpacingExtra="-5dp"
                         android:text="@string/text_ambient_aware"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:textStyle="normal"
+                        />
                 </RelativeLayout>
 
             </LinearLayout>
