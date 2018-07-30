@@ -222,8 +222,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         int screenwidth = dm.widthPixels;
         int statusHeight = UiUtils.getStatusHeight(getActivity());
         int height = (int) (screenheigth - UiUtils.dip2px(getActivity(), 200) - statusHeight) / 2;
-        if (height>UiUtils.dip2px(getActivity(),240)){
-            height=UiUtils.dip2px(getActivity(),240);
+        Logger.d(TAG, "HomeFrag statusHeigth:" + statusHeight + "screenheight:" + screenheigth + "200dp:" + UiUtils.dip2px(getActivity(), 200) + "height:" + height);
+        if (height > UiUtils.dip2px(getActivity(), 240)) {
+            height = UiUtils.dip2px(getActivity(), 240);
             Logger.d(TAG, "height:" + "240dp");
         }
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imageViewDevice.getLayoutParams();
@@ -288,24 +289,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         relative_layout_home_eq_info.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                /*switch (event.getAction()) {
-
-                    case MotionEvent.ACTION_DOWN:
-                        mPosY = event.getY();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        mCurPosY = event.getY();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                       if (mCurPosY - mPosY < 0
-                                && (Math.abs(mCurPosY - mPosY) > 25)) {
-                            //向上滑动
-                           switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
-                        }
-
-                        break;
-                }*/
-                //return true;
                 return gestureDetector.onTouchEvent(event);
 
             }
@@ -906,6 +889,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void parseCustomeEQ(byte[] v) {
+        if (getContext() == null) {
+            return;
+        }
         if (v != null && v.length == 48) {
             Logger.d(TAG, "EqBand value1 = " + Arrays.toString(v));
             int[] eqArray = new int[10];

@@ -20,7 +20,7 @@
         android:layout_marginTop="@dimen/margin_top_10dp"
         android:background="@drawable/shape_circle_eq_name_bg_selected"
         android:gravity="center"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <jbl.stc.com.view.AppImageView
             android:id="@+id/addImageView"
@@ -33,6 +33,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@id/frame_layout_tutorial_dialog_eq_info"
+        android:layout_below="@id/relative_layout_tutorial_dialog_add"
         android:layout_centerInParent="true"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
@@ -53,8 +55,7 @@
                 android:textColor="#030D1C"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:visibility="invisible"
-                 />
+                android:visibility="invisible" />
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -65,16 +66,15 @@
 
                 <jbl.stc.com.view.AppImageView
                     android:id="@+id/image_view_tutorial_dialog_device_image"
-                    android:background="@drawable/shape_dashboard_device_circle"
                     android:layout_width="240dp"
                     android:layout_height="240dp"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
+                    android:background="@drawable/shape_dashboard_device_circle"
                     android:clickable="false"
                     android:scaleType="fitCenter"
                     android:src="@mipmap/everest_elite_150nc_icon"
-                    android:visibility="invisible"
-                    />
+                    android:visibility="invisible" />
             </FrameLayout>
 
             <include
@@ -148,8 +148,8 @@
                         android:layout_below="@id/image_view_tutorial_dialog_ambient_aware"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
-                        android:lineSpacingExtra="-5dp"
                         android:gravity="center_horizontal"
+                        android:lineSpacingExtra="-5dp"
                         android:text="@string/text_ambient_aware"
                         android:textColor="@color/white" />
                 </RelativeLayout>
@@ -220,16 +220,16 @@
                 android:src="@mipmap/white_arrow_back" />
         </RelativeLayout>
     </FrameLayout>
-     <jbl.stc.com.view.AppImageView
-         android:id="@+id/eq_tutorial_triple_up_arrows_img"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_centerHorizontal="true"
-         android:layout_alignParentBottom="true"
-         android:src="@mipmap/triple_up_arrows"
-         android:layout_marginBottom="50dp"
-         android:visibility="gone"
-         />
+
+    <jbl.stc.com.view.AppImageView
+        android:id="@+id/eq_tutorial_triple_up_arrows_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        android:src="@mipmap/triple_up_arrows"
+        android:visibility="gone" />
 
 
     <jbl.stc.com.view.CustomFontTextView
@@ -289,12 +289,12 @@
             android:id="@+id/tutorial_equalizerLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <jbl.stc.com.view.EqualizerAddView
                 android:id="@+id/tutorial_equalizerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:show_type="only_line"
-                />
+                app:show_type="only_line" />
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/tutorial_firstTimeAddEqTipText"
