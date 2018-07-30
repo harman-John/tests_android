@@ -221,7 +221,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         int screenwidth = dm.widthPixels;
         int statusHeight = UiUtils.getStatusHeight(getActivity());
         int height = (int) (screenheigth - UiUtils.dip2px(getActivity(), 200) - statusHeight) / 2;
-        Logger.d(TAG, "height:" + linearLayoutBattery.getHeight());
+        if (height>UiUtils.dip2px(getActivity(),240)){
+            height=UiUtils.dip2px(getActivity(),240);
+            Logger.d(TAG, "height:" + "240dp");
+        }
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imageViewDevice.getLayoutParams();
         params.height = height;
         params.width = height;
