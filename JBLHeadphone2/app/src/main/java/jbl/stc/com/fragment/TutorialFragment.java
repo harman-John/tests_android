@@ -45,7 +45,6 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
     private ViewPager viewPager;
     private List<View> views;
     private View view1, view2;
-    private TextView textViewOffButton;
     private ImageView closeButton;
     private CheckBox checkBoxNoiseCancel;
 
@@ -101,8 +100,6 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
         checkBoxNoiseCancel.setOnClickListener(this);
         ancController = view2.findViewById(R.id.circularSeekBar_anc_circle);
         circularInsideLayout = view2.findViewById(R.id.imageContainer_anc_circle);
-        textViewOffButton = view2.findViewById(R.id.text_view_page_two_off);
-        textViewOffButton.setOnClickListener(this);
         view2.findViewById(R.id.image_view_page_two_close).setOnClickListener(this);
         view2.findViewById(R.id.image_view_page_two_back).setOnClickListener(this);
         view2.findViewById(R.id.text_view_page_two_get_started).setOnClickListener(this);
@@ -127,11 +124,6 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.text_view_page_two_off: {
-                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(AvneraManager.getAvenraManager(getActivity()).getLightX(), ANCAwarenessPreset.None);
-                ancController.setSwitchOff(false);
-                break;
-            }
             case R.id.image_view_page_two_close:
             case R.id.image_view_page_one_close:
             case R.id.text_view_page_two_get_started:{

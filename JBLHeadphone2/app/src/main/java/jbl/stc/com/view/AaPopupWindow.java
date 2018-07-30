@@ -71,10 +71,10 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
     @Override
     public void onClick(View view) {
         switch(view.getId()){
-            case R.id.noiseText:
-                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.None);
-                ancController.setSwitchOff(false);
-                break;
+//            case R.id.noiseText:
+//                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.None);
+//                ancController.setSwitchOff(false);
+//                break;
             case R.id.aa_popup_close_arrow:
                 if (isShowing()) {
                     dismiss();
