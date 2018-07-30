@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:background="@color/gray_dee2e6"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/gray_dee2e6"
+    android:orientation="vertical">
 
     <RelativeLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_bar_height"
+        android:orientation="horizontal"
         android:paddingLeft="@dimen/margin_top_10dp"
-        android:paddingRight="@dimen/margin_top_10dp"
-        >
+        android:paddingRight="@dimen/margin_top_10dp">
+
         <jbl.stc.com.view.AppImageView
             android:id="@+id/back_btn"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_centerVertical="true"
-            android:visibility="visible"
             android:src="@mipmap/black_arrow_back"
-            />
+            android:visibility="visible" />
 
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_title"
@@ -28,43 +27,47 @@
             android:layout_centerInParent="true"
             android:text="@string/agree_to_eula"
             android:textColor="@color/black"
-            android:textStyle="normal"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textStyle="normal" />
     </RelativeLayout>
+
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/gray_dee2e6"
         android:layout_marginTop="25dp"
-        android:scrollbars="vertical"
-        android:fadingEdge="vertical">
+        android:background="@color/gray_dee2e6"
+        android:fadingEdge="vertical"
+        android:scrollbars="vertical">
+
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/gray_dee2e6"
-            android:textColor="@android:color/black"
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:scrollbars="vertical"
-            android:textStyle="normal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:textColor="@android:color/black"
+            android:textStyle="normal" />
     </ScrollView>
+
     <RelativeLayout
         android:id="@+id/agree_btn"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
+        android:background="@color/background"
+        android:orientation="horizontal"
         android:paddingBottom="10dp"
-        android:visibility="gone"
-        android:background="@color/background">
+        android:paddingTop="10dp"
+        android:visibility="gone">
+
         <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="@string/eula_agree_and_start"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="normal"
-            android:layout_centerInParent="true"/>
+            android:textStyle="normal" />
     </RelativeLayout>
 </LinearLayout>

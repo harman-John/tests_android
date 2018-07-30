@@ -56,7 +56,7 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
         imageViewDeviceIcon = view.findViewById(R.id.image_view_unable_device_icon);
         relativeLayoutDeviceIcon = view.findViewById(R.id.relative_layout_unable_breathing_lamp);
         linearLayoutTips = view.findViewById(R.id.linear_layout_unable_tips);
-        linearLayoutTips.setVisibility(View.GONE);
+        linearLayoutTips.setVisibility(View.INVISIBLE);
         relativeLayoutDeviceIcon.setOnClickListener(this);
         textViewDeviceName = view.findViewById(R.id.text_view_unable_device_name);
         textViewTipsTwo = view.findViewById(R.id.text_view_unable_advice_two);

@@ -17,17 +17,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/title_bar_height"
-            android:paddingLeft="@dimen/margin_top_10dp"
-            android:paddingRight="@dimen/margin_top_10dp"
             android:orientation="vertical"
-            >
+            android:paddingLeft="@dimen/margin_top_10dp"
+            android:paddingRight="@dimen/margin_top_10dp">
 
             <RelativeLayout
                 android:id="@+id/titleBar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/title_bar_height"
-                android:paddingLeft="@dimen/margin_top_10dp"
-                android:paddingRight="@dimen/margin_top_10dp">
+                android:paddingLeft="@dimen/margin_top_10dp">
 
                 <jbl.stc.com.view.AppImageView
                     android:id="@+id/image_view_pro_white_back"
@@ -597,8 +595,8 @@
                         android:text="@string/All_product_lists"
                         android:textSize="@dimen/font_14sp"
                         android:textStyle="normal" />
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
                 </TableRow>
             </TableLayout>
         </LinearLayout>

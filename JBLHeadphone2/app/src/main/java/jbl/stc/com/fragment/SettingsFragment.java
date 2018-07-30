@@ -166,6 +166,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         if (hasUpdate) {
             imageViewDownload.setVisibility(View.VISIBLE);
             textViewFwVersion.setVisibility(View.GONE);
+            view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         }else{
             imageViewDownload.setVisibility(View.GONE);
             textViewFwVersion.setVisibility(View.VISIBLE);
@@ -175,6 +176,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             }else{
                 textViewFwVersion.setText("");
             }
+            view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(null);
         }
     }
 

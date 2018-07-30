@@ -28,7 +28,7 @@
                 android:id="@+id/closeImageView"
                 android:layout_width="@dimen/image_button_width_and_height"
                 android:layout_height="@dimen/image_button_width_and_height"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:src="@mipmap/icon_close" />
         </RelativeLayout>
