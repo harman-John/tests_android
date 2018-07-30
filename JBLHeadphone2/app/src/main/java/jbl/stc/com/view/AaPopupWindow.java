@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.avnera.smartdigitalheadset.ANCAwarenessPreset;
 import com.avnera.smartdigitalheadset.LightX;
@@ -31,7 +33,8 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
     private static final String TAG = AaPopupWindow.class.getSimpleName();
     private ANCController ancController;
     private CircularInsideLayout circularInsideLayout;
-    private View offBtn, closeBtn;
+    private View closeBtn;
+//    private View offBtn;
     private LightX lightX;
     private ANCAwarenessPreset lastsavedAwarenessState;
     private boolean isRequestingLeftANC, isRequestingRightANC;
@@ -54,13 +57,14 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
         setAnimationStyle(R.style.style_down_to_top);
         ancController = popupWindow_view.findViewById(R.id.circularSeekBar);
         circularInsideLayout = popupWindow_view.findViewById(R.id.imageContainer);
-        offBtn = popupWindow_view.findViewById(R.id.noiseText);
+//        offBtn = popupWindow_view.findViewById(R.id.noiseText);
         closeBtn = popupWindow_view.findViewById(R.id.aa_popup_close_arrow);
 
         circularInsideLayout.setonAwarenesChangeListener(this);
         ancController.setCircularInsideLayout(circularInsideLayout);
+        ancController.setOffButton((TextView) popupWindow_view.findViewById(R.id.noiseText_off_button));
         ancController.setOnSeekArcChangeListener(this);
-        offBtn.setOnClickListener(this);
+//        offBtn.setOnClickListener(this);
         closeBtn.setOnClickListener(this);
     }
 

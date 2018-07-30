@@ -7,15 +7,22 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.JBLConstant;
@@ -37,7 +44,8 @@ public class ANCController extends SurfaceView {
     int mdeviceWidth;
     int mdeviceHeight;
     float density;
-    CircularInsideLayout circularInsideLayout;
+    private CircularInsideLayout circularInsideLayout;
+    private TextView mOffButton;
     double dis1 = 1000, dis2 = 1000;
     boolean wasThumbTouched = false;
     int leftFactor, rightFactor;
@@ -282,6 +290,10 @@ public class ANCController extends SurfaceView {
 
     public void setCircularInsideLayout(CircularInsideLayout circularInsideLayout) {
         this.circularInsideLayout = circularInsideLayout;
+    }
+
+    public void setOffButton(TextView offButton){
+        mOffButton = offButton;
     }
 
     /**
@@ -913,6 +925,9 @@ public class ANCController extends SurfaceView {
                                 mViewPosition = 1;
 
                         }
+                        if (isInViewArea(mOffButton,x,y)){
+                            mViewPosition = 0;
+                        }
                         if (isDownTouch)
                             setTouchRectIdDown(id);
                         else
@@ -934,6 +949,9 @@ public class ANCController extends SurfaceView {
                         mViewPosition = 1;
 
                 }
+                if (isInViewArea(mOffButton,x,y)){
+                    mViewPosition = 0;
+                }
                 mHandler1.postDelayed(runnable, 10);
             }
             return;
@@ -945,6 +963,18 @@ public class ANCController extends SurfaceView {
             mTouchAngle = mThumb2StartAngle - mTouchAngle;
         int progress = getProgressForAngle(mTouchAngle);
         onProgressRefresh(progress, true, mArcClockwise);
+    }
+
+
+    private boolean isInViewArea(View view, float x, float y) {
+        if (view == null) {
+            return false;
+        }
+        if (y >= view.getTop() && y <= view.getBottom() && x >= view.getLeft()
+                && x <= view.getRight()) {
+            return true;
+        }
+        return false;
     }
 
     /**

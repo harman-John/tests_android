@@ -82,6 +82,7 @@
         </RelativeLayout>
     </jbl.stc.com.view.CircularInsideLayout>
     <jbl.stc.com.view.CustomFontTextView
+        android:id="@+id/text_view_page_two_off_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -121,20 +122,5 @@
             app:thumb2_start="@integer/thumb2Angle"
             app:thumb2_text="@dimen/thumb2Text" />
     </FrameLayout>
-    <jbl.stc.com.view.CustomFontTextView
-        android:id="@+id/text_view_page_two_off"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="110dp"
-        android:text="@string/control_off"
-        android:textColor="@color/transparent"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"/>
-
 
 </FrameLayout>
