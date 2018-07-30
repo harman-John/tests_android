@@ -44,14 +44,14 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="135dp"
-        android:padding="30dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="30dp">
 
         <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="@string/how_to_pair_tips_zero" />
+            android:text="@string/how_to_pair_tips_zero"
+            android:textSize="20sp" />
 
         <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
@@ -59,11 +59,25 @@
             android:layout_marginTop="5dp"
             android:text="@string/how_to_pair_tips_one" />
 
-        <jbl.stc.com.view.CustomFontTextView
-            android:id="@+id/text_view_how_to_pair_link"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/how_to_pair_tips_two" />
+            android:layout_marginTop="5dp"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:scaleType="centerInside"
+                android:src="@mipmap/video" />
+
+            <jbl.stc.com.view.CustomFontTextView
+                android:id="@+id/text_view_how_to_pair_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="@string/how_to_pair_tips_two" />
+        </LinearLayout>
     </LinearLayout>
 
     <jbl.stc.com.view.CustomFontTextView
@@ -74,13 +88,13 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginBottom="47dp"
-        android:textAlignment="center"
         android:background="@drawable/shape_ota_button"
         android:paddingBottom="7dp"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
         android:paddingTop="7dp"
         android:text="@string/next"
+        android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="18sp" />
 
