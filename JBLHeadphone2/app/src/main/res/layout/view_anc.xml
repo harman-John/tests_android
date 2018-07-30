@@ -153,10 +153,10 @@
                     app:startAngle="30"
                     app:sweepAngle="300"
                     app:thumb1_radius="@dimen/thumb1Radius"
-                    app:thumb1_start="@integer/thumb1Angle"
+                    app:thumb1_start="199"
                     app:thumb1_text="@dimen/thumb1Text"
                     app:thumb2_radius="@dimen/thumb2Radius"
-                    app:thumb2_start="@integer/thumb2Angle"
+                    app:thumb2_start="161"
                     app:thumb2_text="@dimen/thumb2Text" />
             </FrameLayout>
 

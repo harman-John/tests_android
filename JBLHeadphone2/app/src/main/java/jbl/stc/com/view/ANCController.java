@@ -82,7 +82,7 @@ public class ANCController extends SurfaceView {
     /**
      * The rotation of the SeekArc- 0 is twelve o'clock
      */
-    private int mRotation = 0;
+    private int mRotation = 1;
     /**
      * Give the SeekArc rounded edges
      */
@@ -1205,15 +1205,6 @@ public class ANCController extends SurfaceView {
     public void setTouchInSide(boolean isEnabled) {
         mTouchInside = isEnabled;
     }
-
-//    public ANCFragment getAncAwarehome() {
-//        return ancAwarehome;
-//    }
-//
-//    public void setAncAwarehome(ANCFragment ancAwarehome) {
-//        this.ancAwarehome = ancAwarehome;
-//    }
-
 
     /**
      * <p> Listener for progress change</p>
