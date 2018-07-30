@@ -72,7 +72,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     private RelativeLayout mTutorialEqSystemParentLayout;
     private AppImageView tripleUpArrow;
 
-    private final static String TAG =  TutorialAncDialog.class.getSimpleName();
+    private final static String TAG = TutorialAncDialog.class.getSimpleName();
 
     public void setOnDialogListener(OnDialogListener onDialogListener) {
         this.onDialogListener = onDialogListener;
@@ -154,22 +154,26 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
 
         setDeviceImageHeight();
     }
+
     private void setDeviceImageHeight() {
-        AppImageView imageViewDevice=findViewById(R.id.image_view_tutorial_dialog_device_image);
+        AppImageView imageViewDevice = findViewById(R.id.image_view_tutorial_dialog_device_image);
         DisplayMetrics dm = mActivity.getResources().getDisplayMetrics();
         int screenheigth = dm.heightPixels;
         int screenwidth = dm.widthPixels;
         int statusHeight = UiUtils.getStatusHeight(mActivity);
-        int height = (int) (screenheigth - UiUtils.dip2px(mActivity, 200) - statusHeight) / 2 -UiUtils.dip2px(mActivity, 10);
-        if (height>UiUtils.dip2px(mActivity,240)){
-            height=UiUtils.dip2px(mActivity,240);
+        int height = (int) (screenheigth - UiUtils.dip2px(mActivity, 200) - statusHeight) / 2;
+        if (height > UiUtils.dip2px(mActivity, 240)) {
+            height = UiUtils.dip2px(mActivity, 240);
         }
+        Logger.d(TAG, "statusHeigth:" + statusHeight);
+        height = (int) (height - statusHeight / 2);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imageViewDevice.getLayoutParams();
         params.height = height;
         params.width = height;
         imageViewDevice.setLayoutParams(params);
 
     }
+
     private KeyboardLayout.OnKeyboardStateChangedListener onKeyboardStateChangedListener = new KeyboardLayout.OnKeyboardStateChangedListener() {
         @Override
         public void onKeyboardStateChanged(int state, int height) {
@@ -192,77 +196,80 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
             }
         }
     };
-    private boolean isShowOnlySmartAmbientType(){
+
+    private boolean isShowOnlySmartAmbientType() {
         return (modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
                 || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
                 || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA));
     }
-    private boolean isShowOnlyNoiceCancelingType(){
+
+    private boolean isShowOnlyNoiceCancelingType() {
         return (modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC));
     }
-    public void setChecked(boolean isChecked){
-        if (checkBoxANC!= null){
+
+    public void setChecked(boolean isChecked) {
+        if (checkBoxANC != null) {
             checkBoxANC.setChecked(isChecked);
         }
         if (isChecked) {
-            if (relativeLayoutAmbientAware != null){
+            if (relativeLayoutAmbientAware != null) {
                 relativeLayoutAmbientAware.setVisibility(View.VISIBLE);
             }
             setTextViewTips(R.string.tutorial_tips_one);
-        }else{
-            if (relativeLayoutAmbientAware != null){
+        } else {
+            if (relativeLayoutAmbientAware != null) {
                 relativeLayoutAmbientAware.setVisibility(View.INVISIBLE);
             }
             setTextViewTips(R.string.tutorial_tips_zero);
         }
     }
 
-    public void setTextViewTips(int restId){
-        if (textViewTips!= null){
+    public void setTextViewTips(int restId) {
+        if (textViewTips != null) {
             textViewTips.setText(restId);
         }
     }
 
-    public void showEqInfo(){
+    public void showEqInfo() {
         Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        if (fr != null && fr instanceof HomeFragment){
-            ((HomeFragment)fr).setEqMenuColor(false);
+        if (fr != null && fr instanceof HomeFragment) {
+            ((HomeFragment) fr).setEqMenuColor(false);
         }
-        if (textViewEqName != null){
+        if (textViewEqName != null) {
             textViewEqName.setVisibility(View.INVISIBLE);
         }
-        if (frameLayoutEqInfo != null){
+        if (frameLayoutEqInfo != null) {
             frameLayoutEqInfo.setVisibility(View.INVISIBLE);
         }
-        if (relativeLayoutEqGrey != null){
+        if (relativeLayoutEqGrey != null) {
             relativeLayoutEqGrey.setVisibility(View.VISIBLE);
-            relativeLayoutEqGrey.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.shape_circle_off_eq_name_bg_normal));
+            relativeLayoutEqGrey.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.shape_circle_off_eq_name_bg_normal));
         }
-        if (textViewEqGrey != null){
+        if (textViewEqGrey != null) {
             textViewEqGrey.setVisibility(View.VISIBLE);
         }
-        if (linearLayoutAnc != null){
+        if (linearLayoutAnc != null) {
             linearLayoutAnc.setVisibility(View.GONE);
         }
     }
 
-    public void hideEqInfo(){
-        if (frameLayoutEqInfo != null){
+    public void hideEqInfo() {
+        if (frameLayoutEqInfo != null) {
             frameLayoutEqInfo.setVisibility(View.GONE);
         }
-        if (linearLayoutAnc != null){
+        if (linearLayoutAnc != null) {
             linearLayoutAnc.setVisibility(View.GONE);
         }
     }
 
-    private void hideSkip(){
-        if (textViewSkip != null){
+    private void hideSkip() {
+        if (textViewSkip != null) {
             textViewSkip.setVisibility(View.GONE);
         }
     }
 
-    private void showAdd(){
-        if (relativeLayoutAdd != null){
+    private void showAdd() {
+        if (relativeLayoutAdd != null) {
             relativeLayoutAdd.setVisibility(View.VISIBLE);
         }
     }
@@ -271,29 +278,29 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         switch (index) {
             case 0: {
                 textViewEqName.setText(R.string.off);
-                frameLayoutEqInfo.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.gray_aa_bg));
+                frameLayoutEqInfo.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gray_aa_bg));
                 break;
             }
             case 1: {
-                ((JBLApplication)DashboardActivity.getDashboardActivity().getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) DashboardActivity.getDashboardActivity().getApplication()).deviceInfo.eqOn = true;
                 textViewEqName.setText(R.string.jazz);
                 frameLayoutEqInfo.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 2: {
-                ((JBLApplication)DashboardActivity.getDashboardActivity().getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) DashboardActivity.getDashboardActivity().getApplication()).deviceInfo.eqOn = true;
                 textViewEqName.setText(R.string.vocal);
                 frameLayoutEqInfo.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 3: {
-                ((JBLApplication)DashboardActivity.getDashboardActivity().getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) DashboardActivity.getDashboardActivity().getApplication()).deviceInfo.eqOn = true;
                 textViewEqName.setText(R.string.bass);
                 frameLayoutEqInfo.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 4: {
-                ((JBLApplication)DashboardActivity.getDashboardActivity().getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) DashboardActivity.getDashboardActivity().getApplication()).deviceInfo.eqOn = true;
                 String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getContext(), null);
                 if (name != null) {
                     textViewEqName.setText(name);
@@ -315,55 +322,56 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
 
     @Override
     public void onSaStatusReceived(boolean isDaEnable, boolean isTtEnable) {
-        if(isDaEnable){
+        if (isDaEnable) {
             textViewTips.setText(JBLApplication.getJBLApplicationContext().getString(R.string.tutorial_tips_one_live));
-        }else{
+        } else {
             textViewTips.setText(JBLApplication.getJBLApplicationContext().getString(R.string.tutorial_tips_two_live));
         }
     }
 
-    private void showTripleArrowsAnimation(){
+    private void showTripleArrowsAnimation() {
         final Animation tripleArrowsAnim = AnimationUtils.loadAnimation(JBLApplication.getJBLApplicationContext(), R.anim.anim_triple_up_arrow);
         tripleUpArrow.setAnimation(tripleArrowsAnim);
         tripleUpArrow.setVisibility(View.VISIBLE);
     }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.image_view_tutorial_dialog_noise_cancel:{
+        switch (v.getId()) {
+            case R.id.image_view_tutorial_dialog_noise_cancel: {
                 Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (fr != null && fr instanceof HomeFragment){
-                    ((HomeFragment)fr).setANC();
+                if (fr != null && fr instanceof HomeFragment) {
+                    ((HomeFragment) fr).setANC();
                     setChecked(checkBoxANC.isChecked());
                 }
                 break;
             }
-            case R.id.image_view_tutorial_dialog_ambient_aware:{
+            case R.id.image_view_tutorial_dialog_ambient_aware: {
                 Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if(!isShowOnlySmartAmbientType()) {
+                if (!isShowOnlySmartAmbientType()) {
                     if (fr != null && fr instanceof HomeFragment) {
                         setTextViewTips(R.string.tutorial_tips_two);
                         ((HomeFragment) fr).showAncPopupWindow(relativeLayout);
                     }
-                }else{
+                } else {
                     if (fr != null && fr instanceof HomeFragment) {
 //                        setTextViewTips(R.string.tutorial_tips_two);
-                        ((HomeFragment) fr).showSaPopupWindow(relativeLayout,this);
+                        ((HomeFragment) fr).showSaPopupWindow(relativeLayout, this);
                     }
                 }
                 break;
             }
-            case R.id.frame_layout_tutorial_dialog_eq_info:{
+            case R.id.frame_layout_tutorial_dialog_eq_info: {
 //                repeatTrippleArrowAnim = false;
                 tripleUpArrow.clearAnimation();
                 tripleUpArrow.setVisibility(View.GONE);
                 Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (fr == null ){
-                    Logger.i(TAG,"fr is null");
+                if (fr == null) {
+                    Logger.i(TAG, "fr is null");
                     return;
                 }
-                if  ( fr instanceof EqSettingFragment) {
-                    Logger.i(TAG,"fr is already showed");
+                if (fr instanceof EqSettingFragment) {
+                    Logger.i(TAG, "fr is already showed");
                     return;
                 }
                 DashboardActivity.getDashboardActivity().switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
@@ -373,24 +381,24 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                 showAdd();
                 break;
             }
-            case R.id.relative_layout_tutorial_dialog_add:{
+            case R.id.relative_layout_tutorial_dialog_add: {
 //                dismiss();
-                if (relativeLayoutAdd!=null){
+                if (relativeLayoutAdd != null) {
                     relativeLayoutAdd.setVisibility(View.GONE);
                 }
 
                 Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (fr == null ){
-                    Logger.i(TAG,"fr is null");
+                if (fr == null) {
+                    Logger.i(TAG, "fr is null");
                     return;
                 }
-                if  ( fr instanceof EqSettingFragment) {
-                    Logger.i(TAG,"fr is already showed");
-                    ((EqSettingFragment)fr).onAddCustomEq(true, false);
+                if (fr instanceof EqSettingFragment) {
+                    Logger.i(TAG, "fr is already showed");
+                    ((EqSettingFragment) fr).onAddCustomEq(true, false);
                 }
                 setTextViewTips(R.string.tutorial_tips_six);
-                EQModel currSelectedEq  = new EQModel();
-                JBLApplication application = (JBLApplication)mActivity.getApplication();
+                EQModel currSelectedEq = new EQModel();
+                JBLApplication application = (JBLApplication) mActivity.getApplication();
                 currSelectedEq.id = application.deviceInfo.maxEqId + 1;
                 currSelectedEq.index = application.deviceInfo.maxEqId + 1;
                 currSelectedEq.eqType = GraphicEQPreset.User.value();
@@ -398,20 +406,20 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                 mTutorialEqSystemParentLayout.setVisibility(View.VISIBLE);
                 break;
             }
-            case R.id.text_view_tutorial_dialog_skip:{
+            case R.id.text_view_tutorial_dialog_skip: {
                 dismiss();
                 break;
             }
-            case R.id.text_view_tutorial_dialog_eq_grey:{
-                if (relativeLayoutEqGrey!= null) {
+            case R.id.text_view_tutorial_dialog_eq_grey: {
+                if (relativeLayoutEqGrey != null) {
                     relativeLayoutEqGrey.setVisibility(View.GONE);
                 }
-                if (frameLayoutEqInfo!= null) {
+                if (frameLayoutEqInfo != null) {
                     frameLayoutEqInfo.setVisibility(View.VISIBLE);
                 }
                 Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (fr != null && fr instanceof HomeFragment){
-                    ((HomeFragment)fr).setEqMenuColor(true);
+                if (fr != null && fr instanceof HomeFragment) {
+                    ((HomeFragment) fr).setEqMenuColor(true);
                 }
                 setTextViewTips(R.string.tutorial_tips_four);
                 showTripleArrowsAnimation();

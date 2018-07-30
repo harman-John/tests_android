@@ -188,7 +188,7 @@ public class EqGridView extends GridView {
         if (mNumColumns == AUTO_FIT) {
             int numFittedColumns;
             if (mColumnWidth > 0) {
-                int gridWidth = Math.max(View.MeasureSpec.getSize(widthMeasureSpec)
+                int gridWidth = Math.max(MeasureSpec.getSize(widthMeasureSpec)
                         - getPaddingLeft() - getPaddingRight(), 0);
                 numFittedColumns = gridWidth / mColumnWidth;
                 if (numFittedColumns > 0) {
@@ -223,7 +223,7 @@ public class EqGridView extends GridView {
 
     public boolean setOnItemLongClickListener(final MotionEvent ev) {
         //Logger.d(TAG,"onItemLongClick");
-        this.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        this.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int arg2, long arg3) {
@@ -448,16 +448,24 @@ public class EqGridView extends GridView {
         System.out.println("CurrentY" + currentY + "CurrentX" + currentX);
         if (IsDeleteArea(currentX, currentY)) {
             Logger.d(TAG, "IsDeleteArea:True");
-            startScaleAnimation();
+            mIsScaleAnima = true;
+            for (int i = 1; i < 4; i++) {
+                mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize - 20 * i);
+                mWindowLayoutParams.height = UiUtils.dip2px(getContext(), mDragLayoutSize - 20 * i);
+                mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
+            }
         } else {
             Logger.d(TAG, "IsDeleteArea:false");
             // ScrollView scroll
             mHandler.post(mScrollRunnable);
-            mIsScaleAnima = false;
-            mDragImageView.clearAnimation();
-            mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize);
-            mWindowLayoutParams.height = UiUtils.dip2px(getContext(), mDragLayoutSize);
-            mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams);
+            if (mIsScaleAnima) {
+                mIsScaleAnima = false;
+                for (int i = 1; i < 4; i++) {
+                    mWindowLayoutParams.width = UiUtils.dip2px(getContext(), (mDragLayoutSize - 60) + 20 * i);
+                    mWindowLayoutParams.height = UiUtils.dip2px(getContext(), (mDragLayoutSize - 60) + 20 * i);
+                    mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
+                }
+            }
         }
     }
 
@@ -473,9 +481,6 @@ public class EqGridView extends GridView {
             anim.setFillAfter(true);
             mDragImageView.clearAnimation();
             mDragImageView.startAnimation(anim);
-            mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize * 6 / 10);
-            mWindowLayoutParams.height = UiUtils.dip2px(getContext(), mDragLayoutSize * 6 / 10);
-            mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams);
 
         }
     }

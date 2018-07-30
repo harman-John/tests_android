@@ -1,23 +1,30 @@
 package jbl.stc.com.fragment;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import jbl.stc.com.R;
 import jbl.stc.com.legal.LegalApi;
+import jbl.stc.com.view.BlurringView;
 import jbl.stc.com.view.BtTipPopupWindow;
 
 public class TurnOnBtTipsFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = TurnOnBtTipsFragment.class.getSimpleName();
     private View view;
-    private RelativeLayout relativeLayoutTurnOnBt;
     private TextView tv_stillsee;
+    private BlurringView mBlurView;
+    private View bluredView;
+    private BtTipPopupWindow btTipPopupWindow;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +37,17 @@ public class TurnOnBtTipsFragment extends BaseFragment implements View.OnClickLi
                 container, false);
         tv_stillsee = view.findViewById(R.id.tv_stillsee);
         tv_stillsee.setOnClickListener(this);
+        bluredView = view.findViewById(R.id.relative_layout_splash_turn_on_bt);
+        mBlurView = view.findViewById(R.id.view_blur);
+        btTipPopupWindow = new BtTipPopupWindow(getActivity());
+        btTipPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                if (mBlurView != null) {
+                    mBlurView.setVisibility(View.GONE);
+                }
+            }
+        });
         return view;
     }
 
@@ -40,10 +58,22 @@ public class TurnOnBtTipsFragment extends BaseFragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.tv_stillsee:{
+        switch (v.getId()) {
+            case R.id.tv_stillsee: {
 
-                BtTipPopupWindow btTipPopupWindow=new BtTipPopupWindow(getActivity());
+                mBlurView.setBlurredView(bluredView);
+                mBlurView.invalidate();
+                mBlurView.setVisibility(View.VISIBLE);
+                mBlurView.setAlpha(0f);
+                mBlurView.animate().alpha(0.5f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        mBlurView.setVisibility(View.VISIBLE);
+                        //OR
+                        mBlurView.setAlpha(0.5f);
+                    }
+                });
                 btTipPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
                 break;
             }
