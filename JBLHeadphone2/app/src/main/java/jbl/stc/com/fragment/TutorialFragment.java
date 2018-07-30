@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -107,6 +108,7 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
         view2.findViewById(R.id.text_view_page_two_get_started).setOnClickListener(this);
         circularInsideLayout.setonAwarenesChangeListener(this);
         ancController.setCircularInsideLayout(circularInsideLayout);
+        ancController.setOffButton((Button) view2.findViewById(R.id.text_view_page_two_off_button));
         ancController.setOnSeekArcChangeListener(this);
         getRawSteps();
         return view;
