@@ -25,8 +25,8 @@ android {
         applicationId "jbl.stc.com"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 460
-        versionName "3.1"
+        versionCode 1
+        versionName "4.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
