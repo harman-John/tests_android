@@ -120,6 +120,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private MyDevice myDevice;
     private TextView titleEqText;
     private AppImageView image_view_ota_download;
+    private NotConnectedPopupWindow notConnectedPopupWindow;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -389,6 +390,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onPause() {
         super.onPause();
         homeHandler.removeMessages(MSG_READ_BATTERY_INTERVAL);
+        if (notConnectedPopupWindow!= null) {
+            notConnectedPopupWindow.dismiss();
+        }
     }
 
     @Override
@@ -558,9 +562,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         getAAValue();
     }
 
-
     public void showNCPopupWindow(View view) {
-        NotConnectedPopupWindow notConnectedPopupWindow = new NotConnectedPopupWindow(getActivity());
+        notConnectedPopupWindow = new NotConnectedPopupWindow(getActivity());
         notConnectedPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {

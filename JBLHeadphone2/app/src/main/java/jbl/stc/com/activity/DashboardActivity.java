@@ -1,32 +1,26 @@
 package jbl.stc.com.activity;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
-import android.mtp.MtpConstants;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 
 
 import java.io.FileNotFoundException;
@@ -40,8 +34,6 @@ import jbl.stc.com.R;
 import jbl.stc.com.adapter.MyGridAdapter;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
-import jbl.stc.com.data.ConnectedDeviceType;
-import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.TutorialAncDialog;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.entity.FirmwareModel;
@@ -419,7 +411,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
         dashboardHandler.removeMessages(MSG_START_SCAN);
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        if (isConnected()) {
+        if (isConnected() && myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
             boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
             if (!isShowTutorialManyTimes) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
