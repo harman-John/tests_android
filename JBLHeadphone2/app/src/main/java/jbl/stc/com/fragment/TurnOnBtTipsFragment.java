@@ -57,6 +57,12 @@ public class TurnOnBtTipsFragment extends BaseFragment implements View.OnClickLi
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        btTipPopupWindow.dismiss();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_stillsee: {

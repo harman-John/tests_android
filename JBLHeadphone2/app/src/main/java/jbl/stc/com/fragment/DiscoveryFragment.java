@@ -46,6 +46,12 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        dHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.image_view_discovery_back:{

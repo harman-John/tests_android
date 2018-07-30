@@ -545,6 +545,11 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                         }
                         default: {
                             Logger.i(TAG, "open TurnOnBtTipsFragment");
+                            dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
+                            dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
+                            dashboardHandler.removeMessages(MSG_SHOW_MY_PRODUCTS);
+                            dashboardHandler.removeMessages(MSG_SHOW_OTA_FRAGMENT);
+                            dashboardHandler.removeMessages(MSG_START_SCAN);
                             if (fr == null) {
                                 switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
                             } else if (!(fr instanceof TurnOnBtTipsFragment)) {
