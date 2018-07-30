@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,9 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.AppImageView;
+import jbl.stc.com.view.AppShaderView;
 import jbl.stc.com.view.EqualizerAddView;
 import jbl.stc.com.view.KeyboardLayout;
 import jbl.stc.com.view.SaPopupWindow;
@@ -148,6 +151,23 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
             }
 //            relativeLayoutAmbientAware.setVisibility(View.INVISIBLE);
         }
+
+        setDeviceImageHeight();
+    }
+    private void setDeviceImageHeight() {
+        AppImageView imageViewDevice=findViewById(R.id.image_view_tutorial_dialog_device_image);
+        DisplayMetrics dm = mActivity.getResources().getDisplayMetrics();
+        int screenheigth = dm.heightPixels;
+        int screenwidth = dm.widthPixels;
+        int statusHeight = UiUtils.getStatusHeight(mActivity);
+        int height = (int) (screenheigth - UiUtils.dip2px(mActivity, 200) - statusHeight) / 2 -UiUtils.dip2px(mActivity, 10);
+        if (height>UiUtils.dip2px(mActivity,240)){
+            height=UiUtils.dip2px(mActivity,240);
+        }
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imageViewDevice.getLayoutParams();
+        params.height = height;
+        params.width = height;
+        imageViewDevice.setLayoutParams(params);
 
     }
     private KeyboardLayout.OnKeyboardStateChangedListener onKeyboardStateChangedListener = new KeyboardLayout.OnKeyboardStateChangedListener() {
