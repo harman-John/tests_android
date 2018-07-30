@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -317,7 +318,8 @@ public class AppUtils {
     }
 
     public static void addToMyDevices(Context context, String key) {
-        Set<String> myDevices = PreferenceUtils.getStringSet(context, PreferenceKeys.MY_DEVICES);
+        Set<String> myDevices=new HashSet<>(PreferenceUtils.getStringSet(context, PreferenceKeys.MY_DEVICES));
+        Logger.i(TAG, "myDevices "+ myDevices);
         if (!myDevices.contains(key)) {
             myDevices.add(key);
             PreferenceUtils.setStringSet(context, PreferenceKeys.MY_DEVICES, myDevices);

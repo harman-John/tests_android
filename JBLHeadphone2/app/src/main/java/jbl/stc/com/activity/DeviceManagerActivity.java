@@ -271,6 +271,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                 for (String key: devicesSet){
                     if (key.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)){
                         temp = key;
+                        break;
                     }
                 }
                 devicesSet.clear();

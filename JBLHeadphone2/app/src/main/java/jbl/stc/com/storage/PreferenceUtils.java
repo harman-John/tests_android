@@ -89,8 +89,7 @@ public class PreferenceUtils {
     }
 
     public static Set<String> getStringSet(Context context, String key) {
-        Set<String>  defaultSet = new HashSet<>();
-        return context.getSharedPreferences(JBLConstant.MY_DEVICES_NAME,0).getStringSet(key,defaultSet);
+        return context.getSharedPreferences(JBLConstant.MY_DEVICES_NAME,0).getStringSet(key,new HashSet<String>());
     }
 
     public static void clearStringSet(Context context) {
