@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -162,10 +164,10 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         int screenwidth = dm.widthPixels;
         int statusHeight = UiUtils.getStatusHeight(mActivity);
         int height = (int) (screenheigth - UiUtils.dip2px(mActivity, 200) - statusHeight) / 2;
+        Logger.d(TAG, "statusHeigth:" + statusHeight + "screenheight:" + screenheigth + "200dp:" + UiUtils.dip2px(mActivity, 200) + "height:" + height);
         if (height > UiUtils.dip2px(mActivity, 240)) {
             height = UiUtils.dip2px(mActivity, 240);
         }
-        Logger.d(TAG, "statusHeigth:" + statusHeight);
         height = (int) (height - statusHeight / 2);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imageViewDevice.getLayoutParams();
         params.height = height;
@@ -333,6 +335,66 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         final Animation tripleArrowsAnim = AnimationUtils.loadAnimation(JBLApplication.getJBLApplicationContext(), R.anim.anim_triple_up_arrow);
         tripleUpArrow.setAnimation(tripleArrowsAnim);
         tripleUpArrow.setVisibility(View.VISIBLE);
+
+        final GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (e1.getY() - e2.getY() > 25 && Math.abs(velocityX) > 25) {
+                    tripleUpArrow.clearAnimation();
+                    tripleUpArrow.setVisibility(View.GONE);
+                    Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                    if (fr == null) {
+                        Logger.i(TAG, "fr is null");
+                        return false;
+                    }
+                    if (fr instanceof EqSettingFragment) {
+                        Logger.i(TAG, "fr is already showed");
+                        return false;
+                    }
+                    DashboardActivity.getDashboardActivity().switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                    hideEqInfo();
+                    setTextViewTips(R.string.tutorial_tips_five);
+                    hideSkip();
+                    showAdd();
+                }
+                return false;
+            }
+        };
+        final GestureDetector gestureDetector = new GestureDetector(gestureListener);
+        frameLayoutEqInfo.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+
+            }
+
+        });
+
     }
 
     @Override
