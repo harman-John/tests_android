@@ -28,16 +28,17 @@ import jbl.stc.com.utils.AppUtils;
  * @class describe
  * Created by Wayne on 6/26/18.
  */
-public class AaPopupWindow extends PopupWindow implements View.OnClickListener, AwarenessChangeListener,ANCController.OnSeekArcChangeListener{
+public class AaPopupWindow extends PopupWindow implements View.OnClickListener, AwarenessChangeListener, ANCController.OnSeekArcChangeListener {
 
     private static final String TAG = AaPopupWindow.class.getSimpleName();
     private ANCController ancController;
     private CircularInsideLayout circularInsideLayout;
     private View closeBtn;
-//    private View offBtn;
+    //    private View offBtn;
     private LightX lightX;
     private ANCAwarenessPreset lastsavedAwarenessState;
     private boolean isRequestingLeftANC, isRequestingRightANC;
+
     public AaPopupWindow(Context context, LightX lightX) {
         super(context);
         this.lightX = lightX;
@@ -45,7 +46,7 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
 
     }
 
-    private void init(Context context){
+    private void init(Context context) {
         View popupWindow_view = LayoutInflater.from(context).inflate(R.layout.popup_window_anc, null,
                 false);
         setContentView(popupWindow_view);
@@ -70,7 +71,7 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
 
     @Override
     public void onClick(View view) {
-        switch(view.getId()){
+        switch (view.getId()) {
 //            case R.id.noiseText:
 //                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.None);
 //                ancController.setSwitchOff(false);
@@ -83,29 +84,33 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
                 break;
         }
     }
-    public void setAAOff(){
+
+    public void setAAOff() {
         ancController.setSwitchOff(false);
     }
-    public void updateAALeft(int value){
-        PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, value ,JBLApplication.getJBLApplicationContext());
+
+    public void updateAALeft(int value) {
+        PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, value, JBLApplication.getJBLApplicationContext());
         isRequestingLeftANC = false;
-        if(!isRequestingLeftANC && !isRequestingRightANC){
+        if (!isRequestingLeftANC && !isRequestingRightANC) {
 //            ancController.initProgress();
         }
         ancController.initLeftProgress(value);
 
 //        ancController.initProgress(value, PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, getActivity()), value);
     }
-    public void updateAARight(int value){
-        PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, value ,JBLApplication.getJBLApplicationContext());
+
+    public void updateAARight(int value) {
+        PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, value, JBLApplication.getJBLApplicationContext());
         isRequestingRightANC = false;
-        if(!isRequestingLeftANC && !isRequestingRightANC){
+        if (!isRequestingLeftANC && !isRequestingRightANC) {
 
         }
         ancController.initRightProgress(value);
 //        ancController.initProgress(PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, getActivity()), value, value);
     }
-    public void updateAAUI(int aaLevelingValue){
+
+    public void updateAAUI(int aaLevelingValue) {
         boolean is150NC = AppUtils.is150NC(JBLApplication.getJBLApplicationContext());
         Log.d(TAG, "updateAmbientLevel: " + aaLevelingValue + "," + PreferenceUtils.getInt(PreferenceKeys.AWARENESS, JBLApplication.getJBLApplicationContext()) + ",is150NC=" + is150NC);
         switch (aaLevelingValue) {
@@ -139,22 +144,26 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getLeftANCvalue(lightX);
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRightANCvalue(lightX);
     }
+
     @Override
     public void onMedium() {
         //on AA medium checked
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.Medium);
+        circularInsideLayout.setBackgroundResource(R.mipmap.ambient_awareness_circle_m);
     }
 
     @Override
     public void onLow() {
         //on AA low checked
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.Low);
+        circularInsideLayout.setBackgroundResource(R.mipmap.ambient_awareness_circle_l);
     }
 
     @Override
     public void onHigh() {
         //on AA high checked
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.High);
+        circularInsideLayout.setBackgroundResource(R.mipmap.ambient_awareness_circle_h);
     }
 
     @Override
@@ -164,7 +173,7 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
         if (fromUser) {
             // Check added to fix Bug :Bug 64517 - Sometimes Awareness adjustment is disordered when left and right AA have different level.
             //Set animation to false and presetValue to -1
-            int savedLeft = PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST,JBLApplication.getJBLApplicationContext());
+            int savedLeft = PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, JBLApplication.getJBLApplicationContext());
             int savedRight = PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, JBLApplication.getJBLApplicationContext());
 
             PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, leftProgress, JBLApplication.getJBLApplicationContext());
@@ -198,8 +207,8 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
 //        showNextTutorialTips();
     }
 
-    private void showNextTutorialTips(){
-        if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null){
+    private void showNextTutorialTips() {
+        if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null) {
             dismiss();
             DashboardActivity.getDashboardActivity().tutorialAncDialog.setTextViewTips(R.string.tutorial_tips_three);
         }

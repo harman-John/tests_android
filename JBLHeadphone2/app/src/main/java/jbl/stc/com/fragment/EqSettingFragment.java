@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.avnera.smartdigitalheadset.LightX;
+import com.avnera.smartdigitalheadset.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,6 @@ import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.FastClickHelper;
 import jbl.stc.com.view.EqualizerShowView;
 import jbl.stc.com.view.MyGridLayoutManager;
-
 
 
 public class EqSettingFragment extends BaseFragment implements View.OnClickListener {
@@ -60,7 +61,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private int eqType;
     private LightX lightX;
     private Handler mHandler = new Handler();
-    private float mPosX=0,mCurPosX;
+    private float mPosX = 0, mCurPosX;
 
 
     @Override
@@ -89,7 +90,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         eqAdapter = new EqRecyclerAdapter();
         eqRecycleView.setAdapter(eqAdapter);
         rl_eq_view = (RelativeLayout) rootView.findViewById(R.id.rl_eq_view);
-        linearLayout=(LinearLayout) rootView.findViewById(R.id.linearLayout);
+        linearLayout = (LinearLayout) rootView.findViewById(R.id.linearLayout);
     }
 
     private void initEvent() {
@@ -147,19 +148,19 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                         if (mCurPosX - mPosX > 0
                                 && (Math.abs(mCurPosX - mPosX) > 25)) {
                             //向右滑動  减小
-                            if (currSelectedEqIndex>=1){
-                                eqAdapter.setSelectedIndex(currSelectedEqIndex-1);
-                            }else{
-                                eqAdapter.setSelectedIndex(eqModelList.size()-1);
+                            if (currSelectedEqIndex >= 1) {
+                                eqAdapter.setSelectedIndex(currSelectedEqIndex - 1);
+                            } else {
+                                eqAdapter.setSelectedIndex(eqModelList.size() - 1);
                             }
 
 
                         } else if (mCurPosX - mPosX < 0
                                 && (Math.abs(mCurPosX - mPosX) > 25)) {
                             //向左滑动  增大
-                            if (currSelectedEqIndex<eqModelList.size()-1){
-                                eqAdapter.setSelectedIndex(currSelectedEqIndex+1);
-                            }else{
+                            if (currSelectedEqIndex < eqModelList.size() - 1) {
+                                eqAdapter.setSelectedIndex(currSelectedEqIndex + 1);
+                            } else {
                                 eqAdapter.setSelectedIndex(0);
                             }
                         }
@@ -251,7 +252,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         currSelectedEq.isSelected = true;
         eqAdapter.setEqModels(eqModelList);
         PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, currSelectedEq.eqName, mContext);
-        if (!currSelectedEq.eqName.equals(getResources().getString(R.string.off))){
+        if (!currSelectedEq.eqName.equals(getResources().getString(R.string.off))) {
             PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, currSelectedEq.eqName, mContext);
         }
         //int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
