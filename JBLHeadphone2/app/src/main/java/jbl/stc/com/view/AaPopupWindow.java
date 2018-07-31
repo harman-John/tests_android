@@ -149,21 +149,18 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
     public void onMedium() {
         //on AA medium checked
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.Medium);
-        circularInsideLayout.setBackgroundResource(R.mipmap.ambient_awareness_circle_m);
     }
 
     @Override
     public void onLow() {
         //on AA low checked
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.Low);
-        circularInsideLayout.setBackgroundResource(R.mipmap.ambient_awareness_circle_l);
     }
 
     @Override
     public void onHigh() {
         //on AA high checked
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.High);
-        circularInsideLayout.setBackgroundResource(R.mipmap.ambient_awareness_circle_h);
     }
 
     @Override

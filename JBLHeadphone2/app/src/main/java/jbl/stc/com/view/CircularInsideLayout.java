@@ -69,6 +69,7 @@ public class CircularInsideLayout extends LinearLayout {
                                 text1.setTextColor(ContextCompat.getColor(getContext(), R.color.background));
 //                                text1.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(), R.mipmap.waves_high_l_pressed), null, ContextCompat.getDrawable(getContext(), R.mipmap.waves_high_r_pressed), null);
                                 hView.setAlpha((float) 0.5);
+                                setBackgroundResource(R.mipmap.ambient_awareness_circle_h);
                             }
                             return R.id.high;
 
@@ -81,6 +82,7 @@ public class CircularInsideLayout extends LinearLayout {
                                 text2.setTextColor(ContextCompat.getColor(getContext(), R.color.background));
 //                                text2.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(), R.mipmap.waves_medium_l_pressed), null, ContextCompat.getDrawable(getContext(), R.mipmap.waves_medium_r_pressed), null);
                                 mView.setAlpha((float) 0.5);
+                                setBackgroundResource(R.mipmap.ambient_awareness_circle_m);
                             }
                             return R.id.medium;
                         case R.id.low:
@@ -92,6 +94,7 @@ public class CircularInsideLayout extends LinearLayout {
                                 text3.setTextColor(ContextCompat.getColor(getContext(), R.color.background));
 //                                text3.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(getContext(), R.mipmap.waves_low_l_pressed), null, ContextCompat.getDrawable(getContext(), R.mipmap.waves_low_r_pressed), null);
                                 lView.setAlpha((float) 0.5);
+                                setBackgroundResource(R.mipmap.ambient_awareness_circle_l);
                             }
                             return R.id.low;
                     }
@@ -179,6 +182,7 @@ public class CircularInsideLayout extends LinearLayout {
 //                dRight = ContextCompat.getDrawable(getContext(), R.mipmap.waves_low_r_pressed);
 //                dLeft.setAlpha(255);
 //                dRight.setAlpha(255);
+                setBackgroundResource(R.mipmap.ambient_awareness_circle);
 
                 break;
 
@@ -200,6 +204,7 @@ public class CircularInsideLayout extends LinearLayout {
 //                dRight = ContextCompat.getDrawable(getContext(), R.mipmap.waves_medium_r_pressed);
 //                dLeft.setAlpha(255);
 //                dRight.setAlpha(255);
+                setBackgroundResource(R.mipmap.ambient_awareness_circle);
                 break;
 
             case R.id.high://High
@@ -223,6 +228,7 @@ public class CircularInsideLayout extends LinearLayout {
 //                dRight = ContextCompat.getDrawable(getContext(), R.mipmap.waves_high_r_pressed);
 //                dLeft.setAlpha(255);
 //                dRight.setAlpha(255);
+                setBackgroundResource(R.mipmap.ambient_awareness_circle);
                 break;
 
             case -1://Reset
@@ -252,6 +258,7 @@ public class CircularInsideLayout extends LinearLayout {
                 isHighSelected = false;
                 isMediumSelected = false;
                 isLowSelected = false;
+                setBackgroundResource(R.mipmap.ambient_awareness_circle);
 
                 break;
 

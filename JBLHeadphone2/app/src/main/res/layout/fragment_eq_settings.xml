@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:textStyle="normal"
+                android:textStyle="bold"
                 android:text="@string/title_eq_setting" />
 
             <jbl.stc.com.view.AppImageView
@@ -112,12 +112,11 @@
         >
         <android.support.v7.widget.RecyclerView
             android:id="@+id/eqRecycleView"
-            android:layout_width="240dp"
+            android:layout_width="270dp"
             android:layout_height="fill_parent"
             android:layout_centerHorizontal="true"
             android:background="@color/gray_dee2e6"
             android:gravity="center_horizontal"
-            android:horizontalSpacing="20dp"
             android:listSelector="@android:color/transparent"
             android:overScrollMode="never"
             android:scrollbars="none" />
