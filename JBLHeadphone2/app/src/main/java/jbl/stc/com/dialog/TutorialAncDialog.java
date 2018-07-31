@@ -364,7 +364,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (e1.getY() - e2.getY() > 25 && Math.abs(velocityX) > 25) {
+                if (e1.getY() - e2.getY() > 25 && Math.abs(velocityY) > 25) {
                     tripleUpArrow.clearAnimation();
                     tripleUpArrow.setVisibility(View.GONE);
                     Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
