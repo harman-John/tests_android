@@ -34,8 +34,6 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.UnableConnectFragment;
 import jbl.stc.com.logger.Logger;
-import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.view.DragGridView;
 import jbl.stc.com.view.MyDragGridView;
 
 public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGridBaseAdapter{

@@ -21,8 +21,6 @@ import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
-import jbl.stc.com.utils.ToastUtil;
-import jbl.stc.com.view.DragGridView;
 import jbl.stc.com.view.EqGridView;
 
 public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGridBaseAdapter{

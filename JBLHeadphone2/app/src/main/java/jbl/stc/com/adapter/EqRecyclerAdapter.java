@@ -1,10 +1,15 @@
 package jbl.stc.com.adapter;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,9 +28,12 @@ import jbl.stc.com.utils.UiUtils;
  * Created by ludm1 on 2018/3/30.
  */
 public class EqRecyclerAdapter extends RecyclerView.Adapter {
-    private static final String TAG = EqNameGridAdapter.class.getSimpleName();
+    private static final String TAG = EqRecyclerAdapter.class.getSimpleName();
     private List<EQModel> eqModels = new ArrayList<>();
     private OnEqItemSelectedListener onEqItemSelectedListener;
+    private int lastAnimatedPosition = -1;
+    private boolean animationsLocked = false;
+    private boolean delayEnterAnimation = true;
 
     public void setEqModels(List<EQModel> models) {
         this.eqModels.clear();
@@ -37,7 +45,7 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
         this.onEqItemSelectedListener = onEqItemSelectedListener;
     }
 
-    public void setSelectedIndex(int index){
+    public void setSelectedIndex(int index) {
         if (onEqItemSelectedListener != null) {
             onEqItemSelectedListener.onSelected(index);
         }
@@ -63,7 +71,6 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
     private class EqRecyclerViewHolder extends RecyclerView.ViewHolder {
         private ImageView eqNameBgImage;
         private TextView eqNameText;
-        private ImageView plusImageView;
         private View eqNameLayout;
         private int currPosition;
 
@@ -79,7 +86,6 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
             });
             eqNameBgImage = itemView.findViewById(R.id.eqNameBgImage);
             eqNameText = itemView.findViewById(R.id.text_view_grid_eq_name);
-            plusImageView = itemView.findViewById(R.id.plusImageView);
             eqNameLayout = itemView.findViewById(R.id.eqNameLayout);
         }
 
@@ -88,37 +94,53 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
             Context context = itemView.getContext();
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-            if (eqModel.isPlusItem) {
-                eqNameBgImage.setImageResource(R.drawable.shape_circle_eq_name_bg_normal);
-                eqNameText.setVisibility(View.GONE);
-                plusImageView.setVisibility(View.VISIBLE);
-            } else {
-                eqNameText.setText(eqModel.eqName);
-                eqNameText.setVisibility(View.VISIBLE);
-                plusImageView.setVisibility(View.GONE);
-                if (eqModel.isSelected) {
-                    if (eqModel.eqName.equals(context.getResources().getString(R.string.off))){
-                        eqNameBgImage.setImageResource(R.drawable.shape_circle_off_eq_name_bg_selected);
-                    }else{
-                        eqNameBgImage.setImageResource(R.drawable.shape_circle_eq_name_bg_selected);
-                    }
-                    eqNameText.setTextColor(ContextCompat.getColor(context, R.color.white));
-
+            eqNameText.setText(eqModel.eqName);
+            eqNameText.setVisibility(View.VISIBLE);
+            if (eqModel.isSelected) {
+                if (eqModel.eqName.equals(context.getResources().getString(R.string.off))) {
+                    eqNameBgImage.setImageResource(R.drawable.shape_circle_off_eq_name_bg_selected);
                 } else {
-                    if (eqModel.eqName.equals(context.getResources().getString(R.string.off))){
-                        eqNameBgImage.setImageResource(R.drawable.shape_circle_off_eq_name_bg_normal);
-                    }else{
-                        eqNameBgImage.setImageResource(R.drawable.shape_circle_eq_name_bg_normal);
-                    }
-                    eqNameText.setTextColor(ContextCompat.getColor(context, R.color.statusBarBackground));
+                    eqNameBgImage.setImageResource(R.drawable.shape_circle_eq_name_bg_selected);
                 }
+                eqNameText.setTextColor(ContextCompat.getColor(context, R.color.white));
+
+            } else {
+                if (eqModel.eqName.equals(context.getResources().getString(R.string.off))) {
+                    eqNameBgImage.setImageResource(R.drawable.shape_circle_off_eq_name_bg_normal);
+                } else {
+                    eqNameBgImage.setImageResource(R.drawable.shape_circle_eq_name_bg_normal);
+                }
+                eqNameText.setTextColor(ContextCompat.getColor(context, R.color.statusBarBackground));
             }
+
             if (position < 2) {//0 or 1 ,row one
                 layoutParams.topMargin = UiUtils.dip2px(context, 20);
             } else {
                 layoutParams.topMargin = UiUtils.dip2px(context, 0);
             }
             eqNameLayout.setLayoutParams(layoutParams);
+            runEnterAnimation(itemView, position);
+        }
+    }
+
+    private void runEnterAnimation(View view, int position) {
+        if (animationsLocked) return;
+        if (position > lastAnimatedPosition) {
+            lastAnimatedPosition = position;
+            view.setTranslationY(500);
+            view.setAlpha(0.8f);
+            view.animate()
+                    .translationY(0).alpha(1.f)
+                    .setStartDelay(delayEnterAnimation ? 50 * (position) : 0)
+                    .setInterpolator(new DecelerateInterpolator(0.5f))
+                    .setDuration(500)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            animationsLocked = true;
+                        }
+                    })
+                    .start();
         }
     }
 
