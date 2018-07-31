@@ -227,16 +227,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     e.printStackTrace();
                 }
 
-
                 Logger.d(TAG,"getBatterLeverl");
                 ANCControlManager.getANCManager(getActivity()).getBatterLeverl(lightX);
-
-                Log.i(TAG,"isUpdatingFrameWork "+DashboardActivity.isUpdatingFirmware);
-                if (DashboardActivity.isUpdatingFirmware){
-                    if (lightX != null) {
-                        lightX.readBootImageType();
-                    }
-                }
             }
         }).start();
     }
@@ -358,11 +350,11 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 
             }
             if (isSuccessFulDownload) {
-                DashboardActivity.isUpdatingFirmware = true;
+                isDoingOTANow = true;
                 if (lightX == null) {
                     startUpdate();
                     if (fwList.size() <= 0) {
-                        DashboardActivity.isUpdatingFirmware = false;
+                        isDoingOTANow = false;
                         return;
                     }
                     index =0;
@@ -424,9 +416,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         try {
             if (DashboardActivity.mFwlist.size() <= 0) {
                 Log.i(TAG,"startWritingFirmware fwlist size is 0");
-//                FirmwareUtil.isUpdatingFirmWare.set(false);
                 lightX.enterApplication();
-                DashboardActivity.isUpdatingFirmware = false;
+                isDoingOTANow = false;
                 return;
             }
             FirmwareUtil.isUpdatingFirmWare.set(true);
@@ -608,7 +599,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 //            txtProgressVersion.setText("Failed !");
 //            txtUpdating.setText("Firmware update failed.");
             AlertsDialog.showToast(getActivity(), "Communication broke during update. Please try again");
-            DashboardActivity.isUpdatingFirmware = false;
+            isDoingOTANow = false;
             FirmwareUtil.isUpdatingFirmWare.set(false);
             otaError();
             try {
@@ -680,7 +671,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             }
             return;
         }
-        Logger.d(TAG, " called lightXIsInBootloader isInBootloader = " + isInBootloader);
+        Logger.d(TAG, " called lightXIsInBootloader aa isInBootloader = " + isInBootloader);
         if (isInBootloader) {
             Logger.d(TAG, "is in bootloader mode, start update");
             startUpdate();
@@ -709,13 +700,13 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 
 
     @Override
-    public void isLightXintialize() {
-        super.isLightXintialize();
-        Logger.d(TAG, "OTA " + "reconnected");
-        Logger.e(TAG, "initizlie isUpdatingFrameWork=" + DashboardActivity.isUpdatingFirmware);
-        if (DashboardActivity.isUpdatingFirmware) {
+    public void isLightXInitialize() {
+        super.isLightXInitialize();
+        Logger.e(TAG, "isLightXInitialize mIsEnterBootloader=" + mIsEnterBootloader);
+        if (mIsEnterBootloader) {
             lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
             if (lightX != null) {
+                Logger.e(TAG, "readBootImageType");
                 lightX.readBootImageType();
             }
         }
@@ -815,7 +806,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 switch (otaSteps) {
                     case 0: {
                         if (DashboardActivity.mFwlist.size() <= 0) {
-                            DashboardActivity.isUpdatingFirmware = false;
+                            isDoingOTANow = false;
                             return;
                         }
                         index++;
@@ -831,7 +822,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     }
                     case 1: {
                         if (DashboardActivity.mFwlist.size() <= 0) {
-                            DashboardActivity.isUpdatingFirmware = false;
+                            isDoingOTANow = false;
                             return;
                         }
                         index++;
@@ -961,7 +952,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewButtonDone.setVisibility(View.VISIBLE);
 
 //        otaSuccess(onLineFwVersion);
-        DashboardActivity.isUpdatingFirmware = false;
+        isDoingOTANow = false;
 //        iv_ok.setVisibility(View.VISIBLE);
     }
 
@@ -1040,7 +1031,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         Logger.d(TAG, "imageUpdateError");
         Cmd150Manager.getInstance().setFirmwareUpdateState(AvneraManager.getAvenraManager(getActivity()).getAudioManager(),JBLConstant.ENABLE_ACCESSORY_INTERRUPTS);
         otaError();
-        DashboardActivity.isUpdatingFirmware = false;
+        isDoingOTANow = false;
         FirmwareUtil.isUpdatingFirmWare.set(false);
         imageViewBack.setVisibility(View.VISIBLE);
         AnalyticsManager.getInstance(getActivity()).reportFirmwareUpdateFailed(mOnLineFirmware);

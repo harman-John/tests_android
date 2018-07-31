@@ -33,7 +33,7 @@ public interface AppLightXDelegate {
 
     boolean lightXWillRetransmit(LightX var1, Command var2);
 
-    void isLightXintialize();
+    void isLightXInitialize();
 
     void headPhoneStatus(boolean isConnected);
 

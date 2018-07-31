@@ -46,10 +46,8 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.ConnectedDeviceType;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.AlertsDialog;
-import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.CalibrationFragment;
 import jbl.stc.com.fragment.HomeFragment;
-import jbl.stc.com.listener.A2dpObserver;
 import jbl.stc.com.listener.AppLightXDelegate;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AnalyticsManager;
@@ -583,7 +581,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                 public void run() {
                     if (appLightXDelegate != null) {
                         appLightXDelegate.headPhoneStatus(true);
-                        appLightXDelegate.isLightXintialize();
+                        appLightXDelegate.isLightXInitialize();
                     }
                     if (!mIsEnterBootloader) {
                         connectDeviceStatus(true);
@@ -1129,7 +1127,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     }
                     AvneraManager.getAvenraManager(this).setLightX(mLightX);
                     if (appLightXDelegate != null) {
-                        appLightXDelegate.isLightXintialize();
+                        appLightXDelegate.isLightXInitialize();
                     }
                     isConnected = true;
                     Logger.d(TAGReconnect, "USB connected");
@@ -1137,7 +1135,9 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     AppUtils.addToMyDevices(getApplicationContext(), usbDevice.getProductName()+"-"+String.valueOf(usbDevice.getDeviceId()));
                     devicesSet.add(usbDevice.getProductName() + "-" + usbDevice.getDeviceId());
                     checkDevices(devicesSet);
-                    connectDeviceStatus(isConnected);
+                    if (!mIsEnterBootloader) {
+                        connectDeviceStatus(isConnected);
+                    }
                 }
 //                onWindowFocusChanged(false);
                 if (usbDevice != null) {

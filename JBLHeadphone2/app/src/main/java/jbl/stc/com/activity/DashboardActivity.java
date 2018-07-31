@@ -67,7 +67,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     private CheckUpdateAvailable checkUpdateAvailable;
 
-    public static boolean isUpdatingFirmware = false;
+    public static boolean isDoingOTANow = false;
     public static CopyOnWriteArrayList<FirmwareModel> mFwlist = new CopyOnWriteArrayList<>();
 
     public TutorialAncDialog tutorialAncDialog;
@@ -234,7 +234,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         Log.d(TAG, " connectDeviceStatus isConnected = " + isConnected);
 
         if (isConnected) {
-            if (isUpdatingFirmware) {
+            if (isDoingOTANow) {
                 dashboardHandler.sendEmptyMessageDelayed(MSG_OTA_SUCCESS, 200);
             } else {
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
@@ -244,7 +244,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             }
 
         } else {
-            if (!isUpdatingFirmware) {
+            if (!isDoingOTANow) {
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr != null && fr instanceof HomeFragment) {
                     MyDevice myDevice = ((HomeFragment) fr).getMyDeviceInHome();

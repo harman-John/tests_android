@@ -284,7 +284,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     }
 
     @Override
-    public void isLightXintialize() {
+    public void isLightXInitialize() {
 
     }
 

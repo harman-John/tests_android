@@ -91,8 +91,8 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
     }
 
     @Override
-    public void isLightXintialize() {
-        super.isLightXintialize();
+    public void isLightXInitialize() {
+        super.isLightXInitialize();
     }
 
     @Override
