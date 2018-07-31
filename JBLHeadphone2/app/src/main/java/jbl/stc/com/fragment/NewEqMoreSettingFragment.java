@@ -2,28 +2,17 @@ package jbl.stc.com.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
-
 import com.avnera.smartdigitalheadset.LightX;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import jbl.stc.com.R;
 import jbl.stc.com.adapter.EqGridViewAdapter;
-import jbl.stc.com.adapter.EqNameGridAdapter;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AnalyticsManager;
@@ -33,7 +22,6 @@ import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.view.CustomFontTextView;
 import jbl.stc.com.view.CustomScrollView;
-import jbl.stc.com.view.DragGridView;
 import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.EqGridView;
 

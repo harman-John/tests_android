@@ -276,7 +276,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (e1.getY() - e2.getY() > 25 && Math.abs(velocityX) > 25) {
+                if (e1.getY() - e2.getY() > 25 && Math.abs(velocityY) > 25) {
                     switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 }
                 return false;
@@ -329,7 +329,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 if (mBlurView != null) {
                     mBlurView.setVisibility(View.GONE);
                 }
-                if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null) {
+                if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null && DashboardActivity.getDashboardActivity().tutorialAncDialog.isShowing()) {
                     DashboardActivity.getDashboardActivity().tutorialAncDialog.setTextViewTips(R.string.tutorial_tips_one);
                     DashboardActivity.getDashboardActivity().tutorialAncDialog.showEqInfo();
                 }
@@ -370,7 +370,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onPause() {
         super.onPause();
         homeHandler.removeMessages(MSG_READ_BATTERY_INTERVAL);
-        if (notConnectedPopupWindow!= null) {
+        if (notConnectedPopupWindow != null) {
             notConnectedPopupWindow.dismiss();
         }
     }
@@ -902,11 +902,26 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             eqArray[7] = v[36];
             eqArray[8] = v[40];
             eqArray[9] = v[44];
+            boolean isHave = false;
+            String curEQName = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(), "");
+            if (!TextUtils.isEmpty(curEQName)) {
+                EQModel eqModel = EQSettingManager.get().getEQModelByName(curEQName, getActivity());
+                if (eqModel != null) {
+                    if (EQSettingManager.get().isTheSameEQ(eqModel, eqArray)) {
+                        isHave = true;
+                        PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, getActivity());
+                        sendMessageTo(MSG_UPDATE_CUSTOME_EQ, null);
+                        Logger.d(TAG, "Have the same EQ:" + eqModel.eqName);
+                        return;
+                    }
+                }
+
+            }
             String eqName = PreferenceUtils.getString(PreferenceKeys.MODEL, getContext(), null) + " EQ";
             List<EQModel> models = EQSettingManager.get().getCompleteEQList(getActivity());
-            boolean isHave = false;
-            if (models != null && models.size() > 0) {
-                for (EQModel eqModel : models) {
+            if (models != null && models.size() > 4) {
+                for (int i = 4; i < models.size(); i++) {
+                    EQModel eqModel = models.get(i);
                     if (EQSettingManager.get().isTheSameEQ(eqModel, eqArray)) {
                         isHave = true;
                         PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, getActivity());

@@ -9,7 +9,8 @@
         android:id="@+id/eqNameLayout"
         android:layout_width="110dp"
         android:layout_height="110dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        >
 
         <ImageView
             android:id="@+id/eqNameBgImage"
@@ -33,20 +34,5 @@
             android:textStyle="normal"
             android:textColor="@color/eq_panel_name_text" />
 
-        <ImageView
-            android:id="@+id/plusImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:src="@mipmap/white_plus"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/removeImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:src="@mipmap/icon_remove_eq"
-            android:visibility="gone" />
     </RelativeLayout>
 </FrameLayout>

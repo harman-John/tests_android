@@ -14,9 +14,9 @@
             android:id="@+id/image_view_calibration_global_back"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="@mipmap/white_arrow_back" />
+            android:background="@mipmap/icon_close" />
 
         <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"

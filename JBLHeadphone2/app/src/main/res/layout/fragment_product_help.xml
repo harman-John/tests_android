@@ -63,9 +63,9 @@
                 android:drawableEnd="@mipmap/settings_arrow"
                 android:gravity="start|center_vertical"
                 android:paddingEnd="@dimen/settings_item_padding_right"
-                android:paddingStart="@dimen/settings_item_padding_left"
+                android:paddingStart="@dimen/settings_item_padding_right"
                 android:text="@string/online_user_manual"
-
+                android:drawableStart="@mipmap/pdf"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </RelativeLayout>
