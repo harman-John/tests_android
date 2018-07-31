@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -14,6 +15,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
+import com.avnera.smartdigitalheadset.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,11 +130,11 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
         if (animationsLocked) return;
         if (position > lastAnimatedPosition) {
             lastAnimatedPosition = position;
-            view.setTranslationY(500);
+            view.setTranslationY(800);
             view.setAlpha(0.8f);
             view.animate()
                     .translationY(0).alpha(1.f)
-                    .setStartDelay(delayEnterAnimation ? 50 * (position) : 0)
+                    .setStartDelay(delayEnterAnimation ? 40 * (position) : 0)
                     .setInterpolator(new DecelerateInterpolator(0.5f))
                     .setDuration(500)
                     .setListener(new AnimatorListenerAdapter() {
