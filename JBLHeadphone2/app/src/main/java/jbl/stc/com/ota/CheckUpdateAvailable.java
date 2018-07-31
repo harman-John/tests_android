@@ -17,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.data.FwTYPE;
 import jbl.stc.com.entity.FirmwareModel;
+import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.manager.AnalyticsManager;
@@ -35,11 +36,11 @@ public class CheckUpdateAvailable extends AsyncTask<String, Void, CopyOnWriteArr
         this.downloaded = downloaded;
     }
 
-    public static CheckUpdateAvailable start(Object settingsUpdateDeviceFragment, Context context, OnDownloadedListener downloaded, String mURL, String resourceVersion, String appVersion) {
+    public static CheckUpdateAvailable start(Object fragmentObject, Context context, OnDownloadedListener downloaded, String mURL, String resourceVersion, String appVersion) {
         CheckUpdateAvailable checkUpdateAvailable = new CheckUpdateAvailable(context, downloaded);
         checkUpdateAvailable.currentRSRCVersion = resourceVersion;
         checkUpdateAvailable.currentAppVersion = appVersion;
-        checkUpdateAvailable.object = settingsUpdateDeviceFragment;
+        checkUpdateAvailable.object = fragmentObject;
         checkUpdateAvailable.executeOnExecutor(CheckUpdateAvailable.THREAD_POOL_EXECUTOR, mURL);
         return checkUpdateAvailable;
     }

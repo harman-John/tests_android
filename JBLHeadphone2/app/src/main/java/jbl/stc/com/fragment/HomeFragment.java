@@ -3,13 +3,10 @@ package jbl.stc.com.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.UiAutomation;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -61,7 +58,6 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
-import jbl.stc.com.manager.Cmd150Manager;
 import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -133,10 +129,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         view = inflater.inflate(R.layout.fragment_home,
                 container, false);
         Log.i(TAG, "onCreateView");
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            myDevice = bundle.getParcelable(JBLConstant.KEY_MY_DEVICE);
-        }
+//        Bundle bundle = getArguments();
+//        if (bundle != null) {
+//            myDevice = bundle.getParcelable(JBLConstant.KEY_MY_DEVICE);
+//        }
+        myDevice = DashboardActivity.getDashboardActivity().getMyDeviceConnected();
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         generateAAPopupWindow();
         generateSaPopupWindow();
@@ -183,7 +180,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         } else {
             linearLayoutNoiseCanceling.setVisibility(View.VISIBLE);
             checkBoxNoiseCancel = view.findViewById(R.id.image_view_home_noise_cancel);
-            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 checkBoxNoiseCancel.setOnClickListener(this);
             } else {
                 linearLayoutNoiseCanceling.setAlpha((float) 0.5);
@@ -205,7 +202,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 textViewAmbientAware.setText(R.string.smart_ambient);
             }
         }
-        if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             getRawSteps();
         }
         deviceName = myDevice.deviceName;
@@ -345,7 +342,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         super.onResume();
         AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
         Log.d(TAG, "onResume" + DeviceConnectionManager.getInstance().getCurrentDevice());
-        if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                 case NONE:
                     break;
@@ -391,7 +388,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_home_ambient_aware: {
-                if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+                if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                     if (AppUtils.isOldDevice(deviceName)) {
                         showAncPopupWindow(view);
                     } else if (AppUtils.isNewDevice(deviceName)) {
@@ -410,9 +407,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case R.id.image_view_home_settings: {
                 SettingsFragment settingsFragment = new SettingsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-                settingsFragment.setArguments(bundle);
+//                Bundle bundle = new Bundle();
+//                bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+//                settingsFragment.setArguments(bundle);
                 switchFragment(settingsFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }

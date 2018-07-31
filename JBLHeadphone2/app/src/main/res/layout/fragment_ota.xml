@@ -8,57 +8,59 @@
 
     <RelativeLayout
         android:id="@+id/relative_layout_ota_title"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_bar_height"
+        android:layout_alignParentTop="true"
         android:paddingLeft="@dimen/margin_top_10dp"
-        android:paddingRight="@dimen/margin_top_10dp"
-        >
+        android:paddingRight="@dimen/margin_top_10dp">
+
         <jbl.stc.com.view.AppImageView
             android:id="@+id/image_view_ota_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:visibility="visible"
             android:src="@mipmap/black_arrow_back"
-          />
+            android:visibility="visible" />
 
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_ota_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_ota_title"
             android:layout_centerInParent="true"
-            android:textStyle="normal"
+            android:text="@string/text_ota_title"
             android:textColor="@android:color/black"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textStyle="normal" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/relative_layout_ota_title"
         android:layout_above="@id/startupdating"
+        android:layout_below="@id/relative_layout_ota_title"
+        android:layout_centerHorizontal="true"
+        android:gravity="left|bottom"
         android:orientation="vertical">
+
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/updateStatusTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:textStyle="normal"
             android:text="@string/firmware_is_updating_title"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="normal" />
+
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/updateStatus"
-            android:layout_marginTop="6dp"
-            android:textStyle="normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/firmware_is_updating"
             android:layout_marginBottom="20dp"
-            android:textSize="16sp" />
+            android:layout_marginTop="6dp"
+            android:text="@string/firmware_is_updating"
+            android:textSize="16sp"
+            android:textStyle="normal" />
     </LinearLayout>
 
     <LinearLayout
@@ -76,12 +78,14 @@
             android:layout_width="146dp"
             android:layout_height="146dp"
             android:background="@color/lighter_gray_theme">
+
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_ota_circle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textStyle="normal"
-                android:background="@drawable/shape_ota_circle" />
+                android:background="@mipmap/update_circle"
+                android:textStyle="normal" />
+
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_progress"
                 style="@android:style/TextAppearance.Small"
@@ -89,21 +93,20 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
-                android:textColor="@android:color/black"
                 android:text="0 %"
-                android:textStyle="bold"
+                android:textColor="@android:color/black"
                 android:textSize="22sp"
+                android:textStyle="bold"
                 android:visibility="visible" />
 
-            <ImageView
-                android:id="@+id/iv_ok"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:src="@mipmap/grey_ok"
-                />
+            <!--<ImageView-->
+                <!--android:id="@+id/iv_ok"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:gravity="center_horizontal"-->
+                <!--android:src="@mipmap/grey_ok"-->
+                <!--android:visibility="gone" />-->
         </FrameLayout>
     </LinearLayout>
 
@@ -115,16 +118,16 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginBottom="47dp"
-        android:textAlignment="center"
         android:background="@drawable/shape_ota_button"
         android:paddingBottom="7dp"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
         android:paddingTop="7dp"
-        android:textStyle="normal"
         android:text="@string/done"
+        android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:textStyle="normal" />
 
 
 </RelativeLayout>

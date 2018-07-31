@@ -6,5 +6,5 @@ package jbl.stc.com.constant;
 public class ConnectStatus {
     public static final int A2DP_UNCONNECTED = 0;
     public static final int A2DP_HALF_CONNECTED = 1;
-    public static final int A2DP_CONNECTED = 2;
+    public static final int DEVICE_CONNECTED = 2;
 }

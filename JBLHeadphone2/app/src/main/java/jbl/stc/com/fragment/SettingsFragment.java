@@ -36,7 +36,6 @@ import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
-import jbl.stc.com.utils.FirmwareUtil;
 
 public class SettingsFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = SettingsFragment.class.getSimpleName();
@@ -67,8 +66,9 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        myDevice = getArguments().getParcelable(JBLConstant.KEY_MY_DEVICE);
-        if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+//        myDevice = getArguments().getParcelable(JBLConstant.KEY_MY_DEVICE);
+        myDevice = DashboardActivity.getDashboardActivity().getMyDeviceConnected();
+        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
         }
         view = inflater.inflate(R.layout.fragment_settings, container, false);
@@ -79,7 +79,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         tv_toggleautoOff = view.findViewById(R.id.tv_toggleautoOff);
         toggleVoicePrompt = view.findViewById(R.id.toggleVoicePrompt);
         view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
-        if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             toggleVoicePrompt.setOnClickListener(this);
             textViewFirmware.setOnClickListener(this);
             view.findViewById(R.id.voice_prompt_layout).setOnClickListener(this);
@@ -93,7 +93,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         relativeLayoutSmartButton = view.findViewById(R.id.relative_layout_settings_smart_button);
         if (DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_SMART_BUTTON)) {
             relativeLayoutSmartButton.setVisibility(View.VISIBLE);
-            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 relativeLayoutSmartButton.setOnClickListener(this);
             }
         } else {
@@ -105,14 +105,14 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             relativeLayoutAutoOffTimer.setVisibility(View.VISIBLE);
             tv_toggleautoOff.setVisibility(View.VISIBLE);
             toggleAutoOffTimer.setVisibility(View.GONE);
-            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 relativeLayoutAutoOffTimer.setOnClickListener(this);
             }
         } else if (DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_AUTO_OFF_TIMER_SWITCH)) {
             relativeLayoutAutoOffTimer.setVisibility(View.VISIBLE);
             tv_toggleautoOff.setVisibility(View.GONE);
             toggleAutoOffTimer.setVisibility(View.VISIBLE);
-            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 toggleAutoOffTimer.setOnClickListener(this);
             }
 
@@ -124,7 +124,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             relativeLayoutTrueNote.setVisibility(View.GONE);
         } else {
             relativeLayoutTrueNote.setVisibility(View.VISIBLE);
-            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 relativeLayoutTrueNote.setOnClickListener(this);
             }
         }
@@ -133,7 +133,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             relativeLayoutSoundXSetup.setVisibility(View.GONE);
         } else {
             relativeLayoutSoundXSetup.setVisibility(View.VISIBLE);
-            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 relativeLayoutSoundXSetup.setOnClickListener(this);
             }
         }
@@ -142,7 +142,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             relativeLayoutSmartAssitant.setVisibility(View.GONE);
         } else {
             relativeLayoutSmartAssitant.setVisibility(View.VISIBLE);
-            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 relativeLayoutSmartAssitant.setOnClickListener(this);
             }
         }
@@ -151,7 +151,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         Logger.d(TAG, "deviceName:" + textViewDeviceName.getText());
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         updateDeviceNameAndImage(deviceNameStr, deviceImage, textViewDeviceName);
-        if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             ANCControlManager.getANCManager(getActivity()).getVoicePrompt(lightX);
             ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
         }
@@ -171,7 +171,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             imageViewDownload.setVisibility(View.GONE);
             textViewFwVersion.setVisibility(View.VISIBLE);
             String firmwareVersion = PreferenceUtils.getString(myDevice.deviceName, PreferenceKeys.APP_VERSION, getActivity(),"");
-            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 textViewFwVersion.setText(firmwareVersion);
             }else{
                 textViewFwVersion.setText("");
@@ -192,7 +192,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             tv_toggleautoOff.setVisibility(View.GONE);
             toggleAutoOffTimer.setVisibility(View.VISIBLE);
             //get autooff timer
-            if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED) {
+            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 ANCControlManager.getANCManager(getActivity()).getAutoOffFeature(lightX);
             }
         } else if (deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_500BT).toUpperCase()) ||

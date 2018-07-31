@@ -72,6 +72,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     private UsbManager usbManager;
     private boolean mIsConnectedPhysically;
     private boolean showCommunicationIssue = true;
+    public static boolean mIsEnterBootloader = false;
     private Handler mHandler = new Handler();
 
     public void setAppLightXDelegate(AppLightXDelegate appLightXDelegate) {
@@ -258,10 +259,11 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         return specifiedDevice;
     }
 
-    private BluetoothDevice specifiedDevice = null;
+    public BluetoothDevice specifiedDevice = null;
     private static boolean isFound = false;
     private int position = 0;
-    private Set<String> devicesSet = new HashSet<>();
+    public Set<String> devicesSet = new HashSet<>();
+
     private BluetoothProfile.ServiceListener mListener = new BluetoothProfile.ServiceListener() {
         @Override
         public void onServiceConnected(int profile, BluetoothProfile proxy) {
@@ -575,6 +577,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         if (mLightX != null) {
             AvneraManager.getAvenraManager(DeviceManagerActivity.this).setLightX(mLightX);
             mLightX.readConfigModelNumber();
+            isConnected = true;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -582,10 +585,11 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                         appLightXDelegate.headPhoneStatus(true);
                         appLightXDelegate.isLightXintialize();
                     }
-                    connectDeviceStatus(true);
+                    if (!mIsEnterBootloader) {
+                        connectDeviceStatus(true);
+                    }
                 }
             });
-            isConnected = true;
         }
     }
 
@@ -994,8 +998,8 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             if (appLightXDelegate != null) {
                 appLightXDelegate.headPhoneStatus(false);
             }
-            connectDeviceStatus(false);
             isConnected = false;
+            connectDeviceStatus(false);
             disconnected = true;
             devicesSet.remove(usbDevice.getProductName() + "-" + usbDevice.getDeviceId());
             Logger.d(TAG, "usbDetached Initializing Bluetooth.");
@@ -1364,6 +1368,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             AnalyticsManager.getInstance(getApplicationContext()).reportDeviceConnect(bt150Manager.getAccessoryStatus().getName());
 //            EQSettingManager.EQKeyNAME = specifiedDevice == null ? "" : specifiedDevice.getAddress();
             mIsConnectedPhysically = true;
+            isConnected = true;
             AvneraManager.getAvenraManager(getApplicationContext()).setAudioManager(bt150Manager);
             runOnUiThread(new Runnable() {
                 @Override
@@ -1375,7 +1380,6 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     connectDeviceStatus(true);
                 }
             });
-            isConnected = true;
             Logger.d(TAG, " isConnected = " + isConnected);
             isNeedShowDashboard = true;
             resetTime = RESET_TIME_FOR_150NC;

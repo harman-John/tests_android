@@ -1,19 +1,12 @@
 package jbl.stc.com.adapter;
 
-import android.annotation.SuppressLint;
-import android.content.ClipData;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.view.DragEvent;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -21,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,8 +26,6 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.UnableConnectFragment;
 import jbl.stc.com.logger.Logger;
-import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.view.DragGridView;
 import jbl.stc.com.view.MyDragGridView;
 
 public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGridBaseAdapter{
@@ -97,7 +87,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        if (mLists.get(position).connectStatus == ConnectStatus.A2DP_CONNECTED){
+        if (mLists.get(position).connectStatus == ConnectStatus.DEVICE_CONNECTED){
             viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(255);
             viewHolder.imageViewIcon.setImageAlpha(255);
         } else if (mLists.get(position).connectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
@@ -185,7 +175,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
 //                    }
                     MyDevice myDevice = mLists.get(msg.arg1);
                     //                            && DashboardActivity.getDashboardActivity().isConnected()
-                    if (myDevice.connectStatus == ConnectStatus.A2DP_CONNECTED
+                    if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                             || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                         Logger.d(TAG, "Show home fragment");
                         DashboardActivity.getDashboardActivity().goHomeFragment(myDevice);
