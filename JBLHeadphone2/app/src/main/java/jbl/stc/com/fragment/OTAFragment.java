@@ -160,18 +160,18 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             case R.id.text_view_ota_circle:
             case R.id.text_progress:{
                 if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == DownloadProgrammingFile.Status.RUNNING) {
-//                    AlertsDialog.showSimpleDialogWithOKButton(null, getString(R.string.please_wait), getActivity());
-//                    AnalyticsManager.getInstance(getActivity()).reportUsbUpdateAlert(getString(R.string.please_wait));
-                } else if (batteryLevel < 30) {
+
+                } else if (batteryLevel < 50) {
                     AlertsDialog.showSimpleDialogWithOKButtonWithBack(null, getString(R.string.battery_alert), getActivity());
-//                    AnalyticsManager.getInstance(getActivity()).reportUsbUpdateAlert(getString(R.string.battery_alert));
                 } else {
-//                    FirmwareUtil.disconnectHeadphoneText = getActivity().getResources().getString(R.string.pls_Connect_while_upgrade);
-//                    txtConnectMessage.setText(FirmwareUtil.disconnectHeadphoneText);
-                    startDownloadFirmwareImage();
-                    v.setOnClickListener(null);
-                    textViewOTACircle.setOnClickListener(null);
-                    otaUpdating();
+                    if (FirmwareUtil.isConnectionAvailable(getActivity())) {
+                        startDownloadFirmwareImage();
+                        v.setOnClickListener(null);
+                        textViewOTACircle.setOnClickListener(null);
+                        otaUpdating();
+                    } else {
+                        otaError(R.string.updating_failed_case_2);
+                    }
                 }
                 break;
             }
@@ -229,17 +229,17 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 
                 Logger.d(TAG,"getBatterLeverl");
                 ANCControlManager.getANCManager(getActivity()).getBatterLeverl(lightX);
+
+                myHandler.sendEmptyMessage(MSG_IN_BOOTLOADER_AUTO_START);
             }
         }).start();
+
     }
 
     private void registerConnectivity() {
         if (getActivity() == null)
             return;
         networkChangeReceiver = new NetworkChangeReceiver();
-        /**
-         * Connectivity change receiver for starting downloading of firmware binary automatically.
-         */
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         getActivity().registerReceiver(networkChangeReceiver, intentFilter);
@@ -258,22 +258,15 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
     }
 
     private void startDownloadFirmwareImage() {
-        if (FirmwareUtil.isConnectionAvailable(getActivity())) {
-            Logger.d(TAG,"startDownloadFirmwareImage");
-//            mProgressBar.setVisibility(View.VISIBLE);
-//            txtdownloading.setText("");
-//            updateStatus.setText("Downloading...");
-            if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == DownloadProgrammingFile.Status.RUNNING) {
-                return;
-            }
-            downloadProgrammingFile = new DownloadProgrammingFile(getActivity(), this, DashboardActivity.mFwlist);
-            try {
-                downloadProgrammingFile.executeOnExecutor(DownloadProgrammingFile.THREAD_POOL_EXECUTOR, OTAUtil.getURL(getActivity()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-//            txtdownloading.setText(getString(R.string.no_internet_connection));
+        Logger.d(TAG,"startDownloadFirmwareImage");
+        if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == DownloadProgrammingFile.Status.RUNNING) {
+            return;
+        }
+        downloadProgrammingFile = new DownloadProgrammingFile(getActivity(), this, DashboardActivity.mFwlist);
+        try {
+            downloadProgrammingFile.executeOnExecutor(DownloadProgrammingFile.THREAD_POOL_EXECUTOR, OTAUtil.getURL(getActivity()));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -291,32 +284,13 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         this.isUpdateAvailable = isUpdateAvailable;
         Logger.d(TAG,"setIsUpdateAvailable isUpdateAvailable="+isUpdateAvailable);
         if (isUpdateAvailable) {
-            String liveAppVersion = null;
             DashboardActivity.mFwlist = fwList;
             divideFactor = 2 * DashboardActivity.mFwlist.size();
-//            linearLayout.setTag(DOWNLOAD);
             otaAvailable();
-//            txtProgressVersion.setVisibility(View.GONE);
-//            iconCloud.setVisibility(View.VISIBLE);
-//            txtUpdating.setVisibility(View.VISIBLE);
-//            mProgressBar.setVisibility(View.GONE);
-//            if (!TextUtils.isEmpty(liveAppVersion)) {
-//                txtUpdating.setText(getAppActivity().getString(R.string.install_ver) + " " + liveAppVersion);
-//                updateStatus.setText("Update available V" + liveAppVersion);
-//            } else {
-//                txtUpdating.setText(getAppActivity().getString(R.string.install_ver) + " " + rsrcVersion);
-//                updateStatus.setText("Update available V" + rsrcVersion);
-//            }
-//            mainCircle.setBackgroundResource(R.drawable.orange);
-//            txtProgressVersion.setTextColor(getAppActivity().getResources().getColor(R.color.white));
             if (args != null && args.containsKey("lightXIsInBootloader")) {
-//                linearLayout.setTag(DOWNLOAD);
                 startDownloadFirmwareImage();
             }
         } else {
-//            linearLayout.setTag(NOUPDATE);
-//            updateStatus.setText("No update available");
-//            mProgressBar.setVisibility(View.INVISIBLE);
             unregisterNetworkReceiverSafely();
         }
     }
@@ -391,7 +365,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
     @Override
     public void onFailedDownload() {
         AnalyticsManager.getInstance(getActivity()).reportUsbUpdateAlert(getString(R.string.unplug_plug_while_update_error));
-        otaError();
+        otaError(R.string.updating_failed_case_3);
     }
 
     @Override
@@ -535,6 +509,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 e.printStackTrace();
             }
         } else {
+            otaError(R.string.updating_failed_case_2);
             if (checkUpdateAvailable != null) {
                 checkUpdateAvailable.cancel(true);
             }
@@ -601,7 +576,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             AlertsDialog.showToast(getActivity(), "Communication broke during update. Please try again");
             isDoingOTANow = false;
             FirmwareUtil.isUpdatingFirmWare.set(false);
-            otaError();
+            otaError(R.string.updating_failed_case_1);
             try {
 //                getActivity().leftHeaderBtn.setVisibility(View.VISIBLE);
             } catch (Exception e) {
@@ -669,6 +644,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             if (checkUpdateAvailable != null) {
                 checkUpdateAvailable.cancel(true);
             }
+            otaError(R.string.updating_failed_case_2);
             return;
         }
         Logger.d(TAG, " called lightXIsInBootloader aa isInBootloader = " + isInBootloader);
@@ -932,6 +908,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewUpdateStatusTitle.setTextColor(ContextCompat.getColor(getActivity(),android.R.color.black));
         textViewUpdateStatus.setVisibility(View.VISIBLE);
         textViewUpdateStatus.setText(R.string.firmware_is_updating);
+        textViewUpdateStatus.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.update_circle));
         textViewProgress.setVisibility(View.VISIBLE);
         textViewProgress.setText("0%");
@@ -964,13 +941,14 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewProgress.setText("Restarting...");
     }
 
-    private void otaError(){
+    private void otaError(int resId){
         textViewUpdateStatus.setVisibility(View.VISIBLE);
-        textViewUpdateStatus.setText("Firmware update failed.");
+        textViewUpdateStatus.setText(resId);
         textViewUpdateStatus.getPaint().setFakeBoldText(true);
         textViewUpdateStatus.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
         textViewUpdateStatusTitle.setVisibility(View.GONE);
         textViewProgress.setVisibility(View.VISIBLE);
+        textViewOTACircle.setVisibility(View.VISIBLE);
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.update_failed));
         textViewProgress.setText("Failed!");
     }
@@ -1008,7 +986,9 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
     private MyHandler myHandler = new MyHandler();
     private final static int MSG_TIMER_OUT = 0;
     private final static int MSG_CHECK_UPDATE = 1;
+    private final static int MSG_IN_BOOTLOADER_AUTO_START = 2;
     private final static int OTA_TIME_OUT = 90000;
+
     private class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -1022,6 +1002,17 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     startCheckingIfUpdateIsAvailable();
                     registerConnectivity();
                     break;
+                case MSG_IN_BOOTLOADER_AUTO_START:
+                    Log.i(TAG,"mIsInBootloader "+mIsInBootloader);
+                    if (mIsInBootloader){
+                        if (FirmwareUtil.isConnectionAvailable(getActivity())) {
+                            startDownloadFirmwareImage();
+                            otaUpdating();
+                        } else {
+                            otaError(R.string.updating_failed_case_2);
+                        }
+                    }
+                    break;
             }
         }
     }
@@ -1030,7 +1021,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         FirmwareUtil.disconnectHeadphoneText = getActivity().getResources().getString(R.string.plsConnect);
         Logger.d(TAG, "imageUpdateError");
         Cmd150Manager.getInstance().setFirmwareUpdateState(AvneraManager.getAvenraManager(getActivity()).getAudioManager(),JBLConstant.ENABLE_ACCESSORY_INTERRUPTS);
-        otaError();
+        otaError(R.string.updating_failed_case_1);
         isDoingOTANow = false;
         FirmwareUtil.isUpdatingFirmWare.set(false);
         imageViewBack.setVisibility(View.VISIBLE);
@@ -1054,55 +1045,48 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         public void onReceive(final Context context, final Intent intent) {
             if (isAdded()) {
                 ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo netInfo = cm.getActiveNetworkInfo();
-                //should check null because in air plan mode it will be null
-                if (netInfo != null && netInfo.isConnected()) {
-                    /**Hide the TXT is VISIBLE **/
-//                    if (txtdownloading.getVisibility() == View.VISIBLE) {
-//                        txtdownloading.setVisibility(View.INVISIBLE);
-//                    }
-
-                    if (FirmwareUtil.isUpdatingFirmWare.get()) {
-                        Logger.d(TAG, "Already updating");
-                        return;
-                    }
-                    if (isUpdateAvailable && checkUpdateAvailable != null && checkUpdateAvailable.getStatus() == AsyncTask.Status.FINISHED) {
-                        if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == AsyncTask.Status.FINISHED)
-                            startDownloadFirmwareImage();
-                    } else if (checkUpdateAvailable == null) { // In case of failure retry for server update
-                        startCheckingIfUpdateIsAvailable();
-                    }
-                } else {
-                    /** MAKE the TXT VISIBLE if INVISIBLE**/
-//                    if (txtdownloading.getVisibility() == View.INVISIBLE) {
-//                        txtdownloading.setVisibility(View.VISIBLE);
-//                    }
-//                    txtdownloading.setText(getString(R.string.no_internet_connection));
-
-                    if (FirmwareUtil.isUpdatingFirmWare.get()) {
-                        Logger.d(TAG, "Already updating");
-                        return;
-                    }
-                    if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == AsyncTask.Status.FINISHED) {
-                        boolean isSuccessFulDownload = true;
-                        for (FirmwareModel model : DashboardActivity.mFwlist) {
-                            if (!model.isSuccess()) {
-                                isSuccessFulDownload = false;
-                                break;
+                if (cm != null) {
+                    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+                    if (netInfo != null && netInfo.isConnected()) {
+                        if (FirmwareUtil.isUpdatingFirmWare.get()) {
+                            Logger.d(TAG, "Already updating");
+                            return;
+                        }
+                        if (isUpdateAvailable && checkUpdateAvailable != null && checkUpdateAvailable.getStatus() == AsyncTask.Status.FINISHED) {
+                            if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == AsyncTask.Status.FINISHED) {
+                                startDownloadFirmwareImage();
+                            }else{
+                                startCheckingIfUpdateIsAvailable();
                             }
+                        } else if (checkUpdateAvailable == null) { // In case of failure retry for server update
+                            startCheckingIfUpdateIsAvailable();
                         }
-                        if (isSuccessFulDownload) {
-//                            txtdownloading.setText("");
-                            Logger.d(TAG, "No Internet No impact as data downloaded.");
+                    } else {
+                        if (FirmwareUtil.isUpdatingFirmWare.get()) {
+                            Logger.d(TAG, "Already updating");
+                            return;
                         }
-                    } else if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == AsyncTask.Status.RUNNING) {
-                        downloadProgrammingFile.cancel(true);
-                        Logger.d(TAG, "No Internet downloadProgrammingFile.cancel");
-                    } else if (checkUpdateAvailable != null && checkUpdateAvailable.getStatus() == AsyncTask.Status.RUNNING) {
-                        checkUpdateAvailable.cancel(true);
-                        Logger.d(TAG, "No Internet checkUpdateAvailable.cancel");
+                        if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == AsyncTask.Status.FINISHED) {
+                            boolean isSuccessFulDownload = true;
+                            for (FirmwareModel model : DashboardActivity.mFwlist) {
+                                if (!model.isSuccess()) {
+                                    isSuccessFulDownload = false;
+                                    break;
+                                }
+                            }
+                            if (isSuccessFulDownload) {
+                                Logger.d(TAG, "No Internet No impact as data downloaded.");
+                            }
+                        } else if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == AsyncTask.Status.RUNNING) {
+                            downloadProgrammingFile.cancel(true);
+                            Logger.d(TAG, "No Internet downloadProgrammingFile.cancel");
+                        } else if (checkUpdateAvailable != null && checkUpdateAvailable.getStatus() == AsyncTask.Status.RUNNING) {
+                            checkUpdateAvailable.cancel(true);
+                            Logger.d(TAG, "No Internet checkUpdateAvailable.cancel");
+                        } else {
+                            otaError(R.string.updating_failed_case_2);
+                        }
                     }
-//                    mProgressBar.setVisibility(View.GONE);
                 }
             }
         }

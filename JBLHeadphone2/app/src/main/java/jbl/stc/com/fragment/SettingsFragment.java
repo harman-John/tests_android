@@ -1,6 +1,12 @@
 package jbl.stc.com.fragment;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -36,6 +42,7 @@ import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.utils.AppUtils;
 
 public class SettingsFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = SettingsFragment.class.getSimpleName();
@@ -70,6 +77,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         myDevice = DashboardActivity.getDashboardActivity().getMyDeviceConnected();
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
+            registerConnectivity();
         }
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
@@ -170,7 +178,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         }else{
             imageViewDownload.setVisibility(View.GONE);
             textViewFwVersion.setVisibility(View.VISIBLE);
-            String firmwareVersion = PreferenceUtils.getString(myDevice.deviceName, PreferenceKeys.APP_VERSION, getActivity(),"");
+            String firmwareVersion = PreferenceUtils.getString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, getActivity(),"");
             if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 textViewFwVersion.setText(firmwareVersion);
             }else{
@@ -383,5 +391,50 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         autoOffToggleRunnable = null;
         mHandler.removeCallbacks(enableVoicePromptRunnable);
         enableVoicePromptRunnable = null;
+        unregisterNetworkReceiverSafely();
+    }
+
+    private NetworkChangeReceiver networkChangeReceiver;
+    private void registerConnectivity() {
+        if (getActivity() == null)
+            return;
+        networkChangeReceiver = new NetworkChangeReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        Logger.i(TAG,"registerConnectivity");
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        getActivity().registerReceiver(networkChangeReceiver, intentFilter);
+        mReceiverTag = true;
+    }
+
+    private boolean mReceiverTag = false;
+    private void unregisterNetworkReceiverSafely() {
+        try {
+            if (mReceiverTag) {
+                mReceiverTag = false;
+                Logger.i(TAG,"unregisterNetworkReceiverSafely");
+                getActivity().unregisterReceiver(networkChangeReceiver);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public class NetworkChangeReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            Logger.i(TAG,"onReceive");
+            if (isAdded()) {
+                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (cm != null) {
+                    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+                    if (netInfo != null && netInfo.isConnected()) {
+                        DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
+                    }else{
+                        showOta(false);
+                    }
+                }
+            }
+        }
     }
 }
