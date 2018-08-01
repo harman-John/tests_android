@@ -3,6 +3,13 @@ package jbl.stc.com.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -52,6 +59,7 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.CreateEqTipsDialog;
 import jbl.stc.com.entity.EQModel;
+import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.logger.Logger;
@@ -129,10 +137,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         view = inflater.inflate(R.layout.fragment_home,
                 container, false);
         Log.i(TAG, "onCreateView");
-//        Bundle bundle = getArguments();
-//        if (bundle != null) {
-//            myDevice = bundle.getParcelable(JBLConstant.KEY_MY_DEVICE);
-//        }
+
         myDevice = DashboardActivity.getDashboardActivity().getMyDeviceConnected();
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         generateAAPopupWindow();
@@ -204,6 +209,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             getRawSteps();
+            if (lightX != null) {
+                Logger.e(TAG, "readBootImageType");
+                lightX.readBootImageType();
+            }
         }
         deviceName = myDevice.deviceName;
 //        deviceName = PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
@@ -341,7 +350,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
-        Log.d(TAG, "onResume" + DeviceConnectionManager.getInstance().getCurrentDevice());
+        Log.d(TAG, "onResume " + DeviceConnectionManager.getInstance().getCurrentDevice());
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                 case NONE:
@@ -782,6 +791,57 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
         AnalyticsManager.getInstance(getActivity()).reportFirmwareVersion(hardVersion);
         DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
+        registerConnectivity();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterNetworkReceiverSafely();
+    }
+
+    private NetworkChangeReceiver networkChangeReceiver;
+    private void registerConnectivity() {
+        if (getActivity() == null)
+            return;
+        networkChangeReceiver = new NetworkChangeReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        Logger.i(TAG,"registerConnectivity");
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        getActivity().registerReceiver(networkChangeReceiver, intentFilter);
+        mReceiverTag = true;
+    }
+
+    private boolean mReceiverTag = false;
+    private void unregisterNetworkReceiverSafely() {
+        try {
+            if (mReceiverTag) {
+                mReceiverTag = false;
+                Logger.i(TAG,"unregisterNetworkReceiverSafely");
+                getActivity().unregisterReceiver(networkChangeReceiver);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public class NetworkChangeReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            Logger.i(TAG,"onReceive");
+            if (isAdded()) {
+                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (cm != null) {
+                    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+                    if (netInfo != null && netInfo.isConnected()) {
+                        DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
+                    }else{
+                        showOta(false);
+                    }
+                }
+            }
+        }
     }
 
     private void sendMessageTo(int command, String arg1) {
@@ -1074,11 +1134,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     PreferenceUtils.setString(AppUtils.getModelNumber(getActivity()), PreferenceKeys.RSRC_VERSION, rsrcSavedVersion, getActivity());
                     Log.d(TAG, "rsrcSavedVersion=" + rsrcSavedVersion);
                     DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable(); /** Now start checking for update to show red bubble on setting icon*/
+                    registerConnectivity();
                 }
                 break;
             }
         } else {
             DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
+            registerConnectivity();
         }
     }
 
@@ -1115,25 +1177,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         case Connected_USBDevice:
                             break;
                         case Connected_BluetoothDevice:
-                            try {
-                                if (AppUtils.is100(getActivity())
-                                        || AppUtils.is150NC(getContext())) {
-//                                    getAppActivity().rightBtnText.setVisibility(View.INVISIBLE);
-//                                    imgHPicon.setImageResource(R.drawable.aware_icon_100);
-
-                                } else {
-//                                    getAppActivity().rightBtnText.setVisibility(View.VISIBLE);
-//                                    getAppActivity().rightBtnText.setText(Html.fromHtml(getResources().getString(R.string.TrueNote)));
-//                                    getAppActivity().rightBtnText.setOnClickListener(new View.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(View v) {
-//                                            getAppActivity().startCalibration();
-//                                        }
-//                                    });
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
                             break;
                     }
                     break;
