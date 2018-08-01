@@ -33,14 +33,6 @@ import jbl.stc.com.view.RelativeLayoutImage;
 
 public class UnableConnectFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = UnableConnectFragment.class.getSimpleName();
-    private View view;
-    private RelativeLayoutImage relativeLayoutDeviceIcon;
-    private ImageViewLR imageViewDeviceIcon;
-    private TextView textViewDeviceName;
-    private TextView textViewTipsTwo;
-    private TextView textViewTipsThree;
-    private TextView textViewTipsFour;
-    private TextView textViewTipsFive;
     private LinearLayout linearLayoutTips;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,19 +42,19 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_unable_connect,
+        View view = inflater.inflate(R.layout.fragment_unable_connect,
                 container, false);
         view.findViewById(R.id.image_view_unable_back).setOnClickListener(this);
-        imageViewDeviceIcon = view.findViewById(R.id.image_view_unable_device_icon);
-        relativeLayoutDeviceIcon = view.findViewById(R.id.relative_layout_unable_breathing_lamp);
+        ImageViewLR imageViewDeviceIcon = view.findViewById(R.id.image_view_unable_device_icon);
+        RelativeLayoutImage relativeLayoutDeviceIcon = view.findViewById(R.id.relative_layout_unable_breathing_lamp);
         linearLayoutTips = view.findViewById(R.id.linear_layout_unable_tips);
         linearLayoutTips.setVisibility(View.INVISIBLE);
         relativeLayoutDeviceIcon.setOnClickListener(this);
-        textViewDeviceName = view.findViewById(R.id.text_view_unable_device_name);
-        textViewTipsTwo = view.findViewById(R.id.text_view_unable_advice_two);
-        textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
-        textViewTipsFour = view.findViewById(R.id.text_view_unable_advice_four);
-        textViewTipsFive = view.findViewById(R.id.text_view_unable_advice_five);
+        TextView textViewDeviceName = view.findViewById(R.id.text_view_unable_device_name);
+        TextView textViewTipsTwo = view.findViewById(R.id.text_view_unable_advice_two);
+        TextView textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
+        TextView textViewTipsFour = view.findViewById(R.id.text_view_unable_advice_four);
+        TextView textViewTipsFive = view.findViewById(R.id.text_view_unable_advice_five);
         String deviceModelName = getArguments().getString(JBLConstant.DEVICE_MODEL_NAME);
         if (deviceModelName != null){
             switch (deviceModelName){

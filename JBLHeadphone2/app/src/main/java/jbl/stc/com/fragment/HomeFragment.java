@@ -86,7 +86,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = HomeFragment.class.getSimpleName();
     private View view;
     private BlurringView mBlurView;
-    private CreateEqTipsDialog createEqTipsDialog;
 
     private HomeHandler homeHandler = new HomeHandler(Looper.getMainLooper());
     private final static int MSG_ANC = 0;
@@ -115,8 +114,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private AaPopupWindow aaPopupWindow;
     private SaPopupWindow saPopupwindow;
 
-    private RelativeLayout linearLayoutNoiseCanceling;
-    private RelativeLayout linearLayoutAmbientAware;
     private FrameLayout relative_layout_home_eq_info;
     private String deviceName;
     private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
@@ -137,8 +134,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         view = inflater.inflate(R.layout.fragment_home,
                 container, false);
         Log.i(TAG, "onCreateView");
-
-        myDevice = DashboardActivity.getDashboardActivity().getMyDeviceConnected();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            myDevice = bundle.getParcelable(JBLConstant.KEY_MY_DEVICE);
+        }
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         generateAAPopupWindow();
         generateSaPopupWindow();
@@ -167,7 +166,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         image_view_ota_download.setOnClickListener(this);
 
         mBlurView = view.findViewById(R.id.view_home_blur);
-        createEqTipsDialog = new CreateEqTipsDialog(getActivity());
+        CreateEqTipsDialog createEqTipsDialog = new CreateEqTipsDialog(getActivity());
         createEqTipsDialog.setOnDialogListener(new OnDialogListener() {
             @Override
             public void onConfirm() {
@@ -179,7 +178,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
             }
         });
-        linearLayoutNoiseCanceling = view.findViewById(R.id.relative_layout_home_noise_cancel);
+        RelativeLayout linearLayoutNoiseCanceling = view.findViewById(R.id.relative_layout_home_noise_cancel);
         if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_NOISE_CANCEL)) {
             linearLayoutNoiseCanceling.setVisibility(View.GONE);
         } else {
@@ -192,7 +191,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
         }
 
-        linearLayoutAmbientAware = view.findViewById(R.id.relative_layout_home_ambient_aware);
+        RelativeLayout linearLayoutAmbientAware = view.findViewById(R.id.relative_layout_home_ambient_aware);
         if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_AMBIENT_AWARE)) {
             linearLayoutAmbientAware.setVisibility(View.GONE);
         } else {

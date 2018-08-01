@@ -1,4 +1,4 @@
-package jbl.stc.com.fragment;
+package jbl.stc.com.unused;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,7 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.fragment.BaseFragment;
+import jbl.stc.com.fragment.CalibrationFragment;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.utils.AppUtils;
@@ -98,12 +101,7 @@ public class NewTutorialFragment extends BaseFragment implements  View.OnClickLi
                         ||AppUtils.getModelNumber(getActivity()).toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_750NC)){
                     switchFragment(new CalibrationFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 }else{
-                    Fragment fr = getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                    if (fr != null && fr instanceof HomeFragment) {
-                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    } else {
-                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    }
+                    DashboardActivity.getDashboardActivity().goHomeFragment(DashboardActivity.getDashboardActivity().getMyDeviceConnected());
                 }
                 break;
             }

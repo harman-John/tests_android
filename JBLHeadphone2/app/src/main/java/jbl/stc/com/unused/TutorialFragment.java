@@ -1,4 +1,4 @@
-package jbl.stc.com.fragment;
+package jbl.stc.com.unused;
 
 
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.avnera.audiomanager.Action;
 import com.avnera.audiomanager.Status;
@@ -26,9 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.fragment.BaseFragment;
+import jbl.stc.com.fragment.CalibrationFragment;
+import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.listener.AwarenessChangeListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
@@ -133,12 +136,7 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
                         ||AppUtils.getModelNumber(getActivity()).toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_750NC)){
                     switchFragment(new CalibrationFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 }else{
-                    Fragment fr = getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                    if (fr != null && fr instanceof HomeFragment) {
-                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    } else {
-                        switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    }
+                    DashboardActivity.getDashboardActivity().goHomeFragment(DashboardActivity.getDashboardActivity().getMyDeviceConnected());
                 }
                 break;
             }

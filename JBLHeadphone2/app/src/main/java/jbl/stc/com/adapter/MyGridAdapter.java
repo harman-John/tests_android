@@ -170,11 +170,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             switch (msg.what) {
                 case MSG_SHOW_FRAGMENT:{
                     cbHandler.removeMessages(MSG_SHOW_FRAGMENT);
-//                    for (Integer key: breathLightMap.keySet()){
-//                        breathLightMap.get(key).stopBreathing();
-//                    }
                     MyDevice myDevice = mLists.get(msg.arg1);
-                    //                            && DashboardActivity.getDashboardActivity().isConnected()
                     if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                             || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                         Logger.d(TAG, "Show home fragment");

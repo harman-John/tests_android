@@ -161,7 +161,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             case R.id.text_progress:{
                 if (downloadProgrammingFile != null && downloadProgrammingFile.getStatus() == DownloadProgrammingFile.Status.RUNNING) {
 
-                } else if (batteryLevel < 50) {
+                } else if (batteryLevel < 30) {
                     AlertsDialog.showSimpleDialogWithOKButtonWithBack(null, getString(R.string.battery_alert), getActivity());
                 } else {
                     if (FirmwareUtil.isConnectionAvailable(getActivity())) {

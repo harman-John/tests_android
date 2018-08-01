@@ -24,6 +24,7 @@ import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Utility;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.listener.OnHeadphoneconnectListener;
 import jbl.stc.com.logger.Logger;
@@ -171,7 +172,7 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
             getActivity().onBackPressed();
         }else{
             removeAllFragment();
-            switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+            DashboardActivity.getDashboardActivity().goHomeFragment(DashboardActivity.getDashboardActivity().getMyDeviceConnected());
         }
     }
 

@@ -179,7 +179,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     public MyDevice getMyDeviceConnected() {
         for (MyDevice myDevice : lists) {
-            Logger.i(TAG, "deviceKey= " + myDevice.deviceKey+",connectStatus"+myDevice.connectStatus);
+            Logger.i(TAG, "deviceKey= " + myDevice.deviceKey+",connectStatus = "+myDevice.connectStatus);
             if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 return myDevice;
             }
@@ -244,11 +244,19 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             }
 
         } else {
+            Logger.d(TAG,"isDoingOTANow = "+isDoingOTANow);
             if (!isDoingOTANow) {
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr != null && fr instanceof HomeFragment) {
+                    Logger.d(TAG,"disconnect home fragment ");
                     MyDevice myDevice = ((HomeFragment) fr).getMyDeviceInHome();
                     if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+                        removeAllFragment();
+                    }
+                }else{
+                    Logger.d(TAG,"disconnect not home fragment ");
+                    if (getMyDeviceConnected().connectStatus == ConnectStatus.DEVICE_CONNECTED){
+                        Logger.d(TAG,"disconnect not home fragment removeAllFragment");
                         removeAllFragment();
                     }
                 }
@@ -430,9 +438,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             }
         }
         HomeFragment homeFragment = new HomeFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-//        homeFragment.setArguments(bundle);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+        homeFragment.setArguments(bundle);
         if (fr == null) {
             switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
         } else if (!(fr instanceof HomeFragment)) {

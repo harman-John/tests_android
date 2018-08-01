@@ -24,7 +24,7 @@ public class JBLConstant {
     public static final int MAX_MARQUEE_LEN = 30;
     public static final int THUMB_TOUCH_FACTOR = 50;
 
-//    public static final String KEY_MY_DEVICE = "key_half_connected";
+    public static final String KEY_MY_DEVICE = "key_half_connected";
 
 
     public static String PRIVACY_POLICY_URL = "https://www.harman.com/privacy-policy";
