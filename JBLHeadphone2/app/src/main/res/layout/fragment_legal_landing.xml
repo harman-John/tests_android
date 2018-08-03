@@ -51,19 +51,19 @@
                 android:layout_marginLeft="8dp"
                 android:gravity="center"
                 android:text="@string/legal_the"
-                android:textStyle="normal"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="normal" />
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/textEulaLink"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textStyle="normal"
                 android:text="@string/agree_to_eula"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="normal" />
         </LinearLayout>
 
         <LinearLayout
@@ -91,37 +91,45 @@
                 android:layout_marginLeft="8dp"
                 android:gravity="center"
                 android:text="@string/legal_the"
-                android:textStyle="normal"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="normal" />
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/textPrivacyLink"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textStyle="normal"
                 android:text="@string/agree_to_hpp"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="normal" />
         </LinearLayout>
     </LinearLayout>
 
 
-    <jbl.stc.com.view.CustomFontTextView
-        android:id="@+id/txtEulaButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <jbl.stc.com.view.ShadowLayout
+        android:id="@+id/shadowLayout"
+        android:layout_width="190dp"
+        android:layout_height="53dp"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="40dp"
-        android:background="@drawable/rectangle_with_round_corner_grey"
-        android:paddingBottom="7dp"
-        android:paddingLeft="60dp"
-        android:paddingRight="60dp"
-        android:paddingTop="7dp"
-        android:alpha="0.7"
-        android:text="@string/start_caps"
-        android:textStyle="bold"
-        android:textColor="@color/orange_discovery"
-        android:textSize="20sp" />
+        android:alpha="0.5">
+
+        <jbl.stc.com.view.AppButton
+            android:id="@+id/txtEulaButton"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/rectangle_with_round_corner_grey"
+            android:gravity="center"
+            android:text="@string/start_caps"
+            android:textColor="@color/orange_discovery"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </jbl.stc.com.view.ShadowLayout>
+
 </FrameLayout>

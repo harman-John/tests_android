@@ -44,14 +44,14 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="135dp"
-        android:padding="30dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="30dp">
 
         <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="@string/how_to_pair_tips_next_zero" />
+            android:text="@string/how_to_pair_tips_next_zero"
+            android:textSize="20sp" />
 
         <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
@@ -61,22 +61,29 @@
 
     </LinearLayout>
 
-    <jbl.stc.com.view.CustomFontTextView
-        android:id="@+id/text_view_how_to_pair_next_go_bt_settings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+    <jbl.stc.com.view.ShadowLayout
+        android:layout_width="190dp"
+        android:layout_height="53dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_marginBottom="47dp"
-        android:textAlignment="center"
-        android:background="@drawable/shape_ota_button"
-        android:paddingBottom="7dp"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingTop="7dp"
-        android:text="@string/go_to_bluetooth"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:layout_marginBottom="47dp">
+
+        <jbl.stc.com.view.AppButton
+            android:id="@+id/text_view_how_to_pair_next_go_bt_settings"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/rectangle_with_round_corner_view_page_orange"
+            android:gravity="center"
+            android:text="@string/go_to_bluetooth"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </jbl.stc.com.view.ShadowLayout>
 
 </RelativeLayout>

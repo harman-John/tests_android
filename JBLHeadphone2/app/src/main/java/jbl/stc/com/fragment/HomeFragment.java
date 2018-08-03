@@ -680,34 +680,37 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void updateCurrentEQ(int index) {
+        if (getContext() == null) {
+            return;
+        }
         Logger.d(TAG, "eqIndex:" + index);
         //ANCControlManager.getANCManager(getContext()).getAppGraphicEQPresetBandSettings(lightX, GraphicEQPreset.Jazz,9);
         switch (index) {
             case 0: {
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.off), getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.off), getContext());
                 textViewCurrentEQ.setText(getString(R.string.off));
                 relative_layout_home_eq_info.setBackgroundColor(getResources().getColor(R.color.gray_aa_bg));
                 break;
             }
             case 1: {
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.jazz), getActivity());
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.jazz), getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.jazz), getContext());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.jazz), getContext());
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.jazz));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 2: {
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.vocal), getActivity());
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.vocal), getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.vocal), getContext());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.vocal), getContext());
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.vocal));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 3: {
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.bass), getActivity());
-                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.bass), getActivity());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.bass), getContext());
+                PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.bass), getContext());
                 application.deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.bass));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
@@ -719,7 +722,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 break;
             }
             default:
-                String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(), null);
+                String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getContext(), null);
                 textViewCurrentEQ.setText(name != null ? name : getString(R.string.off));
                 break;
         }

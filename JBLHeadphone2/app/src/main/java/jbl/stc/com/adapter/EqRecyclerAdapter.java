@@ -136,7 +136,7 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
                     .translationY(0).alpha(1.f)
                     .setStartDelay(delayEnterAnimation ? 40 * (position) : 0)
                     .setInterpolator(new DecelerateInterpolator(0.5f))
-                    .setDuration(500)
+                    .setDuration(400)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {

@@ -58,6 +58,8 @@ import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.utils.OTAUtil;
+import jbl.stc.com.view.AppButton;
+import jbl.stc.com.view.ShadowLayout;
 
 import static jbl.stc.com.activity.DashboardActivity.*;
 
@@ -91,7 +93,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
     private TextView textViewUpdateStatusTitle;
     private TextView textViewOTACircle;
     private TextView textViewProgress;
-    private TextView textViewButtonDone;
+    private AppButton textViewButtonDone;
+    private ShadowLayout shadowLayout;
 //    private ImageView iv_ok;
     private ImageView imageViewBack;
 
@@ -127,6 +130,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewProgress = view.findViewById(R.id.text_progress);
         textViewProgress.setOnClickListener(this);
         textViewButtonDone = view.findViewById(R.id.button_done);
+        shadowLayout=view.findViewById(R.id.shadowLayout);
 //        iv_ok = view.findViewById(R.id.iv_ok);
         textViewButtonDone.setOnClickListener(this);
         otaInit();
@@ -893,6 +897,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewUpdateStatusTitle.setVisibility(View.GONE);
         textViewOTACircle.setVisibility(View.GONE);
         textViewButtonDone.setVisibility(View.GONE);
+        shadowLayout.setVisibility(View.GONE);
     }
 
     private void otaAvailable(){
@@ -920,6 +925,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewUpdateStatusTitle.setVisibility(View.GONE);
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.ota_install_button));
         textViewButtonDone.setVisibility(View.GONE);
+        shadowLayout.setVisibility(View.GONE);
 //        iv_ok.setVisibility(View.GONE);
     }
 
@@ -936,6 +942,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewProgress.setVisibility(View.VISIBLE);
         textViewProgress.setText("0%");
         textViewButtonDone.setVisibility(View.GONE);
+        shadowLayout.setVisibility(View.GONE);
 //        iv_ok.setVisibility(View.GONE);
     }
 
@@ -950,6 +957,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewProgress.setVisibility(View.GONE);
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.update_succeeded));
         textViewButtonDone.setVisibility(View.VISIBLE);
+        shadowLayout.setVisibility(View.VISIBLE);
 
 //        otaSuccess(onLineFwVersion);
         isDoingOTANow = false;

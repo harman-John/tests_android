@@ -80,22 +80,29 @@
         </LinearLayout>
     </LinearLayout>
 
-    <jbl.stc.com.view.CustomFontTextView
-        android:id="@+id/text_view_how_to_pair_next"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
+    <jbl.stc.com.view.ShadowLayout
+        android:layout_width="190dp"
+        android:layout_height="53dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="47dp"
-        android:background="@drawable/shape_ota_button"
-        android:paddingBottom="7dp"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingTop="7dp"
-        android:text="@string/next"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:layout_marginTop="15dp">
+
+        <jbl.stc.com.view.AppButton
+            android:id="@+id/text_view_how_to_pair_next"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/rectangle_with_round_corner_view_page_orange"
+            android:gravity="center"
+            android:text="@string/next"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+    </jbl.stc.com.view.ShadowLayout>
 
 </RelativeLayout>

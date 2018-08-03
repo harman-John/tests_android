@@ -2,12 +2,15 @@ package jbl.stc.com.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Outline;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -20,7 +23,6 @@ import jbl.stc.com.activity.JBLApplication;
 
 public class NotConnectedPopupWindow extends PopupWindow implements View.OnClickListener {
 
-    private TextView textViewKeepUsing;
     private Context mContext;
 
     public NotConnectedPopupWindow(Context context) {
@@ -39,9 +41,8 @@ public class NotConnectedPopupWindow extends PopupWindow implements View.OnClick
         setFocusable(true);
         setAnimationStyle(R.style.style_down_to_top);
         popupWindow_view.findViewById(R.id.button_not_connected_popup_go_to_bluetooth).setOnClickListener(this);
-        textViewKeepUsing = popupWindow_view.findViewById(R.id.text_view_not_connected_popup_keep_using);
+        popupWindow_view.findViewById(R.id.text_view_not_connected_popup_keep_using).setOnClickListener(this);
 
-        textViewKeepUsing.setOnClickListener(this);
     }
 
     @Override

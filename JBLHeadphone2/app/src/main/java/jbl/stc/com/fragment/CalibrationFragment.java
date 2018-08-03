@@ -29,10 +29,12 @@ import jbl.stc.com.listener.OnHeadphoneconnectListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.CalibrationManager;
+import jbl.stc.com.view.AppButton;
 import jbl.stc.com.view.AppImageView;
+import jbl.stc.com.view.ShadowLayout;
 
 
-public class CalibrationFragment extends BaseFragment implements OnHeadphoneconnectListener,View.OnClickListener {
+public class CalibrationFragment extends BaseFragment implements OnHeadphoneconnectListener, View.OnClickListener {
     public static String TAG = CalibrationFragment.class.getSimpleName();
     private static CalibrationFragment calibration = null;
     CalibrationManager calibrationManager;
@@ -42,7 +44,8 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
     int timing = 10 * 1000;
     private View informationLayout;
     private AppImageView imageViewBack;
-    private TextView tv_calibratingDone;
+    private AppButton tv_calibratingDone;
+    private ShadowLayout shadowLayout;
     private ImageView iv_complete;
 
     private boolean isCalibrationComplete;
@@ -83,12 +86,13 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         informationLayout = view.findViewById(R.id.informationLayout);
         informationLayout.setOnClickListener(this);
-        tv_calibratingDone=(TextView) view.findViewById(R.id.tv_calibratingDone);
+        tv_calibratingDone = (AppButton) view.findViewById(R.id.tv_calibratingDone);
         tv_calibratingDone.setOnClickListener(this);
-        iv_complete=(ImageView)view.findViewById(R.id.iv_complete);
-        if (this.getArguments()!=null){
-            tag=this.getArguments().getString(CalibrationFragment.TAG);
-            Logger.d(TAG,tag);
+        shadowLayout = (ShadowLayout) view.findViewById(R.id.shadowLayout);
+        iv_complete = (ImageView) view.findViewById(R.id.iv_complete);
+        if (this.getArguments() != null) {
+            tag = this.getArguments().getString(CalibrationFragment.TAG);
+            Logger.d(TAG, tag);
         }
         return view;
     }
@@ -102,7 +106,7 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.informationLayout:
                 startCalibration();
                 informationLayout.setOnClickListener(null);
@@ -126,7 +130,7 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
         getView().setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if(keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_BACK){
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_BACK) {
                     calibration = null;
                     dummyStopCalibration();
                     return true;
@@ -162,14 +166,14 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
     }
 
     /*
-    * <p>Stops the calibration process.</p>
-    * */
+     * <p>Stops the calibration process.</p>
+     * */
     public void dummyStopCalibration() {
         handler.removeCallbacks(runnable);
-        if (!TextUtils.isEmpty(tag)&&tag.equals(CalibrationFragment.TAG)){
+        if (!TextUtils.isEmpty(tag) && tag.equals(CalibrationFragment.TAG)) {
             //enter from setting
             getActivity().onBackPressed();
-        }else{
+        } else {
             removeAllFragment();
             switchFragment(new HomeFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
         }
@@ -187,6 +191,7 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
 
         txtConnectMessage.setText(Html.fromHtml(getString(R.string.autoComplete)));
         tv_calibratingDone.setVisibility(View.VISIBLE);
+        shadowLayout.setVisibility(View.VISIBLE);
 
         /*txthelp.postDelayed(new Runnable() {
             @Override
@@ -197,8 +202,8 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
     }
 
     /*
-    * <p>Waits for calibration to complete within 10 second otherwise calibration will fail.</p>
-    * */
+     * <p>Waits for calibration to complete within 10 second otherwise calibration will fail.</p>
+     * */
     Runnable runnable = new Runnable() {
         @Override
         public void run() {

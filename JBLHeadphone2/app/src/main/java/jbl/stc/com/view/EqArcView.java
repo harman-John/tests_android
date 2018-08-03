@@ -21,7 +21,7 @@ import jbl.stc.com.utils.UiUtils;
  * @name JBLHeadphone2
  * @class name：jbl.stc.com.view
  * @class describe
- * Created by Vicky on 7/20/18.
+ * Created by Vicky on 2018/07/20.
  */
 public class EqArcView extends View{
 
