@@ -1197,7 +1197,11 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             case AccessoryReady: {
                 if (specifiedDevice != null && specifiedDevice.getName().contains(JBLConstant.DEVICE_150NC) && value == null
                         || specifiedDevice != null && value != null && ((HashMap) value).containsKey(specifiedDevice.getAddress())) {
-
+                    if (mLightX != null) {
+                        mLightX.close();
+                        mLightX = null;
+                        AvneraManager.getAvenraManager(getApplicationContext()).setLightX(null);
+                    }
                     AccessoryInfo accessoryInfo = bt150Manager.getAccessoryStatus();
                     PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), getApplicationContext());
                     AppUtils.setModelNumber(getApplicationContext(), accessoryInfo.getModelNumber());
