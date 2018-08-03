@@ -71,7 +71,6 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     private UsbManager usbManager;
     private boolean mIsConnectedPhysically;
     private boolean showCommunicationIssue = true;
-    public static boolean mIsEnterBootloader = false;
     private Handler mHandler = new Handler();
 
     public void setAppLightXDelegate(AppLightXDelegate appLightXDelegate) {
@@ -117,9 +116,9 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             String action = intent.getAction();
             if (!TextUtils.isEmpty(action) && "android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action)) {
                 synchronized (this) {
-                    if (!FirmwareUtil.isUpdatingFirmWare.get()) {
+//                    if (FirmwareUtil.isUpdatingFirmWare.get()) {
                         initUSB();
-                    }
+//                    }
                 }
             }
         } catch (Exception e) {
@@ -220,11 +219,11 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     private Runnable a2dpRunable = new Runnable() {
         @Override
         public void run() {
-            if (isConnected) {
+            if (isConnected && !isNeedOtaAgain) {
                 Logger.d(TAG, "device is connected, return");
                 return;
             }
-            if (isFound) {
+            if (isFound ) {
                 Logger.d(TAG, "device is found, return");
                 return;
             }
@@ -282,7 +281,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     devicesSet.add(key);
                     AppUtils.addToMyDevices(getApplicationContext(), key);
                 }
-                if (!isConnected && !isFound) {
+                if (!isConnected && !isFound || isNeedOtaAgain) {
                     if (deviceList.size() > 0
                             && position < deviceList.size()
                             && deviceList.get(position).getName().toUpperCase().contains("JBL Everest".toUpperCase())) {
@@ -432,7 +431,8 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     protected void onRestart() {
         super.onRestart();
         Logger.d(TAG, "onRestart()");
-        if (!FirmwareUtil.isUpdatingFirmWare.get() && DeviceConnectionManager.getInstance().getCurrentDevice() != ConnectedDeviceType.Connected_BluetoothDevice) {
+        if (!FirmwareUtil.isUpdatingFirmWare.get()
+                && DeviceConnectionManager.getInstance().getCurrentDevice() != ConnectedDeviceType.Connected_BluetoothDevice) {
             initUSB();
             Logger.d(TAG, "onRestart() - initUSB()");
         }
@@ -580,7 +580,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                         appLightXDelegate.headPhoneStatus(true);
                         appLightXDelegate.isLightXInitialize();
                     }
-                    if (!mIsEnterBootloader) {
+                    if (!FirmwareUtil.isUpdatingFirmWare.get() && !isNeedOtaAgain) {
                         connectDeviceStatus(true);
                     }
                 }
@@ -796,7 +796,10 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             //
             // Don't just copy this method into your code!  Ask the user what they want to do when
             // we can't communicate with the device.
-            Logger.d(TAG, "Headphone is not responding. so app will resetting connection");
+            Logger.d(TAG, "Headphone is not responding. so app will resetting connection isUpdatingFirmWare = "+FirmwareUtil.isUpdatingFirmWare.get());
+            if (FirmwareUtil.isUpdatingFirmWare.get()) {
+                isNeedOtaAgain = true;
+            }
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -804,7 +807,6 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     mHandler.removeCallbacks(resetRunnable);
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                         case Connected_USBDevice:
-                            isNeedOtaAgain = true;
                             initUSB();
                             break;
                         default:
@@ -827,18 +829,16 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                 Logger.e(TAG, "lightXError called but mLightX != lightX (" + mLightX + ", " + lightX + ")");
                 return;
             }
-
             mLightX = null;
-
 //            bluetoothDevice = mBluetoothDevice;
         }
 
-        Logger.e(TAG, "LightX error, bluetooth device exception：" + exception.getLocalizedMessage());
+        Logger.e(TAG, "lightXError bluetooth device");
 
-        lightX.close();
+//        lightX.close();
 
-        Logger.d(TAG, "LightX error calling disconnect()");
-        disconnect();
+//        Logger.d(TAG, "LightX error calling disconnect()");
+//        disconnect();
 
         /*if (bluetoothDevice != null) {
             Logger.d(TAG, "LightXError calling connect to attempt to reestablish connection to " + bluetoothDevice.getName());
@@ -932,7 +932,9 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     public void lightXReadConfigResult(final LightX lightX, final Command command, final boolean success, final String value) {
         switch (command) {
             case ConfigModelNumber: {
-                AppUtils.setModelNumber(getApplicationContext(), value);
+                if (DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.Connected_BluetoothDevice) {
+                    AppUtils.setModelNumber(getApplicationContext(), value);
+                }
             }
         }
         if (appLightXDelegate != null) {
@@ -997,11 +999,11 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                 appLightXDelegate.headPhoneStatus(false);
             }
             isConnected = false;
-            if (!mIsEnterBootloader) {
+            if (!FirmwareUtil.isUpdatingFirmWare.get()) {
                 connectDeviceStatus(false);
             }
             disconnected = true;
-            devicesSet.remove(usbDevice.getProductName() + "-" + usbDevice.getDeviceId());
+            devicesSet.remove(usbDevice.getProductName() + "-" + usbDevice.getManufacturerName());
             Logger.d(TAG, "usbDetached Initializing Bluetooth.");
             if (DeviceConnectionManager.getInstance().getCurrentDevice() != ConnectedDeviceType.Connected_BluetoothDevice)
                 if (mLightX != null) {
@@ -1139,12 +1141,13 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     if (key != null && usbDevice.getProductName().contains("Bootloader")) {
                         key = key.substring(0, usbDevice.getProductName().length() - "Bootloader".length() - 1);
                     }
+                    AppUtils.setModelNumber(getApplicationContext(), key);
                     key = key + "-" + usbDevice.getManufacturerName();
                     AppUtils.addToMyDevices(getApplicationContext(), key);
                     devicesSet.add(key);
                     checkDevices(devicesSet);
-                    Logger.d(TAGReconnect, "mIsEnterBootloader = "+mIsEnterBootloader);
-                    if (!mIsEnterBootloader && !isNeedOtaAgain) {
+                    Logger.d(TAGReconnect, "isUpdatingFirmWare = "+FirmwareUtil.isUpdatingFirmWare.get());
+                    if (!FirmwareUtil.isUpdatingFirmWare.get() && !isNeedOtaAgain) {
                         connectDeviceStatus(isConnected);
                     }
                     Logger.d(TAGReconnect, "key = "+key);

@@ -68,7 +68,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private CheckUpdateAvailable checkUpdateAvailable;
 
     public static boolean isOTADoing = false;
-    public static CopyOnWriteArrayList<FirmwareModel> mFwlist = new CopyOnWriteArrayList<>();
+    public static CopyOnWriteArrayList<FirmwareModel> mFwList = new CopyOnWriteArrayList<>();
 
     public TutorialAncDialog tutorialAncDialog;
 
@@ -325,8 +325,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     @Override
     public void onBackPressed() {
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if(isOTADoing) {
-            Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
             if (fr != null && fr instanceof OTAFragment && mIsInBootloader && isConnected) {
                 final Toast toast = Toast.makeText(this, "Can't perform this action.", Toast.LENGTH_SHORT);
                 toast.show();
@@ -339,7 +339,14 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 }, 300);
                 return;
             }
+        }else {
+            if (fr != null && fr instanceof OTAFragment) {
+                if(((OTAFragment)fr).isDisableGoBack()){
+                    return;
+                }
+            }
         }
+
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             AppUtils.hideFromForeground(this);
         } else {
@@ -481,8 +488,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     public void startCheckingIfUpdateIsAvailable() {
+        Logger.d(TAG,"AppUtils.getModelNumber(this)="+AppUtils.getModelNumber(this));
         Logger.d(TAG, "startCheckingIfUpdateIsAvailable isConnectionAvailable=" + FirmwareUtil.isConnectionAvailable(this));
-        String srcSavedVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, this, "");
+        String srcSavedVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, this, "0.0.0");
         String currentVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.APP_VERSION, this, "");
         Logger.d(TAG,"srcSavedVersion = "+srcSavedVersion+",currentVersion = "+currentVersion);
         if (FirmwareUtil.isConnectionAvailable(this) && !TextUtils.isEmpty(srcSavedVersion) && !TextUtils.isEmpty(currentVersion)) {

@@ -13,10 +13,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.listener.OnDownloadedListener;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AnalyticsManager;
 
 
 public class DownloadProgrammingFile extends AsyncTask<String, Void, CopyOnWriteArrayList<FirmwareModel>> {
+    private static final String TAG = DownloadProgrammingFile.class.getSimpleName();
     private Context context;
     private static String DIR = "bin";
     private CopyOnWriteArrayList<FirmwareModel> firmwareModelArrayList;
@@ -26,6 +28,7 @@ public class DownloadProgrammingFile extends AsyncTask<String, Void, CopyOnWrite
         this.context = context;
         this.downloaded = downloaded;
         this.firmwareModelArrayList = firmwareModelArrayList;
+        Logger.i(TAG,"DownloadProgrammingFile constructor size = "+firmwareModelArrayList.size());
     }
 
     //    ProgressDialog progressDialog;
@@ -45,6 +48,7 @@ public class DownloadProgrammingFile extends AsyncTask<String, Void, CopyOnWrite
         if (!file.exists())
             file.mkdirs();
 
+        Logger.i(TAG,"DownloadProgrammingFile doInBackground size = "+firmwareModelArrayList.size());
         if (firmwareModelArrayList.size() != 0) {
             liveVersion = firmwareModelArrayList.get(0).getVersion();
             for (FirmwareModel tempModel : firmwareModelArrayList) {
@@ -54,6 +58,7 @@ public class DownloadProgrammingFile extends AsyncTask<String, Void, CopyOnWrite
             }
         }
 
+        Logger.i(TAG,"After DownloadProgrammingFile doInBackground size = "+firmwareModelArrayList.size());
         return firmwareModelArrayList;
     }
 
@@ -65,6 +70,7 @@ public class DownloadProgrammingFile extends AsyncTask<String, Void, CopyOnWrite
     }
 
     private void startDownload(File file, FirmwareModel firmwareModel) {
+        Logger.i(TAG,"startDownload");
         InputStream inputStream = null;
         AnalyticsManager.getInstance(context).reportFirmwareUpdateStarted(firmwareModel.getVersion());
         try {
@@ -121,8 +127,11 @@ public class DownloadProgrammingFile extends AsyncTask<String, Void, CopyOnWrite
     protected void onPostExecute(CopyOnWriteArrayList<FirmwareModel> bytes) {
         super.onPostExecute(bytes);
         try {
+            Logger.i(TAG,"DownloadProgrammingFile onPostExecute");
             if (downloaded != null) {
+                Logger.i(TAG,"DownloadProgrammingFile onPostExecute downloaded size = "+ bytes.size());
                 if (bytes != null && bytes.size() != 0) {
+                    Logger.i(TAG,"DownloadProgrammingFile onPostExecute bytes > 0");
                     downloaded.onDownloadedFirmware(bytes);
                 } else {
                     downloaded.onFailedDownload();

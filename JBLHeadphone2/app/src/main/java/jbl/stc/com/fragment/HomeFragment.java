@@ -586,7 +586,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             Logger.d(TAG, "getDeviceInfo");
             lightX.readConfigModelNumber();
             lightX.readConfigProductName();
-            lightX.readBootVersionFileResource();
+            homeHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    lightX.readBootVersionFileResource();
+                }
+            },200);
         }
     }
 
@@ -1086,7 +1091,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     int major = var4[0];
                     int minor = var4[1];
                     int revision = var4[2];
-                    Logger.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision);
+                    Logger.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision+",modelNumber"+AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()));
                     PreferenceUtils.setString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, major + "." + minor + "." + revision, getActivity());
                     break;
 
@@ -1164,7 +1169,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         if (getActivity() == null){
             return;
         }
-        Logger.d(TAG, "lightXReadConfigResult");
+        Logger.d(TAG, "lightXReadConfigResult command = "+command);
         if (success) {
             switch (command) {
                 case ConfigProductName:
@@ -1172,6 +1177,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 case ConfigModelNumber:
                     deviceName = var4;
+                    Logger.d(TAG, "lightXReadConfigResult deviceName = "+deviceName);
                     AppUtils.setModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext(), deviceName);
                     updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
                     homeHandler.sendEmptyMessageDelayed(MSG_SEND_CMD_GET_FIRMWARE, 200);

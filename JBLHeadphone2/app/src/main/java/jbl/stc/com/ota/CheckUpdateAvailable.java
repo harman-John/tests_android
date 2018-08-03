@@ -43,6 +43,7 @@ public class CheckUpdateAvailable extends AsyncTask<String, Void, CopyOnWriteArr
         checkUpdateAvailable.currentAppVersion = appVersion;
         checkUpdateAvailable.object = fragmentObject;
         checkUpdateAvailable.executeOnExecutor(CheckUpdateAvailable.THREAD_POOL_EXECUTOR, mURL);
+        Logger.d(TAG, "start");
         return checkUpdateAvailable;
     }
 
@@ -159,7 +160,7 @@ public class CheckUpdateAvailable extends AsyncTask<String, Void, CopyOnWriteArr
             }
 
         }
-        Logger.d(TAG, "appVersion=" + appVersion + ",currentAppVersion=" + currentAppVersion);
+        Logger.d(TAG, "appVersion=" + appVersion + ",currentAppVersion=" + currentAppVersion+",fwlist size = "+fwlist.size());
         if (FirmwareUtil.isUpdateAvailable(appVersion, currentAppVersion)) {
             isUpdateAvailable = true;
             Logger.d(TAG, "App will update");
