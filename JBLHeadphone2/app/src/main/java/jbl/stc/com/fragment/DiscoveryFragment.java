@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.view.JblCircleView;
 
 public class DiscoveryFragment extends BaseFragment implements View.OnClickListener {
@@ -100,7 +101,7 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
             switch (msg.what) {
                 case MSG_SHOW_PRODUCT_LIST_FRAGMENT: {
                     dHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
-                    Log.i(TAG, "MSG_SHOW_PRODUCT_LIST_FRAGMENT");
+                    Logger.d(TAG, "MSG_SHOW_PRODUCT_LIST_FRAGMENT");
                     Fragment fr = DashboardActivity.getDashboardActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                     if (fr == null) {
                         switchFragment(new ProductsListFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);

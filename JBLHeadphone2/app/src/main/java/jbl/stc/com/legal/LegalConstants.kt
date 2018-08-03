@@ -2,6 +2,7 @@ package jbl.stc.com.legal
 
 import android.content.Context
 import com.avnera.smartdigitalheadset.Log
+import jbl.stc.com.logger.Logger
 import jbl.stc.com.storage.PreferenceKeys
 import jbl.stc.com.storage.PreferenceUtils
 
@@ -25,7 +26,7 @@ object LegalConstants {
 
     fun getLegalUrl(context: Context): String {
         var isTestUrl = PreferenceUtils.getBoolean(PreferenceKeys.LEGAL_TEST_URL, context)
-        Log.i("LegalConstants = $isTestUrl")
+        Logger.d("LegalConstants","LegalConstants = $isTestUrl")
         return if (isTestUrl) {
             LEGAL_URL_TEST
         } else {

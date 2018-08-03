@@ -16,6 +16,7 @@ public class CustomFontTextView extends AppCompatTextView {
     public static final String ANDROID_SCHEMA = "http://schemas.android.com/apk/res/android";
     private static final int SEMI_BOLD = 4;
     private Context mContext;
+
     public CustomFontTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
@@ -30,6 +31,8 @@ public class CustomFontTextView extends AppCompatTextView {
 
     public CustomFontTextView(Context context) {
         super(context);
+        Typeface customFont = selectTypeface(context, Typeface.NORMAL);
+        setTypeface(customFont);
     }
 
     private void applyCustomFont(Context context, AttributeSet attrs) {
@@ -67,4 +70,5 @@ public class CustomFontTextView extends AppCompatTextView {
         }
         return null;
     }
+
 }

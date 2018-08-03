@@ -174,6 +174,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         if (hasUpdate) {
             imageViewDownload.setVisibility(View.VISIBLE);
             textViewFwVersion.setVisibility(View.GONE);
+            textViewFwVersion.setOnClickListener(this);
             view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         }else{
             imageViewDownload.setVisibility(View.GONE);
@@ -184,6 +185,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             }else{
                 textViewFwVersion.setText("");
             }
+            textViewFwVersion.setOnClickListener(null);
             view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(null);
         }
     }
@@ -216,7 +218,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
+        Logger.d(TAG, "onResume");
         tv_toggleautoOff.setText(PreferenceUtils.getString(PreferenceKeys.AUTOOFFTIMER, getActivity(), getContext().getString(R.string.five_minute)));
     }
 
@@ -236,6 +238,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 mHandler.postDelayed(enableVoicePromptRunnable, 1000);
                 break;
             }
+            case R.id.text_view_settings_firmware_version:
             case R.id.relative_layout_settings_firmware: {
                 switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
@@ -246,7 +249,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.relative_layout_settings_true_note: {
-                Log.d(TAG, "true note clicked");
+                Logger.d(TAG, "true note clicked");
                 CalibrationFragment calibrationFragment = new CalibrationFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(CalibrationFragment.TAG, CalibrationFragment.class.getSimpleName());
@@ -255,7 +258,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.text_view_settings_smart_button: {
-                Log.d(TAG, "smart button click");
+                Logger.d(TAG, "smart button click");
                 switchFragment(new SmartButtonFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
@@ -321,7 +324,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                     int major = buffer[0];
                     int minor = buffer[1];
                     int revision = buffer[2];
-                    Log.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision);
+                    Logger.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision);
                     String version = major + "." + minor + "." + revision;
                     textViewFwVersion.setText(version);
                     break;

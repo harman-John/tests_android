@@ -158,25 +158,25 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onMedium() {
-        Log.d(TAG, "onMedium ");
+        Logger.d(TAG, "onMedium ");
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(AvneraManager.getAvenraManager(getActivity()).getLightX(), ANCAwarenessPreset.Medium);
     }
 
     @Override
     public void onLow() {
-        Log.d(TAG, "onLow ");
+        Logger.d(TAG, "onLow ");
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(AvneraManager.getAvenraManager(getActivity()).getLightX(), ANCAwarenessPreset.Low);
     }
 
     @Override
     public void onHigh() {
-        Log.d(TAG, "onHigh ");
+        Logger.d(TAG, "onHigh ");
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(AvneraManager.getAvenraManager(getActivity()).getLightX(), ANCAwarenessPreset.High);
     }
 
     @Override
     public void onProgressChanged(ANCController ANCController, int leftProgress, int rightProgress, boolean fromUser) {
-        Log.d(TAG, "onProgressChanged fromUser "+fromUser);
+        Logger.d(TAG, "onProgressChanged fromUser "+fromUser);
         if (fromUser) {
             // Check added to fix Bug :Bug 64517 - Sometimes Awareness adjustment is disordered when left and right AA have different level.
             //Set animation to false and presetValue to -1
@@ -203,12 +203,12 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onStartTrackingTouch(ANCController ANCController) {
-        Log.d(TAG, "onStartTrackingTouch ");
+        Logger.d(TAG, "onStartTrackingTouch ");
     }
 
     @Override
     public void onStopTrackingTouch(ANCController ANCController) {
-        Log.d(TAG, "onStopTrackingTouch mLeftProgress = "+mLeftProgress + ", mRightProgress = "+mRightProgress+",mFromUser = "+mFromUser);
+        Logger.d(TAG, "onStopTrackingTouch mLeftProgress = "+mLeftProgress + ", mRightProgress = "+mRightProgress+",mFromUser = "+mFromUser);
         if (mFromUser) {
             mFromUser = false;
             ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setLeftAwarenessPresetValue(AvneraManager.getAvenraManager(getActivity()).getLightX(), mLeftProgress);
@@ -267,7 +267,7 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
     private boolean isRequestingLeftANC, isRequestingRightANC;
     public void updateAAUI(int aaLevelingValue){
         boolean is150NC = AppUtils.is150NC(JBLApplication.getJBLApplicationContext());
-        Log.d(TAG, "updateAmbientLevel: " + aaLevelingValue + "," + PreferenceUtils.getInt(PreferenceKeys.AWARENESS, JBLApplication.getJBLApplicationContext()) + ",is150NC=" + is150NC);
+        Logger.d(TAG, "updateAmbientLevel: " + aaLevelingValue + "," + PreferenceUtils.getInt(PreferenceKeys.AWARENESS, JBLApplication.getJBLApplicationContext()) + ",is150NC=" + is150NC);
         switch (aaLevelingValue) {
             case 0:
                 PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, 0, JBLApplication.getJBLApplicationContext());
@@ -329,7 +329,7 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void lightXAppReceivedPush(LightX var1, Command command, byte[] var4) {
         super.lightXAppReceivedPush(var1, command, var4);
-        Log.d(TAG, "lightXAppReceivedPush command is " + command);
+        Logger.d(TAG, "lightXAppReceivedPush command is " + command);
         switch (command) {
             case AppPushANCEnable:
                 ANCControlManager.getANCManager(mContext).getANCValue(AvneraManager.getAvenraManager(getActivity()).getLightX());
@@ -344,9 +344,9 @@ public class TutorialFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
         super.receivedResponse(command, values, status);
-        Log.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
+        Logger.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
         if (values.size() <= 0) {
-            Log.d(TAG, "return, values size is " + values.size());
+            Logger.d(TAG, "return, values size is " + values.size());
             return;
         }
         switch (command) {

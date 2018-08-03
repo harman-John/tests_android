@@ -66,7 +66,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("EqSettingFragment:", "onCreateView");
+        Logger.d("EqSettingFragment:", "onCreateView");
         rootView = inflater.inflate(R.layout.fragment_eq_settings, container, false);
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         initView();
@@ -184,7 +184,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             getActivity().getSupportFragmentManager().popBackStack();
             return;
         }*/
-        Log.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, getResources().getString(R.string.off)));
+        Logger.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, getResources().getString(R.string.off)));
         if (currSelectedEq != null && currSelectedEq.eqName != null) {
             if (application.deviceInfo.eqOn) {
                 for (int i = 0; i < eqModelList.size(); i++) {
@@ -212,7 +212,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             eqModelList.get(0).isSelected = true;
         }
         for (int i = 0; i < eqModelList.size(); i++) {
-            Log.d(TAG, "i=" + i + "," + eqModelList.get(i));
+            Logger.d(TAG, "i=" + i + "," + eqModelList.get(i));
         }
 
         eqAdapter.setEqModels(eqModelList);
@@ -234,13 +234,13 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
     private void smoothToPosition() {
         if (currSelectedEqIndex > 1) {
-            Log.d(TAG, "smoothToPosition currSelectedEqIndex=" + currSelectedEqIndex);
+            Logger.d(TAG, "smoothToPosition currSelectedEqIndex=" + currSelectedEqIndex);
             eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
         }
     }
 
     private void onEqNameSelected(int eqIndex, boolean fromUser) {
-        Log.d(TAG, "onEqNameSelected eqIndex is " + eqIndex);
+        Logger.d(TAG, "onEqNameSelected eqIndex is " + eqIndex);
         currSelectedEq = eqModelList.get(eqIndex);
         currSelectedEqIndex = eqIndex;
         eqNameText.setText(currSelectedEq.eqName);
@@ -297,12 +297,12 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             }
             AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
             PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, currSelectedEq.eqName, getActivity());
-            Log.d(TAG, "select eq position is " + String.valueOf(currSelectedEqIndex));
+            Logger.d(TAG, "select eq position is " + String.valueOf(currSelectedEqIndex));
         }
     };
 
     public void onAddCustomEq(boolean isAdd, boolean isPreset) {
-        Log.d(TAG, "onAddCustomEq()");
+        Logger.d(TAG, "onAddCustomEq()");
         EqCustomFragment fragment = new EqCustomFragment();
         fragment.setOnCustomEqListener(onCustomEqListener);
         Bundle bundle = new Bundle();

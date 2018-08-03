@@ -50,8 +50,8 @@
     <string name="text_ota_title">Product software update</string>
     <string name="firmware_is_updating_title"><b>Firmware is Updating…</b></string>
     <string name="firmware_is_updating">1.Please do not close the application.\n2.Keep the headset near the device.\n3.Pluggin in the headphones is\nrecommended.</string>
-    <string name="firmware_is_available">New software update version %1$s is\navailable</string>
-    <string name="firmware_is_installed">Firmware version %1$s\nis installed</string>
+    <string name="firmware_is_available">New software update version %1$s is available</string>
+    <string name="firmware_is_installed">Firmware version %1$s is installed</string>
     <string name="done">Done</string>
 
 
@@ -118,6 +118,7 @@
     <string name="custom_eq">Custom EQ</string>
 
 
+    <string name="replug">Unplug then replug in USB Type C</string>
 
     <string name="unplug_plug_while_update_error">"Update process interrupted. \nPress OK to restart the process"</string>
     <string name="battery_alert">The battery level of your headphones needs to be above 50% to perform a firmware update or connect charger and restart update.</string>

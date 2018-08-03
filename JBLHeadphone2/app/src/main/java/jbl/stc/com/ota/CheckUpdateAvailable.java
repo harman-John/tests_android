@@ -20,6 +20,7 @@ import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.listener.OnDownloadedListener;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.utils.FirmwareUtil;
 
@@ -62,7 +63,7 @@ public class CheckUpdateAvailable extends AsyncTask<String, Void, CopyOnWriteArr
             file.mkdirs();
         try {
             URL url = new URL(params[0]);
-            Log.d(TAG, "URL:" + params[0]);
+            Logger.d(TAG, "URL:" + params[0]);
 
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setConnectTimeout(10 * 1000);
@@ -158,10 +159,10 @@ public class CheckUpdateAvailable extends AsyncTask<String, Void, CopyOnWriteArr
             }
 
         }
-        Log.d(TAG, "appVersion=" + appVersion + ",currentAppVersion=" + currentAppVersion);
+        Logger.d(TAG, "appVersion=" + appVersion + ",currentAppVersion=" + currentAppVersion);
         if (FirmwareUtil.isUpdateAvailable(appVersion, currentAppVersion)) {
             isUpdateAvailable = true;
-            Log.d(TAG, "App will update");
+            Logger.d(TAG, "App will update");
             AnalyticsManager.getInstance(context).reportFirmwareUpdateAvailable(appVersion);
         } else {
             FirmwareModel modelTemp = null;
@@ -174,18 +175,18 @@ public class CheckUpdateAvailable extends AsyncTask<String, Void, CopyOnWriteArr
             }
             if (modelTemp != null)
                 fwlist.remove(modelTemp);
-            Log.d(TAG, "App will not update");
+            Logger.d(TAG, "App will not update");
         }
 
-        Log.d(TAG, "rsrcVersion=" + rsrcVersion + ",currentRSRCVersion=" + currentRSRCVersion);
+        Logger.d(TAG, "rsrcVersion=" + rsrcVersion + ",currentRSRCVersion=" + currentRSRCVersion);
         if (FirmwareUtil.isUpdateAvailable(rsrcVersion, currentRSRCVersion)) {
             currentRSRCVersion = rsrcVersion;
             isUpdateAvailable = true;
             AnalyticsManager.getInstance(context).reportFirmwareUpdateAvailable(currentRSRCVersion);
-            Log.d(TAG, "rsrc update on base of last saved");
+            Logger.d(TAG, "rsrc update on base of last saved");
         } else {
             AnalyticsManager.getInstance(context).reportFirmwareUpToDate(currentRSRCVersion);
-            Log.d(TAG, "rsrc will not update");
+            Logger.d(TAG, "rsrc will not update");
             FirmwareModel modelTemp = null;
             for (FirmwareModel model : fwlist) {
                 if (model.getFwtype() == FwTYPE.RSRC) {

@@ -17,6 +17,7 @@ import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.listener.AwarenessChangeListener;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -112,7 +113,7 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
 
     public void updateAAUI(int aaLevelingValue) {
         boolean is150NC = AppUtils.is150NC(JBLApplication.getJBLApplicationContext());
-        Log.d(TAG, "updateAmbientLevel: " + aaLevelingValue + "," + PreferenceUtils.getInt(PreferenceKeys.AWARENESS, JBLApplication.getJBLApplicationContext()) + ",is150NC=" + is150NC);
+        Logger.d(TAG, "updateAmbientLevel: " + aaLevelingValue + "," + PreferenceUtils.getInt(PreferenceKeys.AWARENESS, JBLApplication.getJBLApplicationContext()) + ",is150NC=" + is150NC);
         switch (aaLevelingValue) {
             case 0:
                 PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, 0, JBLApplication.getJBLApplicationContext());

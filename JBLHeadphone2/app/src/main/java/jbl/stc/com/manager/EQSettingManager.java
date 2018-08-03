@@ -16,6 +16,7 @@ import java.util.List;
 
 import jbl.stc.com.constant.EqDbKey;
 import jbl.stc.com.entity.EQModel;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.DatabaseHelper;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -68,7 +69,7 @@ public class EQSettingManager implements EqDbKey {
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            Logger.e(TAG, e.getMessage());
         } finally {
             if (db != null) {
                 db.close();
@@ -93,7 +94,7 @@ public class EQSettingManager implements EqDbKey {
                 operationStatus = OperationStatus.UPDATED;
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            Logger.e(TAG, e.getMessage());
         } finally {
             if (db != null) {
                 db.close();
@@ -113,7 +114,7 @@ public class EQSettingManager implements EqDbKey {
                 operationStatus = OperationStatus.UPDATED;
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            Logger.e(TAG, e.getMessage());
         } finally {
             if (db != null) {
                 db.close();
@@ -139,7 +140,7 @@ public class EQSettingManager implements EqDbKey {
                 operationStatus = OperationStatus.DELETED;
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            Logger.e(TAG, e.getMessage());
         } finally {
             if (db != null) {
                 db.close();
@@ -204,7 +205,7 @@ public class EQSettingManager implements EqDbKey {
             }
             cursor.close();
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            Logger.e(TAG, e.getMessage());
         } finally {
             if (db != null) {
                 db.close();
@@ -235,7 +236,7 @@ public class EQSettingManager implements EqDbKey {
             }
             cursor.close();
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Logger.e(TAG, e.getMessage());
         } finally {
             if (db != null) {
                 db.close();
@@ -288,7 +289,7 @@ public class EQSettingManager implements EqDbKey {
             }
             cursor.close();
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Logger.e(TAG, e.getMessage());
         } finally {
             if (db != null) {
                 db.close();
@@ -332,7 +333,7 @@ public class EQSettingManager implements EqDbKey {
             array[8] = (int) model.value_8000;
             array[9] = (int) model.value_16000;
         }
-        Log.d(TAG, "getValuesFromEQModel:" + Arrays.toString(array));
+        Logger.d(TAG, "getValuesFromEQModel:" + Arrays.toString(array));
         return array;
     }
 
@@ -460,7 +461,7 @@ public class EQSettingManager implements EqDbKey {
                 }
             }
         }
-        Log.d(TAG, "isEqModelValuesEquals:equals=" + equals);
+        Logger.d(TAG, "isEqModelValuesEquals:equals=" + equals);
         return equals;
     }
 
@@ -477,7 +478,7 @@ public class EQSettingManager implements EqDbKey {
                 break;
             }
         }
-        Log.d(TAG, "getNewEqName existed=" + existed);
+        Logger.d(TAG, "getNewEqName existed=" + existed);
         if (!existed) {
             return eqName;
         }
@@ -485,7 +486,7 @@ public class EQSettingManager implements EqDbKey {
         int lastEqNum = getLastEqNum(eqName);
         int lastEqNum2 = getLastEqNum(updateEqName);
         String tempName = getOriginalEqName(eqName, lastEqNum);
-        Log.d(TAG, "getNewEqName lastEqNum1=" + lastEqNum);
+        Logger.d(TAG, "getNewEqName lastEqNum1=" + lastEqNum);
         List<Integer> eqNumList = new ArrayList<>();
         for (EQModel eqModel : eqModelList) {
             int eqNum = getLastEqNum(eqModel.eqName);
@@ -501,7 +502,7 @@ public class EQSettingManager implements EqDbKey {
                 lastEqNum = eqNum;
             }
         }
-        Log.d(TAG, "getNewEqName lastEqNum2=" + lastEqNum + ",tempName=" + tempName);
+        Logger.d(TAG, "getNewEqName lastEqNum2=" + lastEqNum + ",tempName=" + tempName);
         if (lastEqNum == 0) {
             lastEqNum = 2;
             newEqName = tempName + AppUtils.EQ_NAME_AND_NUM_SEPARATE + lastEqNum;
@@ -527,13 +528,13 @@ public class EQSettingManager implements EqDbKey {
             lastEqNum = newEqNum;
             newEqName = tempName + AppUtils.EQ_NAME_AND_NUM_SEPARATE + newEqNum;
         }
-        Log.d(TAG, "getNewEqName newEqName=" + newEqName + ",newEqNum=" + lastEqNum);
+        Logger.d(TAG, "getNewEqName newEqName=" + newEqName + ",newEqNum=" + lastEqNum);
 //        if (newEqName.equals(updateEqName)) {
 //            return newEqName;
 //        }
 //        lastEqNum++;
 //        newEqName = tempName + AppUtils.EQ_NAME_AND_NUM_SEPARATE + lastEqNum;
-        Log.d(TAG, "getNewEqName newEqName=" + newEqName + ",eqName=" + eqName + ",updateEqName=" + updateEqName + ",lastEqNum4=" + lastEqNum);
+        Logger.d(TAG, "getNewEqName newEqName=" + newEqName + ",eqName=" + eqName + ",updateEqName=" + updateEqName + ",lastEqNum4=" + lastEqNum);
         return newEqName;
     }
 
@@ -542,14 +543,14 @@ public class EQSettingManager implements EqDbKey {
         if (lastIndex > 0) {
             originalName = eqName.substring(0, eqName.lastIndexOf(AppUtils.EQ_NAME_AND_NUM_SEPARATE));
         }
-        //Log.d(TAG, "getOriginalEqName eqName=" + eqName + ",lastIndex=" + lastIndex + ",originalName=" + originalName);
+        //Logger.d(TAG, "getOriginalEqName eqName=" + eqName + ",lastIndex=" + lastIndex + ",originalName=" + originalName);
         return originalName;
     }
 
     private static int getLastEqNum(String eqName) {
         try {
             String lastNumStr = eqName.substring(eqName.lastIndexOf(AppUtils.EQ_NAME_AND_NUM_SEPARATE) + 1);
-            //Log.d(TAG, "getLastIndex eqName=" + eqName + ",lastNumStr=" + lastNumStr);
+            //Logger.d(TAG, "getLastIndex eqName=" + eqName + ",lastNumStr=" + lastNumStr);
             return Integer.valueOf(lastNumStr);
         } catch (Exception e) {
             return 0;

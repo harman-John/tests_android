@@ -30,6 +30,7 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.dialog.AlertsDialog;
 import jbl.stc.com.fragment.BaseFragment;
 import jbl.stc.com.listener.AppUSBDelegate;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -109,7 +110,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
     public void removeAllFragment() {
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if (fr == null) {
-            Log.i(TAG,"fr is null");
+            Logger.d(TAG,"fr is null");
             return;
         }
         try {
@@ -119,10 +120,10 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
                 getSupportFragmentManager().popBackStackImmediate();
                 manager = getSupportFragmentManager();
                 count = manager.getBackStackEntryCount();
-                Log.i(TAG, "back stack count = " + count);
+                Logger.d(TAG, "back stack count = " + count);
             }
         }catch (Exception e){
-            Log.e(TAG,"Fragment is not shown, then popBack will have exception ");
+            Logger.e(TAG,"Fragment is not shown, then popBack will have exception ");
         }
     }
 
@@ -137,7 +138,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
         Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
         while (deviceIterator.hasNext()) {
             usbDevice = deviceIterator.next();
-            Log.d(TAG, "Device ===Product ID" + usbDevice.getProductId() + "-Vendor ID--" + usbDevice.getVendorId());
+            Logger.d(TAG, "Device ===Product ID" + usbDevice.getProductId() + "-Vendor ID--" + usbDevice.getVendorId());
         }
         return usbDevice;
     }
@@ -162,7 +163,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
                 result = true;
             }
         }
-        Log.d(TAG, "shouldConnectToBluetoothDevice result is " + result);
+        Logger.d(TAG, "shouldConnectToBluetoothDevice result is " + result);
         return result;
     }
 

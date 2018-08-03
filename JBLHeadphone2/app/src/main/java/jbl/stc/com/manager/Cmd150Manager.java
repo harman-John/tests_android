@@ -9,6 +9,7 @@ import com.avnera.audiomanager.audioManager;
 
 
 import jbl.stc.com.constant.AmCmds;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.utils.AmToolUtil;
 
 public class Cmd150Manager implements BaseManager {
@@ -27,7 +28,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void getANC(Object object) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_ANC);
@@ -36,7 +37,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void setANC(Object object, boolean anc) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_ANC, anc);
@@ -45,7 +46,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void getAmbientLeveling(Object object) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_AmbientLeveling);
@@ -54,7 +55,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void getANCLeft(Object object) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_RawLeft);
@@ -63,7 +64,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void getANCRight(Object object) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_RawRight);
@@ -72,7 +73,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void setANCLeft(Object object, int ancLeft) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_RawLeft, ancLeft);
@@ -81,7 +82,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void setANCRight(Object object, int ancRight) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_RawRight, ancRight);
@@ -89,7 +90,7 @@ public class Cmd150Manager implements BaseManager {
 
     public void setAmbientLeveling(Object object, int ambientLeveling) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_AmbientLeveling, ambientLeveling);
@@ -97,7 +98,7 @@ public class Cmd150Manager implements BaseManager {
 
     public void getRawSteps(Object object) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_RawSteps);
@@ -106,7 +107,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void getBatteryLevel(Object object) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_BatteryLevel);
@@ -115,7 +116,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void getFirmwareVersion(Object object) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_FirmwareVersion);
@@ -124,7 +125,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void getAutoOff(Object object) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_AutoOffEnable);
@@ -133,7 +134,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void setAutoOff(Object object, boolean autoOff) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_AutoOffEnable, autoOff);
@@ -142,7 +143,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void getVoicePrompt(Object object) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_VoicePrompt);
@@ -151,7 +152,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void setVoicePrompt(Object object, boolean voicePrompt) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_VoicePrompt, voicePrompt);
@@ -160,7 +161,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void getSmartButtion(Object object) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_SmartButton);
@@ -169,7 +170,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void setSmartButton(Object object, boolean smartButton) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_SmartButton, (!smartButton)? 0 : 1);
@@ -178,7 +179,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void getGeqCurrentPreset(Object object) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_Geq_Current_Preset);
@@ -186,16 +187,16 @@ public class Cmd150Manager implements BaseManager {
 
     public void setGeqCurrentPreset(Object object, int preset) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
-        Log.d(TAG, "set command is:" + AmCmds.CMD_Geq_Current_Preset + "params are:" + "preset:" + preset);
+        Logger.d(TAG, "set command is:" + AmCmds.CMD_Geq_Current_Preset + "params are:" + "preset:" + preset);
         ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_Geq_Current_Preset, preset);
     }
 
     public void setGeqBandGain(Object object, int preset, int band, int value) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_GrEqBandGains, band, value);
@@ -205,7 +206,7 @@ public class Cmd150Manager implements BaseManager {
     @Override
     public void getGeqBandFreq(Object object, int preset, int band) {
         if (object == null) {
-            Log.i(TAG, "object is null, call setManager first");
+            Logger.d(TAG, "object is null, call setManager first");
             return;
         }
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_GraphicEqBandFreq);
@@ -218,7 +219,7 @@ public class Cmd150Manager implements BaseManager {
      */
     public void getFWInfo(Object object){
         if (object == null){
-            Log.i(TAG,"object is null, call setManager first");
+            Logger.d(TAG,"object is null, call setManager first");
             return;
         }
         ((audioManager)object).getFWInfo();
@@ -268,7 +269,7 @@ public class Cmd150Manager implements BaseManager {
      */
     public void updateImage(Object object,byte[] image, String version, ImageType type, byte set){
         if (object == null){
-            Log.i(TAG,"is not 150NC device");
+            Logger.d(TAG,"is not 150NC device");
             return;
         }
         int ver = Integer.valueOf(version,16);
@@ -281,11 +282,11 @@ public class Cmd150Manager implements BaseManager {
         }else if (type == ImageType.Firmware){
             address = (set == 0) ? AmCmds.address1_Firmware: AmCmds.address0_Firmware;
         }
-        Log.i(TAG,"updateImage current is "+set+",version is "
+        Logger.d(TAG,"updateImage current is "+set+",version is "
                 + ver +", type is "+type+",image length is "+ image.length +",address is "+address);
         status = ((audioManager)object).sendCommand(AmCmds.CMD_UPDATE_IMAGE,
                 address,image, ver,type, set);
-        Log.i(TAG,"status = " + status);
+        Logger.d(TAG,"status = " + status);
     }
 
     /**
@@ -305,7 +306,7 @@ public class Cmd150Manager implements BaseManager {
      */
     public void  setFirmwareVersion(Object object, int version ){
         if (object == null){
-            Log.i(TAG,"is not 150NC device");
+            Logger.d(TAG,"is not 150NC device");
             return;
         }
         ((audioManager)object).setBundle(version);
@@ -322,7 +323,7 @@ public class Cmd150Manager implements BaseManager {
      */
     public void setFirmwareUpdateState(Object object,int state){
         if (object == null){
-            Log.i(TAG,"is not 150NC device");
+            Logger.d(TAG,"is not 150NC device");
             return;
         }
         ((audioManager)object).sendCommand(Action.Set, AmCmds.CMD_FIRMWARE_UPDATE_STATE, state);
@@ -331,19 +332,19 @@ public class Cmd150Manager implements BaseManager {
 
     public void sendSetEqBandGains(Object object, int preset, int index_of_band, int value) {
         if (object == null){
-            Log.i(TAG,"is not 150NC device");
+            Logger.d(TAG,"is not 150NC device");
             return;
         }
-        Log.d(TAG, "set command is:" + AmCmds.CMD_GrEqBandGains + "params are:" + "preset:" + preset + "index of bands:" + index_of_band + "value:" + value);
+        Logger.d(TAG, "set command is:" + AmCmds.CMD_GrEqBandGains + "params are:" + "preset:" + preset + "index of bands:" + index_of_band + "value:" + value);
         ((audioManager) object).sendCommand(Action.Set, AmCmds.CMD_GrEqBandGains, preset, index_of_band, value);
     }
 
     public void getEqBandGains(Object object, int preset, int band) {
         if (object == null) {
-            Log.i(TAG, "is not 150NC device");
+            Logger.d(TAG, "is not 150NC device");
             return;
         }
-        Log.d(TAG, "get command is:" + AmCmds.CMD_GrEqBandGains + "params are:" + "preset:" + preset + "index of bands:" + band);
+        Logger.d(TAG, "get command is:" + AmCmds.CMD_GrEqBandGains + "params are:" + "preset:" + preset + "index of bands:" + band);
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_GrEqBandGains, preset, band);
 
     }
@@ -351,10 +352,10 @@ public class Cmd150Manager implements BaseManager {
 
     public void getAppGraphicEQPresetBandSettings(Object object ,int preset,int count){
         if (object == null) {
-            Log.i(TAG, "is not 150NC device");
+            Logger.d(TAG, "is not 150NC device");
             return;
         }
-        Log.d(TAG, "get command is:" + AmCmds.CMD_GraphicEqPresetBandSettings + "params are:" + "preset:" + preset );
+        Logger.d(TAG, "get command is:" + AmCmds.CMD_GraphicEqPresetBandSettings + "params are:" + "preset:" + preset );
         ((audioManager) object).sendCommand(Action.Get, AmCmds.CMD_GraphicEqPresetBandSettings, preset,count);
     }
 

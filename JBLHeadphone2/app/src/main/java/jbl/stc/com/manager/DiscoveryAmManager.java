@@ -19,6 +19,7 @@ import java.util.Map;
 
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.listener.DeviceListener;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.utils.AmToolUtil;
 
 public class DiscoveryAmManager implements audioManager.AudioDeviceDelegate  {
@@ -49,7 +50,7 @@ public class DiscoveryAmManager implements audioManager.AudioDeviceDelegate  {
     public void discovery(Activity activity,BluetoothDevice bluetoothDevice){
         mBluetoothDevice = bluetoothDevice;
         if (bt150Manager != null){
-            Log.d(TAG,"150nc initManager");
+            Logger.d(TAG,"150nc initManager");
             byte[] bytes = AmToolUtil.INSTANCE.readAssertResource(activity,AmToolUtil.COMMAND_FILE);
             bt150Manager.initManager(activity, activity, this, AmToolUtil.COMMAND_FILE,bytes);
         }
@@ -64,7 +65,7 @@ public class DiscoveryAmManager implements audioManager.AudioDeviceDelegate  {
 
     @Override
     public void receivedAdminEvent(@NotNull AdminEvent event, final Object value) {
-        Log.d(TAG, " ========> [receivedAdminEvent]   <======== value = " + value +",event = "+event);
+        Logger.d(TAG, " ========> [receivedAdminEvent]   <======== value = " + value +",event = "+event);
         switch (event){
             /**
              * AccessoryReady
@@ -83,14 +84,14 @@ public class DiscoveryAmManager implements audioManager.AudioDeviceDelegate  {
              * This event comes earlier than AccessoryReady.
              */
             case AccessoryConnected:{
-                Log.d(TAG , " ========> [receivedAdminEvent] AccessoryConnected");
+                Logger.d(TAG , " ========> [receivedAdminEvent] AccessoryConnected");
                 break;
             }
             /**
              * Not used now.
              */
             case AccessoryNotReady:{
-                Log.d(TAG , " ========> [receivedAdminEvent] AccessoryNotReady");
+                Logger.d(TAG , " ========> [receivedAdminEvent] AccessoryNotReady");
                 break;
             }
             /**
@@ -113,7 +114,7 @@ public class DiscoveryAmManager implements audioManager.AudioDeviceDelegate  {
                 mDeviceListener.deviceDisConnected(value);
                 break;
             default:{
-                Log.d(TAG , " ========> [receivedAdminEvent] default :" + event);
+                Logger.d(TAG , " ========> [receivedAdminEvent] default :" + event);
                 break;
             }
         }
@@ -138,7 +139,7 @@ public class DiscoveryAmManager implements audioManager.AudioDeviceDelegate  {
                         if (status == Status.AccessoryNotConnected) {
                             mDeviceListener.deviceDisConnected(value);
                         }
-                        Log.d(TAG, " ========> [receivedStatus] found device, connect device:" + entry.getKey() + "," + entry.getValue() + ",status=" + status);
+                        Logger.d(TAG, " ========> [receivedStatus] found device, connect device:" + entry.getKey() + "," + entry.getValue() + ",status=" + status);
                     }
                 }
                 break;

@@ -23,6 +23,7 @@ import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
@@ -102,7 +103,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             public void onEqValueChanged(int eqIndex, float value) {
                 if (eqIndex >= 0 && eqIndex < eqValueArray.length) {
                     eqValueArray[eqIndex] = (int) value;
-                    Log.d(TAG, "onEqValueChanged eqIndex=" + eqIndex + ",value=" + value);
+                    Logger.d(TAG, "onEqValueChanged eqIndex=" + eqIndex + ",value=" + value);
                     if (firstTimeAddEqTipText.getVisibility() == View.VISIBLE) {
                         firstTimeAddEqTipText.setVisibility(View.GONE);
                         mHandler.removeCallbacks(textUpRunnable);
@@ -113,7 +114,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
 
             @Override
             public void onEqDragFinished(float[] pointX, float[] pointY) {
-                Log.d(TAG, "onEqDragFinished pointX=" + Arrays.toString(pointX) + ",pointY=" + Arrays.toString(pointY));
+                Logger.d(TAG, "onEqDragFinished pointX=" + Arrays.toString(pointX) + ",pointY=" + Arrays.toString(pointY));
                 currSelectedEq.setPointX(pointX);
                 currSelectedEq.setPointY(pointY);
                 ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
@@ -134,7 +135,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         if (isPreset) {
             isAddOperate = true;
         }
-        Log.d(TAG, "isAddOperate=" + isAddOperate + ",currSelectedEq=" + currSelectedEq);
+        Logger.d(TAG, "isAddOperate=" + isAddOperate + ",currSelectedEq=" + currSelectedEq);
         if (currSelectedEq == null) {
             currSelectedEq = new EQModel();
             currSelectedEq.eqType = GraphicEQPreset.User.value();
@@ -173,19 +174,19 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                             + equalizerView.getMarginTop() + equalizerView.getMarginBottom()));
                     equalizerParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             eqViewHeight);
-                    Log.d(TAG, "KEYBOARD_STATE_INIT:height=" + eqViewHeight);
+                    Logger.d(TAG, "KEYBOARD_STATE_INIT:height=" + eqViewHeight);
                     equalizerLayout.setLayoutParams(equalizerParams);
                     equalizerView.setCustomHeight(eqViewHeight);
                     break;
                 case KeyboardLayout.KEYBOARD_STATE_HIDE:
-                    Log.d(TAG, "KEYBOARD_STATE_HIDE");
+                    Logger.d(TAG, "KEYBOARD_STATE_HIDE");
                     eqEditLayoutParams.bottomMargin = getResources().getDimensionPixelSize(R.dimen.eq_name_edit_bottom_margin);
                     equalizerLayout.setLayoutParams(equalizerParams);
                     equalizerView.setSupportDrag(true);
                     viewKeyboardLayout.setBackgroundResource(R.color.transparent);
                     break;
                 case KeyboardLayout.KEYBOARD_STATE_SHOW:
-                    Log.d(TAG, "KEYBOARD_STATE_SHOW");
+                    Logger.d(TAG, "KEYBOARD_STATE_SHOW");
                     eqEditLayoutParams.bottomMargin = getResources().getDimensionPixelSize(R.dimen.eq_name_edit_bottom_margin_show);
                     equalizerLayout.setLayoutParams(equalizerParams);
                     equalizerView.setSupportDrag(false);

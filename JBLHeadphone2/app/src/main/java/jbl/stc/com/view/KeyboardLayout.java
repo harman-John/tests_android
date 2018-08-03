@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
+import jbl.stc.com.logger.Logger;
+
 
 public class KeyboardLayout extends RelativeLayout {
 
@@ -59,7 +61,7 @@ public class KeyboardLayout extends RelativeLayout {
 
         if (mHasInit) {
             //只能是adjustResize的情况
-            Log.d("keyboard", "keyboard height = " + Math.abs(heightPrevious - heightNow) + ",heightPrevious=" + heightPrevious + ",heightNow=" + heightNow);
+            Logger.d("keyboard", "keyboard height = " + Math.abs(heightPrevious - heightNow) + ",heightPrevious=" + heightPrevious + ",heightNow=" + heightNow);
             if (!mHasKeyboard && Math.abs(heightPrevious - heightNow) > mJudgeKeyboardHeight) {
                 mHasKeyboard = true;
                 notifyStateChanged(KEYBOARD_STATE_SHOW, Math.abs(heightPrevious - heightNow));

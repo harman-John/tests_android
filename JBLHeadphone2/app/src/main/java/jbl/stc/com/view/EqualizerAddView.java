@@ -25,6 +25,7 @@ import java.util.List;
 import jbl.stc.com.R;
 import jbl.stc.com.entity.CircleModel;
 import jbl.stc.com.listener.OnEqChangeListener;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.StringUtils;
 import jbl.stc.com.utils.UiUtils;
@@ -188,7 +189,7 @@ public class EqualizerAddView extends View {
     }
 
     public void setCurveData(float[] eqPointX, float[] eqPointY, int curveColor) {
-        Log.d(TAG, "setCurveData size=" + eqPointX.length + ",pointX=" + Arrays.toString(eqPointX) + ",pointY=" + Arrays.toString(eqPointY));
+        Logger.d(TAG, "setCurveData size=" + eqPointX.length + ",pointX=" + Arrays.toString(eqPointX) + ",pointY=" + Arrays.toString(eqPointY));
         this.curveColor = curveColor;
         pointX.clear();
         pointY.clear();
@@ -275,7 +276,7 @@ public class EqualizerAddView extends View {
     }
 
     private void drawLine(Canvas canvas) {
-        Log.d(TAG, "CenterHeight:" + String.valueOf((mHeight - marginTop - marginBottom) / 2));
+        Logger.d(TAG, "CenterHeight:" + String.valueOf((mHeight - marginTop - marginBottom) / 2));
         //draw center horizontal line
         mLinePaint.reset();
         if(mShowType == 1){
@@ -357,7 +358,7 @@ public class EqualizerAddView extends View {
      * Draw Curve
      */
     private void drawCurveChart(Canvas canvas) {
-        Log.d(TAG, "drawCurve");
+        Logger.d(TAG, "drawCurve");
         mCurvePaint.setColor(ContextCompat.getColor(mContext, curveColor));
         curvePath.reset();
         pointX.clear();
@@ -366,14 +367,14 @@ public class EqualizerAddView extends View {
             pointX.add(controlCircles.get(i).getX());
             pointY.add(controlCircles.get(i).getY());
         }
-        Log.d(TAG, "controlCircles size" + String.valueOf(controlCircles.size()));
+        Logger.d(TAG, "controlCircles size" + String.valueOf(controlCircles.size()));
         if (controlCircles.size() > 2) {
             STEP = (8 * AppUtils.EQ_VIEW_DEFAULT_STEP) / (controlCircles.size() - 1);
         }
 
         List<Cubic> calculate_x = calculateCurve(pointX);
         List<Cubic> calculate_y = calculateCurve(pointY);
-        Log.d(TAG, "calculate_x size" + String.valueOf(calculate_x.size()));
+        Logger.d(TAG, "calculate_x size" + String.valueOf(calculate_x.size()));
         float nearX;
         float lastX;
         float lastY;
@@ -410,7 +411,7 @@ public class EqualizerAddView extends View {
                     if (lineToX < nearX) {
                         lineToX = nearX + 0.5f + (j - STEP / 2 + 1) * 0.02f;
                     }
-                    //Log.d(TAG, "moreHalf=" + moreHalf + ",j=" + j + ",STEP=" + STEP + ",lastX=" + lastX);
+                    //Logger.d(TAG, "moreHalf=" + moreHalf + ",j=" + j + ",STEP=" + STEP + ",lastX=" + lastX);
                     curvePath.lineTo(lineToX, lineToY);
                     allPointCircles.add(produceCirce(lineToX, lineToY, CIRCLE_R));
                     nearX = lineToX;
@@ -494,7 +495,7 @@ public class EqualizerAddView extends View {
     private float getDbValueFromY(float Y) {
         //get one point float
         float value = (maxValue - (Y - marginTop) / getViewHeight() * (maxValue - minValue));
-        Log.d(TAG, "Y:" + String.valueOf(Y) + "ViewHeight:" + String.valueOf(getViewHeight()) + "value:" + String.valueOf(value));
+        Logger.d(TAG, "Y:" + String.valueOf(Y) + "ViewHeight:" + String.valueOf(getViewHeight()) + "value:" + String.valueOf(value));
         return Float.valueOf(StringUtils.getOnePointFloat(value));
     }
 
@@ -527,7 +528,7 @@ public class EqualizerAddView extends View {
             mWidth = width;
             mHeight = height;
         }
-        //Log.d(TAG, "onMeasure mWidth=" + mWidth + ",mHeight=" + mHeight + ",hasDrag=" + hasDrag);
+        //Logger.d(TAG, "onMeasure mWidth=" + mWidth + ",mHeight=" + mHeight + ",hasDrag=" + hasDrag);
         if (!hasDrag) {
             if (mEqPointX != null) {
                 controlCircles.clear();
@@ -572,7 +573,7 @@ public class EqualizerAddView extends View {
                         touchX = event.getX();
                         touchY = event.getY();
                         where = touchWhere(touchX, touchY);
-                        Log.d(TAG, "ACTION_DOWN touchWhere = " + where + " touchX=" + touchX + ",touchY=" + touchY + ",STEP=" + STEP);
+                        Logger.d(TAG, "ACTION_DOWN touchWhere = " + where + " touchX=" + touchX + ",touchY=" + touchY + ",STEP=" + STEP);
                         hasDrag = true;
                         if (where == -1) {
                             where = handleAddPoint(touchX, touchY);
@@ -583,7 +584,7 @@ public class EqualizerAddView extends View {
                     if (supportDrag && where >= 0 && where < controlCircles.size()) {
                         float value = getDbValueFromY(event.getY());
                         int freq = getFreqFromX(event.getX());
-                        //Log.d(TAG, "ACTION_MOVE touchX=" + event.getX() + ",touchY=" + event.getY() + ",freq=" + freq + ",where=" + where + ",size=" + controlCircles.size());
+                        //Logger.d(TAG, "ACTION_MOVE touchX=" + event.getX() + ",touchY=" + event.getY() + ",freq=" + freq + ",where=" + where + ",size=" + controlCircles.size());
 
                         if (freq > maxFrequency) {
                             freq = maxFrequency;
@@ -647,7 +648,7 @@ public class EqualizerAddView extends View {
             if (currIndex > 0 && currIndex < size - 1) {
                 float preX = controlCircles.get(currIndex - 1).getX();
                 float nextX = controlCircles.get(currIndex + 1).getX();
-                //Log.d(TAG,"currX="+currX+",preX="+preX+",rearX="+rearX);
+                //Logger.d(TAG,"currX="+currX+",preX="+preX+",rearX="+rearX);
                 if (currX <= preX + nearPointFreqX || currX >= nextX - nearPointFreqX) {
                     controlCircles.remove(currIndex);
                     where = -1;
@@ -680,7 +681,7 @@ public class EqualizerAddView extends View {
                 controlCircles.add(addWhere, produceCirce(addCirce.getX(), addCirce.getY(), CIRCLE_R));
             }
         }
-        //Log.d(TAG, "handleAddPoint addIndex=" + addIndex + ",addWhere=" + addWhere + ",SIZE=" + controlCircles.size());
+        //Logger.d(TAG, "handleAddPoint addIndex=" + addIndex + ",addWhere=" + addWhere + ",SIZE=" + controlCircles.size());
         return addWhere;
     }
 
@@ -711,7 +712,7 @@ public class EqualizerAddView extends View {
             }
         }
         float dbValue = getDbValueFromY(allPointCircles.get(nearIndex).getY());
-        //Log.d(TAG, "freq=" + freq + ",ReX=" + relativelyX +
+        //Logger.d(TAG, "freq=" + freq + ",ReX=" + relativelyX +
         //        ",nearX=" + allPointCircles.get(nearIndex).getX() + ",nearY=" + allPointCircles.get(nearIndex).getY() + ",dbValue=" + dbValue);
         return dbValue;
     }

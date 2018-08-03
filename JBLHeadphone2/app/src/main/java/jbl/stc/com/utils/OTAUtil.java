@@ -5,6 +5,7 @@ import android.util.Log;
 
 import jbl.stc.com.data.ConnectedDeviceType;
 import jbl.stc.com.data.DeviceConnectionManager;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 
@@ -52,7 +53,7 @@ public class OTAUtil {
         } else {
             url = getAwareUrl(context);
         }
-        Log.i(TAG,"OTA url = "+ url);
+        Logger.d(TAG,"OTA url = "+ url);
         return url;
     }
 

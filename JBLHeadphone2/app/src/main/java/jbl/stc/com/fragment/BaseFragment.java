@@ -38,6 +38,7 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.listener.AppLightXDelegate;
 import jbl.stc.com.listener.AppUSBDelegate;
 import jbl.stc.com.listener.OnMainAppListener;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -72,13 +73,13 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate()");
+        Logger.d(TAG, "onCreate()");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView()");
+        Logger.d(TAG, "onCreateView()");
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -93,7 +94,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume()");
+        Logger.d(TAG, "onResume()");
 
         DashboardActivity.getDashboardActivity().setAppLightXDelegate(this);
     }
@@ -101,7 +102,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d(TAG, "onDestroyView()");
+        Logger.d(TAG, "onDestroyView()");
     }
 
     protected void hideSoftKeyBoard() {
@@ -198,21 +199,21 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     public void removeAllFragment() {
         Fragment fr = getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if (fr == null) {
-            Log.i(TAG,"fr is null");
+            Logger.d(TAG,"fr is null");
             return;
         }
         try {
             FragmentManager manager = getActivity().getSupportFragmentManager();
             int count = manager.getBackStackEntryCount();
-            Log.i(TAG, "count = " + count);
+            Logger.d(TAG, "count = " + count);
             while (count > 0) {
                 getActivity().getSupportFragmentManager().popBackStackImmediate();
                 manager = getActivity().getSupportFragmentManager();
                 count = manager.getBackStackEntryCount();
-                Log.i(TAG, "back stack count = " + count);
+                Logger.d(TAG, "back stack count = " + count);
             }
         }catch (Exception e){
-            Log.e(TAG,"Fragment is not shown, then popBack will have exception ");
+            Logger.e(TAG,"Fragment is not shown, then popBack will have exception ");
         }
     }
 

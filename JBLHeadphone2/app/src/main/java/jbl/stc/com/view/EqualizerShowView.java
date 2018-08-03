@@ -20,6 +20,7 @@ import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.entity.CircleModel;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.UiUtils;
 
@@ -107,7 +108,7 @@ public class EqualizerShowView extends View {
     }
 
     public void setCurveData(float[] eqPointX, float[] eqPointY, int curveColor) {
-        Log.d(TAG, "setCurveData size=" + eqPointX.length + ",pointX=" + Arrays.toString(eqPointX) + ",pointY=" + Arrays.toString(eqPointY));
+        Logger.d(TAG, "setCurveData size=" + eqPointX.length + ",pointX=" + Arrays.toString(eqPointX) + ",pointY=" + Arrays.toString(eqPointY));
         this.curveColor = curveColor;
         pointX = new ArrayList<>();
         pointY = new ArrayList<>();
@@ -174,7 +175,7 @@ public class EqualizerShowView extends View {
     }
 
     private void drawLine(Canvas canvas) {
-        Log.d(TAG,"CenterHeight:"+String.valueOf((mHeight- marginTop-marginBottom)/2));
+        Logger.d(TAG,"CenterHeight:"+String.valueOf((mHeight- marginTop-marginBottom)/2));
         //draw center horizontal line
         mLinePaint.reset();
         mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.light_white));
@@ -413,7 +414,7 @@ public class EqualizerShowView extends View {
                 nearIndex = i;
             }
         }
-        //Log.d(TAG, "freq=" + freq + ",ReX=" + relativelyX + ",nearIndex=" + nearIndex + ",XX=" + allPointCircles.get(nearIndex).getX());
+        //Logger.d(TAG, "freq=" + freq + ",ReX=" + relativelyX + ",nearIndex=" + nearIndex + ",XX=" + allPointCircles.get(nearIndex).getX());
         return getValueFromY(allPointCircles.get(nearIndex).getY());
     }
 

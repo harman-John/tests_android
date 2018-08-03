@@ -224,7 +224,7 @@ public class AppUtils {
 //                }
 //                frame.setCallback(null);
 //            }
-//            Log.d(TAG, "tryRecycleAnimationDrawable()");
+//            Logger.d(TAG, "tryRecycleAnimationDrawable()");
 //            animationDrawable.setCallback(null);
 //        }
 //    }

@@ -15,11 +15,10 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 
 import java.io.FileNotFoundException;
@@ -62,12 +61,13 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private final static int MSG_SHOW_DISCOVERY = 2;
     private final static int MSG_OTA_SUCCESS = 3;
     private final static int MSG_START_SCAN = 4;
+    private final static int MSG_CHECK_DEVICES = 5;
 
     private DashboardHandler dashboardHandler = new DashboardHandler(Looper.getMainLooper());
 
     private CheckUpdateAvailable checkUpdateAvailable;
 
-    public static boolean isDoingOTANow = false;
+    public static boolean isOTADoing = false;
     public static CopyOnWriteArrayList<FirmwareModel> mFwlist = new CopyOnWriteArrayList<>();
 
     public TutorialAncDialog tutorialAncDialog;
@@ -81,7 +81,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate");
+        Logger.d(TAG, "onCreate");
         setContentView(R.layout.activity_dashboard);
         registerReceiver(mBtReceiver, makeFilter());
         dashboardActivity = this;
@@ -205,25 +205,25 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume");
+        Logger.d(TAG, "onResume");
         checkBluetooth();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(TAG, "onPause");
+        Logger.d(TAG, "onPause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i(TAG, "onStop");
+        Logger.d(TAG, "onStop");
     }
 
     @Override
     protected void onDestroy() {
-        Log.i(TAG, "onDestroy");
+        Logger.d(TAG, "onDestroy");
         unregisterReceiver(mBtReceiver);
         super.onDestroy();
     }
@@ -231,21 +231,21 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     @Override
     public void connectDeviceStatus(boolean isConnected) {
         super.connectDeviceStatus(isConnected);
-        Log.d(TAG, " connectDeviceStatus isConnected = " + isConnected);
+        Logger.d(TAG, " connectDeviceStatus isConnected = " + isConnected);
 
         if (isConnected) {
-            if (isDoingOTANow) {
+            if (isOTADoing ) {
                 dashboardHandler.sendEmptyMessageDelayed(MSG_OTA_SUCCESS, 200);
             } else {
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (!(fr != null && fr instanceof HomeFragment)) {
+                if (!(fr != null && fr instanceof HomeFragment) && !isNeedOtaAgain) {
                     dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
                 }
             }
 
         } else {
-            Logger.d(TAG,"isDoingOTANow = "+isDoingOTANow);
-            if (!isDoingOTANow) {
+            Logger.d(TAG,"isOTADoing = "+ isOTADoing);
+            if (!isOTADoing) {
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr != null && fr instanceof HomeFragment) {
                     Logger.d(TAG,"disconnect home fragment ");
@@ -255,7 +255,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     }
                 }else{
                     Logger.d(TAG,"disconnect not home fragment ");
-                    if (getMyDeviceConnected().connectStatus == ConnectStatus.DEVICE_CONNECTED){
+                    if (getMyDeviceConnected()!= null && getMyDeviceConnected().connectStatus == ConnectStatus.DEVICE_CONNECTED){
                         Logger.d(TAG,"disconnect not home fragment removeAllFragment");
                         removeAllFragment();
                     }
@@ -286,16 +286,11 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     public void checkDevices(Set<String> deviceList) {
-        Logger.i(TAG, "checkDevices deviceList = " + deviceList);
         super.checkDevices(deviceList);
-        if (hasNewDevice(deviceList)) {
-            initMyGridAdapterList();
-            updateConnectedStatusAdapter(deviceList);
-            showMyProducts();
-        } else {
-            updateConnectedStatusAdapter(deviceList);
-            myGridAdapter.setMyAdapterList(lists);
-        }
+        Message msg = new Message();
+        msg.what = MSG_CHECK_DEVICES;
+        msg.obj = deviceList;
+        dashboardHandler.sendMessage(msg);
     }
 
     public boolean isConnected() {
@@ -330,6 +325,19 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     @Override
     public void onBackPressed() {
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+        if (fr!= null && fr instanceof OTAFragment && mIsInBootloader && isConnected) {
+            final Toast toast = Toast.makeText(this, "Can't perform this action.", Toast.LENGTH_SHORT);
+            toast.show();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    toast.cancel();
+                }
+            }, 300);
+            return;
+        }
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             AppUtils.hideFromForeground(this);
         } else {
@@ -380,13 +388,13 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     break;
                 }
                 case MSG_SHOW_HOME_FRAGMENT: {
-                    Log.i(TAG, "show homeFragment");
+                    Logger.d(TAG, "show homeFragment");
                     removeAllFragment();
                     goHomeFragment(getMyDeviceConnected());
                     break;
                 }
                 case MSG_SHOW_DISCOVERY: {
-                    Log.i(TAG, "show discovery page");
+                    Logger.d(TAG, "show discovery page");
                     if (lists.size() == 0) {
                         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                         if (fr == null) {
@@ -398,7 +406,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     break;
                 }
                 case MSG_OTA_SUCCESS: {
-                    Log.i(TAG, "Ota success");
+                    Logger.d(TAG, "Ota success");
                     checkDevices(devicesSet);
                     Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                     if (fr != null && fr instanceof OTAFragment) {
@@ -411,6 +419,19 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                         startA2DPCheck();
                     }
                     dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
+                    break;
+                }
+                case MSG_CHECK_DEVICES:{
+                    Set<String> deviceList = (Set<String>)msg.obj;
+                    Logger.i(TAG, "MSG_CHECK_DEVICES deviceList = " + deviceList);
+                    if (hasNewDevice(deviceList)) {
+                        initMyGridAdapterList();
+                        updateConnectedStatusAdapter(deviceList);
+                        showMyProducts();
+                    } else {
+                        updateConnectedStatusAdapter(deviceList);
+                        myGridAdapter.setMyAdapterList(lists);
+                    }
                     break;
                 }
             }
@@ -458,16 +479,17 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     public void startCheckingIfUpdateIsAvailable() {
-        Log.d(TAG, "startCheckingIfUpdateIsAvailable isConnectionAvailable=" + FirmwareUtil.isConnectionAvailable(this));
+        Logger.d(TAG, "startCheckingIfUpdateIsAvailable isConnectionAvailable=" + FirmwareUtil.isConnectionAvailable(this));
         String srcSavedVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, this, "");
         String currentVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.APP_VERSION, this, "");
+        Logger.d(TAG,"srcSavedVersion = "+srcSavedVersion+",currentVersion = "+currentVersion);
         if (FirmwareUtil.isConnectionAvailable(this) && !TextUtils.isEmpty(srcSavedVersion) && !TextUtils.isEmpty(currentVersion)) {
-            Log.d(TAG, "checkUpdateAvailable = " + checkUpdateAvailable);
+            Logger.d(TAG, "checkUpdateAvailable = " + checkUpdateAvailable);
             if (checkUpdateAvailable != null && checkUpdateAvailable.isRunnuning()) {
-                Log.d(TAG, "CheckUpdateAvailable is running so return");
+                Logger.d(TAG, "CheckUpdateAvailable is running so return");
                 return;
             }
-            Log.d(TAG, "CheckUpdateAvailable.start()");
+            Logger.d(TAG, "CheckUpdateAvailable.start()");
             checkUpdateAvailable = CheckUpdateAvailable.start(this, this, this, OTAUtil.getURL(this), srcSavedVersion, currentVersion);
         }
     }

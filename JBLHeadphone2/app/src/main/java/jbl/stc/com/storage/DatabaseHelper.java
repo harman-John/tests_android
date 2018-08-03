@@ -11,6 +11,7 @@ import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import java.util.ArrayList;
 
 import jbl.stc.com.constant.EqDbKey;
+import jbl.stc.com.logger.Logger;
 
 
 /**
@@ -67,13 +68,13 @@ public class DatabaseHelper extends SQLiteOpenHelper implements EqDbKey {
      * <p>Creates table named AKG_EQ </p>
      */
     private void createTableEqSettings(SQLiteDatabase db) {
-        Log.d(TAG, "createTableEqSettings");
+        Logger.d(TAG, "createTableEqSettings");
         db.execSQL(CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(TAG, "onUpgrade newVersion=" + newVersion + ",oldVersion=" + oldVersion);
+        Logger.d(TAG, "onUpgrade newVersion=" + newVersion + ",oldVersion=" + oldVersion);
         if (oldVersion < newVersion) {
             String deleteSql = "drop table " + AKG_EQ;
             db.execSQL(deleteSql);

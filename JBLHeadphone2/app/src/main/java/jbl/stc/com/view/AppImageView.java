@@ -26,7 +26,7 @@ public class AppImageView extends AppCompatImageView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //Log.d("AppImageView", "onTouchEvent " + event.getAction());
+        //Logger.d("AppImageView", "onTouchEvent " + event.getAction());
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:

@@ -133,7 +133,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home,
                 container, false);
-        Log.i(TAG, "onCreateView");
+        Logger.d(TAG, "onCreateView");
         Bundle bundle = getArguments();
         if (bundle != null) {
             myDevice = bundle.getParcelable(JBLConstant.KEY_MY_DEVICE);
@@ -349,7 +349,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
-        Log.d(TAG, "onResume " + DeviceConnectionManager.getInstance().getCurrentDevice());
+        Logger.d(TAG, "onResume " + DeviceConnectionManager.getInstance().getCurrentDevice());
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                 case NONE:
@@ -583,7 +583,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         ANCControlManager.getANCManager(getContext()).getCurrentPreset(lightX);
         ANCControlManager.getANCManager(getContext()).getFirmwareInfo(lightX);
         if (lightX != null) {
-            Log.i(TAG, "getDeviceInfo");
+            Logger.d(TAG, "getDeviceInfo");
             lightX.readConfigModelNumber();
             lightX.readConfigProductName();
             lightX.readBootVersionFileResource();
@@ -737,7 +737,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void updateBattery(int value) {
-        Log.d(TAG, "battery value = " + value);
+        Logger.d(TAG, "battery value = " + value);
         if (getActivity() == null) {
             return;
         }
@@ -768,23 +768,23 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private void updateFirmwareVersion() {
         audioManager am = AvneraManager.getAvenraManager(getActivity()).getAudioManager();
         if (am == null) {
-            Log.i(TAG, "am is null, not 150NC device");
+            Logger.d(TAG, "am is null, not 150NC device");
             return;
         }
         AccessoryInfo accessoryInfo = am.getAccessoryStatus();
         PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), getActivity());
         deviceName = accessoryInfo.getModelNumber();
         AppUtils.setModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext(), deviceName);
-        Log.d(TAG, "modelName : " + accessoryInfo.getModelNumber());
+        Logger.d(TAG, "modelName : " + accessoryInfo.getModelNumber());
         updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
         String version = accessoryInfo.getFirmwareRev();
         if (version.length() >= 5) {
-            Log.d(TAG, "currentVersion : " + version);
+            Logger.d(TAG, "currentVersion : " + version);
             PreferenceUtils.setString(AppUtils.getModelNumber(getActivity()), PreferenceKeys.APP_VERSION, version, getActivity());
         }
         String hardVersion = accessoryInfo.getHardwareRev();
         if (hardVersion.length() >= 5) {
-            Log.d(TAG, "hardVersion : " + hardVersion);
+            Logger.d(TAG, "hardVersion : " + hardVersion);
 //                JBLPreferenceUtil.setString(AppUtils.RSRC_VERSION, fwVersion, getActivity());
             PreferenceUtils.setString(AppUtils.getModelNumber(getActivity()), PreferenceKeys.RSRC_VERSION, hardVersion, getActivity());
         }
@@ -855,9 +855,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
         super.receivedResponse(command, values, status);
-        Log.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
+        Logger.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
         if (values.size() <= 0) {
-            Log.d(TAG, "return, values size is " + values.size());
+            Logger.d(TAG, "return, values size is " + values.size());
             return;
         }
         switch (command) {
@@ -890,7 +890,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 break;
             }
             case AmCmds.CMD_GrEqBandGains: {
-                Log.d(TAG, "EqBand command aaaa=" + command + ",values=" + values + ",status=" + status);
+                Logger.d(TAG, "EqBand command aaaa=" + command + ",values=" + values + ",status=" + status);
                 if (values != null && values.size() > 0) {
                    /* Logger.d(TAG,"name = "+ values.get(0).getName());
                     byte[] v = (byte[]) (values.get(0).getValue());
@@ -912,19 +912,19 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
             case AmCmds.CMD_FWInfo: {
                 FirmwareUtil.currentFirmware = Integer.valueOf(values.get(3).getValue().toString());
-                Log.d(TAG, "FirmwareUtil.currentFirmware =" + FirmwareUtil.currentFirmware);
+                Logger.d(TAG, "FirmwareUtil.currentFirmware =" + FirmwareUtil.currentFirmware);
                 break;
             }
             case AmCmds.CMD_RawLeft:
-                Log.d(TAG, "CMD_RawLeft =" + values.iterator().next().getValue().toString());
+                Logger.d(TAG, "CMD_RawLeft =" + values.iterator().next().getValue().toString());
                 sendMessageTo(MSG_AA_LEFT, values.iterator().next().getValue().toString());
                 break;
             case AmCmds.CMD_RawRight:
-                Log.d(TAG, "CMD_RawRight =" + values.iterator().next().getValue().toString());
+                Logger.d(TAG, "CMD_RawRight =" + values.iterator().next().getValue().toString());
                 sendMessageTo(MSG_AA_RIGHT, values.iterator().next().getValue().toString());
                 break;
             case AmCmds.CMD_GraphicEqPresetBandSettings: {
-                Log.d(TAG, "EqBand command aaaa=" + command + ",values=" + values + ",status=" + status);
+                Logger.d(TAG, "EqBand command aaaa=" + command + ",values=" + values + ",status=" + status);
                 /*if (values!=null&&values.size()>0){
                     for (int i=0;i<values.size();i++){
                         Logger.d(TAG,"EqBand name = "+ values.get(i).getName());
@@ -1045,7 +1045,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 //                        Calibration.getCalibration().setIsCalibrationComplete(Utility.getBoolean(var4, 0));
                     break;
                 case AppANCAwarenessPreset:
-                    Log.d(TAG, "AppANCAwarenessPreset");
+                    Logger.d(TAG, "AppANCAwarenessPreset");
                     int intValue = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0);
 //                    update(intValue);
                     sendMessageTo(MSG_AMBIENT_LEVEL, String.valueOf(intValue));
@@ -1071,7 +1071,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 case AppGraphicEQCurrentPreset:
                     long currentPreset = Utility.getUnsignedInt(var4, 0);
-                    Log.d(TAG, command + " is " + currentPreset);
+                    Logger.d(TAG, command + " is " + currentPreset);
                     updateCurrentEQ((int) currentPreset);
                     break;
                 case AppGraphicEQBandFreq:
@@ -1079,14 +1079,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 case AppBatteryLevel:
                     long batteryValue = Utility.getUnsignedInt(var4, 0);
-                    Log.d(TAG, command + " is " + batteryValue);
+                    Logger.d(TAG, command + " is " + batteryValue);
                     updateBattery((int) batteryValue);
                     break;
                 case AppFirmwareVersion:
                     int major = var4[0];
                     int minor = var4[1];
                     int revision = var4[2];
-                    Log.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision);
+                    Logger.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision);
                     PreferenceUtils.setString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, major + "." + minor + "." + revision, getActivity());
                     break;
 
@@ -1113,13 +1113,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void lightXReadBootResult(final LightX lightX, final Command command, final boolean success, final int i, final byte[] buffer) {
-        Log.d(TAG, "lightXReadBootResult command is " + command + " result is " + success);
+        Logger.d(TAG, "lightXReadBootResult command is " + command + " result is " + success);
         if (getActivity() == null) {
-            Log.d(TAG, "Activity is null");
+            Logger.d(TAG, "Activity is null");
             return;
         }
         if (!isAdded()) {
-            Log.d(TAG, "This fragment is null");
+            Logger.d(TAG, "This fragment is null");
             return;
         }
         if (success) {
@@ -1131,7 +1131,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     int revision = result[2];
                     String rsrcSavedVersion = major + "." + minor + "." + revision;
                     PreferenceUtils.setString(AppUtils.getModelNumber(getActivity()), PreferenceKeys.RSRC_VERSION, rsrcSavedVersion, getActivity());
-                    Log.d(TAG, "rsrcSavedVersion=" + rsrcSavedVersion);
+                    Logger.d(TAG, "rsrcSavedVersion=" + rsrcSavedVersion);
                     DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable(); /** Now start checking for update to show red bubble on setting icon*/
                     registerConnectivity();
                 }
@@ -1146,7 +1146,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void lightXAppReceivedPush(LightX var1, Command command, byte[] var4) {
         super.lightXAppReceivedPush(var1, command, var4);
-        Log.d(TAG, "lightXAppReceivedPush command is " + command);
+        Logger.d(TAG, "lightXAppReceivedPush command is " + command);
         switch (command) {
             case AppPushANCEnable:
                 ANCControlManager.getANCManager(mContext).getANCValue(lightX);
@@ -1161,7 +1161,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void lightXReadConfigResult(LightX var1, Command command, boolean success, String var4) {
         super.lightXReadConfigResult(var1, command, success, var4);
-        Log.i(TAG, "lightXReadConfigResult");
+        if (getActivity() == null){
+            return;
+        }
+        Logger.d(TAG, "lightXReadConfigResult");
         if (success) {
             switch (command) {
                 case ConfigProductName:
@@ -1186,7 +1189,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void lightXAppWriteResult(LightX var1, Command var2, boolean var3) {
         super.lightXAppWriteResult(var1, var2, var3);
-        Log.i(TAG, "lightXAppWriteResult");
+        Logger.d(TAG, "lightXAppWriteResult");
         if (var3) {
             switch (var2) {
                 case App_0xB3:
@@ -1211,22 +1214,20 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void lightXIsInBootloader(LightX var1, boolean isInBootloaderMode) {
         super.lightXIsInBootloader(var1, isInBootloaderMode);
-        Log.d(TAG, "lightXIsInBootloader =" + isInBootloaderMode);
+        Logger.d(TAG, "lightXIsInBootloader =" + isInBootloaderMode);
         if (isInBootloaderMode) {
             switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                 case NONE:
                     break;
                 case Connected_USBDevice:
                 case Connected_BluetoothDevice:
-                    if (getActivity().getSupportFragmentManager().findFragmentByTag(OTAFragment.TAG) != null) {
-                        Log.d(TAG, "OTA is not finish, so call OTAFragment to continue");
-                        return;
-                    }
                     try {
-                        Log.d(TAG, "Enter OTAFragment page");
+                        Logger.d(TAG, "Enter OTAFragment page");
+                        OTAFragment otaFragment = new OTAFragment();
                         Bundle bundle = new Bundle();
                         bundle.putBoolean("lightXIsInBootloader", true);
-                        switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                        otaFragment.setArguments(bundle);
+                        switchFragment(otaFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                     } catch (Exception e) {
                         e.getMessage();
                     }

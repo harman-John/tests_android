@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 
 import jbl.stc.com.R;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.utils.UiUtils;
 /**
  * @name JBLHeadphone2
@@ -53,7 +54,7 @@ public class EqArcView extends View{
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenHeight = dm.heightPixels;
         screenWidth =dm.widthPixels;
-        Log.d("cyx","screeheight:"+screenHeight+"screenWidth:"+screenWidth);
+        Logger.d("cyx","screeheight:"+screenHeight+"screenWidth:"+screenWidth);
         bitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.eq_delete);
 
     }
@@ -75,7 +76,7 @@ public class EqArcView extends View{
         //canvas.drawArc(rect1, 0, 90, true, paint);
 
         //canvas.drawRect(screenWidth- UiUtils.dip2px(getContext(),80), screenHeight-UiUtils.dip2px(getContext(),80), screenWidth, screenHeight,paint);
-        //Log.d("cyx","StartX:"+(screenWidth- UiUtils.dip2px(getContext(),80))+"StartY:"+(screenHeight-UiUtils.dip2px(getContext(),80)+"EndX:"+screenWidth+"EndY:"+screenHeight));
+        //Logger.d("cyx","StartX:"+(screenWidth- UiUtils.dip2px(getContext(),80))+"StartY:"+(screenHeight-UiUtils.dip2px(getContext(),80)+"EndX:"+screenWidth+"EndY:"+screenHeight));
         //canvas.drawCircle();
 
         canvas.drawCircle(radius,radius,radius,paint);

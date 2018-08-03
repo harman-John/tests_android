@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.Action;
@@ -94,11 +95,11 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mBluetoothStateChange, intentFilter);
         usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-//        Intent intent = getIntent();
-//        String action = intent.getAction();
-//        if (TextUtils.isEmpty(action)) {
-//            initUSB();
-//        }
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        if (TextUtils.isEmpty(action)) {
+            initUSB();
+        }
     }
 
     @Override
@@ -112,15 +113,15 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         super.onResume();
         Logger.d(TAG, "onResume");
         try {
-//            Intent intent = getIntent();
-//            String action = intent.getAction();
-//            if (!TextUtils.isEmpty(action) && "android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action)) {
-            synchronized (this) {
-                if (!FirmwareUtil.isUpdatingFirmWare.get()) {
-                    initUSB();
+            Intent intent = getIntent();
+            String action = intent.getAction();
+            if (!TextUtils.isEmpty(action) && "android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action)) {
+                synchronized (this) {
+                    if (!FirmwareUtil.isUpdatingFirmWare.get()) {
+                        initUSB();
+                    }
                 }
             }
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -132,14 +133,11 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     }
 
     protected synchronized void initUSB() {
-        if (isConnected) {
-            Logger.d(TAG, "Already connected");
-            return;
-        }
         Logger.d(TAG, "Initializing USB first");
         UsbDevice device = null;
         UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
         HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
+        Logger.d(TAG, "deviceList size = "+deviceList.size());
         for (UsbDevice usbDevice : deviceList.values()) {
             device = usbDevice;
         }
@@ -170,7 +168,6 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             usbManager.requestPermission(device, mPermissionIntent);
         } else {
             mUSB.deviceAttached(device);
-
         }
     }
 
@@ -249,7 +246,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         }
     }
 
-    public void removeDeviceList(String key){
+    public void removeDeviceList(String key) {
         devicesSet.remove(key);
     }
 
@@ -268,8 +265,8 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             if (profile == BluetoothProfile.A2DP) {
                 List<BluetoothDevice> deviceList = proxy.getConnectedDevices();
                 String temp = null;
-                for (String key: devicesSet){
-                    if (key.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)){
+                for (String key : devicesSet) {
+                    if (key.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
                         temp = key;
                         break;
                     }
@@ -565,7 +562,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     mLightX = null;
                 }
                 mLightX = new LightX(ModuleId.Bluetooth, this, new BluetoothSocketWrapper(bluetoothSocket));
-                mLightX.mIs750Device = AppUtils.is750Device(DeviceManagerActivity.this);
+                LightX.mIs750Device = AppUtils.is750Device(DeviceManagerActivity.this);
             } catch (IOException e) {
                 e.printStackTrace();
                 Logger.e(TAG, "Unable to create LightX handler for " + bluetooth.deviceName(bluetoothDevice) + ": " + e.getLocalizedMessage());
@@ -771,6 +768,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
         }
     }
 
+    public static boolean isNeedOtaAgain = false;
     @Override
     public boolean lightXAwaitingReply(LightX lightX, Command command, final int totalElapsedMsSinceFirstTransmission) {
         Logger.d(TAG, "lightXAwaitingReply:command is " + command + " totalElapsedMsSinceFirstTransmission is " + totalElapsedMsSinceFirstTransmission);
@@ -786,7 +784,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
             public void run() {
                 if (showCommunicationIssue && totalElapsedMsSinceFirstTransmission > 5000) {
                     showCommunicationIssue = false;
-                    AlertsDialog.showToast(DeviceManagerActivity.this, getString(R.string.timeout));
+                    AlertsDialog.showToast(getApplicationContext(), getString(R.string.timeout));
                 }
             }
         });
@@ -806,6 +804,7 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     mHandler.removeCallbacks(resetRunnable);
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                         case Connected_USBDevice:
+                            isNeedOtaAgain = true;
                             initUSB();
                             break;
                         default:
@@ -990,14 +989,17 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
     public void usbDetached(UsbDevice usbDevice) {
         Logger.d(TAG, "Device detached.");
         Logger.d(TAG, "USB " + DeviceConnectionManager.getInstance().getCurrentDevice().toString());
-        if (DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.NONE || DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.Connected_USBDevice) {
+        if (DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.NONE
+                || DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.Connected_USBDevice) {
             Logger.d(TAG, "usbDetached USB disconnected");
             DeviceConnectionManager.getInstance().setCurrentDevice(ConnectedDeviceType.NONE);
             if (appLightXDelegate != null) {
                 appLightXDelegate.headPhoneStatus(false);
             }
             isConnected = false;
-            connectDeviceStatus(false);
+            if (!mIsEnterBootloader) {
+                connectDeviceStatus(false);
+            }
             disconnected = true;
             devicesSet.remove(usbDevice.getProductName() + "-" + usbDevice.getDeviceId());
             Logger.d(TAG, "usbDetached Initializing Bluetooth.");
@@ -1011,11 +1013,9 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                 mUSB.close();
                 mUSB = null;
             }
+
             BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (mBluetoothAdapter == null) {
-                // Device does not support Bluetooth
-                Logger.d(TAG, "Device does not support Bluetooth");
-            } else {
+            if (mBluetoothAdapter != null) {
                 if (mBluetoothAdapter.isEnabled()) {
                     initializeOrResetLibrary();
                 }
@@ -1104,9 +1104,16 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                         mLightX = null;
                     }
                     specifiedDevice = null;
+                    mHandler.removeCallbacks(a2dpRunable);
                     mLightX = new LightX(ModuleId.USB, this, usbSocket);
-                    mLightX.mIs750Device = AppUtils.is750Device(DeviceManagerActivity.this);
+                    LightX.mIs750Device = AppUtils.is750Device(DeviceManagerActivity.this);
                     mIsConnectedPhysically = false;
+                    Logger.d(TAG, "USB getDeviceName " + usbDevice.getDeviceName());
+                    Logger.d(TAG, "USB getManufacturerName " + usbDevice.getManufacturerName());
+                    Logger.d(TAG, "USB getSerialNumber " + usbDevice.getSerialNumber());
+                    Logger.d(TAG, "USB getDeviceClass " + usbDevice.getDeviceClass());
+                    Logger.d(TAG, "USB getDeviceProtocol " + usbDevice.getDeviceProtocol());
+                    Logger.d(TAG, "USB getDeviceSubclass " + usbDevice.getDeviceSubclass());
                     Logger.d(TAG, "USB getDeviceId " + usbDevice.getDeviceId());
                     Logger.d(TAG, "USB getProductId " + usbDevice.getProductId());
                     Logger.d(TAG, "USB getVendorId " + usbDevice.getVendorId());
@@ -1122,27 +1129,31 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                     } catch (Exception e) {
                         PreferenceKeys.CURR_EQ_NAME = "eqName";
                     }
-                    if (usbDevice != null) {//Remove this condition
-                        AppUtils.setJBLDeviceName(this, usbDevice.getDeviceName());
-                    }
+                    //Remove this condition
+                    AppUtils.setJBLDeviceName(this, usbDevice.getDeviceName());
                     AvneraManager.getAvenraManager(this).setLightX(mLightX);
-                    if (appLightXDelegate != null) {
-                        appLightXDelegate.isLightXInitialize();
-                    }
                     isConnected = true;
                     Logger.d(TAGReconnect, "USB connected");
                     isNeedShowDashboard = true;
-                    AppUtils.addToMyDevices(getApplicationContext(), usbDevice.getProductName()+"-"+String.valueOf(usbDevice.getDeviceId()));
-                    devicesSet.add(usbDevice.getProductName() + "-" + usbDevice.getDeviceId());
+                    String key = usbDevice.getProductName();
+                    if (key != null && usbDevice.getProductName().contains("Bootloader")) {
+                        key = key.substring(0, usbDevice.getProductName().length() - "Bootloader".length() - 1);
+                    }
+                    key = key + "-" + usbDevice.getManufacturerName();
+                    AppUtils.addToMyDevices(getApplicationContext(), key);
+                    devicesSet.add(key);
                     checkDevices(devicesSet);
-                    if (!mIsEnterBootloader) {
+                    Logger.d(TAGReconnect, "mIsEnterBootloader = "+mIsEnterBootloader);
+                    if (!mIsEnterBootloader && !isNeedOtaAgain) {
                         connectDeviceStatus(isConnected);
                     }
+                    Logger.d(TAGReconnect, "key = "+key);
+                    if (appLightXDelegate != null) {
+                        appLightXDelegate.isLightXInitialize();
+                    }
                 }
-//                onWindowFocusChanged(false);
-                if (usbDevice != null) {
-                    Logger.e(TAG, "USB device \"" + usbDevice.getDeviceName() + "\" connected");
-                }
+                onWindowFocusChanged(false);
+                Logger.e(TAG, "USB device \"" + usbDevice.getDeviceName() + "\" connected");
             } catch (Exception e) {
                 if (usbDevice != null) {
                     Logger.e(TAG, "Unable to create LightX handler for " + usbDevice.getDeviceName() + ": " + e.getLocalizedMessage());

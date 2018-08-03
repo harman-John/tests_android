@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import jbl.stc.com.R;
+import jbl.stc.com.logger.Logger;
 
 
 public class ProductHelpFragment extends BaseFragment implements View.OnClickListener {
@@ -32,7 +33,7 @@ public class ProductHelpFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
+        Logger.d(TAG, "onResume");
     }
 
     @Override

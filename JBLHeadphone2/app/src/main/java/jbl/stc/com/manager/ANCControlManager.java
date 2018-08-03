@@ -50,7 +50,7 @@ public class ANCControlManager {
             lightX.readAppANCEnable();
         } else {
             Cmd150Manager.getInstance().getANC(AvneraManager.getAvenraManager(context).getAudioManager());
-            Log.d(TAG, "SendCommand getANCValue ");
+            Logger.d(TAG, "SendCommand getANCValue ");
         }
     }
 
@@ -65,7 +65,7 @@ public class ANCControlManager {
             lightX.writeAppANCEnable(ancValue);
         } else {
             Cmd150Manager.getInstance().setANC(AvneraManager.getAvenraManager(context).getAudioManager(), ancValue);
-            Log.d(TAG, "SendCommand setANCValue");
+            Logger.d(TAG, "SendCommand setANCValue");
         }
     }
 
@@ -77,13 +77,13 @@ public class ANCControlManager {
      */
     public void setLeftAwarenessPresetValue(LightX lightX, int leftANCvalue) {
         int rawSteps = ancValueConverter(lightX, leftANCvalue);
-        Log.d(TAG, "Send left rawstep = " + rawSteps);
+        Logger.d(TAG, "Send left rawstep = " + rawSteps);
         if (lightX != null) {
             lightX.writeAppWithUInt32Argument(Command.AppAwarenessRawLeft, (long) rawSteps);
             PreferenceUtils.setInt(LEFTANC, leftANCvalue, context);
         } else {
             Cmd150Manager.getInstance().setANCLeft(AvneraManager.getAvenraManager(context).getAudioManager(), rawSteps);
-            Log.d(TAG, "SendCommand setLeftAwarenessPresetValue");
+            Logger.d(TAG, "SendCommand setLeftAwarenessPresetValue");
         }
     }
 
@@ -95,13 +95,13 @@ public class ANCControlManager {
      */
     public void setRightAwarenessPresetValue(LightX lightX, int rightANCvalue) {
         int rawSteps = ancValueConverter(lightX, rightANCvalue);
-        Log.d(TAG, "Send right rawstep = " + rawSteps);
+        Logger.d(TAG, "Send right rawstep = " + rawSteps);
         if (lightX != null) {
             lightX.writeAppWithUInt32Argument(Command.AppAwarenessRawRight, (long) rawSteps);
             PreferenceUtils.setInt(RIGHTANC, rightANCvalue, context);
         } else {
             Cmd150Manager.getInstance().setANCRight(AvneraManager.getAvenraManager(context).getAudioManager(), rawSteps);
-            Log.d(TAG, "SendCommand setRightAwarenessPresetValue");
+            Logger.d(TAG, "SendCommand setRightAwarenessPresetValue");
         }
 
     }
@@ -135,7 +135,7 @@ public class ANCControlManager {
             lightX.readAppAwarenessRawLeft();
         } else {
             Cmd150Manager.getInstance().getANCLeft(AvneraManager.getAvenraManager(context).getAudioManager());
-            Log.d(TAG, "SendCommand getLeftANCvalue");
+            Logger.d(TAG, "SendCommand getLeftANCvalue");
         }
     }
 
@@ -149,17 +149,17 @@ public class ANCControlManager {
             lightX.readAppAwarenessRawRight();
         } else {
             Cmd150Manager.getInstance().getANCRight(AvneraManager.getAvenraManager(context).getAudioManager());
-            Log.d(TAG, "SendCommand getRightANCvalue");
+            Logger.d(TAG, "SendCommand getRightANCvalue");
         }
     }
 
     public void getRawStepsByCmd(LightX lightX) {
         if (lightX != null) {
-            Log.e(TAG, "getRawStepsByCmd ");
+            Logger.e(TAG, "getRawStepsByCmd ");
             lightX.readAppAwarenessRawSteps();
         } else {
             Cmd150Manager.getInstance().getRawSteps(AvneraManager.getAvenraManager(context).getAudioManager());
-            Log.d(TAG, "SendCommand getRawStepsByCmd");
+            Logger.d(TAG, "SendCommand getRawStepsByCmd");
         }
     }
 
@@ -177,7 +177,7 @@ public class ANCControlManager {
             lightX.readAppANCAwarenessPreset();
         } else {
             Cmd150Manager.getInstance().getAmbientLeveling(AvneraManager.getAvenraManager(context).getAudioManager());
-            Log.d(TAG, "SendCommand getAmbientLeveling");
+            Logger.d(TAG, "SendCommand getAmbientLeveling");
         }
     }
 
@@ -215,7 +215,7 @@ public class ANCControlManager {
             }
 
             Cmd150Manager.getInstance().setAmbientLeveling(AvneraManager.getAvenraManager(context).getAudioManager(), ambientLeveling);
-            Log.d(TAG, "SendCommand setAmbientLeveling ambientLeveling=" + ambientLeveling);
+            Logger.d(TAG, "SendCommand setAmbientLeveling ambientLeveling=" + ambientLeveling);
         }
     }
 
@@ -224,7 +224,7 @@ public class ANCControlManager {
             lightX.readApp(Command.AppBatteryLevel);
         } else {
             Cmd150Manager.getInstance().getBatteryLevel(AvneraManager.getAvenraManager(context).getAudioManager());
-            Log.d(TAG, "SendCommand getBatterLevel");
+            Logger.d(TAG, "SendCommand getBatterLevel");
         }
     }
 
@@ -233,14 +233,14 @@ public class ANCControlManager {
             lightX.readAppFirmwareVersion();
         } else {
             Cmd150Manager.getInstance().getFirmwareVersion(AvneraManager.getAvenraManager(context).getAudioManager());
-            Log.d(TAG, "SendCommand getFirmwareVersion");
+            Logger.d(TAG, "SendCommand getFirmwareVersion");
         }
     }
 
     public void getFirmwareInfo(LightX lightX) {
         if (lightX == null) {
             Cmd150Manager.getInstance().getFWInfo(AvneraManager.getAvenraManager(context).getAudioManager());
-            Log.d(TAG, "SendCommand getFirmwareInfo");
+            Logger.d(TAG, "SendCommand getFirmwareInfo");
         }
     }
 
@@ -249,7 +249,7 @@ public class ANCControlManager {
             lightX.readAppOnEarDetectionWithAutoOff();
         } else {
             Cmd150Manager.getInstance().getAutoOff(AvneraManager.getAvenraManager(context).getAudioManager());
-            Log.d(TAG, "SendCommand getAutoOffFeature");
+            Logger.d(TAG, "SendCommand getAutoOffFeature");
         }
     }
 
@@ -258,7 +258,7 @@ public class ANCControlManager {
             lightX.writeAppOnEarDetectionWithAutoOff(autoOff);
         } else {
             Cmd150Manager.getInstance().setAutoOff(AvneraManager.getAvenraManager(context).getAudioManager(), autoOff);
-            Log.d(TAG, "SendCommand setAutoOffFeature autoOff =" + autoOff);
+            Logger.d(TAG, "SendCommand setAutoOffFeature autoOff =" + autoOff);
         }
     }
 
@@ -267,7 +267,7 @@ public class ANCControlManager {
             lightX.readAppVoicePromptEnable();
         } else {
             Cmd150Manager.getInstance().getVoicePrompt(AvneraManager.getAvenraManager(context).getAudioManager());
-            Log.d(TAG, "SendCommand getVoicePrompt");
+            Logger.d(TAG, "SendCommand getVoicePrompt");
         }
     }
 
@@ -276,7 +276,7 @@ public class ANCControlManager {
             lightX.writeAppVoicePromptEnable(voicePrompt);
         } else {
             Cmd150Manager.getInstance().setVoicePrompt(AvneraManager.getAvenraManager(context).getAudioManager(), voicePrompt);
-            Log.d(TAG, "SendCommand setVoicePrompt voicePrompt =" + voicePrompt);
+            Logger.d(TAG, "SendCommand setVoicePrompt voicePrompt =" + voicePrompt);
         }
     }
 
@@ -284,7 +284,7 @@ public class ANCControlManager {
         if (lightX != null) {
             lightX.readBootVersionFileResource();
         } else {
-            Log.e(TAG, "getBootVersionFileResource else ");
+            Logger.e(TAG, "getBootVersionFileResource else ");
         }
     }
 
@@ -294,7 +294,7 @@ public class ANCControlManager {
             lightX.readAppSmartButtonFeatureIndex();
         } else {
             Cmd150Manager.getInstance().getSmartButtion(AvneraManager.getAvenraManager(context).getAudioManager());
-            Log.d(TAG, "SendCommand getSmartButton");
+            Logger.d(TAG, "SendCommand getSmartButton");
         }
     }
 
@@ -303,7 +303,7 @@ public class ANCControlManager {
             lightX.writeAppSmartButtonFeatureIndex(noise);
         } else {
             Cmd150Manager.getInstance().setSmartButton(AvneraManager.getAvenraManager(context).getAudioManager(), noise);
-            Log.d(TAG, "SendCommand setSmartButton noise = " + noise);
+            Logger.d(TAG, "SendCommand setSmartButton noise = " + noise);
         }
     }
 
@@ -341,7 +341,7 @@ public class ANCControlManager {
         if (lightX != null)
             lightX.writeAppGraphicEQCurrentPreset(presets);
         else {
-            //Log.d(TAG, context.getResources().getString(R.string.plsConnect));
+            //Logger.d(TAG, context.getResources().getString(R.string.plsConnect));
             Cmd150Manager.getInstance().setGeqCurrentPreset(AvneraManager.getAvenraManager(context).getAudioManager() , eqPresetToInt(presets));
         }
     }

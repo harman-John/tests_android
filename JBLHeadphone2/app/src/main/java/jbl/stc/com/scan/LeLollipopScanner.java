@@ -8,6 +8,8 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import jbl.stc.com.logger.Logger;
+
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LeLollipopScanner extends BaseScanner {
@@ -48,7 +50,7 @@ public class LeLollipopScanner extends BaseScanner {
 
         @Override
         public void onScanFailed(int errorCode) {
-            Log.e(TAG, "onScanFailed " + errorCode);
+            Logger.e(TAG, "onScanFailed " + errorCode);
             super.onScanFailed(errorCode);
             onScanFinish();
         }

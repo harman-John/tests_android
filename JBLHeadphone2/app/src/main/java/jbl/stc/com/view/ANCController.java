@@ -301,7 +301,7 @@ public class ANCController extends SurfaceView {
      */
     private void init(Context context, AttributeSet attrs, int defStyle) {
 
-//        Log.d(TAG, "Initialising SeekArc");
+//        Logger.d(TAG, "Initialising SeekArc");
         initializeDimensones(context);
         int thumbHalfheight = 0, thumbHalfheight1 = 0;
         int thumbHalfWidth = 0, thumbHalfWidth1 = 0;

@@ -16,6 +16,7 @@ import jbl.stc.com.BuildConfig;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.entity.DeviceInfo;
 import jbl.stc.com.legal.LegalApi;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.DatabaseHelper;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -70,7 +71,7 @@ public class JBLApplication extends Application {
         try {
             db = new DatabaseHelper(getApplicationContext()).getReadableDatabase();
         } catch (Exception e) {
-            Log.e("AnalyticsApplication", e.getMessage(), e);
+            Logger.e("AnalyticsApplication", e.getMessage());
         } finally {
             if (db != null) {
                 db.close();

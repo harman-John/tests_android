@@ -185,7 +185,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                             + mEqAddView.getMarginTop() + mEqAddView.getMarginBottom()));
                     RelativeLayout.LayoutParams equalizerParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             eqViewHeight);
-                    Log.d(TAG, "KEYBOARD_STATE_INIT:height=" + eqViewHeight);
+                    Logger.d(TAG, "KEYBOARD_STATE_INIT:height=" + eqViewHeight);
                     tutorialEqualizerLayout.setLayoutParams(equalizerParams);
                     mEqAddView.setCustomHeight(eqViewHeight);
                     break;

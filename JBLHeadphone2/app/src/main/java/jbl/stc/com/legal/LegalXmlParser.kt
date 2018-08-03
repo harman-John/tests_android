@@ -2,6 +2,7 @@ package jbl.stc.com.legal
 
 import android.content.Context
 import android.util.Log
+import jbl.stc.com.logger.Logger
 import jbl.stc.com.storage.PreferenceKeys
 import jbl.stc.com.storage.PreferenceUtils
 import org.xmlpull.v1.XmlPullParser
@@ -56,7 +57,7 @@ object LegalXmlParser {
         var list = mutableListOf<LegalData>()
         try {
             val mUrl = URL(url)
-            Log.i(TAG, "URL:$mUrl")
+            Logger.d(TAG, "URL:$mUrl")
             val httpURLConnection = mUrl.openConnection() as HttpURLConnection
             httpURLConnection.connectTimeout = 10 * 1000
             httpURLConnection.connect()
@@ -73,18 +74,18 @@ object LegalXmlParser {
                                 xmlData = LegalData("", "", "", "")
                                 xmlData.name = parser.getAttributeValue(0)
                                 xmlData.version = parser.getAttributeValue(1)
-                                Log.i(TAG, "START_TAG: name:" + xmlData.name + ", version:" + xmlData.version)
+                                Logger.d(TAG, "START_TAG: name:" + xmlData.name + ", version:" + xmlData.version)
                             }
                             builder.setLength(0)
                         }
                         XmlPullParser.TEXT -> {
                             builder.append(parser.text.trim { it <= ' ' })
-                            Log.i(TAG, "TEXT:" + builder.toString())
+                            Logger.d(TAG, "TEXT:" + builder.toString())
                         }
                         XmlPullParser.END_TAG -> if (parser.name == "Release") {
                             xmlData.url = builder.toString()
                             list.add(xmlData)
-                            Log.i(TAG, "END_TAG:" + builder.toString())
+                            Logger.d(TAG, "END_TAG:" + builder.toString())
                         }
                     }
                     event = parser.next()
@@ -92,18 +93,18 @@ object LegalXmlParser {
                 return list
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.i(TAG, "Parse xml exception: " + e.message)
+                Logger.d(TAG, "Parse xml exception: " + e.message)
             }
         } catch (e: IOException) {
             e.printStackTrace()
-            Log.i(TAG, "Parse xml IO exception: " + e.message)
+            Logger.d(TAG, "Parse xml IO exception: " + e.message)
         }
         return null
     }
 
     private fun versionCompare(context: Context, list: List<LegalData>?) {
         if (list == null) {
-            Log.i(TAG, "versionCompare list is null ")
+            Logger.d(TAG, "versionCompare list is null ")
             return
         }
         for (item: LegalData in list) {
@@ -111,7 +112,7 @@ object LegalXmlParser {
                 LegalConstants.NAME_EULA -> {
                     var eulaVer = PreferenceUtils.getString(LegalConstants.NAME_EULA, context, "")
                     val verChanged = isVerChanged(item.version, eulaVer)
-                    Log.i(TAG, "eula version changed =$verChanged")
+                    Logger.d(TAG, "eula version changed =$verChanged")
                     if (verChanged) {
                         PreferenceUtils.setBoolean(PreferenceKeys.LEGAL_PERSIST, false, context)
                         PreferenceUtils.setString(LegalConstants.NAME_EULA, item.version, context)
@@ -130,7 +131,7 @@ object LegalXmlParser {
                 LegalConstants.NAME_PRIVACY_POLICY -> {
                     var privacyVer = PreferenceUtils.getString(LegalConstants.NAME_PRIVACY_POLICY, context, "")
                     val verChanged = isVerChanged(item.version, privacyVer)
-                    Log.i(TAG, "privacy policy version changed =$verChanged")
+                    Logger.d(TAG, "privacy policy version changed =$verChanged")
                     if (verChanged) {
                         PreferenceUtils.setBoolean(PreferenceKeys.LEGAL_PERSIST, false, context)
                         PreferenceUtils.setString(LegalConstants.NAME_PRIVACY_POLICY, item.version, context)
@@ -183,13 +184,13 @@ object LegalXmlParser {
             }
 
         } catch (e: Exception) {
-            Log.i(TAG, "Version compare Exception " + e.message)
+            Logger.d(TAG, "Version compare Exception " + e.message)
             return false
         }
     }
 
     private fun saveFile(surl: String, strFile: String) {
-        Log.i("saveFile =", "$surl, $strFile")
+        Logger.d("saveFile =", "$surl, $strFile")
         var connection: HttpURLConnection? = null
         val inputStream: InputStream
 
@@ -214,11 +215,11 @@ object LegalXmlParser {
 
                 inputStream.close()
                 fos.close()
-                Log.i(TAG, "saveFile success")
+                Logger.d(TAG, "saveFile success")
             }
         } catch (e: IOException) {
             e.printStackTrace()
-            Log.i(TAG, "save file IO Exception " + e.message)
+            Logger.d(TAG, "save file IO Exception " + e.message)
         } finally {
             if (connection != null) {
                 connection.disconnect()

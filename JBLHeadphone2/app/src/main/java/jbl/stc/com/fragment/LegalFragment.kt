@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import jbl.stc.com.R
 import jbl.stc.com.R.*
 import jbl.stc.com.legal.LegalConstants
+import jbl.stc.com.logger.Logger
 import jbl.stc.com.manager.AnalyticsManager
 import kotlinx.android.synthetic.main.fragment_legal.view.*
 import java.io.ByteArrayOutputStream
@@ -30,13 +31,13 @@ class LegalFragment : Fragment(), View.OnClickListener {
         try {
             content = readFile(context.openFileInput(mFile))
         } catch (e: Exception) {
-            Log.e("LegalDialog", e.message)
+            Logger.e(TAG, e.message)
         }
         if (content == null) {
-            Log.e("LegalDialog", "Read legal content from assets $mFile")
+            Logger.e(TAG, "Read legal content from assets $mFile")
             content = readFile(activity.assets.open(mFile))
         }else{
-            Log.e("LegalDialog", "Read legal content from data/data/package name/$mFile")
+            Logger.e(TAG, "Read legal content from data/data/package name/$mFile")
         }
         view.text_view.text = content
         return view

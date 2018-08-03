@@ -18,6 +18,7 @@ import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.view.CustomFontTextView;
 
 
 /**
@@ -40,7 +41,7 @@ public class AlertsDialog {
         AlertsDialog.toast = new Toast(context);
         AlertsDialog.toast.setDuration(Toast.LENGTH_SHORT);
         View view = LayoutInflater.from(context).inflate(R.layout.toast, null);
-        TextView txtView = (TextView) view.findViewById(R.id.title);
+        CustomFontTextView txtView = view.findViewById(R.id.title);
         txtView.setText(message);
         AlertsDialog.toast.setView(view);
         AlertsDialog.toast.show();
