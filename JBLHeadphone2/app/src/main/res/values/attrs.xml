@@ -89,7 +89,9 @@
         <attr name="drawableColor" format="color"/>
         <attr name="shaderColor" format="color"/>
         <attr name="text" format="string"/>
-        <attr name="height" format="dimension"/>
-        <attr name="width" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="ShadowLayout">
+        <attr name="shape" format="string"/>
     </declare-styleable>
 </resources>

@@ -34,9 +34,11 @@ class LegalLandingFragment : Fragment() {
 //                view.txtEulaButton.setTextColor(ContextCompat.getColor(activity,R.color.orange_discovery))
 //                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner)
                 isBothChecked = true
-                view.txtEulaButton.alpha = 1.0F
+                //view.txtEulaButton.alpha = 1.0F
+                view.shadowLayout.alpha = 1.0F
             } else {
-                view.txtEulaButton.alpha = 0.7F
+                //view.txtEulaButton.alpha = 0.7F
+                view.shadowLayout.alpha = 0.5F
 //                view.txtEulaButton.setTextColor(ContextCompat.getColor(context,R.color.light_white))
 //                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner_grey)
                 isBothChecked = false
@@ -50,10 +52,12 @@ class LegalLandingFragment : Fragment() {
             if (view.checkboxEula.isChecked && isChecked) {
 //                view.txtEulaButton.setTextColor(ContextCompat.getColor(activity,R.color.orange_discovery))
 //                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner)
-                view.txtEulaButton.alpha = 1.0F
+                //view.txtEulaButton.alpha = 1.0F
+                view.shadowLayout.alpha = 1.0F
                 isBothChecked = true
             } else {
-                view.txtEulaButton.alpha = 0.7F
+                //view.txtEulaButton.alpha = 0.7F
+                view.shadowLayout.alpha = 0.5F
 //                view.txtEulaButton.setTextColor(ContextCompat.getColor(context,R.color.light_white))
 //                view.txtEulaButton.background = ContextCompat.getDrawable(context,R.drawable.rectangle_with_round_corner_grey)
                 isBothChecked = false
@@ -66,15 +70,15 @@ class LegalLandingFragment : Fragment() {
         view.textEulaLink.movementMethod = LinkMovementMethod.getInstance()
         view.textEulaLink.highlightColor = Color.TRANSPARENT
         view.textEulaLink.paint.flags = Paint.UNDERLINE_TEXT_FLAG
-        view.textEulaLink.setOnClickListener{
-            LegalApi.showEula(activity,true)
+        view.textEulaLink.setOnClickListener {
+            LegalApi.showEula(activity, true)
         }
         // link text privacy
         view.textPrivacyLink.movementMethod = LinkMovementMethod.getInstance()
         view.textPrivacyLink.highlightColor = Color.TRANSPARENT
         view.textPrivacyLink.paint.flags = Paint.UNDERLINE_TEXT_FLAG
-        view.textPrivacyLink.setOnClickListener{
-            LegalApi.showPrivacyPolicy(activity,true)
+        view.textPrivacyLink.setOnClickListener {
+            LegalApi.showPrivacyPolicy(activity, true)
         }
         // text start button
         view.txtEulaButton!!.setOnClickListener {
