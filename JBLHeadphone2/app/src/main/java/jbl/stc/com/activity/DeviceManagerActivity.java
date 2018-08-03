@@ -1003,7 +1003,12 @@ public class DeviceManagerActivity extends BaseActivity implements Bluetooth.Del
                 connectDeviceStatus(false);
             }
             disconnected = true;
-            devicesSet.remove(usbDevice.getProductName() + "-" + usbDevice.getManufacturerName());
+            String key = usbDevice.getProductName();
+            if (key != null && usbDevice.getProductName().contains("Bootloader")) {
+                key = key.substring(0, usbDevice.getProductName().length() - "Bootloader".length() - 1);
+            }
+            key = key + "-" + usbDevice.getManufacturerName();
+            devicesSet.remove(key);
             Logger.d(TAG, "usbDetached Initializing Bluetooth.");
             if (DeviceConnectionManager.getInstance().getCurrentDevice() != ConnectedDeviceType.Connected_BluetoothDevice)
                 if (mLightX != null) {
