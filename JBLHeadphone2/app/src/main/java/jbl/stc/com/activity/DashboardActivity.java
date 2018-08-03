@@ -325,18 +325,20 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     @Override
     public void onBackPressed() {
-        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        if (fr!= null && fr instanceof OTAFragment && mIsInBootloader && isConnected) {
-            final Toast toast = Toast.makeText(this, "Can't perform this action.", Toast.LENGTH_SHORT);
-            toast.show();
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    toast.cancel();
-                }
-            }, 300);
-            return;
+        if(isOTADoing) {
+            Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+            if (fr != null && fr instanceof OTAFragment && mIsInBootloader && isConnected) {
+                final Toast toast = Toast.makeText(this, "Can't perform this action.", Toast.LENGTH_SHORT);
+                toast.show();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        toast.cancel();
+                    }
+                }, 300);
+                return;
+            }
         }
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             AppUtils.hideFromForeground(this);
