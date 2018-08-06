@@ -230,15 +230,9 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                             currSelectedEq = new EQModel();
                             application.deviceInfo.eqOn = false;
                         }
-                    } else {
-                        currSelectedEq = new EQModel();
                     }
-                    eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
-                } else {
-                    eqValueArray = EQSettingManager.get().getValuesFromEQModel(srcSelectedEq);
                 }
                 application.isAddEqFragment = false;
-                ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
                 getActivity().onBackPressed();
                 break;
         }
