@@ -293,6 +293,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:visibility="gone"
                 android:id="@+id/relative_layout_settings_user_manual"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

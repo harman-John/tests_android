@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -298,8 +299,21 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (isAddOperate) {
+            EQSettingManager.get().deleteEQ(currSelectedEq.eqName, getActivity());
+            if (application.deviceInfo.eqOn) {
+                currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(),
+                        ""), getActivity());
+                if (currSelectedEq == null) {
+                    currSelectedEq = new EQModel();
+                    application.deviceInfo.eqOn = false;
+                }
+            }
+        }
         application.isAddEqFragment = false;
         mHandler.removeCallbacks(textUpRunnable);
         mHandler.removeCallbacks(textDownRunnable);
     }
+
+
 }
