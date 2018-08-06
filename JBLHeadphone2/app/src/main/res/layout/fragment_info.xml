@@ -12,7 +12,6 @@
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_bar_height"
-        android:paddingLeft="@dimen/margin_top_10dp"
         android:paddingRight="@dimen/margin_top_10dp">
 
         <jbl.stc.com.view.AppImageView
@@ -21,7 +20,6 @@
             android:layout_height="45dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
             android:src="@mipmap/ic_close" />
 
         <ImageView
