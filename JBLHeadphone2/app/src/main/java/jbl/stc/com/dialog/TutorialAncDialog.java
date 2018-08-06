@@ -84,6 +84,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         super(context, R.style.AppDialog);
         mActivity = context;
         modelNumber = AppUtils.getModelNumber(getContext());
+        Logger.d(TAG,"modelNumber:"+modelNumber);
         initUI();
     }
 

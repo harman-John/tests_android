@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -26,6 +27,7 @@ import com.avnera.smartdigitalheadset.Utility;
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.listener.OnHeadphoneconnectListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AvneraManager;
@@ -55,7 +57,7 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
 
     Handler handler = new Handler();
 
-    private String tag;
+    private MyDevice myDevice;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,9 +95,9 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
         tv_calibratingDone.setOnClickListener(this);
         shadowLayout = (ShadowLayout) view.findViewById(R.id.shadowLayout);
         iv_complete = (ImageView) view.findViewById(R.id.iv_complete);
-        if (this.getArguments() != null) {
-            tag = this.getArguments().getString(CalibrationFragment.TAG);
-            Logger.d(TAG, tag);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            myDevice = bundle.getParcelable(JBLConstant.KEY_MY_DEVICE);
         }
         return view;
     }
@@ -173,12 +175,24 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
      * */
     public void dummyStopCalibration() {
         handler.removeCallbacks(runnable);
-        if (!TextUtils.isEmpty(tag) && tag.equals(CalibrationFragment.TAG)) {
+        if (myDevice == null) {
             //enter from setting
             getActivity().onBackPressed();
         } else {
             removeAllFragment();
-            DashboardActivity.getDashboardActivity().goHomeFragment(DashboardActivity.getDashboardActivity().getMyDeviceConnected());
+            if (!DashboardActivity.getDashboardActivity().tutorialAncDialog.isShowing()) {
+                DashboardActivity.getDashboardActivity().tutorialAncDialog.show();
+            }
+            Fragment fr = getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+            HomeFragment homeFragment = new HomeFragment();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+            homeFragment.setArguments(bundle);
+            if (fr == null) {
+                switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            } else if (!(fr instanceof HomeFragment)) {
+                switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            }
         }
     }
 

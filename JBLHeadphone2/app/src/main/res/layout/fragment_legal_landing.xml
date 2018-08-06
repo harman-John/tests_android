@@ -127,6 +127,7 @@
             android:background="@drawable/rectangle_with_round_corner_grey"
             android:gravity="center"
             android:text="@string/start_caps"
+            android:textAllCaps="false"
             android:textColor="@color/orange_discovery"
             android:textSize="20sp"
             android:textStyle="bold" />
