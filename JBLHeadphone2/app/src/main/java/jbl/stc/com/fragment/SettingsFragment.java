@@ -251,9 +251,6 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             case R.id.relative_layout_settings_true_note: {
                 Logger.d(TAG, "true note clicked");
                 CalibrationFragment calibrationFragment = new CalibrationFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(CalibrationFragment.TAG, CalibrationFragment.class.getSimpleName());
-                calibrationFragment.setArguments(bundle);
                 switchFragment(calibrationFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }

@@ -9,6 +9,7 @@ import android.app.UiAutomation;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -391,9 +392,13 @@ public class EqGridView extends GridView {
         layoutParams.gravity = Gravity.CENTER;
         TextView textView = (mStartDragItemView.findViewById(R.id.tv_eqname));
 
+        int padding = UiUtils.dip2px(getContext(), 10);
         mDragImageView = new Button(getContext());
         mDragImageView.setBackgroundResource(R.drawable.drag_bubble);
         mDragImageView.setText(textView.getText().toString());
+        mDragImageView.setTextColor(getResources().getColor(R.color.eq_panel_name_text));
+        mDragImageView.setMaxLines(2);
+        mDragImageView.setPadding(padding, padding, padding, padding);
         mDragImageView.setGravity(Gravity.CENTER);
         mDragImageView.setLayoutParams(layoutParams);
         mDragLayout = new FrameLayout(getContext());

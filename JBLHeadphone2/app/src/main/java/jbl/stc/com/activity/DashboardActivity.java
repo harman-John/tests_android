@@ -30,11 +30,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.adapter.MyGridAdapter;
+import jbl.stc.com.config.DeviceFeatureMap;
+import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.dialog.TutorialAncDialog;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.entity.FirmwareModel;
+import jbl.stc.com.fragment.CalibrationFragment;
 import jbl.stc.com.fragment.DiscoveryFragment;
 import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.InfoFragment;
@@ -179,7 +182,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
 
     public MyDevice getMyDeviceConnected() {
         for (MyDevice myDevice : lists) {
-            Logger.i(TAG, "deviceKey= " + myDevice.deviceKey+",connectStatus = "+myDevice.connectStatus);
+            Logger.i(TAG, "deviceKey= " + myDevice.deviceKey + ",connectStatus = " + myDevice.connectStatus);
             if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 return myDevice;
             }
@@ -234,7 +237,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         Logger.d(TAG, " connectDeviceStatus isConnected = " + isConnected);
 
         if (isConnected) {
-            if (isOTADoing ) {
+            if (isOTADoing) {
                 dashboardHandler.sendEmptyMessageDelayed(MSG_OTA_SUCCESS, 200);
             } else {
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
@@ -244,25 +247,25 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             }
 
         } else {
-            Logger.d(TAG,"isOTADoing = "+ isOTADoing);
+            Logger.d(TAG, "isOTADoing = " + isOTADoing);
             if (!isOTADoing) {
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr != null && fr instanceof HomeFragment) {
-                    Logger.d(TAG,"disconnect home fragment ");
+                    Logger.d(TAG, "disconnect home fragment ");
                     MyDevice myDevice = ((HomeFragment) fr).getMyDeviceInHome();
                     if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                         removeAllFragment();
                     }
-                }else{
-                    Logger.d(TAG,"disconnect not home fragment ");
-                    if (getMyDeviceConnected()!= null && getMyDeviceConnected().connectStatus == ConnectStatus.DEVICE_CONNECTED){
-                        Logger.d(TAG,"disconnect not home fragment removeAllFragment");
+                } else {
+                    Logger.d(TAG, "disconnect not home fragment ");
+                    if (getMyDeviceConnected() != null && getMyDeviceConnected().connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+                        Logger.d(TAG, "disconnect not home fragment removeAllFragment");
                         removeAllFragment();
                     }
                 }
                 updateDisconnectedAdapter();
                 myGridAdapter.setMyAdapterList(lists);
-            }else {
+            } else {
 
             }
         }
@@ -279,7 +282,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         if (temp != null)
             lists.remove(temp);
         AppUtils.removeMyDevice(mContext, key);
-        if (AppUtils.getMyDeviceSize(mContext) == 0){
+        if (AppUtils.getMyDeviceSize(mContext) == 0) {
             textViewTips.setVisibility(View.VISIBLE);
         }
         super.removeDeviceList(key);
@@ -326,7 +329,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     @Override
     public void onBackPressed() {
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        if(isOTADoing) {
+        if (isOTADoing) {
             if (fr != null && fr instanceof OTAFragment && mIsInBootloader && isConnected) {
                 final Toast toast = Toast.makeText(this, "Can't perform this action.", Toast.LENGTH_SHORT);
                 toast.show();
@@ -339,9 +342,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 }, 300);
                 return;
             }
-        }else {
+        } else {
             if (fr != null && fr instanceof OTAFragment) {
-                if(((OTAFragment)fr).isDisableGoBack()){
+                if (((OTAFragment) fr).isDisableGoBack()) {
                     return;
                 }
             }
@@ -430,8 +433,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                     dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
                     break;
                 }
-                case MSG_CHECK_DEVICES:{
-                    Set<String> deviceList = (Set<String>)msg.obj;
+                case MSG_CHECK_DEVICES: {
+                    Set<String> deviceList = (Set<String>) msg.obj;
                     Logger.i(TAG, "MSG_CHECK_DEVICES deviceList = " + deviceList);
                     if (hasNewDevice(deviceList)) {
                         initMyGridAdapterList();
@@ -459,14 +462,37 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
             if (!isShowTutorialManyTimes) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
                 if (tutorialAncDialog == null) {
-                    PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
                     tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
                 }
-                if (!tutorialAncDialog.isShowing()) {
-                    tutorialAncDialog.show();
+                if (DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
+                    Logger.d(TAG, "truenote");
+                    CalibrationFragment calibrationFragment = new CalibrationFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+                    calibrationFragment.setArguments(bundle);
+                    if (fr == null) {
+                        switchFragment(calibrationFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    } else if (!(fr instanceof CalibrationFragment)) {
+                        switchFragment(calibrationFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    }
+                } else {
+                    Logger.d(TAG, "not truenote");
+                    if (!tutorialAncDialog.isShowing()) {
+                        tutorialAncDialog.show();
+                    }
+                    showHomeFragment(myDevice);
                 }
+            } else {
+                showHomeFragment(myDevice);
             }
+        } else {
+            showHomeFragment(myDevice);
         }
+
+    }
+
+    private void showHomeFragment(MyDevice myDevice) {
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         HomeFragment homeFragment = new HomeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
@@ -488,11 +514,11 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     public void startCheckingIfUpdateIsAvailable() {
-        Logger.d(TAG,"AppUtils.getModelNumber(this)="+AppUtils.getModelNumber(this));
+        Logger.d(TAG, "AppUtils.getModelNumber(this)=" + AppUtils.getModelNumber(this));
         Logger.d(TAG, "startCheckingIfUpdateIsAvailable isConnectionAvailable=" + FirmwareUtil.isConnectionAvailable(this));
         String srcSavedVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, this, "0.0.0");
         String currentVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.APP_VERSION, this, "");
-        Logger.d(TAG,"srcSavedVersion = "+srcSavedVersion+",currentVersion = "+currentVersion);
+        Logger.d(TAG, "srcSavedVersion = " + srcSavedVersion + ",currentVersion = " + currentVersion);
         if (FirmwareUtil.isConnectionAvailable(this) && !TextUtils.isEmpty(srcSavedVersion) && !TextUtils.isEmpty(currentVersion)) {
             Logger.d(TAG, "checkUpdateAvailable = " + checkUpdateAvailable);
             if (checkUpdateAvailable != null && checkUpdateAvailable.isRunnuning()) {
