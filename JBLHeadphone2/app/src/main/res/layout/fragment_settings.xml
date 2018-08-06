@@ -219,6 +219,30 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/relative_layout_settings_true_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginStart="30dp"
+                    android:background="@android:color/white" />
+
+                <jbl.stc.com.view.CustomFontTextView
+                    android:id="@+id/text_view_settings_true_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/settings_item_height"
+                    android:drawableRight="@mipmap/settings_arrow"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/settings_item_padding_left"
+                    android:paddingRight="@dimen/settings_item_padding_right"
+                    android:text="@string/true_note"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/relative_layout_settings_voice_prompt"
@@ -266,31 +290,6 @@
                         android:thumb="@drawable/toggle_switch_thumb"
                         android:track="@drawable/toggle_switch_track" />
                 </LinearLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/relative_layout_settings_true_note"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginEnd="30dp"
-                    android:layout_marginStart="30dp"
-                    android:background="@android:color/white" />
-
-                <jbl.stc.com.view.CustomFontTextView
-                    android:id="@+id/text_view_settings_true_note"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/settings_item_height"
-                    android:drawableRight="@mipmap/settings_arrow"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/settings_item_padding_left"
-                    android:paddingRight="@dimen/settings_item_padding_right"
-                    android:text="@string/true_note"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
             </RelativeLayout>
 
             <RelativeLayout

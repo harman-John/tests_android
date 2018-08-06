@@ -1079,7 +1079,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     break;
                 case AppGraphicEQCurrentPreset:
                     long currentPreset = Utility.getUnsignedInt(var4, 0);
-                    Logger.d(TAG, command + " is " + currentPreset);
+                    Logger.d(TAG, "lightXAppReadResult"+ command + " is " + currentPreset);
                     updateCurrentEQ((int) currentPreset);
                     break;
                 case AppGraphicEQBandFreq:
