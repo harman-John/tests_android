@@ -47,6 +47,7 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
     private AppImageView imageViewBack;
     private AppButton tv_calibratingDone;
     private ShadowLayout shadowLayout;
+    private ShadowLayout shadowLayout_start;
     private ImageView iv_complete;
 
     private boolean isCalibrationComplete;
@@ -87,6 +88,7 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         informationLayout = view.findViewById(R.id.informationLayout);
         informationLayout.setOnClickListener(this);
+        shadowLayout_start = view.findViewById(R.id.shadowLayout_start);
         tv_calibratingDone = (AppButton) view.findViewById(R.id.tv_calibratingDone);
         tv_calibratingDone.setOnClickListener(this);
         shadowLayout = (ShadowLayout) view.findViewById(R.id.shadowLayout);
@@ -186,6 +188,7 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
     public void calibrationComplete() {
         imageViewBack.setVisibility(View.GONE);
         informationLayout.setVisibility(View.GONE);
+        shadowLayout_start.setVisibility(View.GONE);
         txthelp.setVisibility(View.GONE);
         txtCalibrating.setVisibility(View.GONE);
         iv_complete.setVisibility(View.VISIBLE);

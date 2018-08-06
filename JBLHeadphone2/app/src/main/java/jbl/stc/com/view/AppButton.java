@@ -14,6 +14,7 @@ import android.view.ViewOutlineProvider;
 
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.utils.ToastUtil;
 
 /**
  * @name JBLHeadphone2
@@ -28,17 +29,17 @@ public class AppButton extends AppCompatButton {
     private Context mContext;
 
     public AppButton(Context context) {
-        this(context, null);
+        super(context);
     }
 
     public AppButton(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
+        mContext = context;
+        applyCustomFont(context, attrs);
     }
 
     public AppButton(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        //this.setOutlineProvider(viewOutlineProvider);
-        mContext = context;
         applyCustomFont(context, attrs);
     }
 
@@ -51,7 +52,7 @@ public class AppButton extends AppCompatButton {
                 setScaleX(0.97f);
                 setScaleY(0.97f);
                 //setOutlineProvider(viewOutlineProvider1);
-                setOutlineProvider(null);
+                //setOutlineProvider(null);
                 break;
             case MotionEvent.ACTION_MOVE:
                 setAlpha(0.8f);
@@ -62,12 +63,14 @@ public class AppButton extends AppCompatButton {
                 setAlpha(1.0f);
                 setScaleX(1.0f);
                 setScaleY(1.0f);
+                //setOutlineProvider(null);
                 //setOutlineProvider(viewOutlineProvider);
                 break;
             case MotionEvent.ACTION_CANCEL:
                 setAlpha(1.0f);
                 setScaleX(1.0f);
                 setScaleY(1.0f);
+                //setOutlineProvider(null);
                 //setOutlineProvider(viewOutlineProvider);
                 break;
         }

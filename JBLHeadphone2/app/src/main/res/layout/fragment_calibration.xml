@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/shape_gradient_legal">
@@ -58,20 +59,26 @@
         android:textSize="@dimen/txtHelp"
         android:textStyle="normal" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+    <jbl.stc.com.view.ShadowLayout
+        android:id="@+id/shadowLayout_start"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_below="@+id/txthelp"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/autoCalimarginTop"
-        android:layout_marginTop="25dp">
+        android:layout_marginTop="25dp"
+        app:shape="circle">
 
         <FrameLayout
             android:id="@+id/informationLayout"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/whitecircle">
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/shape_dashboard_device_circle">
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/txtChangeMessage"
@@ -93,9 +100,8 @@
                 android:progressDrawable="@drawable/progressbar"
                 android:visibility="gone" />
         </FrameLayout>
+    </jbl.stc.com.view.ShadowLayout>
 
-
-    </RelativeLayout>
 
     <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/txtCalibrating"
@@ -115,12 +121,12 @@
 
     <jbl.stc.com.view.ShadowLayout
         android:id="@+id/shadowLayout"
-        android:visibility="gone"
         android:layout_width="210dp"
         android:layout_height="58dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp">
+        android:layout_marginBottom="50dp"
+        android:visibility="gone">
 
         <jbl.stc.com.view.AppButton
             android:id="@+id/tv_calibratingDone"
