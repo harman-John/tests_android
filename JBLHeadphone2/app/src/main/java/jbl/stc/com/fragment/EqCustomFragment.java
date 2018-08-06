@@ -124,6 +124,36 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        rootView.setFocusableInTouchMode(true);
+        rootView.requestFocus();
+        rootView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode==KeyEvent.KEYCODE_BACK && event.getAction() ==KeyEvent.ACTION_DOWN){
+                    Logger.d(TAG,"click back");
+                    if (isAddOperate) {
+                        EQSettingManager.get().deleteEQ(currSelectedEq.eqName, getActivity());
+                        if (application.deviceInfo.eqOn) {
+                            currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(),
+                                    ""), getActivity());
+                            if (currSelectedEq == null) {
+                                currSelectedEq = new EQModel();
+                                application.deviceInfo.eqOn = false;
+                            }
+                        }
+                    }
+                    getActivity().onBackPressed();
+                    return  true;
+                }
+                return false;
+            }
+        });
+
+    }
+
     private void initValue() {
         defaultEqName = getString(R.string.create_eq_default_name);
         eqModelList = EQSettingManager.get().getCompleteEQList(mContext);
