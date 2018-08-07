@@ -1,13 +1,11 @@
 package jbl.stc.com.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,11 +20,13 @@ import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.adapter.EqRecyclerAdapter;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.entity.CircleModel;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
@@ -102,6 +102,11 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             @Override
             public void onSelected(int position) {
                 onEqNameSelected(position, true);
+                pos = 0;
+                myHandler.removeMessages(MSG_SHOW_LINE);
+                equalizerView.clearAllPointCircles();
+                myHandler.sendEmptyMessage(MSG_SHOW_LINE);
+                Logger.d(TAG,"aaaaa onEqNameSelected ");
             }
         });
         titleBar.setOnTouchListener(new View.OnTouchListener() {
@@ -172,7 +177,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
         });
     }
-
+    List<CircleModel> listsBak = new ArrayList<>();
     private void initValue() {
         List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
         eqModelList.clear();
@@ -220,7 +225,12 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         //float[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
         if (currSelectedEq != null) {
             // LogUtil.d("TAG","setCurveData");
-            equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
+            pos = 0;
+            equalizerView.clearAllPointCircles();
+            myHandler.removeMessages(MSG_SHOW_LINE);
+            myHandler.sendEmptyMessage(MSG_SHOW_LINE);
+            Logger.d(TAG,"aaaaa initValue");
+
         }
         if (currSelectedEqIndex == 0) {
             linearLayout.setBackgroundResource(R.drawable.shape_gradient_eq_off);
@@ -231,6 +241,34 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         }
         smoothToPosition();
     }
+
+    private static int pos = 0;
+    private MyHandler  myHandler =  new MyHandler();
+    private final static int MSG_SHOW_LINE = 0;
+    private class MyHandler extends Handler{
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch(msg.what){
+                case MSG_SHOW_LINE: {
+                    List<CircleModel> listsBak = equalizerView.getAllPointCircles(currSelectedEq.getPointX(),currSelectedEq.getPointY());
+                    if (pos == listsBak.size()){
+                        pos = 0;
+                        break;
+                    }
+                    Logger.d(TAG,"MSG_SHOW_LINE x = "+listsBak.get(pos).getX()+",Y = "+listsBak.get(pos).getY()+",size = "+listsBak.size()+",currSelectedEq size ="+currSelectedEq.getPointX().length);
+                    equalizerView.setCurveData(listsBak.get(pos), R.color.text_white_80);
+                    myHandler.sendEmptyMessage(MSG_SHOW_LINE);
+                    pos ++;
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        }
+    };
 
     private void smoothToPosition() {
         if (currSelectedEqIndex > 1) {
@@ -256,7 +294,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, currSelectedEq.eqName, mContext);
         }
         //int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
-        equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80);
+
         AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
         if (fromUser) {
             eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
