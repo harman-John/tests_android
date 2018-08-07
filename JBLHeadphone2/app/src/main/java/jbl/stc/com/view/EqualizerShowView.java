@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.icu.text.SymbolTable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -108,7 +109,7 @@ public class EqualizerShowView extends View {
         textMarginBottom = UiUtils.dip2px(context, 10);
     }
 
-    public void setCurveData(CircleModel circleModel, int curveColor) {
+    public void setCurveData(List<CircleModel> listCircleModel, int curveColor) {
         this.curveColor = curveColor;
 //        pointX = new ArrayList<>();
 //        pointY = new ArrayList<>();
@@ -122,7 +123,7 @@ public class EqualizerShowView extends View {
 //        for (int i = 0; i < mEqPointX.length; i++) {
 //            controlCircles.add(produceCirce(getRelativelyX(mEqPointX[i]), getRelativelyY(mEqPointY[i]), CIRCLE_R));
 //        }
-        allPointCircles.add(circleModel);
+        allPointCircles.addAll(listCircleModel);
         curvePath.reset();
         invalidate();
         this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -279,6 +280,7 @@ public class EqualizerShowView extends View {
             }
             canvas.drawPath(curvePath, mCurvePaint);
         }
+        Logger.d(TAG,"interval ");
 //        if (allPointCircles.size() >= 2) {
 //            curvePath.moveTo(allPointCircles.get(allPointCircles.size() -2).getX(), allPointCircles.get(allPointCircles.size() -2).getY());
 //            curvePath.lineTo(allPointCircles.get(allPointCircles.size() -1).getX(), allPointCircles.get(allPointCircles.size() -1).getY());

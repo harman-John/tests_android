@@ -253,14 +253,18 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             switch(msg.what){
                 case MSG_SHOW_LINE: {
                     List<CircleModel> listsBak = equalizerView.getAllPointCircles(currSelectedEq.getPointX(),currSelectedEq.getPointY());
-                    if (pos == listsBak.size()){
+                    if (pos >= listsBak.size()){
                         pos = 0;
                         break;
                     }
-                    Logger.d(TAG,"MSG_SHOW_LINE x = "+listsBak.get(pos).getX()+",Y = "+listsBak.get(pos).getY()+",size = "+listsBak.size()+",currSelectedEq size ="+currSelectedEq.getPointX().length);
-                    equalizerView.setCurveData(listsBak.get(pos), R.color.text_white_80);
+
+                    if (pos < listsBak.size() && pos +5 >=listsBak.size() ){
+                        equalizerView.setCurveData(listsBak.subList(pos, listsBak.size() -1), R.color.text_white_80);
+                    }else {
+                        equalizerView.setCurveData(listsBak.subList(pos, pos + 5), R.color.text_white_80);
+                    }
                     myHandler.sendEmptyMessage(MSG_SHOW_LINE);
-                    pos ++;
+                    pos = pos +5;
                     break;
                 }
                 default: {
