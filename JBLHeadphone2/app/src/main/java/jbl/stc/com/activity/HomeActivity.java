@@ -79,7 +79,7 @@ import jbl.stc.com.view.SaPopupWindow;
 import static java.lang.Integer.valueOf;
 
 
-public class HomeActivity extends BaseFragmentActivity implements View.OnClickListener {
+public class HomeActivity extends BaseActivity implements View.OnClickListener {
     public static final String TAG = HomeActivity.class.getSimpleName();
     private BlurringView mBlurView;
 

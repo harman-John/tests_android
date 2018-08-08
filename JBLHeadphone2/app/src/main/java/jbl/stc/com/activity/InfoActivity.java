@@ -10,7 +10,7 @@ import android.widget.TextView;
 import jbl.stc.com.R;
 import jbl.stc.com.legal.LegalApi;
 
-public class InfoActivity extends BaseFragmentActivity implements View.OnClickListener {
+public class InfoActivity extends BaseActivity implements View.OnClickListener {
     public static final String TAG = InfoActivity.class.getSimpleName();
     @Override
     public void onCreate(Bundle savedInstanceState) {

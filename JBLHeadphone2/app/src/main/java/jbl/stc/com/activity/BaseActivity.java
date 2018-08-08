@@ -17,30 +17,40 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.avnera.audiomanager.Action;
+import com.avnera.audiomanager.AdminEvent;
+import com.avnera.audiomanager.Status;
+import com.avnera.audiomanager.StatusEvent;
 import com.avnera.audiomanager.audioManager;
+import com.avnera.audiomanager.responseResult;
 import com.avnera.smartdigitalheadset.Bluetooth;
+import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.USB;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.dialog.AlertsDialog;
 import jbl.stc.com.fragment.BaseFragment;
+import jbl.stc.com.listener.AppLightXDelegate;
 import jbl.stc.com.listener.AppUSBDelegate;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.StatusBarUtil;
 
 
-public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
+public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,View.OnTouchListener, AppLightXDelegate{
     private final static String TAG = BaseActivity.class.getSimpleName();
     protected Context mContext;
     public static final String JBL_HEADSET_MAC_ADDRESS = "com.jbl.headset.mac_address";
@@ -75,6 +85,12 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         setStatusBar();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DeviceManager.getInstance(this).setAppLightXDelegate(this);
     }
 
     @Override
@@ -221,6 +237,91 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate {
      */
     public void showExitDialog(String message) {
         AlertsDialog.bluetoothAlertFinish(null, message, this);
+    }
+
+    @Override
+    public void lightXAppReadResult(LightX var1, Command var2, boolean var3, byte[] var4) {
+
+    }
+
+    @Override
+    public void lightXAppReceivedPush(LightX var1, Command var2, byte[] var3) {
+
+    }
+
+    @Override
+    public void lightXAppWriteResult(LightX var1, Command var2, boolean var3) {
+
+    }
+
+    @Override
+    public void lightXError(LightX var1, Exception var2) {
+
+    }
+
+    @Override
+    public boolean lightXFirmwareReadStatus(LightX var1, LightX.FirmwareRegion var2, int var3, byte[] var4) {
+        return false;
+    }
+
+    @Override
+    public boolean lightXFirmwareWriteStatus(LightX var1, LightX.FirmwareRegion var2, LightX.FirmwareWriteOperation var3, double var4, Exception var6) {
+        return false;
+    }
+
+    @Override
+    public void lightXIsInBootloader(LightX var1, boolean var2) {
+
+    }
+
+    @Override
+    public void lightXReadConfigResult(LightX var1, Command var2, boolean var3, String var4) {
+
+    }
+
+    @Override
+    public boolean lightXWillRetransmit(LightX var1, Command var2) {
+        return false;
+    }
+
+    @Override
+    public void isLightXInitialize() {
+
+    }
+
+    @Override
+    public void headPhoneStatus(boolean isConnected) {
+
+    }
+
+    @Override
+    public void lightXReadBootResult(LightX var1, Command command, boolean success, int var4, byte[] var5) {
+
+    }
+
+    @Override
+    public void receivedAdminEvent(AdminEvent event, Object value) {
+
+    }
+
+    @Override
+    public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
+
+    }
+
+    @Override
+    public void receivedStatus(StatusEvent name, Object value) {
+
+    }
+
+    @Override
+    public void receivedPushNotification(Action action, String command, ArrayList<responseResult> values, Status status) {
+
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
     }
 
     private class USBReceiver extends BroadcastReceiver {
