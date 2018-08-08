@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
@@ -63,6 +64,7 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -339,6 +341,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         super.onResume();
         AnalyticsManager.getInstance(this).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
         Logger.d(TAG, "onResume " + DeviceConnectionManager.getInstance().getCurrentDevice());
+        doResume();
+    }
+
+    private void doResume(){
+        DeviceManager.getInstance(this).setAppLightXDelegate(this);
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                 case NONE:
@@ -360,6 +367,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_NC_POP, true, this);
                 showNCPopupWindow();
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+        if ((fr != null)&& fr instanceof EqSettingFragment) {
+            doResume();
         }
     }
 
@@ -419,7 +435,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 break;
             }
             case R.id.image_view_ota_download: {
-                //switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
             }
         }
     }
@@ -440,9 +456,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             if (TextUtils.isEmpty(curEqNameExclusiveOff)) {
                 List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(this);
                 Logger.d(TAG, "eqSize:" + eqModels.size());
-                if (eqModels != null && eqModels.size() < 5) {
+                if (eqModels.size() < 5) {
                     ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz, lightX);
-                } else if (eqModels != null && eqModels.size() >= 5) {
+                } else {
                     ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModels.get(4)), lightX);
                 }
             } else {
