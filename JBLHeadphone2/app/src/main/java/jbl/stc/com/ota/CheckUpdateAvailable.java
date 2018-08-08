@@ -2,7 +2,6 @@ package jbl.stc.com.ota;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -17,7 +16,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.data.FwTYPE;
 import jbl.stc.com.entity.FirmwareModel;
-import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;

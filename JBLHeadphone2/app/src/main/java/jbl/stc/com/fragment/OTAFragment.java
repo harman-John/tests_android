@@ -38,6 +38,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
@@ -286,12 +287,12 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         }
 
         this.isUpdateAvailable = isUpdateAvailable;
-        Logger.d(TAG,"setIsUpdateAvailable isUpdateAvailable="+isUpdateAvailable + ",isNeedOtaAgain ="+isNeedOtaAgain+",fwList size = "+fwList.size());
+        Logger.d(TAG,"setIsUpdateAvailable isUpdateAvailable="+isUpdateAvailable + ",isNeedOtaAgain ="+ DeviceManager.getInstance(getActivity()).isNeedOtaAgain()+",fwList size = "+fwList.size());
         if (isUpdateAvailable) {
             mFwList = fwList;
             divideFactor = 2 * DashboardActivity.mFwList.size();
-            if (args != null && args.containsKey("lightXIsInBootloader") || isNeedOtaAgain) {
-                isNeedOtaAgain = false;
+            if (args != null && args.containsKey("lightXIsInBootloader") || DeviceManager.getInstance(getActivity()).isNeedOtaAgain()) {
+                DeviceManager.getInstance(getActivity()).setIsNeedOtaAgain(false);
                 Logger.e(TAG,"setIsUpdateAvailable startDownloadFirmwareImage");
                 startDownloadFirmwareImage();
             }else{
@@ -1029,7 +1030,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     registerConnectivity();
                     break;
                 case MSG_GO_TO_BOOTLOADER:
-                    if (isNeedOtaAgain){
+                    if (DeviceManager.getInstance(getActivity()).isNeedOtaAgain()){
                         startCheckingIfUpdateIsAvailable();
                     }else {
                         if (AvneraManager.getAvenraManager(getActivity()).getLightX() != null) {

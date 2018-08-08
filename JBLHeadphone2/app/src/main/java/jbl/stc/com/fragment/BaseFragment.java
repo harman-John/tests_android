@@ -8,7 +8,6 @@ import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -23,7 +22,6 @@ import com.avnera.audiomanager.Action;
 import com.avnera.audiomanager.AdminEvent;
 import com.avnera.audiomanager.Status;
 import com.avnera.audiomanager.StatusEvent;
-import com.avnera.audiomanager.audioManager;
 import com.avnera.audiomanager.responseResult;
 import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
@@ -31,7 +29,7 @@ import com.avnera.smartdigitalheadset.LightX;
 import java.util.ArrayList;
 
 import jbl.stc.com.R;
-import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.JBLConstant;
@@ -96,7 +94,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
         super.onResume();
         Logger.d(TAG, "onResume()");
 
-        DashboardActivity.getDashboardActivity().setAppLightXDelegate(this);
+        DeviceManager.getInstance(getActivity()).setAppLightXDelegate(this);
     }
 
     @Override

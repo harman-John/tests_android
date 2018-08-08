@@ -39,13 +39,13 @@ import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.CalibrationFragment;
 import jbl.stc.com.fragment.DiscoveryFragment;
-import jbl.stc.com.fragment.HomeFragment;
-import jbl.stc.com.fragment.InfoFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
+import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -56,7 +56,7 @@ import jbl.stc.com.utils.OTAUtil;
 import jbl.stc.com.view.DeleteView;
 import jbl.stc.com.view.MyDragGridView;
 
-public class DashboardActivity extends DeviceManagerActivity implements View.OnClickListener, OnDownloadedListener {
+public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnDownloadedListener ,ConnectListener{
     private static final String TAG = DashboardActivity.class.getSimpleName() + "aa";
     private static DashboardActivity dashboardActivity;
     private final static int MSG_SHOW_MY_PRODUCTS = 0;
@@ -85,6 +85,9 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.d(TAG, "onCreate");
+        DeviceManager.getInstance(this).setOnCreate();
+        DeviceManager.getInstance(this).setConnectListener(this);
+//        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         setContentView(R.layout.activity_dashboard);
         registerReceiver(mBtReceiver, makeFilter());
         dashboardActivity = this;
@@ -157,15 +160,15 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 if (myDeviceA2dp.equals(myDevice)) {
                     Logger.i(TAG, "myDeviceA2dp deviceKey= " + myDeviceA2dp.deviceKey);
                     if (myDevice.deviceName.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
-                        Logger.i(TAG, "isConnected = " + isConnected);
-                        if (isConnected) {
+                        Logger.i(TAG, "isConnected = " + DeviceManager.getInstance(this).isConnected());
+                        if (DeviceManager.getInstance(this).isConnected()) {
                             myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
                         }
                     } else {
-                        if (specifiedDevice != null) {
-                            String mainDeviceKey = specifiedDevice.getName() + "-" + specifiedDevice.getAddress();
+                        if (DeviceManager.getInstance(this).getSpecifiedDevice() != null) {
+                            String mainDeviceKey = DeviceManager.getInstance(this).getSpecifiedDevice().getName() + "-" + DeviceManager.getInstance(this).getSpecifiedDevice().getAddress();
                             Logger.i(TAG, "mainDeviceKey = " + mainDeviceKey);
-                            if (isConnected && mainDeviceKey.toUpperCase().equalsIgnoreCase(myDeviceA2dp.deviceKey.toUpperCase())) {
+                            if (DeviceManager.getInstance(this).isConnected() && mainDeviceKey.toUpperCase().equalsIgnoreCase(myDeviceA2dp.deviceKey.toUpperCase())) {
                                 Logger.i(TAG, "DEVICE_CONNECTED = " + mainDeviceKey);
                                 myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
                             } else {
@@ -206,8 +209,21 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        DeviceManager.getInstance(this).setOnRestart();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        DeviceManager.getInstance(this).setOnPostResume();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        DeviceManager.getInstance(this).setOnResume();
         Logger.d(TAG, "onResume");
         checkBluetooth();
     }
@@ -215,6 +231,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     @Override
     protected void onPause() {
         super.onPause();
+        DeviceManager.getInstance(this).setOnPause();
         Logger.d(TAG, "onPause");
     }
 
@@ -222,6 +239,13 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     protected void onStop() {
         super.onStop();
         Logger.d(TAG, "onStop");
+        DeviceManager.getInstance(this).setOnStop();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        DeviceManager.getInstance(this).setOnActivityResult(requestCode,resultCode,data);
     }
 
     @Override
@@ -229,11 +253,11 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         Logger.d(TAG, "onDestroy");
         unregisterReceiver(mBtReceiver);
         super.onDestroy();
+        DeviceManager.getInstance(this).setOnDestroy();
     }
 
     @Override
     public void connectDeviceStatus(boolean isConnected) {
-        super.connectDeviceStatus(isConnected);
         Logger.d(TAG, " connectDeviceStatus isConnected = " + isConnected);
 
         if (isConnected) {
@@ -241,21 +265,21 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 dashboardHandler.sendEmptyMessageDelayed(MSG_OTA_SUCCESS, 200);
             } else {
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (!(fr != null && fr instanceof HomeFragment) && !isNeedOtaAgain) {
+//                if (!(fr != null && fr instanceof HomeFragment) && !isNeedOtaAgain) {
                     dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
-                }
+//                }
             }
 
         } else {
             Logger.d(TAG, "isOTADoing = " + isOTADoing);
             if (!isOTADoing) {
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (fr != null && fr instanceof HomeFragment) {
+                if (fr != null ){//&& fr instanceof HomeFragment) {
                     Logger.d(TAG, "disconnect home fragment ");
-                    MyDevice myDevice = ((HomeFragment) fr).getMyDeviceInHome();
-                    if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                        removeAllFragment();
-                    }
+//                    MyDevice myDevice = ((HomeFragment) fr).getMyDeviceInHome();
+//                    if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+//                        removeAllFragment();
+//                    }
                 } else {
                     Logger.d(TAG, "disconnect not home fragment ");
                     if (getMyDeviceConnected() != null && getMyDeviceConnected().connectStatus == ConnectStatus.DEVICE_CONNECTED) {
@@ -285,11 +309,10 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         if (AppUtils.getMyDeviceSize(mContext) == 0) {
             textViewTips.setVisibility(View.VISIBLE);
         }
-        super.removeDeviceList(key);
+        DeviceManager.getInstance(this).removeDeviceList(key);
     }
 
     public void checkDevices(Set<String> deviceList) {
-        super.checkDevices(deviceList);
         Message msg = new Message();
         msg.what = MSG_CHECK_DEVICES;
         msg.obj = deviceList;
@@ -297,19 +320,14 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     public boolean isConnected() {
-        return isConnected;
+        return DeviceManager.getInstance(this).isConnected();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_dashboard_white_menu: {
-                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (fr == null) {
-                    switchFragment(new InfoFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
-                } else if (!(fr instanceof InfoFragment)) {
-                    switchFragment(new InfoFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
-                }
+                startActivity(new Intent(this,InfoActivity.class));
                 break;
             }
             case R.id.image_view_dashboard_white_plus: {
@@ -317,7 +335,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                 if (fr == null) {
                     switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
-                } else if (!(fr instanceof InfoFragment)) {
+                } else if (!(fr instanceof DiscoveryFragment)) {
                     switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
                 }
                 break;
@@ -330,7 +348,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     public void onBackPressed() {
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if (isOTADoing) {
-            if (fr != null && fr instanceof OTAFragment && mIsInBootloader && isConnected) {
+            if (fr != null && fr instanceof OTAFragment && DeviceManager.getInstance(this).isInBootloader() && DeviceManager.getInstance(this).isConnected()) {
                 final Toast toast = Toast.makeText(this, "Can't perform this action.", Toast.LENGTH_SHORT);
                 toast.show();
                 Handler handler = new Handler();
@@ -371,9 +389,8 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
         textViewTips.setVisibility(View.GONE);
     }
 
-    @Override
     public void startA2DPCheck() {
-        super.startA2DPCheck();
+        DeviceManager.getInstance(this).startA2DPCheck();
     }
 
     public static DashboardActivity getDashboardActivity() {
@@ -419,7 +436,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
                 }
                 case MSG_OTA_SUCCESS: {
                     Logger.d(TAG, "Ota success");
-                    checkDevices(devicesSet);
+                    checkDevices(DeviceManager.getInstance(getDashboardActivity()).getDevicesSet());
                     Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                     if (fr != null && fr instanceof OTAFragment) {
                         ((OTAFragment) fr).otaSuccess();
@@ -492,24 +509,28 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     }
 
     private void showHomeFragment(MyDevice myDevice) {
-        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        HomeFragment homeFragment = new HomeFragment();
+
+        Intent it = new Intent(this,HomeActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-        homeFragment.setArguments(bundle);
-        if (fr == null) {
-            switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-        } else if (!(fr instanceof HomeFragment)) {
-            switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-        }
+        it.putExtras(bundle);
+        startActivity(it);
+//        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+//        HomeFragment homeFragment = new HomeFragment();
+//        homeFragment.setArguments(bundle);
+//        if (fr == null) {
+//            switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+//        } else if (!(fr instanceof HomeFragment)) {
+//            switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+//        }
     }
 
     public void setIsUpdateAvailable(boolean isUpdateAvailable) {
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if (fr != null && fr instanceof SettingsFragment) {
             ((SettingsFragment) fr).showOta(isUpdateAvailable);
-        } else if (fr != null && fr instanceof HomeFragment) {
-            ((HomeFragment) fr).showOta(isUpdateAvailable);
+//        } else if (fr != null && fr instanceof HomeFragment) {
+//            ((HomeFragment) fr).showOta(isUpdateAvailable);
         }
     }
 

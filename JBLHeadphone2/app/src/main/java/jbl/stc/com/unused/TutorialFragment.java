@@ -2,10 +2,8 @@ package jbl.stc.com.unused;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +29,6 @@ import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.fragment.BaseFragment;
 import jbl.stc.com.fragment.CalibrationFragment;
-import jbl.stc.com.fragment.HomeFragment;
 import jbl.stc.com.listener.AwarenessChangeListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;

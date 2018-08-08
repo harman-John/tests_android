@@ -9,27 +9,23 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
-import com.avnera.smartdigitalheadset.Utility;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.listener.OnHeadphoneconnectListener;
-import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.CalibrationManager;
 import jbl.stc.com.view.AppButton;
@@ -184,15 +180,21 @@ public class CalibrationFragment extends BaseFragment implements OnHeadphoneconn
                 DashboardActivity.getDashboardActivity().tutorialAncDialog.show();
             }
             Fragment fr = getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-            HomeFragment homeFragment = new HomeFragment();
+            HomeActivity homeActivity = new HomeActivity();
+
+//            Bundle bundle = new Bundle();
+//            bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+//            homeFragment.setArguments(bundle);
+//            if (fr == null) {
+//                switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+//            } else if (!(fr instanceof HomeFragment)) {
+//                switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+//            }
+            Intent it = new Intent(getActivity(),HomeActivity.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-            homeFragment.setArguments(bundle);
-            if (fr == null) {
-                switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-            } else if (!(fr instanceof HomeFragment)) {
-                switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-            }
+            it.putExtras(bundle);
+            startActivity(it);
         }
     }
 

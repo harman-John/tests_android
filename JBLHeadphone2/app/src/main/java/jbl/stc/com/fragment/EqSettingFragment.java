@@ -119,14 +119,15 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                         break;
                     case MotionEvent.ACTION_MOVE:
                         yMove = event.getRawY();
-                        int distanceY = (int) (yMove - yDown);
-                        int ySpeed = getScrollVelocity();
-                        if (distanceY > Y_DISTANCE_MIN && ySpeed > Y_SPEED_MIN) {
-                            if (FastClickHelper.isFastClick()) {
-                                return true;
-                            }
-                            getActivity().onBackPressed();
-                        }
+//                        int distanceY = (int) (yMove - yDown);
+//                        int ySpeed = getScrollVelocity();
+//                        if (distanceY > Y_DISTANCE_MIN && ySpeed > Y_SPEED_MIN) {
+//                            if (FastClickHelper.isFastClick()) {
+//                                return true;
+//                            }
+//                            getActivity().onBackPressed();
+//                        }
+                        rootView.setTranslationY(yMove);
                         break;
                     case MotionEvent.ACTION_UP:
                         recycleVelocityTracker();
