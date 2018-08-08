@@ -178,7 +178,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
         });
     }
-    List<CircleModel> listsBak = new ArrayList<>();
+
     private void initValue() {
         List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
         eqModelList.clear();
@@ -229,7 +229,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             pos = 0;
             equalizerView.clearAllPointCircles();
             myHandler.removeMessages(MSG_SHOW_LINE);
-            myHandler.sendEmptyMessage(MSG_SHOW_LINE);
+            myHandler.sendEmptyMessageDelayed(MSG_SHOW_LINE,500);
             Logger.d(TAG,"aaaaa initValue");
 
         }

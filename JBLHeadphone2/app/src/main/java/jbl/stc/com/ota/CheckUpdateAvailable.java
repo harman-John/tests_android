@@ -14,9 +14,11 @@ import java.net.URL;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.data.FwTYPE;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.OTAFragment;
+import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AnalyticsManager;
@@ -121,11 +123,17 @@ public class CheckUpdateAvailable extends AsyncTask<String, Void, CopyOnWriteArr
     @Override
     protected void onPostExecute(CopyOnWriteArrayList<FirmwareModel> fwlist) {
         super.onPostExecute(fwlist);
+        Logger.d(TAG,"onPostExecute object = "+object);
         if (downloaded != null && fwlist != null && fwlist.size() != 0) {
             if (object instanceof OTAFragment) {
+                Logger.d(TAG,"onPostExecute OTAFragment");
                 ((OTAFragment) object).setIsUpdateAvailable(isUpdateAvailable(fwlist), fwlist);
-            } else if (object instanceof DashboardActivity) {
-                ((DashboardActivity) object).setIsUpdateAvailable(isUpdateAvailable(fwlist));
+            } else if (object instanceof SettingsFragment) {
+                Logger.d(TAG,"onPostExecute SettingsFragment");
+                ((SettingsFragment) object).showOta(isUpdateAvailable(fwlist));
+            } else if (object instanceof HomeActivity) {
+                Logger.d(TAG,"onPostExecute HomeActivity");
+                ((HomeActivity) object).showOta(isUpdateAvailable(fwlist));
             } else {
                 downloaded.onFailedToCheckUpdate();
             }

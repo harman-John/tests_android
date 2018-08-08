@@ -802,7 +802,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             PreferenceUtils.setString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, hardVersion, this);
         }
         AnalyticsManager.getInstance(this).reportFirmwareVersion(hardVersion);
-        DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
+        startCheckingIfUpdateIsAvailable(HomeActivity.this);
         registerConnectivity();
     }
 
@@ -842,15 +842,17 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         @Override
         public void onReceive(final Context context, final Intent intent) {
             Logger.i(TAG,"onReceive");
-            if (isFinishing()) {
-                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                if (cm != null) {
-                    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-                    if (netInfo != null && netInfo.isConnected()) {
-                        DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
-                    }else{
-                        showOta(false);
-                    }
+            if (isFinishing()){
+                Logger.d(TAG,"NetworkChangeReceiver, activity is finishing, return");
+                return;
+            }
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm != null) {
+                NetworkInfo netInfo = cm.getActiveNetworkInfo();
+                if (netInfo != null && netInfo.isConnected()) {
+                    startCheckingIfUpdateIsAvailable(HomeActivity.this);
+                }else{
+                    showOta(false);
                 }
             }
         }
@@ -1127,12 +1129,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void lightXReadBootResult(final LightX lightX, final Command command, final boolean success, final int i, final byte[] buffer) {
         Logger.d(TAG, "lightXReadBootResult command is " + command + " result is " + success);
-        if (this == null) {
-            Logger.d(TAG, "Activity is null");
-            return;
-        }
-        if (!isFinishing()) {
-            Logger.d(TAG, "This fragment is null");
+        if (isFinishing()){
+            Logger.d(TAG,"lightXReadBootResult, activity is finishing, return");
             return;
         }
         if (success) {
@@ -1145,13 +1143,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                     String rsrcSavedVersion = major + "." + minor + "." + revision;
                     PreferenceUtils.setString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, rsrcSavedVersion, this);
                     Logger.d(TAG, "rsrcSavedVersion=" + rsrcSavedVersion);
-                    DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable(); /** Now start checking for update to show red bubble on setting icon*/
+                    startCheckingIfUpdateIsAvailable(HomeActivity.this); /** Now start checking for update to show red bubble on setting icon*/
                     registerConnectivity();
                 }
                 break;
             }
         } else {
-            DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
+            startCheckingIfUpdateIsAvailable(HomeActivity.this);
             registerConnectivity();
         }
     }

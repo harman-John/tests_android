@@ -33,24 +33,32 @@ import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.USB;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.dialog.AlertsDialog;
+import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.BaseFragment;
 import jbl.stc.com.listener.AppLightXDelegate;
 import jbl.stc.com.listener.AppUSBDelegate;
+import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.DeviceManager;
+import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.FirmwareUtil;
+import jbl.stc.com.utils.OTAUtil;
 import jbl.stc.com.utils.StatusBarUtil;
 
 
-public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,View.OnTouchListener, AppLightXDelegate{
+public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,View.OnTouchListener, AppLightXDelegate,OnDownloadedListener {
     private final static String TAG = BaseActivity.class.getSimpleName();
     protected Context mContext;
     public static final String JBL_HEADSET_MAC_ADDRESS = "com.jbl.headset.mac_address";
@@ -97,6 +105,25 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(usbReceiver);
+    }
+
+    private CheckUpdateAvailable checkUpdateAvailable;
+    public void startCheckingIfUpdateIsAvailable(Object object) {
+        Logger.d(TAG, "AppUtils.getModelNumber(this)=" + AppUtils.getModelNumber(this));
+        Logger.d(TAG, "startCheckingIfUpdateIsAvailable isConnectionAvailable=" + FirmwareUtil.isConnectionAvailable(this));
+        String srcSavedVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, this, "0.0.0");
+        String currentVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.APP_VERSION, this, "");
+        Logger.d(TAG, "srcSavedVersion = " + srcSavedVersion + ",currentVersion = " + currentVersion);
+        if (FirmwareUtil.isConnectionAvailable(this) && !TextUtils.isEmpty(srcSavedVersion) && !TextUtils.isEmpty(currentVersion)) {
+            Logger.d(TAG, "checkUpdateAvailable = " + checkUpdateAvailable);
+            if (checkUpdateAvailable != null && checkUpdateAvailable.isRunnuning()) {
+                Logger.d(TAG, "CheckUpdateAvailable is running so return");
+                checkUpdateAvailable.cancel(true);
+                checkUpdateAvailable = null;
+            }
+            Logger.d(TAG, "CheckUpdateAvailable.start()");
+            checkUpdateAvailable = CheckUpdateAvailable.start(object, this, this, OTAUtil.getURL(this), srcSavedVersion, currentVersion);
+        }
     }
 
     protected void setStatusBar() {
@@ -322,6 +349,26 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return false;
+    }
+
+    @Override
+    public void onDownloadedFirmware(CopyOnWriteArrayList<FirmwareModel> fwlist) throws FileNotFoundException {
+
+    }
+
+    @Override
+    public void onFailedDownload() {
+
+    }
+
+    @Override
+    public void onFailedToCheckUpdate() {
+
+    }
+
+    @Override
+    public void onUpgradeUpdate(String liveVersion, String title) {
+
     }
 
     private class USBReceiver extends BroadcastReceiver {

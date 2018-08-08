@@ -524,33 +524,15 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 //            switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
 //        }
     }
-
-    public void setIsUpdateAvailable(boolean isUpdateAvailable) {
-        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        if (fr != null && fr instanceof SettingsFragment) {
-            ((SettingsFragment) fr).showOta(isUpdateAvailable);
-//        } else if (fr != null && fr instanceof HomeFragment) {
-//            ((HomeFragment) fr).showOta(isUpdateAvailable);
-        }
-    }
-
-    public void startCheckingIfUpdateIsAvailable() {
-        Logger.d(TAG, "AppUtils.getModelNumber(this)=" + AppUtils.getModelNumber(this));
-        Logger.d(TAG, "startCheckingIfUpdateIsAvailable isConnectionAvailable=" + FirmwareUtil.isConnectionAvailable(this));
-        String srcSavedVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, this, "0.0.0");
-        String currentVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.APP_VERSION, this, "");
-        Logger.d(TAG, "srcSavedVersion = " + srcSavedVersion + ",currentVersion = " + currentVersion);
-        if (FirmwareUtil.isConnectionAvailable(this) && !TextUtils.isEmpty(srcSavedVersion) && !TextUtils.isEmpty(currentVersion)) {
-            Logger.d(TAG, "checkUpdateAvailable = " + checkUpdateAvailable);
-            if (checkUpdateAvailable != null && checkUpdateAvailable.isRunnuning()) {
-                Logger.d(TAG, "CheckUpdateAvailable is running so return");
-                return;
-            }
-            Logger.d(TAG, "CheckUpdateAvailable.start()");
-            checkUpdateAvailable = CheckUpdateAvailable.start(this, this, this, OTAUtil.getURL(this), srcSavedVersion, currentVersion);
-        }
-    }
-
+//
+//    public void setIsUpdateAvailable(boolean isUpdateAvailable) {
+//        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+//        if (fr != null && fr instanceof SettingsFragment) {
+//            ((SettingsFragment) fr).showOta(isUpdateAvailable);
+////        } else if (fr != null && fr instanceof HomeFragment) {
+////            ((HomeFragment) fr).showOta(isUpdateAvailable);
+//        }
+//    }
 
     @Override
     public void onDownloadedFirmware(CopyOnWriteArrayList<FirmwareModel> fwlist) throws FileNotFoundException {
