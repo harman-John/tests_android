@@ -3,7 +3,7 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/orange"
+    android:background="@drawable/shape_gradient_eq"
     android:orientation="vertical">
 
     <LinearLayout
@@ -16,7 +16,6 @@
             android:id="@+id/titleBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/title_bar_height"
-            android:background="@color/transparent"
             android:focusableInTouchMode="true"
             android:paddingLeft="@dimen/margin_top_10dp"
             android:paddingRight="@dimen/margin_top_10dp">
@@ -60,7 +59,7 @@
             android:id="@+id/rl_eq_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/transparent">
+            >
 
             <jbl.stc.com.view.EqualizerShowView
                 android:id="@+id/equalizerView"

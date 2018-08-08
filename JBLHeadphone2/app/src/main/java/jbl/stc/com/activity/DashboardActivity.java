@@ -53,7 +53,7 @@ import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.utils.InsertPredefinePreset;
 import jbl.stc.com.utils.OTAUtil;
-import jbl.stc.com.view.DeleteView;
+import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.MyDragGridView;
 
 public class DashboardActivity extends DeviceManagerActivity implements View.OnClickListener, OnDownloadedListener {
@@ -79,7 +79,7 @@ public class DashboardActivity extends DeviceManagerActivity implements View.OnC
     private List<MyDevice> lists;
     private MyGridAdapter myGridAdapter;
     private TextView textViewTips;
-    private DeleteView viewDelete;
+    private EqArcView viewDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

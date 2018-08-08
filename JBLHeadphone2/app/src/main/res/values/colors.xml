@@ -58,7 +58,7 @@
     <color name="orange">#EE4000</color>
     <color name="red_discovery">#FF3301</color>
     <color name="orange_light">#FF7F00</color>
-    <color name="orange_discovery">#FF6B00</color>
+    <color name="orange_discovery">#FF5201</color>
 
     <color name="white_1"> #ebebeb</color>
     <color name="text_color_1">#333333</color>
@@ -78,4 +78,7 @@
     <color name="orange_charge">#FF9420</color>
     <color name="red_charge">#FF3623</color>
     <color name="drawable_shader">#9298A2</color>
+
+    <color name="orange_gradient_start">#FF5201</color>
+    <color name="orange_gradient_end">#FF7900</color>
 </resources>
