@@ -8,7 +8,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/shape_gradient_discovery"
         android:clickable="true"
         android:clipChildren="false"
         android:focusable="true"
@@ -18,7 +17,7 @@
             android:id="@+id/relative_layout_dashboard_title"
             android:layout_width="match_parent"
             android:layout_height="@dimen/title_bar_height"
-            android:background="@color/red_discovery">
+            >
 
             <jbl.stc.com.view.AppImageView
                 android:id="@+id/image_view_dashboard_white_menu"
@@ -90,13 +89,15 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
 
-    <jbl.stc.com.view.DeleteView
+    <jbl.stc.com.view.EqArcView
         android:id="@+id/delete_view"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="-75dp"
-        android:layout_marginRight="-75dp"
+        android:layout_marginBottom="-100dp"
+        android:layout_marginRight="-100dp"
+        app:color="#ffffff"
+        app:drawable="@mipmap/delete_red"
         android:visibility="gone" />
 </RelativeLayout>

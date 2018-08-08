@@ -196,8 +196,8 @@ public class MyDragGridView extends GridView {
 
     }
 
-    private DeleteView mDeleteView;
-    public void setDeleteView(DeleteView deleteView){
+    private View mDeleteView;
+    public void setDeleteView(View deleteView){
         mDeleteView = deleteView;
     }
 
