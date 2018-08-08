@@ -1,5 +1,6 @@
 package jbl.stc.com.activity;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -37,6 +38,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Stack;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
@@ -104,6 +106,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        finishActivity(this);
         unregisterReceiver(usbReceiver);
     }
 
@@ -387,5 +390,60 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     public HashMap<String, UsbDevice> getAllAttachedUSBdeviced() {
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         return manager.getDeviceList();
+    }
+
+    private static Stack<Activity> activityStack;
+    private PendingIntent restartIntent;
+
+
+    public void addActivity(Activity activity) {
+        if (activityStack == null) {
+            activityStack = new Stack<Activity>();
+        }
+        activityStack.add(activity);
+    }
+
+    public Activity currentActivity() {
+        Activity activity = activityStack.lastElement();
+        return activity;
+    }
+
+    public void finishActivity() {
+        Activity activity = activityStack.lastElement();
+        finishActivity(activity);
+    }
+
+    public void finishActivity(Activity activity) {
+        if (activity != null) {
+            activityStack.remove(activity);
+            activity.finish();
+            activity = null;
+        }
+    }
+
+    public void finishActivity(Class<?> cls) {
+        for (Activity activity : activityStack) {
+            if (activity.getClass().equals(cls)) {
+                finishActivity(activity);
+            }
+        }
+    }
+
+    public void finishAllActivity() {
+        for (int i = 0, size = activityStack.size(); i < size; i++) {
+            if (null != activityStack.get(i)) {
+                activityStack.get(i).finish();
+            }
+        }
+        activityStack.clear();
+    }
+
+    public void exitApp(Context context) {
+        try {
+            finishAllActivity();
+            System.exit(0);
+            android.os.Process.killProcess(android.os.Process.myPid());
+        } catch (Exception e) {
+        }
     }
 }

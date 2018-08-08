@@ -85,6 +85,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.d(TAG, "onCreate");
+        addActivity(this);
         DeviceManager.getInstance(this).setOnCreate();
         DeviceManager.getInstance(this).setConnectListener(this);
 //        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
@@ -253,6 +254,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         Logger.d(TAG, "onDestroy");
         unregisterReceiver(mBtReceiver);
         super.onDestroy();
+        finishActivity(this);
         DeviceManager.getInstance(this).setOnDestroy();
     }
 
@@ -264,9 +266,14 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             if (isOTADoing) {
                 dashboardHandler.sendEmptyMessageDelayed(MSG_OTA_SUCCESS, 200);
             } else {
-                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+//                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
 //                if (!(fr != null && fr instanceof HomeFragment) && !isNeedOtaAgain) {
+                if (!(currentActivity() instanceof HomeActivity) && !DeviceManager.getInstance(this).isNeedOtaAgain()){
                     dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
+                }else if (currentActivity() instanceof HomeActivity){
+                    currentActivity().finish();
+                    dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
+                }
 //                }
             }
 
@@ -509,12 +516,12 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void showHomeFragment(MyDevice myDevice) {
+        Bundle b = new Bundle();
+        b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra("bundle", b);
 
-        Intent it = new Intent(this,HomeActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-        it.putExtras(bundle);
-        startActivity(it);
+        startActivity(intent);
 //        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
 //        HomeFragment homeFragment = new HomeFragment();
 //        homeFragment.setArguments(bundle);

@@ -125,10 +125,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_home);
+        addActivity(this);
         Logger.d(TAG, "onCreateView");
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            myDevice = bundle.getParcelable(JBLConstant.KEY_MY_DEVICE);
+        Bundle b = getIntent().getBundleExtra("bundle");
+        if (b != null) {
+            myDevice = b.getParcelable(JBLConstant.KEY_MY_DEVICE);
         }
         lightX = AvneraManager.getAvenraManager(this).getLightX();
         generateAAPopupWindow();
@@ -809,6 +810,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        finishActivity(this);
         unregisterNetworkReceiverSafely();
     }
 

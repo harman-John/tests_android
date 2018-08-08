@@ -15,6 +15,7 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        addActivity(this);
         setContentView(R.layout.fragment_info);
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
         findViewById(R.id.text_view_info_my_product).setOnClickListener(this);
