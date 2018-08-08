@@ -3,7 +3,7 @@
     android:id="@+id/relative_layout_splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/shape_gradient_legal">
+    android:background="@drawable/shape_gradient_discovery">
 
 
     <jbl.stc.com.view.CustomFontTextView
