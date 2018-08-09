@@ -405,6 +405,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             case R.id.image_view_home_ambient_aware: {
                 if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                     if (AppUtils.isOldDevice(deviceName)) {
+                        if (!checkBoxNoiseCancel.isChecked()){
+                            checkBoxNoiseCancel.setChecked(true);
+                        }
+                        setANC();
                         showAncPopupWindow();
                     } else if (AppUtils.isNewDevice(deviceName)) {
                         showSaPopupWindow();
@@ -1044,6 +1048,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             case AmCmds.CMD_AmbientLevelingNotification: {
 
                 if (aaPopupWindow == null) {
+                    Logger.i(TAG,"aaPopupWindow is null");
                     return;
                 }
                 aaPopupWindow.updateAAUI(AppUtils.levelTransfer(Integer.valueOf(values.iterator().next().getValue().toString())));//new devices
