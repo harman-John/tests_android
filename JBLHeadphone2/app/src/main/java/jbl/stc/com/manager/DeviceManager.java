@@ -321,10 +321,12 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
     };
 
     private void disconnectAllBluetoothConnection() {
+        Logger.d(TAG, "disconnectAllBluetoothConnection");
         try {
             if (mLightX != null) {
                 mLightX.close();
                 mLightX = null;
+                AvneraManager.getAvenraManager(mContext).setLightX(null);
             }
             disconnectBluetoothLibrary();
         } catch (Exception e) {
@@ -1212,8 +1214,8 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                     if (mLightX != null) {
                         mLightX.close();
                         mLightX = null;
-                        AvneraManager.getAvenraManager(mContext).setLightX(null);
                     }
+                    AvneraManager.getAvenraManager(mContext).setLightX(null);
                     AccessoryInfo accessoryInfo = bt150Manager.getAccessoryStatus();
                     PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), mContext);
                     AppUtils.setModelNumber(mContext, accessoryInfo.getModelNumber());

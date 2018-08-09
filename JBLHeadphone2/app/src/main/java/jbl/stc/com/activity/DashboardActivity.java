@@ -228,6 +228,14 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         DeviceManager.getInstance(this).setOnResume();
         Logger.d(TAG, "onResume");
         checkBluetooth();
+        if (isConnected()){
+            dashboardHandler.removeMessages(MSG_START_SCAN);
+            dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
+        }
+        if (isConnected() && isInBackground){
+            isInBackground = false;
+            dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
+        }
     }
 
     @Override
@@ -259,6 +267,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         DeviceManager.getInstance(this).setOnDestroy();
     }
 
+    private boolean isInBackground = false;
     @Override
     public void connectDeviceStatus(boolean isConnected) {
         Logger.d(TAG, " connectDeviceStatus isConnected = " + isConnected);
@@ -271,7 +280,11 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 if ( !(currentActivity() instanceof DashboardActivity ) && !DeviceManager.getInstance(this).isNeedOtaAgain()){
                     currentActivity().finish();
                 }
-                dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
+                if (isForeground()) {
+                    dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
+                }else{
+                    isInBackground = true;
+                }
             }
 
         } else {
@@ -364,11 +377,11 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             AppUtils.hideFromForeground(this);
         } else {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-                Logger.i(TAG, "onBackPressed MSG_START_SCAN");
-                dashboardHandler.removeMessages(MSG_START_SCAN);
-                dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
-            }
+//            if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+//                Logger.i(TAG, "onBackPressed MSG_START_SCAN");
+//                dashboardHandler.removeMessages(MSG_START_SCAN);
+//                dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
+//            }
             super.onBackPressed();
         }
     }
@@ -402,9 +415,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             switch (msg.what) {
                 case MSG_SHOW_MY_PRODUCTS: {
                     showMyProducts();
-//                    if (DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.Connected_BluetoothDevice) {
                     startA2DPCheck();
-//                    }
                     dashboardHandler.removeMessages(MSG_START_SCAN);
                     dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT, 2000);
                     break;
@@ -508,24 +519,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         intent.putExtra("bundle", b);
 
         startActivity(intent);
-//        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-//        HomeFragment homeFragment = new HomeFragment();
-//        homeFragment.setArguments(bundle);
-//        if (fr == null) {
-//            switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-//        } else if (!(fr instanceof HomeFragment)) {
-//            switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-//        }
     }
-//
-//    public void setIsUpdateAvailable(boolean isUpdateAvailable) {
-//        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-//        if (fr != null && fr instanceof SettingsFragment) {
-//            ((SettingsFragment) fr).showOta(isUpdateAvailable);
-////        } else if (fr != null && fr instanceof HomeFragment) {
-////            ((HomeFragment) fr).showOta(isUpdateAvailable);
-//        }
-//    }
 
     @Override
     public void onDownloadedFirmware(CopyOnWriteArrayList<FirmwareModel> fwlist) throws FileNotFoundException {

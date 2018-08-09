@@ -13,15 +13,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 
 import com.avnera.audiomanager.Action;
 import com.avnera.audiomanager.AdminEvent;
@@ -100,9 +96,26 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        isStopped = false;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         DeviceManager.getInstance(this).setAppLightXDelegate(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isStopped = true;
     }
 
     @Override
@@ -110,6 +123,11 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
         super.onDestroy();
         finishActivity(this);
         unregisterReceiver(usbReceiver);
+    }
+
+    private boolean isStopped = false;
+    public boolean isStopped(){
+        return isStopped;
     }
 
     private CheckUpdateAvailable checkUpdateAvailable;
@@ -448,6 +466,24 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
             }
         }
         activityStack.clear();
+    }
+
+    public boolean isForeground() {
+        int count = 0;
+        for (int i = 0, size = activityStack.size(); i < size; i++) {
+            if (null != activityStack.get(i)) {
+                boolean isStopped = ((BaseActivity)(activityStack.get(i))).isStopped();
+                Logger.i(TAG,"isStopped = "+isStopped +",activity = "+activityStack.get(i));
+                if (isStopped){
+                    count ++;
+                }
+            }
+        }
+
+        if (count == activityStack.size()){
+            return false;
+        }
+        return true;
     }
 
     public void exitApp(Context context) {

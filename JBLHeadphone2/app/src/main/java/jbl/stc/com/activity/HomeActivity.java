@@ -590,7 +590,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private void getDeviceInfo() {
 
         ANCControlManager.getANCManager(this).getANCValue(lightX);
-        updateFirmwareVersion();
+        if (lightX == null) {
+            updateFirmwareVersion();
+        }
         ANCControlManager.getANCManager(this).getCurrentPreset(lightX);
         ANCControlManager.getANCManager(this).getFirmwareInfo(lightX);
         if (lightX != null) {
