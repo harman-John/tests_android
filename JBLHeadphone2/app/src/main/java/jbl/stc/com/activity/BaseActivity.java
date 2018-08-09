@@ -38,6 +38,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -48,6 +49,7 @@ import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.BaseFragment;
 import jbl.stc.com.listener.AppLightXDelegate;
 import jbl.stc.com.listener.AppUSBDelegate;
+import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.DeviceManager;
@@ -60,7 +62,7 @@ import jbl.stc.com.utils.OTAUtil;
 import jbl.stc.com.utils.StatusBarUtil;
 
 
-public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,View.OnTouchListener, AppLightXDelegate,OnDownloadedListener {
+public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,View.OnTouchListener, AppLightXDelegate,OnDownloadedListener,ConnectListener {
     private final static String TAG = BaseActivity.class.getSimpleName();
     protected Context mContext;
     public static final String JBL_HEADSET_MAC_ADDRESS = "com.jbl.headset.mac_address";
@@ -371,6 +373,16 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
 
     @Override
     public void onUpgradeUpdate(String liveVersion, String title) {
+
+    }
+
+    @Override
+    public void connectDeviceStatus(boolean isConnected) {
+
+    }
+
+    @Override
+    public void checkDevices(Set<String> deviceList) {
 
     }
 

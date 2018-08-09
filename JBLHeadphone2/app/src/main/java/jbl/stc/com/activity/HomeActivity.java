@@ -44,6 +44,7 @@ import com.avnera.smartdigitalheadset.Utility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import jbl.stc.com.R;
 import jbl.stc.com.config.DeviceFeatureMap;
@@ -59,6 +60,7 @@ import jbl.stc.com.fragment.EqCustomFragment;
 import jbl.stc.com.fragment.EqSettingFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.SettingsFragment;
+import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
@@ -81,7 +83,7 @@ import jbl.stc.com.view.SaPopupWindow;
 import static java.lang.Integer.valueOf;
 
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener {
+public class HomeActivity extends BaseActivity implements View.OnClickListener , ConnectListener{
     public static final String TAG = HomeActivity.class.getSimpleName();
     private BlurringView mBlurView;
 

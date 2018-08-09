@@ -211,6 +211,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void onRestart() {
+        Logger.d(TAG, "onRestart");
         super.onRestart();
         DeviceManager.getInstance(this).setOnRestart();
     }
@@ -266,38 +267,23 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             if (isOTADoing) {
                 dashboardHandler.sendEmptyMessageDelayed(MSG_OTA_SUCCESS, 200);
             } else {
-//                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-//                if (!(fr != null && fr instanceof HomeFragment) && !isNeedOtaAgain) {
-                if (!(currentActivity() instanceof HomeActivity) && !DeviceManager.getInstance(this).isNeedOtaAgain()){
-                    dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
-                }else if (currentActivity() instanceof HomeActivity){
+                removeAllFragment();
+                if ( !(currentActivity() instanceof DashboardActivity ) && !DeviceManager.getInstance(this).isNeedOtaAgain()){
                     currentActivity().finish();
-                    dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
                 }
-//                }
+                dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
             }
 
         } else {
             Logger.d(TAG, "isOTADoing = " + isOTADoing);
             if (!isOTADoing) {
-                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (fr != null ){//&& fr instanceof HomeFragment) {
+                if (!(currentActivity() instanceof DashboardActivity )){//&& fr instanceof HomeFragment) {
                     Logger.d(TAG, "disconnect home fragment ");
-//                    MyDevice myDevice = ((HomeFragment) fr).getMyDeviceInHome();
-//                    if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-//                        removeAllFragment();
-//                    }
-                } else {
-                    Logger.d(TAG, "disconnect not home fragment ");
-                    if (getMyDeviceConnected() != null && getMyDeviceConnected().connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                        Logger.d(TAG, "disconnect not home fragment removeAllFragment");
-                        removeAllFragment();
-                    }
+                    removeAllFragment();
+                    currentActivity().finish();
                 }
                 updateDisconnectedAdapter();
                 myGridAdapter.setMyAdapterList(lists);
-            } else {
-
             }
         }
     }
