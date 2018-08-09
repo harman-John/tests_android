@@ -16,8 +16,7 @@
         <RelativeLayout
             android:id="@+id/relative_layout_dashboard_title"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_height"
-            >
+            android:layout_height="@dimen/title_bar_height">
 
             <jbl.stc.com.view.AppImageView
                 android:id="@+id/image_view_dashboard_white_menu"
@@ -97,7 +96,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="-100dp"
         android:layout_marginRight="-100dp"
+        android:visibility="gone"
         app:color="#ffffff"
-        app:drawable="@mipmap/delete_red"
-        android:visibility="gone" />
+        app:drawable="@mipmap/delete_red" />
 </RelativeLayout>
