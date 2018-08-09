@@ -36,7 +36,7 @@
     <dimen name="eq_name_edit_bottom_margin_show">5dp</dimen>
 
     <dimen name="settings_item_height">60dp</dimen>
-    <dimen name="settings_item_padding_left">40dp</dimen>
+    <dimen name="settings_item_padding_left">30dp</dimen>
     <dimen name="settings_item_padding_right">30dp</dimen>
 
 
