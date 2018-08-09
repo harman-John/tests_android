@@ -695,7 +695,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             if (onOff) {
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
             } else {
-                relative_layout_home_eq_info.setBackgroundColor(getResources().getColor(R.color.gray_aa_bg));
+                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq_off);
             }
         }
     }
@@ -710,7 +710,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             case 0: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.off), this);
                 textViewCurrentEQ.setText(getString(R.string.off));
-                relative_layout_home_eq_info.setBackgroundColor(getResources().getColor(R.color.gray_aa_bg));
+                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq_off);
                 break;
             }
             case 1: {
