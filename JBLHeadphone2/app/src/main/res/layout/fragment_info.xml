@@ -18,9 +18,8 @@
             android:id="@+id/image_view_info_back"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_close" />
+            android:src="@mipmap/black_arrow_back" />
 
         <ImageView
             android:id="@+id/deviceImage"
@@ -53,44 +52,6 @@
                 android:layout_marginStart="30dp"
                 android:background="@android:color/white" />
 
-            <jbl.stc.com.view.CustomFontTextView
-                android:id="@+id/text_view_info_my_product"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_item_height"
-                android:drawableRight="@mipmap/settings_arrow"
-                android:gravity="start|center_vertical"
-                android:paddingLeft="@dimen/settings_item_padding_left"
-                android:paddingRight="@dimen/settings_item_padding_right"
-                android:text="@string/my_products"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginStart="30dp"
-                android:background="@android:color/white" />
-
-            <jbl.stc.com.view.CustomFontTextView
-                android:id="@+id/text_view_info_product_help"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_item_height"
-                android:drawableRight="@mipmap/settings_arrow"
-                android:gravity="start|center_vertical"
-                android:paddingLeft="@dimen/settings_item_padding_left"
-                android:paddingRight="@dimen/settings_item_padding_right"
-                android:text="@string/text_product_help"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginStart="30dp"
-                android:background="@android:color/white" />
-
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_jbl_com"
@@ -100,6 +61,7 @@
                 android:gravity="start|center_vertical"
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
+                android:textColor="@color/text_color"
                 android:text="@string/text_jbl_com"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -119,6 +81,7 @@
                 android:gravity="start|center_vertical"
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
+                android:textColor="@color/text_color"
                 android:text="@string/text_open_source_license"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -138,6 +101,7 @@
                 android:gravity="start|center_vertical"
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
+                android:textColor="@color/text_color"
                 android:text="@string/text_eula"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -157,6 +121,7 @@
                 android:gravity="start|center_vertical"
                 android:paddingLeft="@dimen/settings_item_padding_left"
                 android:paddingRight="@dimen/settings_item_padding_right"
+                android:textColor="@color/text_color"
                 android:text="@string/text_harman_privacy_policy"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -183,6 +148,7 @@
             android:id="@+id/text_view_info_app_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/text_color"
             android:gravity="center"
             android:textStyle="normal"
             android:text="@string/app_version"
