@@ -1,11 +1,13 @@
 package jbl.stc.com.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +39,7 @@ import jbl.stc.com.listener.OnEqItemSelectedListener;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.FastClickHelper;
+import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.EqualizerShowView;
 import jbl.stc.com.view.MyGridLayoutManager;
 
@@ -62,6 +65,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private LightX lightX;
     private Handler mHandler = new Handler();
     private float mPosX = 0, mCurPosX;
+    private int screenHeght;
 
 
     @Override
@@ -69,6 +73,8 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         Logger.d("EqSettingFragment:", "onCreateView");
         rootView = inflater.inflate(R.layout.fragment_eq_settings, container, false);
         lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        screenHeght = dm.heightPixels;
         initView();
         initEvent();
         initValue();
@@ -119,8 +125,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                         break;
                     case MotionEvent.ACTION_MOVE:
                         yMove = event.getRawY();
-//                        int distanceY = (int) (yMove - yDown);
-//                        int ySpeed = getScrollVelocity();
+                        int ySpeed = getScrollVelocity();
 //                        if (distanceY > Y_DISTANCE_MIN && ySpeed > Y_SPEED_MIN) {
 //                            if (FastClickHelper.isFastClick()) {
 //                                return true;
@@ -128,9 +133,17 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 //                            getActivity().onBackPressed();
 //                        }
                         rootView.setTranslationY(yMove);
+
                         break;
                     case MotionEvent.ACTION_UP:
                         recycleVelocityTracker();
+                        if (yMove<screenHeght- UiUtils.dip2px(getActivity(),70)){
+                            rootView.setTranslationY(0);
+                        }else{
+                            getActivity().onBackPressed();
+
+                        }
+
                         break;
                     default:
                         break;
@@ -229,7 +242,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             pos = 0;
             equalizerView.clearAllPointCircles();
             myHandler.removeMessages(MSG_SHOW_LINE);
-            myHandler.sendEmptyMessage(MSG_SHOW_LINE);
+            myHandler.sendEmptyMessageDelayed(MSG_SHOW_LINE,500);
             Logger.d(TAG,"aaaaa initValue");
 
         }
@@ -237,7 +250,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             linearLayout.setBackgroundResource(R.drawable.shape_gradient_eq_off);
             eqEditImage.setClickable(false);
         } else {
-            linearLayout.setBackgroundResource(R.drawable.shape_gradient_legal);
+            linearLayout.setBackgroundResource(R.drawable.shape_gradient_eq);
             eqEditImage.setClickable(true);
         }
         smoothToPosition();
@@ -308,7 +321,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             linearLayout.setBackgroundResource(R.drawable.shape_gradient_eq_off);
             eqEditImage.setClickable(false);
         } else {
-            linearLayout.setBackgroundResource(R.drawable.shape_gradient_legal);
+            linearLayout.setBackgroundResource(R.drawable.shape_gradient_eq);
             eqEditImage.setClickable(true);
         }
         mHandler.removeCallbacks(applyRunnable);
@@ -412,5 +425,4 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             }
         }
     };
-
 }
