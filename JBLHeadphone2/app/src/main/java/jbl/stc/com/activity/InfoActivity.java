@@ -7,12 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.Set;
-
 import jbl.stc.com.R;
 import jbl.stc.com.legal.LegalApi;
-import jbl.stc.com.logger.Logger;
-import jbl.stc.com.manager.DeviceManager;
 
 public class InfoActivity extends BaseActivity implements View.OnClickListener {
     public static final String TAG = InfoActivity.class.getSimpleName();
@@ -20,7 +16,7 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addActivity(this);
-        setContentView(R.layout.fragment_info);
+        setContentView(R.layout.activity_info);
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
         findViewById(R.id.text_view_open_source_license).setOnClickListener(this);
         findViewById(R.id.text_view_eula).setOnClickListener(this);

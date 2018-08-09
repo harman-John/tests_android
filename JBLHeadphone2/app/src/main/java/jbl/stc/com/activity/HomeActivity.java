@@ -44,7 +44,6 @@ import com.avnera.smartdigitalheadset.Utility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import jbl.stc.com.R;
 import jbl.stc.com.config.DeviceFeatureMap;
@@ -126,7 +125,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_home);
+        setContentView(R.layout.activity_home);
         addActivity(this);
         Logger.d(TAG, "onCreateView");
         Bundle b = getIntent().getBundleExtra("bundle");
