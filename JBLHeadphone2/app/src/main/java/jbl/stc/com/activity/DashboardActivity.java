@@ -85,6 +85,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.d(TAG, "onCreate");
+        addActivity(this);
         DeviceManager.getInstance(this).setOnCreate();
         DeviceManager.getInstance(this).setConnectListener(this);
 //        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
@@ -210,6 +211,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void onRestart() {
+        Logger.d(TAG, "onRestart");
         super.onRestart();
         DeviceManager.getInstance(this).setOnRestart();
     }
@@ -253,6 +255,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         Logger.d(TAG, "onDestroy");
         unregisterReceiver(mBtReceiver);
         super.onDestroy();
+        finishActivity(this);
         DeviceManager.getInstance(this).setOnDestroy();
     }
 
@@ -264,33 +267,23 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             if (isOTADoing) {
                 dashboardHandler.sendEmptyMessageDelayed(MSG_OTA_SUCCESS, 200);
             } else {
-                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-//                if (!(fr != null && fr instanceof HomeFragment) && !isNeedOtaAgain) {
-                    dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_MY_PRODUCTS, 200);
-//                }
+                removeAllFragment();
+                if ( !(currentActivity() instanceof DashboardActivity ) && !DeviceManager.getInstance(this).isNeedOtaAgain()){
+                    currentActivity().finish();
+                }
+                dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
             }
 
         } else {
             Logger.d(TAG, "isOTADoing = " + isOTADoing);
             if (!isOTADoing) {
-                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (fr != null ){//&& fr instanceof HomeFragment) {
+                if (!(currentActivity() instanceof DashboardActivity )){//&& fr instanceof HomeFragment) {
                     Logger.d(TAG, "disconnect home fragment ");
-//                    MyDevice myDevice = ((HomeFragment) fr).getMyDeviceInHome();
-//                    if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-//                        removeAllFragment();
-//                    }
-                } else {
-                    Logger.d(TAG, "disconnect not home fragment ");
-                    if (getMyDeviceConnected() != null && getMyDeviceConnected().connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                        Logger.d(TAG, "disconnect not home fragment removeAllFragment");
-                        removeAllFragment();
-                    }
+                    removeAllFragment();
+                    currentActivity().finish();
                 }
                 updateDisconnectedAdapter();
                 myGridAdapter.setMyAdapterList(lists);
-            } else {
-
             }
         }
     }
@@ -509,12 +502,12 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void showHomeFragment(MyDevice myDevice) {
+        Bundle b = new Bundle();
+        b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra("bundle", b);
 
-        Intent it = new Intent(this,HomeActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-        it.putExtras(bundle);
-        startActivity(it);
+        startActivity(intent);
 //        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
 //        HomeFragment homeFragment = new HomeFragment();
 //        homeFragment.setArguments(bundle);
@@ -524,33 +517,15 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 //            switchFragment(homeFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
 //        }
     }
-
-    public void setIsUpdateAvailable(boolean isUpdateAvailable) {
-        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        if (fr != null && fr instanceof SettingsFragment) {
-            ((SettingsFragment) fr).showOta(isUpdateAvailable);
-//        } else if (fr != null && fr instanceof HomeFragment) {
-//            ((HomeFragment) fr).showOta(isUpdateAvailable);
-        }
-    }
-
-    public void startCheckingIfUpdateIsAvailable() {
-        Logger.d(TAG, "AppUtils.getModelNumber(this)=" + AppUtils.getModelNumber(this));
-        Logger.d(TAG, "startCheckingIfUpdateIsAvailable isConnectionAvailable=" + FirmwareUtil.isConnectionAvailable(this));
-        String srcSavedVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, this, "0.0.0");
-        String currentVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.APP_VERSION, this, "");
-        Logger.d(TAG, "srcSavedVersion = " + srcSavedVersion + ",currentVersion = " + currentVersion);
-        if (FirmwareUtil.isConnectionAvailable(this) && !TextUtils.isEmpty(srcSavedVersion) && !TextUtils.isEmpty(currentVersion)) {
-            Logger.d(TAG, "checkUpdateAvailable = " + checkUpdateAvailable);
-            if (checkUpdateAvailable != null && checkUpdateAvailable.isRunnuning()) {
-                Logger.d(TAG, "CheckUpdateAvailable is running so return");
-                return;
-            }
-            Logger.d(TAG, "CheckUpdateAvailable.start()");
-            checkUpdateAvailable = CheckUpdateAvailable.start(this, this, this, OTAUtil.getURL(this), srcSavedVersion, currentVersion);
-        }
-    }
-
+//
+//    public void setIsUpdateAvailable(boolean isUpdateAvailable) {
+//        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+//        if (fr != null && fr instanceof SettingsFragment) {
+//            ((SettingsFragment) fr).showOta(isUpdateAvailable);
+////        } else if (fr != null && fr instanceof HomeFragment) {
+////            ((HomeFragment) fr).showOta(isUpdateAvailable);
+//        }
+//    }
 
     @Override
     public void onDownloadedFirmware(CopyOnWriteArrayList<FirmwareModel> fwlist) throws FileNotFoundException {

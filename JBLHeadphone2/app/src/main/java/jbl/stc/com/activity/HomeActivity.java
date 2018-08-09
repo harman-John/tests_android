@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
@@ -43,6 +44,7 @@ import com.avnera.smartdigitalheadset.Utility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import jbl.stc.com.R;
 import jbl.stc.com.config.DeviceFeatureMap;
@@ -58,11 +60,13 @@ import jbl.stc.com.fragment.EqCustomFragment;
 import jbl.stc.com.fragment.EqSettingFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.SettingsFragment;
+import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -79,7 +83,7 @@ import jbl.stc.com.view.SaPopupWindow;
 import static java.lang.Integer.valueOf;
 
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener {
+public class HomeActivity extends BaseActivity implements View.OnClickListener , ConnectListener{
     public static final String TAG = HomeActivity.class.getSimpleName();
     private BlurringView mBlurView;
 
@@ -123,10 +127,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_home);
+        addActivity(this);
         Logger.d(TAG, "onCreateView");
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            myDevice = bundle.getParcelable(JBLConstant.KEY_MY_DEVICE);
+        Bundle b = getIntent().getBundleExtra("bundle");
+        if (b != null) {
+            myDevice = b.getParcelable(JBLConstant.KEY_MY_DEVICE);
         }
         lightX = AvneraManager.getAvenraManager(this).getLightX();
         generateAAPopupWindow();
@@ -339,6 +344,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         super.onResume();
         AnalyticsManager.getInstance(this).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
         Logger.d(TAG, "onResume " + DeviceConnectionManager.getInstance().getCurrentDevice());
+        doResume();
+    }
+
+    private void doResume(){
+        DeviceManager.getInstance(this).setAppLightXDelegate(this);
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                 case NONE:
@@ -360,6 +370,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_NC_POP, true, this);
                 showNCPopupWindow();
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+        if ((fr != null)&& fr instanceof EqSettingFragment) {
+            doResume();
         }
     }
 
@@ -419,7 +438,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 break;
             }
             case R.id.image_view_ota_download: {
-                //switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
             }
         }
     }
@@ -440,9 +459,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             if (TextUtils.isEmpty(curEqNameExclusiveOff)) {
                 List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(this);
                 Logger.d(TAG, "eqSize:" + eqModels.size());
-                if (eqModels != null && eqModels.size() < 5) {
+                if (eqModels.size() < 5) {
                     ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz, lightX);
-                } else if (eqModels != null && eqModels.size() >= 5) {
+                } else {
                     ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModels.get(4)), lightX);
                 }
             } else {
@@ -786,13 +805,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             PreferenceUtils.setString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, hardVersion, this);
         }
         AnalyticsManager.getInstance(this).reportFirmwareVersion(hardVersion);
-        DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
+        startCheckingIfUpdateIsAvailable(HomeActivity.this);
         registerConnectivity();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        finishActivity(this);
         unregisterNetworkReceiverSafely();
     }
 
@@ -826,15 +846,17 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         @Override
         public void onReceive(final Context context, final Intent intent) {
             Logger.i(TAG,"onReceive");
-            if (isFinishing()) {
-                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                if (cm != null) {
-                    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-                    if (netInfo != null && netInfo.isConnected()) {
-                        DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
-                    }else{
-                        showOta(false);
-                    }
+            if (isFinishing()){
+                Logger.d(TAG,"NetworkChangeReceiver, activity is finishing, return");
+                return;
+            }
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm != null) {
+                NetworkInfo netInfo = cm.getActiveNetworkInfo();
+                if (netInfo != null && netInfo.isConnected()) {
+                    startCheckingIfUpdateIsAvailable(HomeActivity.this);
+                }else{
+                    showOta(false);
                 }
             }
         }
@@ -1111,12 +1133,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void lightXReadBootResult(final LightX lightX, final Command command, final boolean success, final int i, final byte[] buffer) {
         Logger.d(TAG, "lightXReadBootResult command is " + command + " result is " + success);
-        if (this == null) {
-            Logger.d(TAG, "Activity is null");
-            return;
-        }
-        if (!isFinishing()) {
-            Logger.d(TAG, "This fragment is null");
+        if (isFinishing()){
+            Logger.d(TAG,"lightXReadBootResult, activity is finishing, return");
             return;
         }
         if (success) {
@@ -1129,13 +1147,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                     String rsrcSavedVersion = major + "." + minor + "." + revision;
                     PreferenceUtils.setString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, rsrcSavedVersion, this);
                     Logger.d(TAG, "rsrcSavedVersion=" + rsrcSavedVersion);
-                    DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable(); /** Now start checking for update to show red bubble on setting icon*/
+                    startCheckingIfUpdateIsAvailable(HomeActivity.this); /** Now start checking for update to show red bubble on setting icon*/
                     registerConnectivity();
                 }
                 break;
             }
         } else {
-            DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
+            startCheckingIfUpdateIsAvailable(HomeActivity.this);
             registerConnectivity();
         }
     }

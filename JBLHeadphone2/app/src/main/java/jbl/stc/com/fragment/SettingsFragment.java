@@ -29,7 +29,9 @@ import com.avnera.smartdigitalheadset.Utility;
 import java.util.ArrayList;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.BaseActivity;
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.AmCmds;
@@ -75,10 +77,6 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                              Bundle savedInstanceState) {
 //        myDevice = getArguments().getParcelable(JBLConstant.KEY_MY_DEVICE);
         myDevice = DashboardActivity.getDashboardActivity().getMyDeviceConnected();
-        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
-            registerConnectivity();
-        }
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         textViewFirmware = view.findViewById(R.id.text_view_settings_firmware);
@@ -165,6 +163,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         }
         updateUI();
         showOta(false);
+        registerConnectivity();
         return view;
     }
 
@@ -214,12 +213,22 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Logger.d(TAG, "onAttach");
+    }
 
     @Override
     public void onResume() {
         super.onResume();
         Logger.d(TAG, "onResume");
         tv_toggleautoOff.setText(PreferenceUtils.getString(PreferenceKeys.AUTOOFFTIMER, getActivity(), getContext().getString(R.string.five_minute)));
+        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            if(getActivity() instanceof BaseActivity){
+                ((BaseActivity)getActivity()).startCheckingIfUpdateIsAvailable(SettingsFragment.this);
+            }
+        }
     }
 
     @Override
@@ -429,7 +438,9 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 if (cm != null) {
                     NetworkInfo netInfo = cm.getActiveNetworkInfo();
                     if (netInfo != null && netInfo.isConnected()) {
-                        DashboardActivity.getDashboardActivity().startCheckingIfUpdateIsAvailable();
+                        if(getActivity() instanceof BaseActivity){
+                            ((BaseActivity)getActivity()).startCheckingIfUpdateIsAvailable(SettingsFragment.this);
+                        }
                     }else{
                         showOta(false);
                     }

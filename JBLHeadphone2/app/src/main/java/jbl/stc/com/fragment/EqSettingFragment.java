@@ -191,7 +191,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
         });
     }
-    List<CircleModel> listsBak = new ArrayList<>();
+
     private void initValue() {
         List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
         eqModelList.clear();

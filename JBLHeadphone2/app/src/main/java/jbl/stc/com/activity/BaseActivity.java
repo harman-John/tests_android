@@ -1,5 +1,6 @@
 package jbl.stc.com.activity;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -33,24 +34,35 @@ import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.USB;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.Stack;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.dialog.AlertsDialog;
+import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.BaseFragment;
 import jbl.stc.com.listener.AppLightXDelegate;
 import jbl.stc.com.listener.AppUSBDelegate;
+import jbl.stc.com.listener.ConnectListener;
+import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.DeviceManager;
+import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.FirmwareUtil;
+import jbl.stc.com.utils.OTAUtil;
 import jbl.stc.com.utils.StatusBarUtil;
 
 
-public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,View.OnTouchListener, AppLightXDelegate{
+public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,View.OnTouchListener, AppLightXDelegate,OnDownloadedListener,ConnectListener {
     private final static String TAG = BaseActivity.class.getSimpleName();
     protected Context mContext;
     public static final String JBL_HEADSET_MAC_ADDRESS = "com.jbl.headset.mac_address";
@@ -96,7 +108,27 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        finishActivity(this);
         unregisterReceiver(usbReceiver);
+    }
+
+    private CheckUpdateAvailable checkUpdateAvailable;
+    public void startCheckingIfUpdateIsAvailable(Object object) {
+        Logger.d(TAG, "AppUtils.getModelNumber(this)=" + AppUtils.getModelNumber(this));
+        Logger.d(TAG, "startCheckingIfUpdateIsAvailable isConnectionAvailable=" + FirmwareUtil.isConnectionAvailable(this));
+        String srcSavedVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, this, "0.0.0");
+        String currentVersion = PreferenceUtils.getString(AppUtils.getModelNumber(this), PreferenceKeys.APP_VERSION, this, "");
+        Logger.d(TAG, "srcSavedVersion = " + srcSavedVersion + ",currentVersion = " + currentVersion);
+        if (FirmwareUtil.isConnectionAvailable(this) && !TextUtils.isEmpty(srcSavedVersion) && !TextUtils.isEmpty(currentVersion)) {
+            Logger.d(TAG, "checkUpdateAvailable = " + checkUpdateAvailable);
+            if (checkUpdateAvailable != null && checkUpdateAvailable.isRunnuning()) {
+                Logger.d(TAG, "CheckUpdateAvailable is running so return");
+                checkUpdateAvailable.cancel(true);
+                checkUpdateAvailable = null;
+            }
+            Logger.d(TAG, "CheckUpdateAvailable.start()");
+            checkUpdateAvailable = CheckUpdateAvailable.start(object, this, this, OTAUtil.getURL(this), srcSavedVersion, currentVersion);
+        }
     }
 
     protected void setStatusBar() {
@@ -324,6 +356,36 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
         return false;
     }
 
+    @Override
+    public void onDownloadedFirmware(CopyOnWriteArrayList<FirmwareModel> fwlist) throws FileNotFoundException {
+
+    }
+
+    @Override
+    public void onFailedDownload() {
+
+    }
+
+    @Override
+    public void onFailedToCheckUpdate() {
+
+    }
+
+    @Override
+    public void onUpgradeUpdate(String liveVersion, String title) {
+
+    }
+
+    @Override
+    public void connectDeviceStatus(boolean isConnected) {
+
+    }
+
+    @Override
+    public void checkDevices(Set<String> deviceList) {
+
+    }
+
     private class USBReceiver extends BroadcastReceiver {
 
         @Override
@@ -340,5 +402,60 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     public HashMap<String, UsbDevice> getAllAttachedUSBdeviced() {
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         return manager.getDeviceList();
+    }
+
+    private static Stack<Activity> activityStack;
+    private PendingIntent restartIntent;
+
+
+    public void addActivity(Activity activity) {
+        if (activityStack == null) {
+            activityStack = new Stack<Activity>();
+        }
+        activityStack.add(activity);
+    }
+
+    public Activity currentActivity() {
+        Activity activity = activityStack.lastElement();
+        return activity;
+    }
+
+    public void finishActivity() {
+        Activity activity = activityStack.lastElement();
+        finishActivity(activity);
+    }
+
+    public void finishActivity(Activity activity) {
+        if (activity != null) {
+            activityStack.remove(activity);
+            activity.finish();
+            activity = null;
+        }
+    }
+
+    public void finishActivity(Class<?> cls) {
+        for (Activity activity : activityStack) {
+            if (activity.getClass().equals(cls)) {
+                finishActivity(activity);
+            }
+        }
+    }
+
+    public void finishAllActivity() {
+        for (int i = 0, size = activityStack.size(); i < size; i++) {
+            if (null != activityStack.get(i)) {
+                activityStack.get(i).finish();
+            }
+        }
+        activityStack.clear();
+    }
+
+    public void exitApp(Context context) {
+        try {
+            finishAllActivity();
+            System.exit(0);
+            android.os.Process.killProcess(android.os.Process.myPid());
+        } catch (Exception e) {
+        }
     }
 }

@@ -63,7 +63,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
     private static final String TAG = DeviceManager.class.getSimpleName();
     private static final String TAGReconnect = TAG + " reconnection";
     public static boolean mIsInBootloader;
-    private static final int RESET_TIME = 10 * 1000;
+    private static final int RESET_TIME = 3 * 1000;
     private static final int RESET_TIME_FOR_150NC = 2 * 1000;
     private int resetTime = RESET_TIME;
     private AppLightXDelegate appLightXDelegate;
@@ -582,6 +582,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                         appLightXDelegate.isLightXInitialize();
                     }
                     if (!FirmwareUtil.isUpdatingFirmWare.get() && !isNeedOtaAgain) {
+                        Logger.d(TAG, "connectLightX connectDeviceStatus, mConnectListener = " + mConnectListener);
                         mConnectListener.connectDeviceStatus(true);
                     }
                 }
