@@ -22,10 +22,8 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
         addActivity(this);
         setContentView(R.layout.fragment_info);
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
-        findViewById(R.id.text_view_info_my_product).setOnClickListener(this);
         findViewById(R.id.text_view_open_source_license).setOnClickListener(this);
         findViewById(R.id.text_view_eula).setOnClickListener(this);
-        findViewById(R.id.text_view_info_product_help).setOnClickListener(this);
         findViewById(R.id.text_view_harman_privacy_policy).setOnClickListener(this);
         findViewById(R.id.image_view_info_back).setOnClickListener(this);
         TextView textView = findViewById(R.id.text_view_info_app_version);
@@ -63,16 +61,6 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
             }
             case R.id.image_view_info_back:{
 //                onBackPressed();
-                finish();
-                overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
-                break;
-            }
-            case R.id.text_view_info_product_help:{
-//                switchFragment(new ProductHelpFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                break;
-            }
-            case R.id.text_view_info_my_product:{
-//                getActivity().onBackPressed();
                 finish();
                 overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
                 break;
