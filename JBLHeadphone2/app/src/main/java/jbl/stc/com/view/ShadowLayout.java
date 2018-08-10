@@ -64,9 +64,9 @@ public class ShadowLayout extends RelativeLayout {
         init(attrs);
     }
 
-    public void setShape(String shape){
+    /*public void setShape(String shape){
         mShape = shape;
-    }
+    }*/
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {

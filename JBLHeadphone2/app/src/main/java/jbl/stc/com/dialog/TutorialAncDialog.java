@@ -162,12 +162,12 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         int screenheigth = dm.heightPixels;
         int screenwidth = dm.widthPixels;
         int statusHeight = UiUtils.getStatusHeight(mActivity);
-        int height = (int) (screenheigth - UiUtils.dip2px(mActivity, 200) - statusHeight) / 2;
+        int height = (int) (screenheigth - UiUtils.dip2px(mActivity, 200) - statusHeight ) / 2 ;
         Logger.d(TAG, "statusHeigth:" + statusHeight + "screenheight:" + screenheigth + "200dp:" + UiUtils.dip2px(mActivity, 200) + "height:" + height);
         if (height > UiUtils.dip2px(mActivity, 240)) {
             height = UiUtils.dip2px(mActivity, 240);
         }
-        height = (int) (height - statusHeight / 2);
+        height = (int) (height - statusHeight);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imageViewDevice.getLayoutParams();
         params.height = height;
         params.width = height;

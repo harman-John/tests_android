@@ -115,8 +115,8 @@
 
     <jbl.stc.com.view.ShadowLayout
         android:id="@+id/shadowLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/shadow_button_width"
+        android:layout_height="@dimen/shadow_button_height"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
@@ -125,12 +125,13 @@
 
         <jbl.stc.com.view.AppButton
             android:id="@+id/button_done"
-            android:layout_width="230dp"
-            android:layout_height="50dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="8dp"
-            android:layout_marginStart="5dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
             android:gravity="center"
             android:background="@drawable/rectangle_with_round_corner_left_red_right_orange"
             android:text="@string/done"

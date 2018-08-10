@@ -110,8 +110,8 @@
 
     <jbl.stc.com.view.ShadowLayout
         android:id="@+id/shadowLayout"
-        android:layout_width="190dp"
-        android:layout_height="53dp"
+        android:layout_width="@dimen/shadow_button_width"
+        android:layout_height="@dimen/shadow_button_height"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="40dp"
         android:alpha="0.5">
@@ -123,13 +123,14 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
             android:background="@drawable/rectangle_with_round_corner_grey"
             android:gravity="center"
             android:text="@string/start_caps"
             android:textAllCaps="false"
             android:textColor="@color/orange_discovery"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
     </jbl.stc.com.view.ShadowLayout>
 
