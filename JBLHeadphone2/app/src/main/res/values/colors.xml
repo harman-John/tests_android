@@ -82,6 +82,8 @@
 
     <color name="orange_gradient_start">#FF5201</color>
     <color name="orange_gradient_end">#FF7900</color>
+    <color name="button_gradient_start">#FF3301</color>
+    <color name="button_gradient_end">#FF6B00</color>
 
 
     <color name="text_color">#4C596B</color>
