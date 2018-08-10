@@ -44,9 +44,17 @@
     <string name="smart_assistant">Smart assistant</string>
     <string name="user_manual">User manual</string>
     <string name="updating">Updating&#8230;</string>
-    <string name="updating_failed_case_1">Updating firmware failed</string>
-    <string name="updating_failed_case_2">Make sure you are connected to the internet.</string>
-    <string name="updating_failed_case_3">Download failed.</string>
+
+    <string name="update_failed_connection">Connection failed</string>
+    <string name="update_failed_connection_detail">Can’t connect to your headphones after restarting. Please make sure Bluetooth is connected.</string>
+
+    <string name="update_failed_firmware">Upgrade failed</string>
+    <string name="update_failed_firmware_detail">Please check your Internet connection and try again.</string>
+    <string name="update_failed_firmware_detail_1">Firmware update failed.</string>
+
+    <string name="update_failed_download">Download failed</string>
+    <string name="update_failed_download_detail">Please check your Internet connection and try again.</string>
+
     <string name="text_ota_title">Product software update</string>
     <string name="firmware_is_updating_title"><b>Firmware is Updating…</b></string>
     <string name="firmware_is_updating">1.Please do not close the application.\n2.Keep the headset near the device.\n3.Pluggin in the headphones is\nrecommended.</string>
@@ -54,7 +62,7 @@
     <string name="firmware_is_installed">Firmware version %1$s is installed</string>
     <string name="done">Done</string>
 
-
+    <string name="retry">Retry</string>
     <string name="text_product_help">Product help</string>
     <string name="text_jbl_com">JBL.com</string>
     <string name="text_open_source_license">Open source licenses</string>
@@ -137,6 +145,7 @@
     <string name="ten_minute">10min</string>
     <string name="thirty_minute">30min</string>
     <string name="never">Never</string>
+    <string name="got_it">Got it</string>
 
     <string name="talkthru">TalkThru</string>
     <string name="no_headphones_found">No headphones found</string>

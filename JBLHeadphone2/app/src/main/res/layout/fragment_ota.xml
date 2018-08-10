@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/lighter_gray_theme"
     android:keepScreenOn="true"
     android:splitMotionEvents="false"
@@ -114,24 +115,24 @@
 
     <jbl.stc.com.view.ShadowLayout
         android:id="@+id/shadowLayout"
-        android:layout_width="190dp"
-        android:layout_height="53dp"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="47dp"
+        android:layout_marginBottom="40dp"
         android:layout_marginTop="15dp">
 
         <jbl.stc.com.view.AppButton
             android:id="@+id/button_done"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="230dp"
+            android:layout_height="50dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:gravity="center"
-            android:background="@drawable/rectangle_with_round_corner_view_page_orange"
+            android:background="@drawable/rectangle_with_round_corner_left_red_right_orange"
             android:text="@string/done"
             android:textAlignment="center"
             android:textColor="@color/white"
@@ -139,6 +140,34 @@
             android:textStyle="normal" />
 
     </jbl.stc.com.view.ShadowLayout>
+
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/relative_layout_ota_button"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_marginBottom="40dp"-->
+        <!--android:layout_marginTop="15dp">-->
+
+        <!--<jbl.stc.com.view.AppButton-->
+            <!--android:id="@+id/button"-->
+            <!--android:layout_width="230dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_marginBottom="8dp"-->
+            <!--android:layout_marginStart="5dp"-->
+            <!--android:gravity="center"-->
+            <!--android:background="@drawable/rectangle_with_round_corner_hollow"-->
+            <!--android:text="@string/done"-->
+            <!--android:textAlignment="center"-->
+            <!--android:textColor="@color/FF5F00"-->
+            <!--android:textSize="18sp"-->
+            <!--android:textStyle="normal" />-->
+
+    <!--</RelativeLayout>-->
 
 
 </RelativeLayout>

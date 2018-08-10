@@ -23,12 +23,9 @@ import com.avnera.audiomanager.Action;
 import com.avnera.audiomanager.AdminEvent;
 import com.avnera.audiomanager.Status;
 import com.avnera.audiomanager.StatusEvent;
-import com.avnera.audiomanager.audioManager;
 import com.avnera.audiomanager.responseResult;
-import com.avnera.smartdigitalheadset.Bluetooth;
 import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
-import com.avnera.smartdigitalheadset.USB;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -61,25 +58,12 @@ import jbl.stc.com.utils.StatusBarUtil;
 public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,View.OnTouchListener, AppLightXDelegate,OnDownloadedListener,ConnectListener {
     private final static String TAG = BaseActivity.class.getSimpleName();
     protected Context mContext;
-    public static final String JBL_HEADSET_MAC_ADDRESS = "com.jbl.headset.mac_address";
-    public static final String JBL_HEADSET_NAME = "com.jbl.headset.name";
-    public static final String ACTION_USB_PERMISSION = "com.stc.USB_PERMISSION";
-    public LightX mLightX;
-    protected boolean isNeedShowDashboard;
-    protected boolean disconnected;
-    // Bluetooth Delegate
-    //Initialize donSendCallback with False. Tutorial screen issue fix.
-    public boolean donSendCallback = true;
-    public BluetoothDevice mBluetoothDevice;
-    protected Bluetooth mBluetooth;
-    audioManager bt150Manager = null;
-    protected USB mUSB;
-    protected PendingIntent mPermissionIntent;
     protected USBReceiver usbReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DeviceManager.getInstance(this).setConnectListener(this);
         mContext = this;
         LightX.sEnablePacketDumps = false;
         usbReceiver = new USBReceiver();
@@ -104,6 +88,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     @Override
     protected void onResume() {
         super.onResume();
+        DeviceManager.getInstance(this).setConnectListener(this);
         DeviceManager.getInstance(this).setAppLightXDelegate(this);
     }
 
@@ -195,46 +180,6 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
         }
     }
 
-    /**
-     * @param deviceList
-     * @return return JBL Aware device if found
-     */
-    public UsbDevice foundJBLAwareDevice(HashMap<String, UsbDevice> deviceList) {
-        if (deviceList == null)
-            return null;
-        UsbDevice usbDevice = null;
-        Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
-        while (deviceIterator.hasNext()) {
-            usbDevice = deviceIterator.next();
-            Logger.d(TAG, "Device ===Product ID" + usbDevice.getProductId() + "-Vendor ID--" + usbDevice.getVendorId());
-        }
-        return usbDevice;
-    }
-
-    // Members and methods to support Avnera hardware
-    public synchronized boolean shouldConnectToBluetoothDevice(BluetoothDevice bluetoothDevice) {
-        String deviceMACAddress;
-        String deviceName;
-        String macAddressOfSavedJBLHeadset;
-        boolean result = false;
-
-        if (bluetoothDevice != null) {
-            deviceMACAddress = bluetoothDevice.getAddress().toUpperCase();
-            deviceName = bluetoothDevice.getName();
-            macAddressOfSavedJBLHeadset = getMACAddressOfSavedJBLHeadset();
-            if (macAddressOfSavedJBLHeadset != null && macAddressOfSavedJBLHeadset.equalsIgnoreCase(deviceMACAddress)) {
-                result = true;
-            }
-
-            if (AppUtils.isMatchDeviceName(deviceName)) {
-                saveJBLHeadsetInfo(deviceName, deviceMACAddress);
-                result = true;
-            }
-        }
-        Logger.d(TAG, "shouldConnectToBluetoothDevice result is " + result);
-        return result;
-    }
-
     public void updateDeviceNameAndImage(String deviceName, ImageView imageViewDevice, TextView textViewDeviceName) {
         if (TextUtils.isEmpty(deviceName)) {
             return;
@@ -265,28 +210,6 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     @Override
     public void usbDetached(UsbDevice usbDevice) {
 
-    }
-
-    /**
-     * @return last saved mac address
-     */
-    public String getMACAddressOfSavedJBLHeadset() {
-        return PreferenceUtils.getString(PreferenceKeys.JBL_HEADSET_MAC_ADDRESS, this, null);
-    }
-
-    /**
-     * Save JBL headset information if its valid case for connection
-     */
-    protected void saveJBLHeadsetInfo(String name, String macAddress) {
-        PreferenceUtils.setString(PreferenceKeys.JBL_HEADSET_MAC_ADDRESS, macAddress, this);
-        PreferenceUtils.setString(PreferenceKeys.JBL_HEADSET_NAME, name, this);    // advisory
-    }
-
-    /**
-     * App exit dialog
-     */
-    public void showExitDialog(String message) {
-        AlertsDialog.bluetoothAlertFinish(null, message, this);
     }
 
     @Override
@@ -394,9 +317,12 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
 
     }
 
+    public static boolean isConnectedCalled = false;
     @Override
     public void connectDeviceStatus(boolean isConnected) {
-
+        if (isConnected) {
+            isConnectedCalled = true;
+        }
     }
 
     @Override
@@ -423,12 +349,11 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     }
 
     private static Stack<Activity> activityStack;
-    private PendingIntent restartIntent;
 
 
     public void addActivity(Activity activity) {
         if (activityStack == null) {
-            activityStack = new Stack<Activity>();
+            activityStack = new Stack<>();
         }
         activityStack.add(activity);
     }

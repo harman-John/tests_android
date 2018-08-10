@@ -36,6 +36,13 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
+    public void connectDeviceStatus(boolean isConnected) {
+        super.connectDeviceStatus(isConnected);
+        removeAllFragment();
+        finish();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
     }

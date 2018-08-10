@@ -223,6 +223,17 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     }
 
     @Override
+    public void connectDeviceStatus(boolean isConnected) {
+        super.connectDeviceStatus(isConnected);
+        if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
+            finish();
+        }else if (!isConnected){
+            removeAllFragment();
+            finish();
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
@@ -259,9 +270,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                             checkBoxNoiseCancel.setChecked(true);
                         }
                         setANC();
-                        showAncPopupWindow(findViewById(R.id.relative_layout_home_fragment));
+                        showAncPopupWindow(findViewById(R.id.relative_layout_home_activity));
                     } else if (AppUtils.isNewDevice(deviceName)) {
-                        showSaPopupWindow(findViewById(R.id.relative_layout_home_fragment), null);
+                        showSaPopupWindow(findViewById(R.id.relative_layout_home_activity), null);
                     }
                 }
                 break;
@@ -330,10 +341,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     break;
             }
             getDeviceInfo();
-        } else if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+        }
+        else if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             if (!PreferenceUtils.getBoolean(PreferenceKeys.SHOW_NC_POP, this)) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_NC_POP, true, this);
-                showNCPopupWindow();
+                findViewById(R.id.relative_layout_home_activity).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        showNCPopupWindow();
+                    }
+                });
             }
         }
     }
@@ -605,7 +622,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 mBlurView.setAlpha(1f);
             }
         });
-        notConnectedPopupWindow.showAtLocation(findViewById(R.id.relative_layout_home_fragment), Gravity.NO_GRAVITY, 0, 0);
+        notConnectedPopupWindow.showAtLocation(findViewById(R.id.relative_layout_home_activity), Gravity.NO_GRAVITY, 0, 0);
     }
 
     private void getDeviceInfo() {

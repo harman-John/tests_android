@@ -110,8 +110,8 @@ public class ShadowLayout extends RelativeLayout {
         float effect = mShadowRadius;
         float rectLeft = effect;
         float rectTop = effect;
-        float rectRight = width-effect;
-        float rectBottom = height-effect;
+        float rectRight = width - effect;
+        float rectBottom = height - effect;
         int paddingLeft = 0;
         int paddingTop = 0;
         int paddingRight = 0;
@@ -125,12 +125,10 @@ public class ShadowLayout extends RelativeLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         width = MeasureSpec.getSize(widthMeasureSpec);
         height = MeasureSpec.getSize(heightMeasureSpec);
-        Logger.d("ShadowLayout","width:"+width+"height:"+height);
-
+        Logger.d("ShadowLayout", "width:" + width + "height:" + height);
     }
 
     @Override
@@ -142,6 +140,11 @@ public class ShadowLayout extends RelativeLayout {
         }else if (mShape.equals("circle")){
             canvas.drawCircle(width/2,height/2,width/2-mShadowRadius,mPaint);
         }
+    }
+
+    public void setShape(String shape){
+        mShape = shape;
+        invalidate();
     }
 
     private void init(AttributeSet attrs) {

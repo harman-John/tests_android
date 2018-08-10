@@ -177,7 +177,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                             otaUpdating();
                         }
                     } else {
-                        otaError(R.string.updating_failed_case_2);
+                        otaError(false,R.string.update_failed_connection,R.string.update_failed_connection_detail);
                     }
                 }
                 break;
@@ -514,7 +514,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 e.printStackTrace();
             }
         } else {
-            otaError(R.string.updating_failed_case_2);
+            otaError(false,R.string.update_failed_connection,R.string.update_failed_connection_detail);
             if (checkUpdateAvailable != null) {
                 checkUpdateAvailable.cancel(true);
             }
@@ -638,7 +638,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             if (checkUpdateAvailable != null) {
                 checkUpdateAvailable.cancel(true);
             }
-            otaError(R.string.updating_failed_case_2);
+            otaError(false,R.string.update_failed_connection,R.string.update_failed_connection_detail);
             return;
         }
 
@@ -962,21 +962,30 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewProgress.setText("Restarting...");
     }
 
-    private void otaError(int resId){
+    private void otaError(boolean isRetry, int errTitle, int errMsg){
         if (getActivity() == null){
             Logger.d(TAG, "otaError getActivity is null");
             return;
         }
         Logger.d(TAG,"otaError - - - - - - - - - - - -");
         textViewUpdateStatus.setVisibility(View.VISIBLE);
-        textViewUpdateStatus.setText(resId);
+        textViewUpdateStatus.setText(errMsg);
         textViewUpdateStatus.getPaint().setFakeBoldText(true);
         textViewUpdateStatus.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
-        textViewUpdateStatusTitle.setVisibility(View.GONE);
+        textViewUpdateStatusTitle.setVisibility(View.VISIBLE);
+        textViewUpdateStatusTitle.setText(errTitle);
         textViewProgress.setVisibility(View.VISIBLE);
         textViewOTACircle.setVisibility(View.VISIBLE);
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.update_failed));
-        textViewProgress.setText("Failed!");
+        textViewProgress.setVisibility(View.INVISIBLE);
+        shadowLayout.setVisibility(View.VISIBLE);
+        shadowLayout.setShape("other");
+        textViewButtonDone.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.rectangle_with_round_corner_hollow));
+        if (isRetry){
+            textViewButtonDone.setText(R.string.retry);
+        }else{
+            textViewButtonDone.setText(R.string.got_it);
+        }
     }
 
     @Override
@@ -1054,7 +1063,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         FirmwareUtil.disconnectHeadphoneText = getString(R.string.plsConnect);
         Logger.d(TAG, "imageUpdateError");
         Cmd150Manager.getInstance().setFirmwareUpdateState(AvneraManager.getAvenraManager(getActivity()).getAudioManager(),JBLConstant.ENABLE_ACCESSORY_INTERRUPTS);
-        otaError(R.string.updating_failed_case_1);
+        otaError(true,R.string.update_failed_firmware,R.string.update_failed_firmware_detail_1);
         isOTADoing = false;
         FirmwareUtil.isUpdatingFirmWare.set(false);
         imageViewBack.setVisibility(View.VISIBLE);
@@ -1119,7 +1128,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                             checkUpdateAvailable.cancel(true);
                             Logger.d(TAG, "No Internet checkUpdateAvailable.cancel");
                         } else {
-                            otaError(R.string.updating_failed_case_2);
+                            otaError(false,R.string.update_failed_download,R.string.update_failed_download_detail);
                         }
                     }
                 }

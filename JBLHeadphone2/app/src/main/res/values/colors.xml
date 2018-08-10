@@ -20,6 +20,7 @@
     <color name="divider_color">#aaaaaa</color>
     <color name="text_white_80">#CCFFFFFF</color>
     <color name="text_white_50">#80FFFFFF</color>
+    <color name="FF5F00">#FF5F00</color>
 
     <color name="app_dialog_bg">#D95B5B5B</color><!--5B5B5B 85%-->
     <color name="text_white_10">#1BFFFFFF</color><!--fff 10%-->

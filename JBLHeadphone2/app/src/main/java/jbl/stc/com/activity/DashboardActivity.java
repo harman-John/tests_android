@@ -78,7 +78,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         Logger.d(TAG, "onCreate");
         addActivity(this);
         DeviceManager.getInstance(this).setOnCreate();
-        DeviceManager.getInstance(this).setConnectListener(this);
 //        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         setContentView(R.layout.activity_dashboard);
         registerReceiver(mBtReceiver, makeFilter());
@@ -217,7 +216,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         DeviceManager.getInstance(this).setOnResume();
-        Logger.d(TAG, "onResume");
+        Logger.d(TAG, "onResume isConnectedCalled ="+isConnectedCalled+",isInBackground ="+isInBackground);
         checkBluetooth();
         if (isConnected()){
             dashboardHandler.removeMessages(MSG_START_SCAN);
@@ -225,6 +224,9 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         }
         if (isConnected() && isInBackground){
             isInBackground = false;
+            dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
+        } else if (isConnected() && isConnectedCalled){
+            isConnectedCalled = false;
             dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
         }
     }
@@ -261,9 +263,9 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     private boolean isInBackground = false;
     @Override
     public void connectDeviceStatus(boolean isConnected) {
-        Logger.d(TAG, " connectDeviceStatus isConnected = " + isConnected);
 
         if (isConnected) {
+            Logger.d(TAG, " connectDeviceStatus true, isOTADoing = " + isOTADoing);
             if (isOTADoing) {
                 dashboardHandler.sendEmptyMessageDelayed(MSG_OTA_SUCCESS, 200);
             } else {
@@ -279,7 +281,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             }
 
         } else {
-            Logger.d(TAG, "isOTADoing = " + isOTADoing);
+            Logger.d(TAG, "connectDeviceStatus false, isOTADoing = " + isOTADoing);
             if (!isOTADoing) {
                 if (!(currentActivity() instanceof DashboardActivity )){//&& fr instanceof HomeFragment) {
                     Logger.d(TAG, "disconnect home fragment ");
@@ -467,23 +469,24 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         dashboardHandler.removeMessages(MSG_SHOW_MY_PRODUCTS);
         dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
         dashboardHandler.removeMessages(MSG_START_SCAN);
-        if (DeviceManager.getInstance(this).isConnected() && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
-            if (!isShowTutorialManyTimes && DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
-                Logger.d(TAG, "truenote");
+        boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
+        if (!isShowTutorialManyTimes
+                && DeviceManager.getInstance(this).isConnected()
+                && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
+                && DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
+            Logger.d(TAG, "truenote");
 
-                Bundle b = new Bundle();
-                b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-                Intent intent = new Intent(this, CalibrationActivity.class);
-                intent.putExtra("bundle", b);
-                startActivity(intent);
-            } else {
-                Bundle b = new Bundle();
-                b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-                Intent intent = new Intent(this, HomeActivity.class);
-                intent.putExtra("bundle", b);
-                startActivity(intent);
-            }
+            Bundle b = new Bundle();
+            b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+            Intent intent = new Intent(this, CalibrationActivity.class);
+            intent.putExtra("bundle", b);
+            startActivity(intent);
+        } else {
+            Bundle b = new Bundle();
+            b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.putExtra("bundle", b);
+            startActivity(intent);
         }
     }
 
