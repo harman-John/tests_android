@@ -55,6 +55,11 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
+        <activity
+            android:name=".activity.CalibrationActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="85241e7995db06a589e051df1defe897ead0d557" />

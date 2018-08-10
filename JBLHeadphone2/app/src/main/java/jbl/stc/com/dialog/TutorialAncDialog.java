@@ -24,6 +24,7 @@ import com.avnera.smartdigitalheadset.GraphicEQPreset;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
@@ -231,10 +232,9 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     }
 
     public void showEqInfo() {
-//        Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-//        if (fr != null && fr instanceof HomeFragment) {
-//            ((HomeFragment) fr).setEqMenuColor(false);
-//        }
+        if (mActivity instanceof HomeActivity){
+            ((HomeActivity)mActivity).setEqMenuColor(true);
+        }
 
         if (textViewEqName != null) {
             textViewEqName.setVisibility(View.INVISIBLE);
@@ -400,42 +400,30 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_tutorial_dialog_noise_cancel: {
-//                Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-//                if (fr != null && fr instanceof HomeFragment) {
-//                    ((HomeFragment) fr).setANC();
-//                    setChecked(checkBoxANC.isChecked());
-//                }
+                if (mActivity instanceof HomeActivity){
+                    ((HomeActivity)mActivity).tutorialSetANC();
+                    setChecked(checkBoxANC.isChecked());
+                }
                 break;
             }
             case R.id.image_view_tutorial_dialog_ambient_aware: {
-                Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-//                if (!isShowOnlySmartAmbientType()) {
-//                    if (fr != null && fr instanceof HomeFragment) {
-//                        setTextViewTips(R.string.tutorial_tips_two);
-//                        ((HomeFragment) fr).showAncPopupWindow(relativeLayout);
-//                    }
-//                } else {
-//                    if (fr != null && fr instanceof HomeFragment) {
-////                        setTextViewTips(R.string.tutorial_tips_two);
-//                        ((HomeFragment) fr).showSaPopupWindow(relativeLayout, this);
-//                    }
-//                }
+                if (mActivity instanceof HomeActivity){
+                    if (!isShowOnlySmartAmbientType()) {
+                        checkBoxANC.setChecked(true);
+                        ((HomeActivity)mActivity).showAncPopupWindow(relativeLayout);
+                    }else{
+                        ((HomeActivity)mActivity).showSaPopupWindow(relativeLayout,this);
+                    }
+                }
                 break;
             }
             case R.id.frame_layout_tutorial_dialog_eq_info: {
 //                repeatTrippleArrowAnim = false;
                 tripleUpArrow.clearAnimation();
                 tripleUpArrow.setVisibility(View.GONE);
-                Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (fr == null) {
-                    Logger.i(TAG, "fr is null");
-                    return;
+                if (mActivity instanceof HomeActivity){
+                    ((HomeActivity)mActivity).switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 }
-                if (fr instanceof EqSettingFragment) {
-                    Logger.i(TAG, "fr is already showed");
-                    return;
-                }
-                DashboardActivity.getDashboardActivity().switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 hideEqInfo();
                 setTextViewTips(R.string.tutorial_tips_five);
                 hideSkip();
@@ -478,10 +466,9 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                 if (frameLayoutEqInfo != null) {
                     frameLayoutEqInfo.setVisibility(View.VISIBLE);
                 }
-//                Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-//                if (fr != null && fr instanceof HomeFragment) {
-//                    ((HomeFragment) fr).setEqMenuColor(true);
-//                }
+                if (mActivity instanceof HomeActivity){
+                    ((HomeActivity)mActivity).setEqMenuColor(true);
+                }
                 setTextViewTips(R.string.tutorial_tips_four);
                 showTripleArrowsAnimation();
                 break;

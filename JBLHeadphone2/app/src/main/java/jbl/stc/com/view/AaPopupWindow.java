@@ -1,5 +1,6 @@
 package jbl.stc.com.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
@@ -15,6 +16,7 @@ import com.avnera.smartdigitalheadset.LightX;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.listener.AwarenessChangeListener;
 import jbl.stc.com.logger.Logger;
@@ -39,16 +41,18 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
     private LightX lightX;
     private ANCAwarenessPreset lastsavedAwarenessState;
     private boolean isRequestingLeftANC, isRequestingRightANC;
+    private Activity mActivity;
 
-    public AaPopupWindow(Context context, LightX lightX) {
-        super(context);
+    public AaPopupWindow(Activity activity, LightX lightX) {
+        super(activity);
+        mActivity = activity;
         this.lightX = lightX;
-        init(context);
+        init(activity);
 
     }
 
-    private void init(Context context) {
-        View popupWindow_view = LayoutInflater.from(context).inflate(R.layout.popup_window_anc, null,
+    private void init(Activity activity) {
+        View popupWindow_view = LayoutInflater.from(activity).inflate(R.layout.popup_window_anc, null,
                 false);
         setContentView(popupWindow_view);
         setBackgroundDrawable(new ColorDrawable(
@@ -206,9 +210,11 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
     }
 
     private void showNextTutorialTips() {
-        if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null) {
-            dismiss();
-            DashboardActivity.getDashboardActivity().tutorialAncDialog.setTextViewTips(R.string.tutorial_tips_three);
+        if (mActivity instanceof HomeActivity) {
+            if (((HomeActivity) mActivity).getTutorialAncDialog() != null) {
+                dismiss();
+                ((HomeActivity) mActivity).getTutorialAncDialog().setTextViewTips(R.string.tutorial_tips_three);
+            }
         }
     }
 }

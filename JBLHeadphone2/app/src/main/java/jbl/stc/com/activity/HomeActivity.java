@@ -53,6 +53,7 @@ import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.CreateEqTipsDialog;
+import jbl.stc.com.dialog.TutorialAncDialog;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.EqCustomFragment;
@@ -83,7 +84,7 @@ import static java.lang.Integer.valueOf;
 
 
 public class HomeActivity extends BaseActivity implements View.OnClickListener , ConnectListener{
-    public static final String TAG = HomeActivity.class.getSimpleName();
+    public static final String TAG = HomeActivity.class.getSimpleName() + "aa";
     private BlurringView mBlurView;
 
     private HomeHandler homeHandler = new HomeHandler(Looper.getMainLooper());
@@ -121,6 +122,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private TextView titleEqText;
     private AppImageView image_view_ota_download;
     private NotConnectedPopupWindow notConnectedPopupWindow;
+    private TutorialAncDialog tutorialAncDialog;
+
+    public TutorialAncDialog getTutorialAncDialog(){
+        return tutorialAncDialog;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -132,6 +138,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         if (b != null) {
             myDevice = b.getParcelable(JBLConstant.KEY_MY_DEVICE);
         }
+        showTutorial();
         lightX = AvneraManager.getAvenraManager(this).getLightX();
         generateAAPopupWindow();
         generateSaPopupWindow();
@@ -200,18 +207,135 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 textViewAmbientAware.setText(R.string.smart_ambient);
             }
         }
-        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            getRawSteps();
-            if (lightX != null) {
-                Logger.e(TAG, "readBootImageType");
-                lightX.readBootImageType();
-            }
-        }
         deviceName = myDevice.deviceName;
 //        deviceName = PreferenceUtils.getString(PreferenceKeys.MODEL, this, "");
         updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
         initEvent();
         setDeviceImageHeight();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsManager.getInstance(this).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
+        Logger.d(TAG, "onResume " + DeviceConnectionManager.getInstance().getCurrentDevice());
+        doResume();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+        if ((fr != null)&& fr instanceof EqSettingFragment) {
+            doResume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        homeHandler.removeMessages(MSG_READ_BATTERY_INTERVAL);
+        if (notConnectedPopupWindow != null) {
+            notConnectedPopupWindow.dismiss();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (aaPopupWindow == null) {
+            return;
+        }
+        aaPopupWindow.dismiss();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.image_view_home_ambient_aware: {
+                if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+                    if (AppUtils.isOldDevice(deviceName)) {
+                        if (!checkBoxNoiseCancel.isChecked()){
+                            checkBoxNoiseCancel.setChecked(true);
+                        }
+                        setANC();
+                        showAncPopupWindow(findViewById(R.id.relative_layout_home_fragment));
+                    } else if (AppUtils.isNewDevice(deviceName)) {
+                        showSaPopupWindow(findViewById(R.id.relative_layout_home_fragment), null);
+                    }
+                }
+                break;
+            }
+            case R.id.relative_layout_home_eq_info: {
+                switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                break;
+            }
+            case R.id.image_view_home_back: {
+                this.onBackPressed();
+                break;
+            }
+            case R.id.image_view_home_settings: {
+                SettingsFragment settingsFragment = new SettingsFragment();
+//                Bundle bundle = new Bundle();
+//                bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+//                settingsFragment.setArguments(bundle);
+                switchFragment(settingsFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                break;
+            }
+            case R.id.image_view_home_noise_cancel: {
+                setANC();
+                break;
+            }
+            case R.id.titleEqText: {
+                turnOnOffEq();
+                break;
+            }
+            case R.id.image_view_ota_download: {
+                switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            }
+        }
+    }
+
+    private void showTutorial(){
+        if (DeviceManager.getInstance(this).isConnected() && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
+            if (!isShowTutorialManyTimes) {
+                PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
+                Logger.d(TAG, "showTutorial");
+                if (tutorialAncDialog == null) {
+                    tutorialAncDialog = new TutorialAncDialog(this);
+                }
+                if (!tutorialAncDialog.isShowing()) {
+                    tutorialAncDialog.show();
+                }
+            }
+        }
+    }
+
+    private void doResume(){
+        DeviceManager.getInstance(this).setAppLightXDelegate(this);
+        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
+                case NONE:
+                    break;
+                case Connected_USBDevice:
+                    linearLayoutBattery.setVisibility(View.VISIBLE);
+                    progressBarBattery.setProgress(100);
+                    textViewBattery.setText("100%");
+                    break;
+                case Connected_BluetoothDevice:
+                    linearLayoutBattery.setVisibility(View.VISIBLE);
+                    ANCControlManager.getANCManager(this).getBatterLeverl(lightX);
+                    homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
+                    break;
+            }
+            getDeviceInfo();
+        } else if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+            if (!PreferenceUtils.getBoolean(PreferenceKeys.SHOW_NC_POP, this)) {
+                PreferenceUtils.setBoolean(PreferenceKeys.SHOW_NC_POP, true, this);
+                showNCPopupWindow();
+            }
+        }
     }
 
     private void setDeviceImageHeight() {
@@ -316,8 +440,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 
 
     private void getRawSteps() {
-        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext())
-                .getRawStepsByCmd(AvneraManager.getAvenraManager(JBLApplication.getJBLApplicationContext()).getLightX());//get raw steps count of connected device
+        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd(lightX);//get raw steps count of connected device
     }
 
     private void generateAAPopupWindow() {
@@ -330,120 +453,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 if (mBlurView != null) {
                     mBlurView.setVisibility(View.GONE);
                 }
-                if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null && DashboardActivity.getDashboardActivity().tutorialAncDialog.isShowing()) {
-                    DashboardActivity.getDashboardActivity().tutorialAncDialog.setTextViewTips(R.string.tutorial_tips_one);
-                    DashboardActivity.getDashboardActivity().tutorialAncDialog.showEqInfo();
+                if (tutorialAncDialog != null && tutorialAncDialog.isShowing()) {
+                    tutorialAncDialog.setTextViewTips(R.string.tutorial_tips_one);
+                    tutorialAncDialog.showEqInfo();
                 }
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        AnalyticsManager.getInstance(this).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
-        Logger.d(TAG, "onResume " + DeviceConnectionManager.getInstance().getCurrentDevice());
-        doResume();
-    }
-
-    private void doResume(){
-        DeviceManager.getInstance(this).setAppLightXDelegate(this);
-        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
-                case NONE:
-                    break;
-                case Connected_USBDevice:
-                    linearLayoutBattery.setVisibility(View.VISIBLE);
-                    progressBarBattery.setProgress(100);
-                    textViewBattery.setText("100%");
-                    break;
-                case Connected_BluetoothDevice:
-                    linearLayoutBattery.setVisibility(View.VISIBLE);
-                    ANCControlManager.getANCManager(this).getBatterLeverl(lightX);
-                    homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
-                    break;
-            }
-            getDeviceInfo();
-        } else if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
-            if (!PreferenceUtils.getBoolean(PreferenceKeys.SHOW_NC_POP, this)) {
-                PreferenceUtils.setBoolean(PreferenceKeys.SHOW_NC_POP, true, this);
-                showNCPopupWindow();
-            }
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        if ((fr != null)&& fr instanceof EqSettingFragment) {
-            doResume();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        homeHandler.removeMessages(MSG_READ_BATTERY_INTERVAL);
-        if (notConnectedPopupWindow != null) {
-            notConnectedPopupWindow.dismiss();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (aaPopupWindow == null) {
-            return;
-        }
-        aaPopupWindow.dismiss();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.image_view_home_ambient_aware: {
-                if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                    if (AppUtils.isOldDevice(deviceName)) {
-                        if (!checkBoxNoiseCancel.isChecked()){
-                            checkBoxNoiseCancel.setChecked(true);
-                        }
-                        setANC();
-                        showAncPopupWindow();
-                    } else if (AppUtils.isNewDevice(deviceName)) {
-                        showSaPopupWindow();
-                    }
-                }
-                break;
-            }
-            case R.id.relative_layout_home_eq_info: {
-                switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
-                break;
-            }
-            case R.id.image_view_home_back: {
-                this.onBackPressed();
-                break;
-            }
-            case R.id.image_view_home_settings: {
-                SettingsFragment settingsFragment = new SettingsFragment();
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-//                settingsFragment.setArguments(bundle);
-                switchFragment(settingsFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                break;
-            }
-            case R.id.image_view_home_noise_cancel: {
-                setANC();
-                break;
-            }
-            case R.id.titleEqText: {
-                turnOnOffEq();
-                break;
-            }
-            case R.id.image_view_ota_download: {
-                switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-            }
-        }
     }
 
     Runnable applyRunnable = new Runnable() {
@@ -491,9 +506,19 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 
     public void setANC() {
         if (checkBoxNoiseCancel.isChecked()) {
-            ANCControlManager.getANCManager(this).setANCValue(lightX, true);
-        } else {
             ANCControlManager.getANCManager(this).setANCValue(lightX, false);
+        } else {
+            ANCControlManager.getANCManager(this).setANCValue(lightX, true);
+        }
+    }
+
+    public void tutorialSetANC() {
+        if (checkBoxNoiseCancel.isChecked()) {
+            checkBoxNoiseCancel.setChecked(false);
+            ANCControlManager.getANCManager(this).setANCValue(lightX, false);
+        } else {
+            checkBoxNoiseCancel.setChecked(true);
+            ANCControlManager.getANCManager(this).setANCValue(lightX, true);
         }
     }
 
@@ -501,11 +526,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         this.mSaListener = listener;
     }
 
-    private void showSaPopupWindow() {
-        showSaPopupWindow( null);
-    }
-
-    public void showSaPopupWindow(SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
+    public void showSaPopupWindow(View view,SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
         mBlurView.setBlurredView(bluredView);
 //        if (mBlurView.getBackground() == null) {
 //            Bitmap image = BlurBuilder.blur(view);
@@ -526,7 +547,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         if (listener != null) {
             setOnSmartAmbientStatusReceivedListener(listener);
         }
-        saPopupwindow.showAtLocation(findViewById(R.id.relative_layout_home_fragment), Gravity.NO_GRAVITY, 0, 0);
+        saPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
     }
 
     private SaPopupWindow.OnSmartAmbientStatusReceivedListener nativeSaListener = new SaPopupWindow.OnSmartAmbientStatusReceivedListener() {
@@ -538,7 +559,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         }
     };
 
-    public void showAncPopupWindow() {
+    public void showAncPopupWindow(View view) {
 //        if (mBlurView.getBackground() == null) {
 //            Bitmap image = BlurBuilder.blur(view);
 //            mBlurView.setBackground(new BitmapDrawable(this.getResources(), image));
@@ -556,7 +577,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 mBlurView.setAlpha(1f);
             }
         });
-        aaPopupWindow.showAtLocation(findViewById(R.id.relative_layout_home_fragment), Gravity.NO_GRAVITY, 0, 0);
+        aaPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
 
         getAAValue();
     }
@@ -589,6 +610,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 
     private void getDeviceInfo() {
 
+        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd(lightX);
+            Logger.e(TAG, "readBootImageType");
+            ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).readBootImageType(lightX);
+        }
         ANCControlManager.getANCManager(this).getANCValue(lightX);
         if (lightX == null) {
             updateFirmwareVersion();
@@ -690,8 +716,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private void updateANC(boolean onOff) {
         if (checkBoxNoiseCancel != null)
             checkBoxNoiseCancel.setChecked(onOff);
-        if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null) {
-            DashboardActivity.getDashboardActivity().tutorialAncDialog.setChecked(onOff);
+        if (tutorialAncDialog != null) {
+            tutorialAncDialog.setChecked(onOff);
         }
     }
 
@@ -706,9 +732,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     }
 
     private void updateCurrentEQ(int index) {
-        if (this == null) {
-            return;
-        }
         Logger.d(TAG, "eqIndex:" + index);
         //ANCControlManager.getANCManager(this).getAppGraphicEQPresetBandSettings(lightX, GraphicEQPreset.Jazz,9);
         switch (index) {
@@ -752,16 +775,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 textViewCurrentEQ.setText(name != null ? name : getString(R.string.off));
                 break;
         }
-        if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null) {
-            DashboardActivity.getDashboardActivity().tutorialAncDialog.updateCurrentEQ(index);
+        if (tutorialAncDialog != null) {
+            tutorialAncDialog.updateCurrentEQ(index);
         }
     }
 
     private void updateBattery(int value) {
         Logger.d(TAG, "battery value = " + value);
-        if (this == null) {
-            return;
-        }
         PreferenceUtils.setInt(PreferenceKeys.BATTERY_VALUE, value, this);
         if (value == 255) {
             progressBarBattery.setProgress(100);
@@ -823,8 +843,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 
     private NetworkChangeReceiver networkChangeReceiver;
     private void registerConnectivity() {
-        if (this == null)
-            return;
         networkChangeReceiver = new NetworkChangeReceiver();
         IntentFilter intentFilter = new IntentFilter();
         Logger.i(TAG,"registerConnectivity");

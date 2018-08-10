@@ -13,7 +13,6 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -48,7 +47,7 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.ConnectedDeviceType;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.AlertsDialog;
-import jbl.stc.com.fragment.CalibrationFragment;
+import jbl.stc.com.activity.CalibrationActivity;
 import jbl.stc.com.listener.AppLightXDelegate;
 import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.logger.Logger;
@@ -700,8 +699,8 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                         mContext.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (CalibrationFragment.getCalibration() != null)
-                                    CalibrationFragment.getCalibration().setIsCalibrationComplete(true);
+                                if (CalibrationActivity.getCalibration() != null)
+                                    CalibrationActivity.getCalibration().setIsCalibrationComplete(true);
                                 Logger.d(TAG, "Calibration Stopped");
                             }
                         });
@@ -757,16 +756,16 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         } else if (success) {
             switch (command) {
                 case App_0xB3:
-                    if (CalibrationFragment.getCalibration() != null)
-                        CalibrationFragment.getCalibration().setIsCalibrationComplete(true);
+                    if (CalibrationActivity.getCalibration() != null)
+                        CalibrationActivity.getCalibration().setIsCalibrationComplete(true);
                     Logger.d(TAG, "Calibration Stopped");
                     break;
             }
         } else {
             switch (command) {
                 case App_0xB2:
-                    if (CalibrationFragment.getCalibration() != null)
-                        CalibrationFragment.getCalibration().calibrationFailed();
+                    if (CalibrationActivity.getCalibration() != null)
+                        CalibrationActivity.getCalibration().calibrationFailed();
                     break;
             }
         }

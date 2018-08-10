@@ -10,7 +10,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +29,8 @@ import java.util.ArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.BaseActivity;
+import jbl.stc.com.activity.CalibrationActivity;
 import jbl.stc.com.activity.DashboardActivity;
-import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.AmCmds;
@@ -259,8 +258,11 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             }
             case R.id.relative_layout_settings_true_note: {
                 Logger.d(TAG, "true note clicked");
-                CalibrationFragment calibrationFragment = new CalibrationFragment();
-                switchFragment(calibrationFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                Bundle b = new Bundle();
+                b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+                Intent intent = new Intent(getActivity(), CalibrationActivity.class);
+                intent.putExtra("bundle", b);
+                startActivity(intent);
                 break;
             }
             case R.id.text_view_settings_smart_button: {

@@ -174,7 +174,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
                     if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                             || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                         Logger.d(TAG, "Show home fragment");
-                        DashboardActivity.getDashboardActivity().goHomeFragment(myDevice);
+                        DashboardActivity.getDashboardActivity().showHomeActivity(myDevice);
                     }else {
                         Fragment fr = DashboardActivity.getDashboardActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                         if ( fr instanceof  UnableConnectFragment){

@@ -1,5 +1,6 @@
 package jbl.stc.com.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.activity.JBLApplication;
 
 
@@ -20,10 +22,12 @@ public class SaPopupWindow extends PopupWindow implements View.OnClickListener {
     private OnSmartAmbientStatusReceivedListener mListener;
     private ImageView mDaImg, mTtImg;
     private TextView mDaTvTitle, mTtTvTitle, mDaTvDetail, mTtTvDetail;
+    private Activity mActivity;
 
-    public SaPopupWindow(Context context) {
-        super(context);
-        init(context);
+    public SaPopupWindow(Activity activity) {
+        super(activity);
+        mActivity = activity;
+        init(activity);
     }
 
     private void init(Context context) {
@@ -90,9 +94,11 @@ public class SaPopupWindow extends PopupWindow implements View.OnClickListener {
     }
 
     private void showNextTutorialTips(){
-        if (DashboardActivity.getDashboardActivity().tutorialAncDialog != null){
-            dismiss();
-            DashboardActivity.getDashboardActivity().tutorialAncDialog.setTextViewTips(R.string.tutorial_tips_three);
+        if (mActivity instanceof HomeActivity) {
+            if (((HomeActivity) mActivity).getTutorialAncDialog() != null) {
+                dismiss();
+                ((HomeActivity) mActivity).getTutorialAncDialog().setTextViewTips(R.string.tutorial_tips_three);
+            }
         }
     }
     public void setOnSmartAmbientStatusReceivedListener(OnSmartAmbientStatusReceivedListener listener) {

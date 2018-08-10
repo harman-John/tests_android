@@ -13,13 +13,11 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -34,13 +32,10 @@ import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
-import jbl.stc.com.dialog.TutorialAncDialog;
-import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.entity.FirmwareModel;
-import jbl.stc.com.fragment.CalibrationFragment;
+import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.DiscoveryFragment;
 import jbl.stc.com.fragment.OTAFragment;
-import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.listener.OnDownloadedListener;
@@ -50,9 +45,7 @@ import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.utils.InsertPredefinePreset;
-import jbl.stc.com.utils.OTAUtil;
 import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.MyDragGridView;
 
@@ -72,8 +65,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     public static boolean isOTADoing = false;
     public static CopyOnWriteArrayList<FirmwareModel> mFwList = new CopyOnWriteArrayList<>();
-
-    public TutorialAncDialog tutorialAncDialog;
 
     private MyDragGridView gridView;
     private List<MyDevice> lists;
@@ -423,7 +414,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 case MSG_SHOW_HOME_FRAGMENT: {
                     Logger.d(TAG, "show homeFragment");
                     removeAllFragment();
-                    goHomeFragment(getMyDeviceConnected());
+                    showHomeActivity(getMyDeviceConnected());
                     break;
                 }
                 case MSG_SHOW_DISCOVERY: {
@@ -471,54 +462,31 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    public void goHomeFragment(MyDevice myDevice) {
-        Logger.d(TAG, "goHomeFragment");
+    public void showHomeActivity(MyDevice myDevice) {
         dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
         dashboardHandler.removeMessages(MSG_SHOW_MY_PRODUCTS);
         dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
         dashboardHandler.removeMessages(MSG_START_SCAN);
-        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        if (isConnected() && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+        if (DeviceManager.getInstance(this).isConnected() && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
             if (!isShowTutorialManyTimes) {
-                PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
-                if (tutorialAncDialog == null) {
-                    tutorialAncDialog = new TutorialAncDialog(DashboardActivity.this);
-                }
                 if (DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
                     Logger.d(TAG, "truenote");
-                    CalibrationFragment calibrationFragment = new CalibrationFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-                    calibrationFragment.setArguments(bundle);
-                    if (fr == null) {
-                        switchFragment(calibrationFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    } else if (!(fr instanceof CalibrationFragment)) {
-                        switchFragment(calibrationFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    }
+
+                    Bundle b = new Bundle();
+                    b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+                    Intent intent = new Intent(this, CalibrationActivity.class);
+                    intent.putExtra("bundle", b);
+                    startActivity(intent);
                 } else {
-                    Logger.d(TAG, "not truenote");
-                    if (!tutorialAncDialog.isShowing()) {
-                        tutorialAncDialog.show();
-                    }
-                    showHomeFragment(myDevice);
+                    Bundle b = new Bundle();
+                    b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+                    Intent intent = new Intent(this, HomeActivity.class);
+                    intent.putExtra("bundle", b);
+                    startActivity(intent);
                 }
-            } else {
-                showHomeFragment(myDevice);
             }
-        } else {
-            showHomeFragment(myDevice);
         }
-
-    }
-
-    private void showHomeFragment(MyDevice myDevice) {
-        Bundle b = new Bundle();
-        b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-        Intent intent = new Intent(this, HomeActivity.class);
-        intent.putExtra("bundle", b);
-
-        startActivity(intent);
     }
 
     @Override
