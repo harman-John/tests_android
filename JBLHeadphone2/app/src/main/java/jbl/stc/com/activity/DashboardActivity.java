@@ -469,22 +469,20 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         dashboardHandler.removeMessages(MSG_START_SCAN);
         if (DeviceManager.getInstance(this).isConnected() && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
-            if (!isShowTutorialManyTimes) {
-                if (DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
-                    Logger.d(TAG, "truenote");
+            if (!isShowTutorialManyTimes && DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
+                Logger.d(TAG, "truenote");
 
-                    Bundle b = new Bundle();
-                    b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-                    Intent intent = new Intent(this, CalibrationActivity.class);
-                    intent.putExtra("bundle", b);
-                    startActivity(intent);
-                } else {
-                    Bundle b = new Bundle();
-                    b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-                    Intent intent = new Intent(this, HomeActivity.class);
-                    intent.putExtra("bundle", b);
-                    startActivity(intent);
-                }
+                Bundle b = new Bundle();
+                b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+                Intent intent = new Intent(this, CalibrationActivity.class);
+                intent.putExtra("bundle", b);
+                startActivity(intent);
+            } else {
+                Bundle b = new Bundle();
+                b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
+                Intent intent = new Intent(this, HomeActivity.class);
+                intent.putExtra("bundle", b);
+                startActivity(intent);
             }
         }
     }

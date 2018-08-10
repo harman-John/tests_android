@@ -162,6 +162,7 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
             this.onBackPressed();
         } else {
             removeAllFragment();
+            finish();
             Bundle b = new Bundle();
             b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
             Intent intent = new Intent(this, HomeActivity.class);
