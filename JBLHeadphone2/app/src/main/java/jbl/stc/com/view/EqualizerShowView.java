@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -23,6 +24,7 @@ import jbl.stc.com.R;
 import jbl.stc.com.entity.CircleModel;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.ToastUtil;
 import jbl.stc.com.utils.UiUtils;
 
 
@@ -64,6 +66,8 @@ public class EqualizerShowView extends View {
     private final int CIRCLE_R = dp2px(5);
 
     private int STEP = AppUtils.EQ_VIEW_DEFAULT_STEP;
+
+    private float mPosX,mCurPosX;
 
     public EqualizerShowView(Context context) {
         this(context, null);
@@ -151,6 +155,33 @@ public class EqualizerShowView extends View {
 //        Paint.FontMetrics fm = paint.getFontMetrics();
 //        return (int) (Math.ceil(fm.descent - fm.ascent) / 3);
 //    }
+
+
+    /*@Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+
+            case MotionEvent.ACTION_DOWN:
+                mPosX = event.getX();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                mCurPosX = event.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mCurPosX - mPosX > 0
+                        && (Math.abs(mCurPosX - mPosX) > 25)) {
+                    //scroll to right
+                    ToastUtil.ToastLong(mContext,"scroll to right");
+                } else if (mCurPosX - mPosX < 0
+                        && (Math.abs(mCurPosX - mPosX) > 25)) {
+                    //scroll to left
+                    ToastUtil.ToastLong(mContext,"scroll to left");
+                }
+
+                break;
+        }
+        return true;
+    }*/
 
     private Canvas mCanvas;
     @Override

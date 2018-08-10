@@ -31,7 +31,7 @@
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:text="Bass"
-            android:textStyle="normal"
+            android:textStyle="bold"
             android:textColor="@color/eq_panel_name_text" />
 
     </RelativeLayout>

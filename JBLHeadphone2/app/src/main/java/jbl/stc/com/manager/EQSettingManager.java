@@ -466,6 +466,8 @@ public class EQSettingManager implements EqDbKey {
     }
 
     public static String getNewEqName(List<EQModel> eqModelList, String eqName, String updateEqName) {
+
+        Logger.d(TAG, "getNewEqName eqName=" + eqName+"updateEqName:"+updateEqName);
         String newEqName;
         if (eqName.equals(updateEqName) || (eqModelList == null || eqModelList.isEmpty())) {
             return eqName;
