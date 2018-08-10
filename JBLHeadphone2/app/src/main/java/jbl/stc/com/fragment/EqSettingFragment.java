@@ -166,7 +166,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                     case MotionEvent.ACTION_UP:
                         if (mCurPosX - mPosX > 0
                                 && (Math.abs(mCurPosX - mPosX) > 25)) {
-                            //向右滑動  减小
+                            //scroll to right
                             if (currSelectedEqIndex >= 1) {
                                 eqAdapter.setSelectedIndex(currSelectedEqIndex - 1);
                             } else {
@@ -176,7 +176,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
                         } else if (mCurPosX - mPosX < 0
                                 && (Math.abs(mCurPosX - mPosX) > 25)) {
-                            //向左滑动  增大
+                            //scroll to left
                             if (currSelectedEqIndex < eqModelList.size() - 1) {
                                 eqAdapter.setSelectedIndex(currSelectedEqIndex + 1);
                             } else {
@@ -364,8 +364,8 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         Bundle bundle = new Bundle();
         bundle.putBoolean(EqCustomFragment.EXTRA_IS_ADD, isAdd);
         bundle.putBoolean(EqCustomFragment.EXTRA_IS_PRESET, isPreset);
-        if (!isAdd) {
-            bundle.putSerializable(EqCustomFragment.EXTRA_EQ_MODEL, currSelectedEq);
+        if (!isAdd || isPreset) {
+        bundle.putSerializable(EqCustomFragment.EXTRA_EQ_MODEL, currSelectedEq);
         }
         fragment.setArguments(bundle);
         switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
@@ -377,7 +377,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         switch (v.getId()) {
             case R.id.eqEditImage:
                 if (currSelectedEqIndex < 4) {
-                    onAddCustomEq(false, true);
+                    onAddCustomEq(true, true);
                 } else {
                     onAddCustomEq(false, false);
                 }

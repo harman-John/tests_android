@@ -389,10 +389,9 @@ public class EqGridView extends GridView {
         mWindowLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        layoutParams.gravity = Gravity.CENTER;
+        layoutParams.gravity = Gravity.BOTTOM | Gravity.RIGHT;
         TextView textView = (mStartDragItemView.findViewById(R.id.tv_eqname));
-
-        int padding = UiUtils.dip2px(getContext(), 10);
+        int padding = UiUtils.dip2px(getContext(), 15);
         mDragImageView = new Button(getContext());
         mDragImageView.setBackgroundResource(R.drawable.drag_bubble);
         mDragImageView.setText(textView.getText().toString());
@@ -400,20 +399,22 @@ public class EqGridView extends GridView {
         mDragImageView.setMaxLines(2);
         mDragImageView.setPadding(padding, padding, padding, padding);
         mDragImageView.setGravity(Gravity.CENTER);
+        mDragImageView.setTextSize(16);
         mDragImageView.setLayoutParams(layoutParams);
         mDragLayout = new FrameLayout(getContext());
         mDragLayout.addView(mDragImageView);
         mWindowManager.addView(mDragLayout, mWindowLayoutParams);
 
 
+
         /*TextView textView = (mStartDragItemView.findViewById(R.id.tv_eqname));
         mdragImage.setVisibility(View.VISIBLE);
         mdragImage.setText(textView.getText().toString());
-        int marginTop=(int) (mRawY - mdragImage.getHeight()/2);
-        int marginBottom=(int) (screenHeight-marginTop-mdragImage.getHeight());
-        int marginLeft=(int) (mRawX  - mdragImage.getWidth()/2);
-        int marginRight=(int) (screenWidth-marginLeft-mdragImage.getWidth());
-        mdragImage.setPadding(marginLeft,marginTop,0,0);*/
+        int top=(int) (mRawY - mdragImage.getHeight()/2);
+        int left=(int) (mRawX  - mdragImage.getWidth()/2);
+        int bottom=(int) (mRawY +mdragImage.getHeight()/2);
+        int right=(int) (mRawX  +mdragImage.getWidth()/2);
+        mdragImage.layout(left,top,right,bottom);*/
     }
 
 
@@ -427,9 +428,9 @@ public class EqGridView extends GridView {
 
     private boolean IsDeleteArea(int x, int y) {
 
-        int deleteIconSize = (int) mEqArcView.getWidth() / 2;
+        int deleteIconSize = (int) mEqArcView.getWidth()/2;
         Logger.d(TAG, "DeleteArea CurrentX:" + x + "DeleteArea CurrentY:" + y + "deleteIconSize:" + deleteIconSize + "screenHeight:" + screenHeight + "screenWidth:" + screenWidth);
-        if (y > (screenHeight - deleteIconSize) && x > (screenWidth - deleteIconSize)) {
+        if ((y - UiUtils.dip2px(getContext(),40)) > (screenHeight - deleteIconSize) && (x -UiUtils.dip2px(getContext(),40)) > (screenWidth - deleteIconSize)) {
             return true;
         }
         return false;
@@ -448,34 +449,54 @@ public class EqGridView extends GridView {
         onSwapItem(moveX, moveY);
 
 
-        int currentY = mRawY;
-        int currentX = mRawX;
+        int currentY = mRawY ;
+        int currentX = mRawX ;
         System.out.println("CurrentY" + currentY + "CurrentX" + currentX);
         if (IsDeleteArea(currentX, currentY)) {
             Logger.d(TAG, "IsDeleteArea:True");
             mIsScaleAnima = true;
-            for (int i = 1; i < 4; i++) {
-                mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize - 20 * i);
-                mWindowLayoutParams.height = UiUtils.dip2px(getContext(), mDragLayoutSize - 20 * i);
+            /*for (int i = 1; i < 4; i++) {
+                mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize - 25 * i);
+                mWindowLayoutParams.height = UiUtils.dip2px(getContext(), mDragLayoutSize - 25 * i);
+                mWindowLayoutParams.x = (int) (mRawX - mWindowLayoutParams.height);
+                mWindowLayoutParams.y = (int) (mRawY - mWindowLayoutParams.height / 2 - mStatusHeight);
                 mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
-            }
-        } else {
+            }*/
+            mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize - 80);
+            mWindowLayoutParams.height = UiUtils.dip2px(getContext(), mDragLayoutSize - 80);
+            mWindowLayoutParams.x = (int) (mRawX - mWindowLayoutParams.height);
+            mWindowLayoutParams.y = (int) (mRawY - mWindowLayoutParams.height / 2 - mStatusHeight);
+            mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
+            mDragImageView.setTextSize(8);
+        }else{
             Logger.d(TAG, "IsDeleteArea:false");
             // ScrollView scroll
             mHandler.post(mScrollRunnable);
             if (mIsScaleAnima) {
                 mIsScaleAnima = false;
-                for (int i = 1; i < 4; i++) {
-                    mWindowLayoutParams.width = UiUtils.dip2px(getContext(), (mDragLayoutSize - 60) + 20 * i);
-                    mWindowLayoutParams.height = UiUtils.dip2px(getContext(), (mDragLayoutSize - 60) + 20 * i);
+                /*for (int i = 1; i < 4; i++) {
+                    mWindowLayoutParams.width = UiUtils.dip2px(getContext(), (mDragLayoutSize - 75) + 25 * i);
+                    mWindowLayoutParams.height = UiUtils.dip2px(getContext(), (mDragLayoutSize - 75) + 25 * i);
+                    mWindowLayoutParams.x = (int) (mRawX - mWindowLayoutParams.height);
+                    mWindowLayoutParams.y = (int) (mRawY - mWindowLayoutParams.height / 2 - mStatusHeight);
+                    mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams);  //update the location
                     mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
-                }
+                }*/
+
+                mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize);
+                mWindowLayoutParams.height = UiUtils.dip2px(getContext(), mDragLayoutSize);
+                mWindowLayoutParams.x = (int) (mRawX - mWindowLayoutParams.height);
+                mWindowLayoutParams.y = (int) (mRawY - mWindowLayoutParams.height / 2 - mStatusHeight);
+                mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams);  //update the location
+                mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
+                mDragImageView.setTextSize(16);
             }
         }
+
     }
 
     private void startScaleAnimation() {
-        if (!mIsScaleAnima) {
+        /*if (!mIsScaleAnima) {
             mIsScaleAnima = true;
             ScaleAnimation scaleAnim = new ScaleAnimation(1.0f, 0.6f, 1.0f, 0.6f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             TranslateAnimation translateAnim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.25f);
@@ -487,7 +508,38 @@ public class EqGridView extends GridView {
             mDragImageView.clearAnimation();
             mDragImageView.startAnimation(anim);
 
-        }
+        }*/
+        ScaleAnimation scaleAnim = new ScaleAnimation(1.0f, 0.4f, 1.0f, 0.4f, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0.4f);
+        TranslateAnimation translateAnim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.25f);
+        AnimationSet anim = new AnimationSet(false);
+        anim.addAnimation(scaleAnim);
+        anim.addAnimation(translateAnim);
+        anim.setDuration(mScaleMill);
+        anim.setFillAfter(true);
+        mDragImageView.clearAnimation();
+        mDragImageView.startAnimation(anim);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (mIsVibrator) mVibrator.vibrate(50);
+                mIsScaleAnima = false;
+                mDragAdapter.setHideItem(-1);
+                removeDragImage();
+                mDragAdapter.deleteItem(mDragPosition);
+                removeEqArcView();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
     }
 
     /**
@@ -650,22 +702,33 @@ public class EqGridView extends GridView {
         if (view != null) {
             view.setVisibility(View.VISIBLE);
         }
-        mDragAdapter.setHideItem(-1);
-        removeDragImage();
         Logger.d(TAG, "moveY:" + String.valueOf(moveY) + "mViewHeight:" + String.valueOf(mViewHeight));
         int currentY = mRawY;
         int currentX = mRawX;
         if (IsDeleteArea(currentX, currentY)) {
+            //startScaleAnimation();
             if (mIsVibrator) mVibrator.vibrate(50);
             mIsScaleAnima = false;
+            mDragAdapter.setHideItem(-1);
+            removeDragImage();
             mDragAdapter.deleteItem(mDragPosition);
+            removeEqArcView();
+        }else{
+            mDragAdapter.setHideItem(-1);
+            removeDragImage();
+            removeEqArcView();
         }
         mScrollView.setScrollStop(false);
         mStartDragItemView.findViewById(R.id.image_view_select).setVisibility(View.GONE);
         mStartDragItemView.findViewById(R.id.image_view).setVisibility(View.VISIBLE);
+    }
+
+    private void removeEqArcView() {
+
         Animation scaleOff = AnimationUtils.loadAnimation(JBLApplication.getJBLApplicationContext(), R.anim.anim_scale_off);
         mEqArcView.setAnimation(scaleOff);
         mEqArcView.setVisibility(View.GONE);
+
     }
 
     /**

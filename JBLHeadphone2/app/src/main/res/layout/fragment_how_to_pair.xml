@@ -100,6 +100,7 @@
             android:background="@drawable/rectangle_with_round_corner_view_page_orange"
             android:gravity="center"
             android:text="@string/next"
+            android:textStyle="bold"
             android:textAllCaps="false"
             android:textAlignment="center"
             android:textColor="@color/white"

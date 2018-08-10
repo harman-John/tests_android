@@ -19,7 +19,9 @@ import android.widget.TextView;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.avnera.smartdigitalheadset.LightX;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import jbl.stc.com.R;
@@ -163,8 +165,8 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             currSelectedEq = (EQModel) bundle.getSerializable(EXTRA_EQ_MODEL);
             isPreset = bundle.getBoolean(EXTRA_IS_PRESET);
         }
-        if (isPreset) {
-            isAddOperate = true;
+        if (isPreset){
+            defaultEqName =currSelectedEq.eqName;
         }
         Logger.d(TAG, "isAddOperate=" + isAddOperate + ",currSelectedEq=" + currSelectedEq);
         if (currSelectedEq == null) {
@@ -292,7 +294,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
     }
 
     private String getNewEqName() {
-        String eqName = eqNameEdit.getText().toString().trim();
+        /*String eqName = eqNameEdit.getText().toString().trim();
         String updateEqName = currSelectedEq.eqName;
         if (TextUtils.isEmpty(eqName)) {
             if (isAddOperate) {
@@ -301,7 +303,60 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                 eqName = updateEqName;
             }
         }
-        return EQSettingManager.getNewEqName(eqModelList, eqName, updateEqName);
+        return EQSettingManager.getNewEqName(eqModelList, eqName, updateEqName);*/
+        String eqName="";
+        if (currSelectedEq!=null){
+
+            if (isAddOperate){
+
+                boolean isContainDefault =false;
+                boolean isEqualDefault=false;
+                List<EQModel> eqNameModels =new ArrayList<>();
+                for (EQModel eqModel :eqModelList){
+                    if (eqModel.eqName.contains(defaultEqName)){
+                        if (eqModel.eqName.equals(defaultEqName)){
+                            isEqualDefault=true;
+                        }
+                        isContainDefault =true;
+                        if (eqModel.eqName.length()>defaultEqName.length()){
+                            eqNameModels.add(eqModel);
+                        }
+                    }
+                }
+                if (isContainDefault){
+                    if (isEqualDefault){
+                        List<Integer> eqNameIndexs=new ArrayList<>();
+                        if (eqNameIndexs!=null&&eqNameModels.size()>0){
+                            for (EQModel eqModel:eqNameModels){
+                                String[] strs=eqModel.eqName.split(defaultEqName);
+                                eqNameIndexs.add(Integer.valueOf(strs[1]));
+                            }
+                            Collections.max(eqNameIndexs);
+                            int minIndex=Collections.min(eqNameIndexs);
+                            int maxIndex=Collections.max(eqNameIndexs);
+                            Logger.d(TAG,"EqNamemax:"+Collections.max(eqNameIndexs));
+                            Logger.d(TAG,"EqNamemin:"+Collections.min(eqNameIndexs));
+                            if (minIndex>2){
+                                eqName=defaultEqName+String.valueOf(minIndex-1);
+                            }else{
+                                eqName=defaultEqName+String.valueOf(maxIndex+1);
+                            }
+                        }else{
+                            eqName=defaultEqName+"2";
+                        }
+                    }else{
+                        eqName=defaultEqName;
+                    }
+                }else{
+                    if (defaultEqName.equals(getString(R.string.create_eq_default_name))){
+                        eqName=defaultEqName;
+                    }
+                }
+            }else{
+                eqName =currSelectedEq.eqName;
+            }
+        }
+        return  eqName;
     }
 
     private void setResultOk() {
