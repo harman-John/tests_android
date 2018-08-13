@@ -140,9 +140,13 @@ public class ShadowLayout extends RelativeLayout {
         super.onDraw(canvas);
         //canvas.drawRect(mRectF, mPaint);
         if (mShape.equals("rectangle")){
+            mPaint.setShadowLayer(mShadowRadius, mShadowDx, mShadowDy, mShadowColor);
             canvas.drawRoundRect(mRectF,75,75,mPaint);
         }else if (mShape.equals("circle")){
+            mPaint.setShadowLayer(mShadowRadius, mShadowDx, mShadowDy, mShadowColor);
             canvas.drawCircle(width/2,height/2,width/2-mShadowRadius,mPaint);
+        }else {
+            canvas.drawRect(mRectF, mPaint);
         }
     }
 
@@ -162,7 +166,6 @@ public class ShadowLayout extends RelativeLayout {
         this.setWillNotDraw(false);
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.TRANSPARENT);
-        mPaint.setShadowLayer(mShadowRadius, mShadowDx, mShadowDy, mShadowColor);
     }
 
 }

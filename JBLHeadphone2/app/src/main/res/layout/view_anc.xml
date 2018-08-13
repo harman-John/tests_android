@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/ambient_awareness"
-            android:textColor="@color/title_text_color"
+            android:textColor="@color/black_4C596B"
             android:textSize="@dimen/normal_text_size"
             android:textStyle="bold" />
 

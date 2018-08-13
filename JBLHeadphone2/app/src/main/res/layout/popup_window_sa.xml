@@ -22,7 +22,7 @@
                 android:layout_centerInParent="true"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/smart_audio_popup_text_color1"
+                android:textColor="@color/black_4C596B"
                 />
             <jbl.stc.com.view.AppImageView
                 android:id="@+id/aa_popup_close_arrow"
@@ -63,7 +63,7 @@
                     android:text="Daylight Ambient"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/smart_audio_popup_text_color1"
+                    android:textColor="@color/black_4C596B"
                     />
 
                 <jbl.stc.com.view.CustomFontTextView
@@ -72,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:text="Activate or de-activate Daylight Smart Ambient feature by single pressing the Smart Ambient Button"
                     android:textSize="16sp"
-                    android:textColor="@color/smart_audio_popup_text_color1"
+                    android:textColor="@color/black_4C596B"
                     />
 
             </LinearLayout>
@@ -108,7 +108,7 @@
                     android:text="Talk Through"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/smart_audio_popup_text_color1"
+                    android:textColor="@color/black_4C596B"
                     />
 
                 <jbl.stc.com.view.CustomFontTextView
@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:text="Early catch the conversation by pushing the Smart Ambient Button"
                     android:textSize="16sp"
-                    android:textColor="@color/smart_audio_popup_text_color1"
+                    android:textColor="@color/black_4C596B"
                     />
 
             </LinearLayout>

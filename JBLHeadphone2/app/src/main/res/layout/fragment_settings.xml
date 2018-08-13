@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/text_settings"
-            android:textColor="@color/title_text_color"
+            android:textColor="@color/black_4C596B"
             android:textSize="18sp"
             android:textStyle="bold" />
 

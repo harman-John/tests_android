@@ -28,6 +28,7 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.Action;
@@ -44,6 +45,7 @@ import com.avnera.smartdigitalheadset.Utility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import jbl.stc.com.R;
 import jbl.stc.com.config.DeviceFeatureMap;
@@ -62,6 +64,7 @@ import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.SettingsFragment;
 import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.listener.OnDialogListener;
+import jbl.stc.com.listener.OnOtaListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
@@ -83,7 +86,7 @@ import jbl.stc.com.view.SaPopupWindow;
 import static java.lang.Integer.valueOf;
 
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener , ConnectListener{
+public class HomeActivity extends BaseActivity implements View.OnClickListener , ConnectListener,OnOtaListener{
     public static final String TAG = HomeActivity.class.getSimpleName() + "aa";
     private BlurringView mBlurView;
 
@@ -100,7 +103,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private final static int MSG_AA_RIGHT = 33;
 
     private final static int MSG_SEND_CMD_GET_FIRMWARE = 7;
-    private final static int MSG_UPDATE_CUSTOME_EQ = 8;
+    private final static int MSG_UPDATE_CUSTOM_EQ = 8;
+    private final static int MSG_CHECK_MY_DEVICE = 9;
+
 
     private final long timeInterval = 30 * 1000L, pollingTime = 1000L;
     private ProgressBar progressBarBattery;
@@ -110,7 +115,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private ImageView imageViewDevice;
     private CheckBox checkBoxNoiseCancel;
     private LinearLayout linearLayoutBattery;
-    private LightX lightX;
     private AaPopupWindow aaPopupWindow;
     private SaPopupWindow saPopupwindow;
 
@@ -139,7 +143,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             myDevice = b.getParcelable(JBLConstant.KEY_MY_DEVICE);
         }
         showTutorial();
-        lightX = AvneraManager.getAvenraManager(this).getLightX();
         generateAAPopupWindow();
         generateSaPopupWindow();
         findViewById(R.id.image_view_home_settings).setOnClickListener(this);
@@ -226,17 +229,58 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     public void connectDeviceStatus(boolean isConnected) {
         super.connectDeviceStatus(isConnected);
         if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
+            Logger.i(TAG, "connectDeviceStatus A2DP_HALF_CONNECTED");
             finish();
-        }else if (!isConnected){
+        }else if (!isConnected && !isOTADoing && !DeviceManager.getInstance(this).isNeedOtaAgain()){
+            Logger.i(TAG, "connectDeviceStatus not connected, not ota");
             removeAllFragment();
             finish();
+        }else if (isConnected && isOTADoing && !DeviceManager.getInstance(this).isNeedOtaAgain()){
+            Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+            if (fr != null && fr instanceof OTAFragment) {
+                Logger.i(TAG, "connectDeviceStatus myDevice = " + myDevice);
+                DeviceManager.getInstance(this).startA2DPCheck();
+                ((OTAFragment) fr).otaSuccess(this);
+            }
         }
+    }
+
+    @Override
+    public void checkDevices(Set<String> deviceList) {
+        super.checkDevices(deviceList);
+        Logger.i(TAG, "MSG_CHECK_DEVICES deviceList = " + deviceList);
+        Message msg = new Message();
+        msg.what = MSG_CHECK_MY_DEVICE;
+        msg.obj = deviceList;
+        homeHandler.sendMessage(msg);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+        if (isOTADoing) {
+            if (fr != null && fr instanceof OTAFragment && DeviceManager.getInstance(this).isInBootloader() && DeviceManager.getInstance(this).isConnected()) {
+                final Toast toast = Toast.makeText(this, "Can't perform this action.", Toast.LENGTH_SHORT);
+                toast.show();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        toast.cancel();
+                    }
+                }, 300);
+                return;
+            }
+        } else {
+            if (fr != null && fr instanceof OTAFragment) {
+                if (((OTAFragment) fr).isDisableGoBack()) {
+                    onButtonDone();
+                    return;
+                }
+            }
+        }
+
         if ((fr != null)&& fr instanceof EqSettingFragment) {
             doResume();
         }
@@ -336,13 +380,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     break;
                 case Connected_BluetoothDevice:
                     linearLayoutBattery.setVisibility(View.VISIBLE);
-                    ANCControlManager.getANCManager(this).getBatterLeverl(lightX);
+                    ANCControlManager.getANCManager(this).getBatterLeverl();
                     homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
                     break;
             }
             getDeviceInfo();
-        }
-        else if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+        }else if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             if (!PreferenceUtils.getBoolean(PreferenceKeys.SHOW_NC_POP, this)) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_NC_POP, true, this);
                 findViewById(R.id.relative_layout_home_activity).post(new Runnable() {
@@ -457,11 +500,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 
 
     private void getRawSteps() {
-        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd(lightX);//get raw steps count of connected device
+        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd();//get raw steps count of connected device
     }
 
     private void generateAAPopupWindow() {
-        aaPopupWindow = new AaPopupWindow(this, lightX);
+        aaPopupWindow = new AaPopupWindow(this);
         aaPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -481,7 +524,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     Runnable applyRunnable = new Runnable() {
         @Override
         public void run() {
-            ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset(lightX);
+            ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
         }
     };
 
@@ -495,27 +538,27 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(this);
                 Logger.d(TAG, "eqSize:" + eqModels.size());
                 if (eqModels.size() < 5) {
-                    ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz, lightX);
+                    ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz);
                 } else {
-                    ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModels.get(4)), lightX);
+                    ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModels.get(4)));
                 }
             } else {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, curEqNameExclusiveOff, this);
                 if (curEqNameExclusiveOff.equals(getString(R.string.jazz))) {
-                    ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz, lightX);
+                    ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz);
                 } else if (curEqNameExclusiveOff.equals(getString(R.string.vocal))) {
-                    ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Vocal, lightX);
+                    ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Vocal);
                 } else if (curEqNameExclusiveOff.equals(getString(R.string.bass))) {
-                    ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Bass, lightX);
+                    ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Bass);
                 } else {
                     EQModel eqModel = EQSettingManager.get().getEQModelByName(curEqNameExclusiveOff, this);
-                    ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModel), lightX);
+                    ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModel));
                 }
             }
         } else {
             //turn off the eq
             Logger.d(TAG, "turn off the eq");
-            ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Off, lightX);
+            ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Off);
         }
         homeHandler.removeCallbacks(applyRunnable);
         homeHandler.postDelayed(applyRunnable, 800);
@@ -523,19 +566,19 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 
     public void setANC() {
         if (checkBoxNoiseCancel.isChecked()) {
-            ANCControlManager.getANCManager(this).setANCValue(lightX, false);
+            ANCControlManager.getANCManager(this).setANCValue(true);
         } else {
-            ANCControlManager.getANCManager(this).setANCValue(lightX, true);
+            ANCControlManager.getANCManager(this).setANCValue(false);
         }
     }
 
     public void tutorialSetANC() {
         if (checkBoxNoiseCancel.isChecked()) {
             checkBoxNoiseCancel.setChecked(false);
-            ANCControlManager.getANCManager(this).setANCValue(lightX, false);
+            ANCControlManager.getANCManager(this).setANCValue(false);
         } else {
             checkBoxNoiseCancel.setChecked(true);
-            ANCControlManager.getANCManager(this).setANCValue(lightX, true);
+            ANCControlManager.getANCManager(this).setANCValue(true);
         }
     }
 
@@ -628,31 +671,36 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private void getDeviceInfo() {
 
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd(lightX);
+            ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd();
             Logger.e(TAG, "readBootImageType");
-            ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).readBootImageType(lightX);
+            ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).readBootImageType();
         }
-        ANCControlManager.getANCManager(this).getANCValue(lightX);
-        if (lightX == null) {
+        ANCControlManager.getANCManager(this).getANCValue();
+        if (AvneraManager.getAvenraManager(this).getLightX() == null) {
             updateFirmwareVersion();
         }
-        ANCControlManager.getANCManager(this).getCurrentPreset(lightX);
-        ANCControlManager.getANCManager(this).getFirmwareInfo(lightX);
-        if (lightX != null) {
+        ANCControlManager.getANCManager(this).getCurrentPreset();
+        ANCControlManager.getANCManager(this).getFirmwareInfo();
             Logger.d(TAG, "getDeviceInfo");
-            lightX.readConfigModelNumber();
-            lightX.readConfigProductName();
-            homeHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    lightX.readBootVersionFileResource();
-                }
-            },200);
-        }
+        ANCControlManager.getANCManager(this).readConfigModelNumber();
+        ANCControlManager.getANCManager(this).readConfigProductName();
+        homeHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ANCControlManager.getANCManager(getApplicationContext()).readBootVersionFileResource();
+            }
+        },200);
     }
 
     private void getAAValue() {
-        ANCControlManager.getANCManager(this).getAmbientLeveling(lightX);
+        ANCControlManager.getANCManager(this).getAmbientLeveling();
+    }
+
+    @Override
+    public void onButtonDone() {
+        DeviceManager.getInstance(this).setAppLightXDelegate(this);
+        myDevice = getMyDeviceConnected();
+        doResume();
     }
 
     private class HomeHandler extends Handler {
@@ -667,8 +715,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 
             switch (msg.what) {
                 case MSG_READ_BATTERY_INTERVAL: {
-                    homeHandler.removeMessages(MSG_READ_BATTERY_INTERVAL);
-                    ANCControlManager.getANCManager(getApplicationContext()).getBatterLeverl(lightX);
+                    if (getSupportFragmentManager().getBackStackEntryCount()<= 0) {
+                        homeHandler.removeMessages(MSG_READ_BATTERY_INTERVAL);
+                        ANCControlManager.getANCManager(getApplicationContext()).getBatterLeverl();
+                    }
                     homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
                     break;
                 }
@@ -706,10 +756,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     break;
                 }
                 case MSG_SEND_CMD_GET_FIRMWARE: {
-                    ANCControlManager.getANCManager(getApplicationContext()).getFirmwareVersion(lightX);
+                    ANCControlManager.getANCManager(getApplicationContext()).getFirmwareVersion();
                     break;
                 }
-                case MSG_UPDATE_CUSTOME_EQ: {
+                case MSG_UPDATE_CUSTOM_EQ: {
                     relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                     ((JBLApplication)getApplication()).deviceInfo.eqOn = true;
                     String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getApplicationContext(), null);
@@ -725,6 +775,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                         textViewCurrentEQ.setText(getString(R.string.custom_eq));
                     }
                     break;
+                }
+                case MSG_CHECK_MY_DEVICE:{
+                    Logger.i(TAG, "handleMessage MSG_CHECK_DEVICES start");
+                    Set<String> deviceList = (Set<String>) msg.obj;
+                    if (hasNewDevice(deviceList)) {
+                        initMyDeviceList();
+                    }
+                    updateMyDeviceStatus(deviceList);
+                    Logger.i(TAG, "handleMessage MSG_CHECK_DEVICES end");
                 }
             }
         }
@@ -784,7 +843,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             }
             case 4: {
                 //ANCControlManager.getANCManager(this).getAppGraphicEQBand(GraphicEQPreset.User, lightX);
-                ANCControlManager.getANCManager(this).getAppGraphicEQPresetBandSettings(lightX, GraphicEQPreset.User, 10);
+                ANCControlManager.getANCManager(this).getAppGraphicEQPresetBandSettings(GraphicEQPreset.User, 10);
                 break;
             }
             default:
@@ -1028,7 +1087,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     if (EQSettingManager.get().isTheSameEQ(eqModel, eqArray)) {
                         isHave = true;
                         PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, this);
-                        sendMessageTo(MSG_UPDATE_CUSTOME_EQ, null);
+                        sendMessageTo(MSG_UPDATE_CUSTOM_EQ, null);
                         Logger.d(TAG, "Have the same EQ:" + eqModel.eqName);
                         return;
                     }
@@ -1043,7 +1102,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     if (EQSettingManager.get().isTheSameEQ(eqModel, eqArray)) {
                         isHave = true;
                         PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, this);
-                        sendMessageTo(MSG_UPDATE_CUSTOME_EQ, null);
+                        sendMessageTo(MSG_UPDATE_CUSTOM_EQ, null);
                         Logger.d(TAG, "Have the same EQ:" + eqModel.eqName);
                         break;
                     }
@@ -1053,7 +1112,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     EQModel eqModel = EQSettingManager.get().getCustomeEQModelFromValues(eqArray, eqName);
                     EQSettingManager.get().addCustomEQ(eqModel, this);
                     PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, this);
-                    sendMessageTo(MSG_UPDATE_CUSTOME_EQ, null);
+                    sendMessageTo(MSG_UPDATE_CUSTOM_EQ, null);
                 }
 
             } else {
@@ -1061,7 +1120,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 EQModel eqModel = EQSettingManager.get().getCustomeEQModelFromValues(eqArray, eqName);
                 EQSettingManager.get().addCustomEQ(eqModel, this);
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, this);
-                sendMessageTo(MSG_UPDATE_CUSTOME_EQ, null);
+                sendMessageTo(MSG_UPDATE_CUSTOM_EQ, null);
             }
 
         }
@@ -1205,10 +1264,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         Logger.d(TAG, "lightXAppReceivedPush command is " + command);
         switch (command) {
             case AppPushANCEnable:
-                ANCControlManager.getANCManager(this).getANCValue(lightX);
+                ANCControlManager.getANCManager(this).getANCValue();
                 break;
             case AppPushANCAwarenessPreset: {
-                ANCControlManager.getANCManager(this).getAmbientLeveling(lightX);
+                ANCControlManager.getANCManager(this).getAmbientLeveling();
             }
             break;
         }
@@ -1217,9 +1276,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     @Override
     public void lightXReadConfigResult(LightX var1, Command command, boolean success, String var4) {
         super.lightXReadConfigResult(var1, command, success, var4);
-        if (this == null){
-            return;
-        }
         Logger.d(TAG, "lightXReadConfigResult command = "+command);
         if (success) {
             switch (command) {

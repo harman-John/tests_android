@@ -21,6 +21,7 @@ import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.listener.AwarenessChangeListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
+import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -38,15 +39,13 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
     private CircularInsideLayout circularInsideLayout;
     private View closeBtn;
     //    private View offBtn;
-    private LightX lightX;
     private ANCAwarenessPreset lastsavedAwarenessState;
     private boolean isRequestingLeftANC, isRequestingRightANC;
     private Activity mActivity;
 
-    public AaPopupWindow(Activity activity, LightX lightX) {
+    public AaPopupWindow(Activity activity) {
         super(activity);
         mActivity = activity;
-        this.lightX = lightX;
         init(activity);
 
     }
@@ -146,26 +145,26 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
 
         isRequestingLeftANC = true;
         isRequestingRightANC = true;
-        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getLeftANCvalue(lightX);
-        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRightANCvalue(lightX);
+        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getLeftANCvalue();
+        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRightANCvalue();
     }
 
     @Override
     public void onMedium() {
         //on AA medium checked
-        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.Medium);
+        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(ANCAwarenessPreset.Medium);
     }
 
     @Override
     public void onLow() {
         //on AA low checked
-        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.Low);
+        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(ANCAwarenessPreset.Low);
     }
 
     @Override
     public void onHigh() {
         //on AA high checked
-        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.High);
+        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(ANCAwarenessPreset.High);
     }
 
     @Override
@@ -186,10 +185,10 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
 //            promptSeekAbuse.removeCallbacks(runnablepromptSeekAbuse);
 //            promptSeekAbuse.postDelayed(runnablepromptSeekAbuse, 300);
             if (leftProgress != savedLeft) {
-                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setLeftAwarenessPresetValue(lightX, leftProgress);
+                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setLeftAwarenessPresetValue(leftProgress);
             }
             if (rightProgress != savedRight) {
-                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRightAwarenessPresetValue(lightX, rightProgress);
+                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRightAwarenessPresetValue(rightProgress);
             }
         }
     }

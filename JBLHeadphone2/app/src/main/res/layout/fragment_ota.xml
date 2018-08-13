@@ -36,30 +36,21 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/startupdating"
         android:layout_below="@id/relative_layout_ota_title"
         android:layout_centerHorizontal="true"
-        android:gravity="left|bottom"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
+        android:gravity="start|bottom"
         android:orientation="vertical">
-
-        <jbl.stc.com.view.CustomFontTextView
-            android:id="@+id/updateStatusTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="@string/firmware_is_updating_title"
-            android:textSize="16sp"
-            android:textStyle="normal" />
 
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/updateStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="30dp"
             android:layout_marginTop="6dp"
             android:text="@string/firmware_is_updating"
             android:textSize="16sp"
@@ -138,37 +129,8 @@
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="normal" />
+            android:textStyle="bold" />
 
     </jbl.stc.com.view.ShadowLayout>
-
-    <!--<RelativeLayout-->
-        <!--android:id="@+id/relative_layout_ota_button"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_gravity="center_horizontal"-->
-        <!--android:layout_marginBottom="40dp"-->
-        <!--android:layout_marginTop="15dp">-->
-
-        <!--<jbl.stc.com.view.AppButton-->
-            <!--android:id="@+id/button"-->
-            <!--android:layout_width="230dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:layout_alignParentTop="true"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_marginBottom="8dp"-->
-            <!--android:layout_marginStart="5dp"-->
-            <!--android:gravity="center"-->
-            <!--android:background="@drawable/rectangle_with_round_corner_hollow"-->
-            <!--android:text="@string/done"-->
-            <!--android:textAlignment="center"-->
-            <!--android:textColor="@color/FF5F00"-->
-            <!--android:textSize="18sp"-->
-            <!--android:textStyle="normal" />-->
-
-    <!--</RelativeLayout>-->
-
 
 </RelativeLayout>

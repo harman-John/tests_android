@@ -61,20 +61,21 @@ import jbl.stc.com.utils.FirmwareUtil;
 public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delegate, LightX.Delegate, USB.Delegate, audioManager.AudioDeviceDelegate {
     private static final String TAG = DeviceManager.class.getSimpleName();
     private static final String TAGReconnect = TAG + " reconnection";
-    public static boolean mIsInBootloader;
-    private static final int RESET_TIME = 3 * 1000;
+    private static final int RESET_TIME = 10 * 1000;
     private static final int RESET_TIME_FOR_150NC = 2 * 1000;
     private int resetTime = RESET_TIME;
     private AppLightXDelegate appLightXDelegate;
     private ConnectListener mConnectListener;
     private UsbManager usbManager;
-    private boolean isConnected = false;
+    private static boolean isConnected = false;
     private boolean mIsConnectedPhysically;
     private boolean showCommunicationIssue = true;
     private Handler mHandler = new Handler();
     private static DeviceManager mInstance;
 
     private static Activity mContext;
+
+    public static boolean mIsInBootloader;
     public static DeviceManager getInstance(Activity context){
         mContext = context;
         if (mInstance == null) {
@@ -611,7 +612,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         }
     }
 
-    private void disconnectDevice() {
+    public void disconnectDevice() {
         synchronized (this) {
             /** set device type **/
             DeviceConnectionManager.getInstance().setCurrentDevice(ConnectedDeviceType.NONE);

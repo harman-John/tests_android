@@ -54,7 +54,7 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
     public void onResume() {
         super.onResume();
         AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_PROGRAMMABLE_SMART_BUTTON);
-        ANCControlManager.getANCManager(getActivity()).getSmartButton(lightX);
+        ANCControlManager.getANCManager(getActivity()).getSmartButton();
 //        getActivity().setToolbarMenu(JBLConstant.SettingsSmartButton_FRAGMENT, null);
     }
 
@@ -141,7 +141,7 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
         if (lightX != null) {
             lightX.writeAppSmartButtonFeatureIndex(noise);
         } else {
-            ANCControlManager.getANCManager(getActivity()).setSmartButton(lightX, noise);
+            ANCControlManager.getANCManager(getActivity()).setSmartButton(noise);
         }
     }
 

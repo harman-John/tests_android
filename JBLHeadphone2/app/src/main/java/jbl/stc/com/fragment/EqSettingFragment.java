@@ -112,7 +112,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 myHandler.removeMessages(MSG_SHOW_LINE);
                 equalizerView.clearAllPointCircles();
                 myHandler.sendEmptyMessage(MSG_SHOW_LINE);
-                Logger.d(TAG,"aaaaa onEqNameSelected ");
+                Logger.d(TAG, "aaaaa onEqNameSelected ");
             }
         });
         titleBar.setOnTouchListener(new View.OnTouchListener() {
@@ -137,9 +137,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                         break;
                     case MotionEvent.ACTION_UP:
                         recycleVelocityTracker();
-                        if (yMove<screenHeght- UiUtils.dip2px(getActivity(),70)){
+                        if (yMove < screenHeght - UiUtils.dip2px(getActivity(), 70)) {
                             rootView.setTranslationY(0);
-                        }else{
+                        } else {
                             getActivity().onBackPressed();
 
                         }
@@ -242,8 +242,8 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             pos = 0;
             equalizerView.clearAllPointCircles();
             myHandler.removeMessages(MSG_SHOW_LINE);
-            myHandler.sendEmptyMessageDelayed(MSG_SHOW_LINE,500);
-            Logger.d(TAG,"aaaaa initValue");
+            myHandler.sendEmptyMessageDelayed(MSG_SHOW_LINE, 500);
+            Logger.d(TAG, "aaaaa initValue");
 
         }
         if (currSelectedEqIndex == 0) {
@@ -257,28 +257,29 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     }
 
     private static int pos = 0;
-    private MyHandler  myHandler =  new MyHandler();
+    private MyHandler myHandler = new MyHandler();
     private final static int MSG_SHOW_LINE = 0;
-    private class MyHandler extends Handler{
+
+    private class MyHandler extends Handler {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch(msg.what){
+            switch (msg.what) {
                 case MSG_SHOW_LINE: {
-                    List<CircleModel> listsBak = equalizerView.getAllPointCircles(currSelectedEq.getPointX(),currSelectedEq.getPointY());
-                    if (pos >= listsBak.size()){
+                    List<CircleModel> listsBak = equalizerView.getAllPointCircles(currSelectedEq.getPointX(), currSelectedEq.getPointY());
+                    if (pos >= listsBak.size()) {
                         pos = 0;
                         break;
                     }
 
-                    if (pos < listsBak.size() && pos +5 >=listsBak.size() ){
-                        equalizerView.setCurveData(listsBak.subList(pos, listsBak.size() -1), R.color.text_white_80);
-                    }else {
+                    if (pos < listsBak.size() && pos + 5 >= listsBak.size()) {
+                        equalizerView.setCurveData(listsBak.subList(pos, listsBak.size() - 1), R.color.text_white_80);
+                    } else {
                         equalizerView.setCurveData(listsBak.subList(pos, pos + 5), R.color.text_white_80);
                     }
                     myHandler.sendEmptyMessage(MSG_SHOW_LINE);
-                    pos = pos +5;
+                    pos = pos + 5;
                     break;
                 }
                 default: {
@@ -286,7 +287,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 }
             }
         }
-    };
+    }
+
+    ;
 
     private void smoothToPosition() {
         if (currSelectedEqIndex > 1) {
@@ -336,19 +339,19 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         public void run() {
             switch (currSelectedEqIndex) {
                 case 0:
-                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Off, lightX);
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Off);
                     break;
                 case 1:
-                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz, lightX);
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz);
                     break;
                 case 2:
-                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Vocal, lightX);
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Vocal);
                     break;
                 case 3:
-                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Bass, lightX);
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Bass);
                     break;
                 default:
-                    ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(currSelectedEq), lightX);
+                    ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(currSelectedEq));
                     break;
             }
             AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
@@ -365,7 +368,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         bundle.putBoolean(EqCustomFragment.EXTRA_IS_ADD, isAdd);
         bundle.putBoolean(EqCustomFragment.EXTRA_IS_PRESET, isPreset);
         if (!isAdd || isPreset) {
-        bundle.putSerializable(EqCustomFragment.EXTRA_EQ_MODEL, currSelectedEq);
+            bundle.putSerializable(EqCustomFragment.EXTRA_EQ_MODEL, currSelectedEq);
         }
         fragment.setArguments(bundle);
         switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);

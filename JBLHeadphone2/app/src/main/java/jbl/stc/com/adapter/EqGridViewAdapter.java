@@ -123,12 +123,12 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
                           if (eqModels!=null&&eqModels.size()>0){
                               if (curEqName.equals(deleteEqName)){
                               int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(eqModels.get(0));
-                              ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
+                              ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
                               PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModels.get(0).eqName,context);
                               PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, eqModels.get(0).eqName, context);
                              }
                           }else{
-                              ANCControlManager.getANCManager(context).applyPresetWithoutBand(GraphicEQPreset.Off, lightX);
+                              ANCControlManager.getANCManager(context).applyPresetWithoutBand(GraphicEQPreset.Off);
                               PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,context.getResources().getString(R.string.off),context);
                               PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,context.getResources().getString(R.string.jazz),context);
 
