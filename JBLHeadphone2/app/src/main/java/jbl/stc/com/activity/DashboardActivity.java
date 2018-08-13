@@ -37,6 +37,7 @@ import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.DiscoveryFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
+import jbl.stc.com.fragment.UnableConnectFragment;
 import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
@@ -59,6 +60,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     private final static int MSG_OTA_SUCCESS = 3;
     private final static int MSG_START_SCAN = 4;
     private final static int MSG_CHECK_DEVICES = 5;
+    private final static int MSG_SHOW_FRAGMENT = 6;
 
     private DashboardHandler dashboardHandler = new DashboardHandler(Looper.getMainLooper());
 
@@ -100,11 +102,30 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         textViewTips.append(getString(R.string.my_products_tips_front));
         textViewTips.append(spannableString);
         textViewTips.append(getString(R.string.my_products_tips_end));
-
         gridView = findViewById(R.id.grid_view_dashboard);
         myGridAdapter = new MyGridAdapter();
-        int marginTop = UiUtils.getDeviceNameMarginTop(this);
-        gridView.setPadding(0, marginTop, 0, UiUtils.dip2px(this, 20));
+        myGridAdapter.setOnDeviceSelectedListener(new MyGridAdapter.OnDeviceItemSelectedListener() {
+            @Override
+            public void onSelected(int position) {
+                MyDevice myDevice = myGridAdapter.mLists.get(position);
+                if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
+                        || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+                    Logger.d(TAG, "Show home fragment");
+                    DashboardActivity.getDashboardActivity().showHomeActivity(myDevice);
+                } else {
+                    Fragment fr = DashboardActivity.getDashboardActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                    if (fr instanceof UnableConnectFragment) {
+                        Logger.d(TAG, "fr is already UnableConnectFragment");
+                        return;
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putString(JBLConstant.DEVICE_MODEL_NAME, myDevice.deviceName);
+                    UnableConnectFragment unableConnectFragment = new UnableConnectFragment();
+                    unableConnectFragment.setArguments(bundle);
+                    DashboardActivity.getDashboardActivity().switchFragment(unableConnectFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                }
+            }
+        });
         lists = new ArrayList<>();
         initMyGridAdapterList();
         myGridAdapter.setMyAdapterList(lists);
@@ -491,6 +512,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra("bundle", b);
             startActivity(intent);
+            overridePendingTransition(R.anim.fadin, R.anim.fadeout);
         }
     }
 

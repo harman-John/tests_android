@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,16 +28,17 @@ import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.UnableConnectFragment;
+import jbl.stc.com.listener.OnEqItemSelectedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.MyDragGridView;
 
 public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGridBaseAdapter {
     private static final String TAG = MyGridAdapter.class.getSimpleName();
-    private List<MyDevice> mLists = new ArrayList<>();
+    public List<MyDevice> mLists = new ArrayList<>();
     private Context mContext;
-
     public int mHidePosition = -1;
+    private OnDeviceItemSelectedListener onDeviceItemSelectedListener;
 
     public void setMyAdapterList(List<MyDevice> lists) {
         Collections.sort(lists, new Comparator<MyDevice>() {
@@ -60,6 +62,14 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
 
     public void removeAllMessage() {
         cbHandler.removeMessages(MSG_SHOW_FRAGMENT);
+    }
+
+    public void setOnDeviceSelectedListener(OnDeviceItemSelectedListener onItemSelectedListener) {
+        this.onDeviceItemSelectedListener = onItemSelectedListener;
+    }
+
+    public interface OnDeviceItemSelectedListener{
+        void onSelected(int position);
     }
 
     @Override
@@ -91,12 +101,19 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        int marginTop = UiUtils.getDeviceNameMarginTop(mContext);
         int height = UiUtils.getDashboardDeviceImageHeight(mContext);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.relativeLayoutBreathingIcon.getLayoutParams();
         if (params != null) {
             params.height = height;
             params.width = height;
             viewHolder.relativeLayoutBreathingIcon.setLayoutParams(params);
+        }
+
+        LinearLayout.LayoutParams deviceNameParams = (LinearLayout.LayoutParams) viewHolder.textViewDeviceName.getLayoutParams();
+        if (position == 0) {
+            deviceNameParams.topMargin = marginTop;
+            viewHolder.textViewDeviceName.setLayoutParams(deviceNameParams);
         }
 
         if (mLists.get(position).connectStatus == ConnectStatus.DEVICE_CONNECTED) {
@@ -116,10 +133,13 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             @Override
             public void onClick(View v) {
                 Logger.i(TAG, "v = " + v + ",position = " + position);
-                Message msg = new Message();
+                /*Message msg = new Message();
                 msg.what = MSG_SHOW_FRAGMENT;
                 msg.arg1 = position;
-                cbHandler.sendMessage(msg);
+                cbHandler.sendMessage(msg);*/
+                if (onDeviceItemSelectedListener != null) {
+                    onDeviceItemSelectedListener.onSelected(position);
+                }
             }
         });
         if (position == mHidePosition) {

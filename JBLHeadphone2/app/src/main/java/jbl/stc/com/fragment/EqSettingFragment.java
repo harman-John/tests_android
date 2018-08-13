@@ -61,11 +61,11 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private List<EQModel> eqModelList = new ArrayList<>();
     private EQModel currSelectedEq;
     private int currSelectedEqIndex;
-    private int eqType;
     private LightX lightX;
     private Handler mHandler = new Handler();
     private float mPosX = 0, mCurPosX;
     private int screenHeght;
+    private boolean isDynamicDrawCurve = false;
 
 
     @Override
@@ -108,11 +108,14 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             @Override
             public void onSelected(int position) {
                 onEqNameSelected(position, true);
-                pos = 0;
-                myHandler.removeMessages(MSG_SHOW_LINE);
-                equalizerView.clearAllPointCircles();
-                myHandler.sendEmptyMessage(MSG_SHOW_LINE);
-                Logger.d(TAG,"aaaaa onEqNameSelected ");
+                if (isDynamicDrawCurve) {
+                    pos = 0;
+                    myHandler.removeMessages(MSG_SHOW_LINE);
+                    equalizerView.clearAllPointCircles();
+                    myHandler.sendEmptyMessage(MSG_SHOW_LINE);
+                    Logger.d(TAG, "aaaaa onEqNameSelected "); //dynamic draw curve
+                }
+
             }
         });
         titleBar.setOnTouchListener(new View.OnTouchListener() {
@@ -137,9 +140,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                         break;
                     case MotionEvent.ACTION_UP:
                         recycleVelocityTracker();
-                        if (yMove<screenHeght- UiUtils.dip2px(getActivity(),70)){
+                        if (yMove < screenHeght - UiUtils.dip2px(getActivity(), 70)) {
                             rootView.setTranslationY(0);
-                        }else{
+                        } else {
                             getActivity().onBackPressed();
 
                         }
@@ -238,12 +241,15 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
         //float[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
         if (currSelectedEq != null) {
-            // LogUtil.d("TAG","setCurveData");
-            pos = 0;
-            equalizerView.clearAllPointCircles();
-            myHandler.removeMessages(MSG_SHOW_LINE);
-            myHandler.sendEmptyMessageDelayed(MSG_SHOW_LINE,500);
-            Logger.d(TAG,"aaaaa initValue");
+            if (isDynamicDrawCurve) {
+                pos = 0;
+                equalizerView.clearAllPointCircles();
+                myHandler.removeMessages(MSG_SHOW_LINE);
+                myHandler.sendEmptyMessageDelayed(MSG_SHOW_LINE, 500);
+                Logger.d(TAG, "aaaaa initValue");
+            } else {
+                equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
+            }
 
         }
         if (currSelectedEqIndex == 0) {
@@ -257,28 +263,29 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     }
 
     private static int pos = 0;
-    private MyHandler  myHandler =  new MyHandler();
+    private MyHandler myHandler = new MyHandler();
     private final static int MSG_SHOW_LINE = 0;
-    private class MyHandler extends Handler{
+
+    private class MyHandler extends Handler {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch(msg.what){
+            switch (msg.what) {
                 case MSG_SHOW_LINE: {
-                    List<CircleModel> listsBak = equalizerView.getAllPointCircles(currSelectedEq.getPointX(),currSelectedEq.getPointY());
-                    if (pos >= listsBak.size()){
+                    List<CircleModel> listsBak = equalizerView.getAllPointCircles(currSelectedEq.getPointX(), currSelectedEq.getPointY());
+                    if (pos >= listsBak.size()) {
                         pos = 0;
                         break;
                     }
 
-                    if (pos < listsBak.size() && pos +5 >=listsBak.size() ){
-                        equalizerView.setCurveData(listsBak.subList(pos, listsBak.size() -1), R.color.text_white_80);
-                    }else {
-                        equalizerView.setCurveData(listsBak.subList(pos, pos + 5), R.color.text_white_80);
+                    if (pos < listsBak.size() && pos + 5 >= listsBak.size()) {
+                        equalizerView.setCurveData(listsBak.subList(pos, listsBak.size() - 1), R.color.text_white_80, isDynamicDrawCurve);
+                    } else {
+                        equalizerView.setCurveData(listsBak.subList(pos, pos + 5), R.color.text_white_80, isDynamicDrawCurve);
                     }
                     myHandler.sendEmptyMessage(MSG_SHOW_LINE);
-                    pos = pos +5;
+                    pos = pos + 5;
                     break;
                 }
                 default: {
@@ -286,7 +293,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 }
             }
         }
-    };
+    }
+
+    ;
 
     private void smoothToPosition() {
         if (currSelectedEqIndex > 1) {
@@ -312,7 +321,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, currSelectedEq.eqName, mContext);
         }
         //int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
-
+        if (!isDynamicDrawCurve) {
+            equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
+        }
         AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
         if (fromUser) {
             eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
@@ -365,7 +376,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         bundle.putBoolean(EqCustomFragment.EXTRA_IS_ADD, isAdd);
         bundle.putBoolean(EqCustomFragment.EXTRA_IS_PRESET, isPreset);
         if (!isAdd || isPreset) {
-        bundle.putSerializable(EqCustomFragment.EXTRA_EQ_MODEL, currSelectedEq);
+            bundle.putSerializable(EqCustomFragment.EXTRA_EQ_MODEL, currSelectedEq);
         }
         fragment.setArguments(bundle);
         switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);

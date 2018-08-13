@@ -67,7 +67,9 @@ public class EqualizerShowView extends View {
 
     private int STEP = AppUtils.EQ_VIEW_DEFAULT_STEP;
 
-    private float mPosX,mCurPosX;
+    private float mPosX, mCurPosX;
+
+    private boolean isDynamicDrawCurve;
 
     public EqualizerShowView(Context context) {
         this(context, null);
@@ -113,20 +115,9 @@ public class EqualizerShowView extends View {
         textMarginBottom = UiUtils.dip2px(context, 10);
     }
 
-    public void setCurveData(List<CircleModel> listCircleModel, int curveColor) {
+    public void setCurveData(List<CircleModel> listCircleModel, int curveColor, boolean isDynamicDrawCurve) {
+        this.isDynamicDrawCurve = isDynamicDrawCurve;
         this.curveColor = curveColor;
-//        pointX = new ArrayList<>();
-//        pointY = new ArrayList<>();
-//        mEqPointX = new float[eqPointX.length];
-//        mEqPointY = new float[eqPointX.length];
-//        for (int i = 0; i < eqPointX.length; i++) {
-//            mEqPointX[i] = eqPointX[i];
-//            mEqPointY[i] = eqPointY[i];
-//        }
-//        controlCircles.clear();
-//        for (int i = 0; i < mEqPointX.length; i++) {
-//            controlCircles.add(produceCirce(getRelativelyX(mEqPointX[i]), getRelativelyY(mEqPointY[i]), CIRCLE_R));
-//        }
         allPointCircles.addAll(listCircleModel);
         curvePath.reset();
         invalidate();
@@ -184,18 +175,24 @@ public class EqualizerShowView extends View {
     }*/
 
     private Canvas mCanvas;
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         mCanvas = canvas;
         drawText(canvas);
         drawLine(canvas);
-        Logger.d(TAG,"onDraw");
-        //画当前的曲线
-//        if (controlCircles == null) return;
-        curvePath.reset();
-//        allPointCircles.clear();
-        drawCurveChart(canvas);
+        Logger.d(TAG, "onDraw");
+        if (isDynamicDrawCurve) {
+            curvePath.reset();
+            drawCurveChart1(canvas);  //dynamic draw curve
+        } else {
+            if (controlCircles == null) return;
+            curvePath.reset();
+            allPointCircles.clear();
+            drawCurveChart(canvas);
+        }
+
     }
 
     private void drawText(Canvas canvas) {
@@ -249,61 +246,91 @@ public class EqualizerShowView extends View {
         canvas.drawLine(0, mHeight - marginBottom, mWidth, mHeight - marginBottom, mLinePaint);
     }
 
+    public void setCurveData(float[] eqPointX, float[] eqPointY, int curveColor, boolean isDynamicDrawCurve) {
+        this.isDynamicDrawCurve = isDynamicDrawCurve;
+        Log.d(TAG, "setCurveData size=" + eqPointX.length + ",pointX=" + Arrays.toString(eqPointX) + ",pointY=" + Arrays.toString(eqPointY));
+        this.curveColor = curveColor;
+        pointX = new ArrayList<>();
+        pointY = new ArrayList<>();
+        mEqPointX = new float[eqPointX.length];
+        mEqPointY = new float[eqPointX.length];
+        for (int i = 0; i < eqPointX.length; i++) {
+            mEqPointX[i] = eqPointX[i];
+            mEqPointY[i] = eqPointY[i];
+        }
+        controlCircles.clear();
+        for (int i = 0; i < mEqPointX.length; i++) {
+            controlCircles.add(produceCirce(getRelativelyX(mEqPointX[i]), getRelativelyY(mEqPointY[i]), CIRCLE_R));
+        }
+        invalidate();
+        this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+    }
 
     /**
      * Draw Curve
      */
     private void drawCurveChart(Canvas canvas) {
-//        if (pointX == null || pointY == null) {
-//            return;
-//        }
+        if (pointX == null || pointY == null) {
+            return;
+        }
         mCurvePaint.setColor(ContextCompat.getColor(mContext, curveColor));
-//        pointX.clear();
-//        pointY.clear();
-//        for (int i = 0; i < controlCircles.size(); i++) {
-//            pointX.add(controlCircles.get(i).getX());
-//            pointY.add(controlCircles.get(i).getY());
-//        }
-//
-//        List<Cubic> calculate_x = calculateCurve(pointX);
-//        List<Cubic> calculate_y = calculateCurve(pointY);
-//        float nearX;
-//        float lastX;
-//        if (calculate_x != null && calculate_y != null && calculate_y.size() >= calculate_x.size()) {
-//            curvePath.moveTo(calculate_x.get(0).evaluate(0), calculate_y.get(0).evaluate(0));
-//            allPointCircles.add(produceCirce(calculate_x.get(0).evaluate(0), calculate_y.get(0).evaluate(0), CIRCLE_R));
-//            nearX = calculate_x.get(0).evaluate(0);
-//            for (int i = 0; i < calculate_x.size(); i++) {
-//                lastX = calculate_x.get(i).evaluate(1);
-//                for (int j = 1; j <= STEP; j++) {
-//                    float u = j / (float) STEP;
-//                    float lineToX = calculate_x.get(i).evaluate(u);
-//                    float lineToY = calculate_y.get(i).evaluate(u);
-//                    if (lineToY < marginTop) {
-//                        lineToY = marginTop;
-//                    }
-//                    if (lineToY > mHeight - marginBottom) {
-//                        lineToY = mHeight - marginBottom;
-//                    }
-//
-//                    if (lineToX < marginLeft) {
-//                        lineToX = marginLeft;
-//                    }
-//                    if (lineToX > mWidth - marginRight) {
-//                        lineToX = mWidth - marginRight;
-//                    }
-//                    if (lineToX > lastX) {
-//                        lineToX = lastX;
-//                    }
-//                    if (lineToX < nearX) {
-//                        lineToX = nearX + 0.5f + (j - STEP / 2 + 1) * 0.02f;
-//                    }
-//                    curvePath.lineTo(lineToX, lineToY);
-//                    allPointCircles.add(produceCirce(lineToX, lineToY, CIRCLE_R));
-//                    nearX = lineToX;
-//                }
-//            }
-//        }
+        curvePath.reset();
+        pointX.clear();
+        pointY.clear();
+        for (int i = 0; i < controlCircles.size(); i++) {
+            pointX.add(controlCircles.get(i).getX());
+            pointY.add(controlCircles.get(i).getY());
+        }
+
+        List<Cubic> calculate_x = calculateCurve(pointX);
+        List<Cubic> calculate_y = calculateCurve(pointY);
+        float nearX;
+        float lastX;
+        if (calculate_x != null && calculate_y != null && calculate_y.size() >= calculate_x.size()) {
+            curvePath.moveTo(calculate_x.get(0).evaluate(0), calculate_y.get(0).evaluate(0));
+            allPointCircles.add(produceCirce(calculate_x.get(0).evaluate(0), calculate_y.get(0).evaluate(0), CIRCLE_R));
+            nearX = calculate_x.get(0).evaluate(0);
+            for (int i = 0; i < calculate_x.size(); i++) {
+                lastX = calculate_x.get(i).evaluate(1);
+                for (int j = 1; j <= STEP; j++) {
+                    float u = j / (float) STEP;
+                    float lineToX = calculate_x.get(i).evaluate(u);
+                    float lineToY = calculate_y.get(i).evaluate(u);
+                    if (lineToY < marginTop) {
+                        lineToY = marginTop;
+                    }
+                    if (lineToY > mHeight - marginBottom) {
+                        lineToY = mHeight - marginBottom;
+                    }
+
+                    if (lineToX < marginLeft) {
+                        lineToX = marginLeft;
+                    }
+                    if (lineToX > mWidth - marginRight) {
+                        lineToX = mWidth - marginRight;
+                    }
+                    if (lineToX > lastX) {
+                        lineToX = lastX;
+                    }
+                    if (lineToX < nearX) {
+                        lineToX = nearX + 0.5f + (j - STEP / 2 + 1) * 0.02f;
+                    }
+                    curvePath.lineTo(lineToX, lineToY);
+                    allPointCircles.add(produceCirce(lineToX, lineToY, CIRCLE_R));
+                    nearX = lineToX;
+                }
+            }
+        }
+
+        canvas.drawPath(curvePath, mCurvePaint);
+    }
+
+    /**
+     * Draw Curve
+     */
+    private void drawCurveChart1(Canvas canvas) {
+        mCurvePaint.setColor(ContextCompat.getColor(mContext, curveColor));
+
         if (allPointCircles.size() > 0) {
             curvePath.moveTo(allPointCircles.get(0).getX(), allPointCircles.get(0).getY());
             for (int i = 1; i < allPointCircles.size(); i++) {
@@ -311,12 +338,8 @@ public class EqualizerShowView extends View {
             }
             canvas.drawPath(curvePath, mCurvePaint);
         }
-        Logger.d(TAG,"interval ");
-//        if (allPointCircles.size() >= 2) {
-//            curvePath.moveTo(allPointCircles.get(allPointCircles.size() -2).getX(), allPointCircles.get(allPointCircles.size() -2).getY());
-//            curvePath.lineTo(allPointCircles.get(allPointCircles.size() -1).getX(), allPointCircles.get(allPointCircles.size() -1).getY());
-//            canvas.drawPath(curvePath, mCurvePaint);
-//        }
+        Logger.d(TAG, "interval ");
+
     }
 
 
@@ -338,8 +361,8 @@ public class EqualizerShowView extends View {
         List<Cubic> calculate_y = calculateCurve(pointY);
         float nearX;
         float lastX;
-        STEP = 180/(px.length -1);
-        Logger.i(TAG,"STEP = "+STEP);
+        STEP = 180 / (px.length - 1);
+        Logger.i(TAG, "STEP = " + STEP);
         if (calculate_x != null && calculate_y != null && calculate_y.size() >= calculate_x.size()) {
             allPointCirclesBake.add(produceCirce(calculate_x.get(0).evaluate(0), calculate_y.get(0).evaluate(0), CIRCLE_R));
             nearX = calculate_x.get(0).evaluate(0);
@@ -481,12 +504,15 @@ public class EqualizerShowView extends View {
             mWidth = width;
             mHeight = height;
         }
-//        if (mEqPointX != null) {
-//            controlCircles.clear();
-//            for (int i = 0; i < mEqPointX.length; i++) {
-//                controlCircles.add(produceCirce(getRelativelyX(mEqPointX[i]), getRelativelyY(mEqPointY[i]), CIRCLE_R));
-//            }
-//        }
+        if (!isDynamicDrawCurve) {
+            if (mEqPointX != null) {
+                controlCircles.clear();
+                for (int i = 0; i < mEqPointX.length; i++) {
+                    controlCircles.add(produceCirce(getRelativelyX(mEqPointX[i]), getRelativelyY(mEqPointY[i]), CIRCLE_R));
+                }
+            }
+        }
+
         setMeasuredDimension(mWidth, mHeight);
     }
 
