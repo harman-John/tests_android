@@ -12,7 +12,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.StyleSpan;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +43,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
-import jbl.stc.com.manager.DeviceManager;
+import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
@@ -46,11 +51,13 @@ import jbl.stc.com.data.FwTYPE;
 import jbl.stc.com.dialog.AlertsDialog;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.listener.OnDownloadedListener;
+import jbl.stc.com.listener.OnOtaListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.Cmd150Manager;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.ota.DownloadProgrammingFile;
 import jbl.stc.com.storage.PreferenceKeys;
@@ -61,7 +68,8 @@ import jbl.stc.com.utils.OTAUtil;
 import jbl.stc.com.view.AppButton;
 import jbl.stc.com.view.ShadowLayout;
 
-import static jbl.stc.com.activity.DashboardActivity.*;
+import static jbl.stc.com.activity.DashboardActivity.isOTADoing;
+import static jbl.stc.com.activity.DashboardActivity.mFwList;
 
 public class OTAFragment extends BaseFragment implements View.OnClickListener,OnDownloadedListener {
     public static final String TAG = OTAFragment.class.getSimpleName();
@@ -89,7 +97,6 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
     private View view;
     private Bundle args;
     private TextView textViewUpdateStatus;
-    private TextView textViewUpdateStatusTitle;
     private TextView textViewOTACircle;
     private TextView textViewProgress;
     private AppButton textViewButtonDone;
@@ -121,8 +128,6 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         imageViewBack.setOnClickListener(this);
         textViewUpdateStatus = view.findViewById(R.id.updateStatus);
         textViewUpdateStatus.setVisibility(View.GONE);
-        textViewUpdateStatusTitle = view.findViewById(R.id.updateStatusTitle);
-        textViewUpdateStatusTitle.setVisibility(View.GONE);
         textViewOTACircle = view.findViewById(R.id.text_view_ota_circle);
         textViewOTACircle.setOnClickListener(this);
         textViewProgress = view.findViewById(R.id.text_progress);
@@ -159,6 +164,9 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         switch (v.getId()){
             case R.id.image_view_ota_back:{
                 getActivity().onBackPressed();
+                if (mOnOtaListener!= null) {
+                    mOnOtaListener.onButtonDone();
+                }
                 break;
             }
             case R.id.text_view_ota_circle:
@@ -183,7 +191,23 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 break;
             }
             case R.id.button_done:{
-                getDashboardActivity().onBackPressed();
+                if (((TextView)v).getText().equals(getString(R.string.got_it))){
+
+                }else if (((TextView)v).getText().equals(getString(R.string.retry))){
+                    if (FirmwareUtil.isUpdatingFirmWare.get()) {
+                        if (AvneraManager.getAvenraManager(getActivity()).getLightX()!= null) {
+                            progressFactor = 0.0f;
+                            DeviceManager.getInstance(getActivity()).setIsNeedOtaAgain(true);
+                            myHandler.sendEmptyMessage(MSG_GO_TO_BOOTLOADER);
+                            otaUpdating();
+                        }
+                    }
+                }else {
+                    removeAllFragment();
+                    if (mOnOtaListener!= null) {
+                        mOnOtaListener.onButtonDone();
+                    }
+                }
                 break;
             }
         }
@@ -216,7 +240,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 }
 
                 Logger.d(TAG,"getFirmwareInfo");
-                ANCControlManager.getANCManager(getActivity()).getFirmwareInfo(AvneraManager.getAvenraManager(getActivity()).getLightX());
+                ANCControlManager.getANCManager(getActivity()).getFirmwareInfo();
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -224,10 +248,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 }
 
                 Logger.d(TAG,"getFirmwareVersion");
-                ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(AvneraManager.getAvenraManager(getActivity()).getLightX());
-                if (AvneraManager.getAvenraManager(getActivity()).getLightX()!= null) {
-                    AvneraManager.getAvenraManager(getActivity()).getLightX().readBootVersionFileResource();
-                }
+                ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
+                ANCControlManager.getANCManager(getActivity()).readBootVersionFileResource();
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -235,7 +257,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 }
 
                 Logger.d(TAG,"getBatterLeverl");
-                ANCControlManager.getANCManager(getActivity()).getBatterLeverl(AvneraManager.getAvenraManager(getActivity()).getLightX());
+                ANCControlManager.getANCManager(getActivity()).getBatterLeverl();
             }
         }).start();
 
@@ -351,7 +373,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     updateParam();
                 }else{
                     Logger.e(TAG, "onDownloadedFirmware readBootImageType");
-                    ANCControlManager.getANCManager(getActivity()).readBootImageType(AvneraManager.getAvenraManager(getActivity()).getLightX());
+                    ANCControlManager.getANCManager(getActivity()).readBootImageType();
                 }
             } else {
                 onFailedDownload();
@@ -390,7 +412,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         try {
             if (mFwList.size() <= 0) {
                 Logger.d(TAG,"startWritingFirmware fwlist size is 0");
-                AvneraManager.getAvenraManager(getActivity()).getLightX().enterApplication();
+                ANCControlManager.getANCManager(getActivity()).enterApplication();
                 isOTADoing = false;
                 return;
             }
@@ -601,7 +623,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 case Checksum:
                     Logger.d(TAG, "Checksum..");
                     break;
-                case Complete:
+                case Complete: {
                     Logger.d(TAG, "~~~~~~~~~~Completed..");
                     myHandler.removeMessages(MSG_TIMER_OUT);
                     if (DashboardActivity.mFwList.size() <= 0) {
@@ -624,6 +646,10 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                         startWritingFirmware();
                     }
                     break;
+                }
+                default:{
+                    Logger.d(TAG, "--------------default..");
+                }
             }
         }
         return false;
@@ -857,7 +883,6 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
     private void otaInit(){
         textViewProgress.setVisibility(View.GONE);
         textViewUpdateStatus.setVisibility(View.GONE);
-        textViewUpdateStatusTitle.setVisibility(View.GONE);
         textViewOTACircle.setVisibility(View.GONE);
         textViewButtonDone.setVisibility(View.GONE);
         shadowLayout.setVisibility(View.GONE);
@@ -887,9 +912,9 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewProgress.setVisibility(View.GONE);
         textViewUpdateStatus.setVisibility(View.VISIBLE);
         textViewUpdateStatus.getPaint().setFakeBoldText(false);
-        textViewUpdateStatus.setTextColor(ContextCompat.getColor(getActivity(),android.R.color.black));
         textViewUpdateStatus.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
-        textViewUpdateStatusTitle.setVisibility(View.GONE);
+        textViewUpdateStatus.setTextColor(ContextCompat.getColor(getActivity(),R.color.black_4C596B));
+
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.ota_install_button));
         textViewButtonDone.setVisibility(View.GONE);
         shadowLayout.setVisibility(View.GONE);
@@ -903,14 +928,20 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         }
         Logger.d(TAG,"otaUpdating - - - - - - - - - - - -");
         imageViewBack.setVisibility(View.GONE);
-        textViewUpdateStatusTitle.setVisibility(View.VISIBLE);
-        textViewUpdateStatusTitle.setText(R.string.firmware_is_updating_title);
-        textViewUpdateStatusTitle.getPaint().setFakeBoldText(true);
-        textViewUpdateStatusTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP,19);
-        textViewUpdateStatusTitle.setTextColor(ContextCompat.getColor(getActivity(),android.R.color.black));
+
+        String title = getString(R.string.firmware_is_updating_title);
+        String content = getString(R.string.firmware_is_updating);
+        SpannableStringBuilder builder = new SpannableStringBuilder(title);
+        builder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, title.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setSpan(new AbsoluteSizeSpan(20,true), 0, title.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.append("\n");
+        builder.append(content);
+        builder.setSpan(new AbsoluteSizeSpan(16,true), title.length() ,content.length() + title.length()-1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textViewUpdateStatus.setVisibility(View.VISIBLE);
-        textViewUpdateStatus.setText(R.string.firmware_is_updating);
-        textViewUpdateStatus.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
+        textViewUpdateStatus.setText(builder);
+        textViewUpdateStatus.setTextColor(ContextCompat.getColor(getActivity(),R.color.black_4C596B));
+        textViewUpdateStatus.setGravity(Gravity.CENTER_VERTICAL);
+
         textViewOTACircle.setVisibility(View.VISIBLE);
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.update_circle));
         textViewProgress.setVisibility(View.VISIBLE);
@@ -920,22 +951,36 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 //        iv_ok.setVisibility(View.GONE);
     }
 
-    public void otaSuccess(){
+    private OnOtaListener mOnOtaListener;
+    public void otaSuccess(OnOtaListener onOtaListener){
+        mOnOtaListener = onOtaListener;
         if (getActivity() == null){
             Logger.d(TAG, "otaSuccess getActivity is null");
             return;
         }
         Logger.d(TAG,"otaSuccess - - - - - - - - - - - -");
         imageViewBack.setVisibility(View.VISIBLE);
+
+        String title = getString(R.string.firmware_is_installed,onLineFwVersion);
+        SpannableStringBuilder builder = new SpannableStringBuilder(title);
+        builder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, title.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setSpan(new AbsoluteSizeSpan(20,true), 0, title.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         textViewUpdateStatus.setVisibility(View.VISIBLE);
-        textViewUpdateStatus.setText(getString(R.string.firmware_is_installed,onLineFwVersion));
+        textViewUpdateStatus.setText(builder);
         textViewUpdateStatus.getPaint().setFakeBoldText(true);
-        textViewUpdateStatus.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+        textViewUpdateStatus.setTextColor(ContextCompat.getColor(getActivity(),R.color.black_4C596B));
+
         textViewUpdateStatus.setTextColor(ContextCompat.getColor(getActivity(),android.R.color.black));
-        textViewUpdateStatusTitle.setVisibility(View.GONE);
         textViewProgress.setVisibility(View.GONE);
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.update_succeeded));
+        shadowLayout.setVisibility(View.VISIBLE);
+        shadowLayout.setShape("rectangle");
         textViewButtonDone.setVisibility(View.VISIBLE);
+        textViewButtonDone.setText(R.string.done);
+        textViewButtonDone.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
+        textViewButtonDone.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.rectangle_with_round_corner_left_red_right_orange));
+
         isOTADoing = false;
         shadowLayout.setVisibility(View.VISIBLE);
     }
@@ -947,7 +992,6 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewUpdateStatus.setText(R.string.replug);
         textViewUpdateStatus.getPaint().setFakeBoldText(true);
         textViewUpdateStatus.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
-        textViewUpdateStatusTitle.setVisibility(View.GONE);textViewProgress.setVisibility(View.GONE);
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.update_succeeded));
         textViewButtonDone.setVisibility(View.GONE);
         isOTADoing = false;
@@ -968,19 +1012,30 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             return;
         }
         Logger.d(TAG,"otaError - - - - - - - - - - - -");
+
+        String title = getString(errTitle);
+        String content = getString(errMsg);
+        SpannableStringBuilder builder = new SpannableStringBuilder(title);
+        builder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, title.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setSpan(new AbsoluteSizeSpan(20,true), 0, title.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.append("\n");
+        builder.append(content);
+        builder.setSpan(new AbsoluteSizeSpan(16,true), title.length() ,content.length() + title.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         textViewUpdateStatus.setVisibility(View.VISIBLE);
-        textViewUpdateStatus.setText(errMsg);
-        textViewUpdateStatus.getPaint().setFakeBoldText(true);
-        textViewUpdateStatus.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
-        textViewUpdateStatusTitle.setVisibility(View.VISIBLE);
-        textViewUpdateStatusTitle.setText(errTitle);
+        textViewUpdateStatus.setText(builder);
+        textViewUpdateStatus.setTextColor(ContextCompat.getColor(getActivity(),R.color.black_4C596B));
+
         textViewProgress.setVisibility(View.VISIBLE);
         textViewOTACircle.setVisibility(View.VISIBLE);
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.update_failed));
         textViewProgress.setVisibility(View.INVISIBLE);
         shadowLayout.setVisibility(View.VISIBLE);
         shadowLayout.setShape("other");
+        textViewButtonDone.setVisibility(View.VISIBLE);
         textViewButtonDone.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.rectangle_with_round_corner_hollow));
+        textViewButtonDone.setTextColor(ContextCompat.getColor(getActivity(),R.color.orange_FF5F00));
+
         if (isRetry){
             textViewButtonDone.setText(R.string.retry);
         }else{
@@ -1064,9 +1119,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         Logger.d(TAG, "imageUpdateError");
         Cmd150Manager.getInstance().setFirmwareUpdateState(AvneraManager.getAvenraManager(getActivity()).getAudioManager(),JBLConstant.ENABLE_ACCESSORY_INTERRUPTS);
         otaError(true,R.string.update_failed_firmware,R.string.update_failed_firmware_detail_1);
-        isOTADoing = false;
-        FirmwareUtil.isUpdatingFirmWare.set(false);
-        imageViewBack.setVisibility(View.VISIBLE);
+//        isOTADoing = false;
+//        FirmwareUtil.isUpdatingFirmWare.set(false);
         AnalyticsManager.getInstance(getActivity()).reportFirmwareUpdateFailed(mOnLineFirmware);
         disableGoBack = true;
     }

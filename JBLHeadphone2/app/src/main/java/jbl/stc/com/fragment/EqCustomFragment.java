@@ -120,7 +120,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                 Logger.d(TAG, "onEqDragFinished pointX=" + Arrays.toString(pointX) + ",pointY=" + Arrays.toString(pointY));
                 currSelectedEq.setPointX(pointX);
                 currSelectedEq.setPointY(pointY);
-                ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
+                ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
             }
         });
 
@@ -369,7 +369,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             onCustomEqListener.onCustomEqResult(currSelectedEq, isAddOperate);
         } else {
             application.deviceInfo.hasEq = true;
-            ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray, lightX);
+            ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
             switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
         }
         getActivity().getSupportFragmentManager().popBackStack();

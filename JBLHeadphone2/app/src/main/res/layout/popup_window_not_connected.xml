@@ -19,7 +19,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginTop="20dp"
             android:text="@string/not_connected_title"
-            android:textColor="@color/smart_audio_popup_text_color1"
+            android:textColor="@color/black_4C596B"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -30,7 +30,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginTop="20dp"
             android:text="@string/not_connected_content"
-            android:textColor="@color/smart_audio_popup_text_color1"
+            android:textColor="@color/black_4C596B"
             android:textSize="16sp" />
 
         <jbl.stc.com.view.ShadowLayout

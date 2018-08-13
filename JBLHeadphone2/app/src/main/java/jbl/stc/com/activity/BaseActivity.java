@@ -30,15 +30,19 @@ import com.avnera.smartdigitalheadset.LightX;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
+import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.dialog.AlertsDialog;
 import jbl.stc.com.entity.FirmwareModel;
+import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.BaseFragment;
 import jbl.stc.com.listener.AppLightXDelegate;
 import jbl.stc.com.listener.AppUSBDelegate;
@@ -59,6 +63,8 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     private final static String TAG = BaseActivity.class.getSimpleName();
     protected Context mContext;
     protected USBReceiver usbReceiver;
+    public static boolean isOTADoing = false;
+    protected static List<MyDevice> lists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +114,96 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
         super.onDestroy();
         finishActivity(this);
         unregisterReceiver(usbReceiver);
+    }
+
+    public void checkMyDevice(){
+        Set<String> deviceList = DeviceManager.getInstance(this).getDevicesSet();
+        Logger.i(TAG, "MSG_CHECK_DEVICES deviceList = " + deviceList);
+        if (hasNewDevice(deviceList)) {
+            initMyDeviceList();
+        }
+        updateMyDeviceStatus(deviceList);
+    }
+
+    public void initMyDeviceList() {
+        lists.clear();
+        Set<String> devicesSet = PreferenceUtils.getStringSet(getApplicationContext(), PreferenceKeys.MY_DEVICES);
+        Logger.i(TAG, "deviceSet = " + devicesSet);
+        for (String value : devicesSet) {
+            lists.add(AppUtils.getMyDevice(value));
+        }
+    }
+
+    public void updateMyDeviceStatus(Set<String> deviceList) {
+        Logger.i(TAG, "updateMyDeviceStatus lists= " + lists.size());
+        for (MyDevice myDevice : lists) {
+            myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
+        }
+        List<MyDevice> myDeviceListA2dp = new ArrayList<>();
+        for (String key : deviceList) {
+            myDeviceListA2dp.add(AppUtils.getMyDevice(key));
+        }
+        for (MyDevice myDeviceA2dp : myDeviceListA2dp) {
+            for (MyDevice myDevice : lists) {
+                if (myDeviceA2dp.equals(myDevice)) {
+                    Logger.i(TAG, "myDeviceA2dp deviceKey= " + myDeviceA2dp.deviceKey);
+                    if (myDevice.deviceName.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
+                        Logger.i(TAG, "isConnected = " + DeviceManager.getInstance(this).isConnected());
+                        if (DeviceManager.getInstance(this).isConnected()) {
+                            myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
+                        }
+                    } else {
+                        if (DeviceManager.getInstance(this).getSpecifiedDevice() != null) {
+                            String mainDeviceKey = DeviceManager.getInstance(this).getSpecifiedDevice().getName() + "-" + DeviceManager.getInstance(this).getSpecifiedDevice().getAddress();
+                            Logger.i(TAG, "mainDeviceKey = " + mainDeviceKey);
+                            if (DeviceManager.getInstance(this).isConnected() && mainDeviceKey.toUpperCase().equalsIgnoreCase(myDeviceA2dp.deviceKey.toUpperCase())) {
+                                Logger.i(TAG, "DEVICE_CONNECTED = " + mainDeviceKey);
+                                myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
+                            } else {
+                                myDevice.connectStatus = ConnectStatus.A2DP_HALF_CONNECTED;
+                            }
+                        } else {
+                            myDevice.connectStatus = ConnectStatus.A2DP_HALF_CONNECTED;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void updateDisconnectedAdapter() {
+        for (MyDevice myDevice : lists) {
+            Logger.i(TAG, "updateDisconnectedAdapter deviceKey= " + myDevice.deviceKey + ",connectStatus = " + myDevice.connectStatus);
+            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+                myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
+                break;
+            }
+        }
+    }
+
+    public MyDevice getMyDeviceConnected() {
+        for (MyDevice myDevice : lists) {
+            Logger.i(TAG, "getMyDeviceConnected deviceKey= " + myDevice.deviceKey + ",connectStatus = " + myDevice.connectStatus);
+            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+                return myDevice;
+            }
+        }
+        return null;
+    }
+
+    public boolean hasNewDevice(Set<String> deviceList) {
+        Set<String> set1 = new HashSet<>(deviceList);
+        Set<String> set2 = new HashSet<>();
+        for (MyDevice myDevice : lists) {
+            String device = myDevice.deviceKey;
+            set2.add(device);
+        }
+        set2.retainAll(set1);
+        if (set2.size() == set1.size()) {
+            return false;
+        }
+        Logger.i(TAG, "has new Device");
+        return true;
     }
 
     private boolean isStopped = false;

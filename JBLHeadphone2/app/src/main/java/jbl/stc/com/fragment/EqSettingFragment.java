@@ -107,14 +107,14 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         eqAdapter.setOnEqSelectedListener(new OnEqItemSelectedListener() {
             @Override
             public void onSelected(int position) {
-                onEqNameSelected(position, true);
-                if (isDynamicDrawCurve) {
-                    pos = 0;
-                    myHandler.removeMessages(MSG_SHOW_LINE);
-                    equalizerView.clearAllPointCircles();
-                    myHandler.sendEmptyMessage(MSG_SHOW_LINE);
-                    Logger.d(TAG, "aaaaa onEqNameSelected "); //dynamic draw curve
-                }
+            onEqNameSelected(position, true);
+            if (isDynamicDrawCurve) {
+                pos = 0;
+                myHandler.removeMessages(MSG_SHOW_LINE);
+                equalizerView.clearAllPointCircles();
+                myHandler.sendEmptyMessage(MSG_SHOW_LINE);
+                Logger.d(TAG, "aaaaa onEqNameSelected "); //dynamic draw curve
+            }
 
             }
         });
@@ -347,19 +347,19 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         public void run() {
             switch (currSelectedEqIndex) {
                 case 0:
-                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Off, lightX);
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Off);
                     break;
                 case 1:
-                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz, lightX);
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz);
                     break;
                 case 2:
-                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Vocal, lightX);
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Vocal);
                     break;
                 case 3:
-                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Bass, lightX);
+                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Bass);
                     break;
                 default:
-                    ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(currSelectedEq), lightX);
+                    ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(currSelectedEq));
                     break;
             }
             AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);

@@ -57,12 +57,13 @@
 
     <string name="text_ota_title">Product software update</string>
     <string name="firmware_is_updating_title"><b>Firmware is Updating…</b></string>
-    <string name="firmware_is_updating">1.Please do not close the application.\n2.Keep the headset near the device.\n3.Pluggin in the headphones is\nrecommended.</string>
+    <string name="firmware_is_updating">1.Please do not close the application.\n2.Keep the headset near the device.\n3.Pluggin in the headphones is recommended.</string>
     <string name="firmware_is_available">New software update version %1$s is available</string>
     <string name="firmware_is_installed">Firmware version %1$s is installed</string>
     <string name="done">Done</string>
-
     <string name="retry">Retry</string>
+    <string name="got_it">Got it</string>
+
     <string name="text_product_help">Product help</string>
     <string name="text_jbl_com">JBL.com</string>
     <string name="text_open_source_license">Open source licenses</string>
@@ -145,7 +146,6 @@
     <string name="ten_minute">10min</string>
     <string name="thirty_minute">30min</string>
     <string name="never">Never</string>
-    <string name="got_it">Got it</string>
 
     <string name="talkthru">TalkThru</string>
     <string name="no_headphones_found">No headphones found</string>
