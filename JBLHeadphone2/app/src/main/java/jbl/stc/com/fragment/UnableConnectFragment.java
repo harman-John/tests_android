@@ -128,10 +128,13 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
                 @Override
                 public void updateDrawState(@NonNull TextPaint ds) {
                     super.updateDrawState(ds);
-                    ds.setColor(getResources().getColor(android.R.color.white));
-                    ds.setUnderlineText(true);
-                    ds.setFakeBoldText(true);
-                    ds.clearShadowLayer();
+                    if (getContext() != null) {
+                        ds.setColor(getContext().getResources().getColor(android.R.color.white));
+                        ds.setUnderlineText(true);
+                        ds.setFakeBoldText(true);
+                        ds.clearShadowLayer();
+                    }
+
                 }
 
             }, 66, textViewTipsThree.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

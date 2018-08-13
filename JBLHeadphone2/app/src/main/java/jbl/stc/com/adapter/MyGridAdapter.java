@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -97,6 +98,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             viewHolder.relativeLayoutBreathingIcon = convertView.findViewById(R.id.relative_layout_item_connected_before_breathing_icon);
             viewHolder.textViewDeviceName = convertView.findViewById(R.id.text_view_item_connected_before_device_name);
             viewHolder.imageViewIcon = convertView.findViewById(R.id.image_view_item_connected_before_device_icon);
+            viewHolder.linear_layout_item_connected_before_device = convertView.findViewById(R.id.linear_layout_item_connected_before_device);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -113,6 +115,9 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         LinearLayout.LayoutParams deviceNameParams = (LinearLayout.LayoutParams) viewHolder.textViewDeviceName.getLayoutParams();
         if (position == 0) {
             deviceNameParams.topMargin = marginTop;
+            viewHolder.textViewDeviceName.setLayoutParams(deviceNameParams);
+        }else{
+            deviceNameParams.topMargin = UiUtils.dip2px(mContext,30);
             viewHolder.textViewDeviceName.setLayoutParams(deviceNameParams);
         }
 
@@ -133,13 +138,13 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             @Override
             public void onClick(View v) {
                 Logger.i(TAG, "v = " + v + ",position = " + position);
-                /*Message msg = new Message();
+                Message msg = new Message();
                 msg.what = MSG_SHOW_FRAGMENT;
                 msg.arg1 = position;
-                cbHandler.sendMessage(msg);*/
-                if (onDeviceItemSelectedListener != null) {
+                cbHandler.sendMessage(msg);
+                /*if (onDeviceItemSelectedListener != null) {
                     onDeviceItemSelectedListener.onSelected(position);
-                }
+                }*/
             }
         });
         if (position == mHidePosition) {
@@ -147,6 +152,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         } else {
             viewHolder.relativeLayoutBreathingIcon.setVisibility(View.VISIBLE);
         }
+
         return convertView;
     }
 
@@ -189,6 +195,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         private TextView textViewDeviceName;
         private ImageView imageViewIcon;
         private RelativeLayout relativeLayoutBreathingIcon;
+        private LinearLayout linear_layout_item_connected_before_device;
     }
 
 

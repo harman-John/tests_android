@@ -119,9 +119,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 }
             }
         });
-
-        //int marginTop = UiUtils.getDeviceNameMarginTop(this);
-        //gridView.setPadding(0, marginTop, 0, UiUtils.dip2px(this, 20));
         if (lists == null) {
             lists = new ArrayList<>();
         }
