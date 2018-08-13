@@ -9,8 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,24 +28,26 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.UnableConnectFragment;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.MyDragGridView;
 
-public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGridBaseAdapter{
+public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGridBaseAdapter {
     private static final String TAG = MyGridAdapter.class.getSimpleName();
     private List<MyDevice> mLists = new ArrayList<>();
     private Context mContext;
 
     public int mHidePosition = -1;
-    public void setMyAdapterList(List<MyDevice> lists){
+
+    public void setMyAdapterList(List<MyDevice> lists) {
         Collections.sort(lists, new Comparator<MyDevice>() {
 
             @Override
             public int compare(MyDevice o1, MyDevice o2) {
-                if ( o1.connectStatus > o2.connectStatus){
+                if (o1.connectStatus > o2.connectStatus) {
                     return -1;
-                }else if (o1.connectStatus < o2.connectStatus){
+                } else if (o1.connectStatus < o2.connectStatus) {
                     return 1;
-                }else{
+                } else {
                     return 0;
                 }
             }
@@ -54,7 +58,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         notifyDataSetChanged();
     }
 
-    public void removeAllMessage(){
+    public void removeAllMessage() {
         cbHandler.removeMessages(MSG_SHOW_FRAGMENT);
     }
 
@@ -87,10 +91,18 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        if (mLists.get(position).connectStatus == ConnectStatus.DEVICE_CONNECTED){
+        int height = UiUtils.getDashboardDeviceImageHeight(mContext);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.relativeLayoutBreathingIcon.getLayoutParams();
+        if (params != null) {
+            params.height = height;
+            params.width = height;
+            viewHolder.relativeLayoutBreathingIcon.setLayoutParams(params);
+        }
+
+        if (mLists.get(position).connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(255);
             viewHolder.imageViewIcon.setImageAlpha(255);
-        } else if (mLists.get(position).connectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
+        } else if (mLists.get(position).connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(128);
             viewHolder.imageViewIcon.setImageAlpha(255);
         } else {
@@ -103,7 +115,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         viewHolder.imageViewIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Logger.i(TAG,"v = "+ v+",position = "+position);
+                Logger.i(TAG, "v = " + v + ",position = " + position);
                 Message msg = new Message();
                 msg.what = MSG_SHOW_FRAGMENT;
                 msg.arg1 = position;
@@ -162,23 +174,25 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
 
     private CbaHandler cbHandler = new CbaHandler(Looper.getMainLooper());
     private final static int MSG_SHOW_FRAGMENT = 0;
-    private class CbaHandler extends Handler{
+
+    private class CbaHandler extends Handler {
         CbaHandler(Looper looper) {
             super(looper);
         }
+
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MSG_SHOW_FRAGMENT:{
+                case MSG_SHOW_FRAGMENT: {
                     cbHandler.removeMessages(MSG_SHOW_FRAGMENT);
                     MyDevice myDevice = mLists.get(msg.arg1);
                     if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                             || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                         Logger.d(TAG, "Show home fragment");
                         DashboardActivity.getDashboardActivity().showHomeActivity(myDevice);
-                    }else {
+                    } else {
                         Fragment fr = DashboardActivity.getDashboardActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                        if ( fr instanceof  UnableConnectFragment){
-                            Logger.d(TAG,"fr is already UnableConnectFragment");
+                        if (fr instanceof UnableConnectFragment) {
+                            Logger.d(TAG, "fr is already UnableConnectFragment");
                             return;
                         }
                         Bundle bundle = new Bundle();

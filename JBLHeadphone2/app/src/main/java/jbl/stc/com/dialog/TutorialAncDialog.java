@@ -82,7 +82,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         super(context, R.style.AppDialog);
         mActivity = context;
         modelNumber = AppUtils.getModelNumber(getContext());
-        Logger.d(TAG,"modelNumber:"+modelNumber);
+        Logger.d(TAG, "modelNumber:" + modelNumber);
         initUI();
     }
 
@@ -158,16 +158,10 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
 
     private void setDeviceImageHeight() {
         AppImageView imageViewDevice = findViewById(R.id.image_view_tutorial_dialog_device_image);
-        DisplayMetrics dm = mActivity.getResources().getDisplayMetrics();
-        int screenheigth = dm.heightPixels;
-        int screenwidth = dm.widthPixels;
+        int height = UiUtils.getDashboardDeviceImageHeight(mActivity);
+        Logger.d(TAG, "height:" + height);
         int statusHeight = UiUtils.getStatusHeight(mActivity);
-        int height = (int) (screenheigth - UiUtils.dip2px(mActivity, 200) - statusHeight ) / 2 ;
-        Logger.d(TAG, "statusHeigth:" + statusHeight + "screenheight:" + screenheigth + "200dp:" + UiUtils.dip2px(mActivity, 200) + "height:" + height);
-        if (height > UiUtils.dip2px(mActivity, 240)) {
-            height = UiUtils.dip2px(mActivity, 240);
-        }
-        height = (int) (height - statusHeight);
+        height = (int) (height - statusHeight / 2);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imageViewDevice.getLayoutParams();
         params.height = height;
         params.width = height;
@@ -232,8 +226,8 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     }
 
     public void showEqInfo() {
-        if (mActivity instanceof HomeActivity){
-            ((HomeActivity)mActivity).setEqMenuColor(true);
+        if (mActivity instanceof HomeActivity) {
+            ((HomeActivity) mActivity).setEqMenuColor(true);
         }
 
         if (textViewEqName != null) {
@@ -400,19 +394,19 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_tutorial_dialog_noise_cancel: {
-                if (mActivity instanceof HomeActivity){
-                    ((HomeActivity)mActivity).tutorialSetANC();
+                if (mActivity instanceof HomeActivity) {
+                    ((HomeActivity) mActivity).tutorialSetANC();
                     setChecked(checkBoxANC.isChecked());
                 }
                 break;
             }
             case R.id.image_view_tutorial_dialog_ambient_aware: {
-                if (mActivity instanceof HomeActivity){
+                if (mActivity instanceof HomeActivity) {
                     if (!isShowOnlySmartAmbientType()) {
                         checkBoxANC.setChecked(true);
-                        ((HomeActivity)mActivity).showAncPopupWindow(relativeLayout);
-                    }else{
-                        ((HomeActivity)mActivity).showSaPopupWindow(relativeLayout,this);
+                        ((HomeActivity) mActivity).showAncPopupWindow(relativeLayout);
+                    } else {
+                        ((HomeActivity) mActivity).showSaPopupWindow(relativeLayout, this);
                     }
                 }
                 break;
@@ -421,8 +415,8 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
 //                repeatTrippleArrowAnim = false;
                 tripleUpArrow.clearAnimation();
                 tripleUpArrow.setVisibility(View.GONE);
-                if (mActivity instanceof HomeActivity){
-                    ((HomeActivity)mActivity).switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                if (mActivity instanceof HomeActivity) {
+                    ((HomeActivity) mActivity).switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 }
                 hideEqInfo();
                 setTextViewTips(R.string.tutorial_tips_five);
@@ -466,8 +460,8 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                 if (frameLayoutEqInfo != null) {
                     frameLayoutEqInfo.setVisibility(View.VISIBLE);
                 }
-                if (mActivity instanceof HomeActivity){
-                    ((HomeActivity)mActivity).setEqMenuColor(true);
+                if (mActivity instanceof HomeActivity) {
+                    ((HomeActivity) mActivity).setEqMenuColor(true);
                 }
                 setTextViewTips(R.string.tutorial_tips_four);
                 showTripleArrowsAnimation();

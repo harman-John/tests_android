@@ -36,8 +36,6 @@
         android:layout_above="@id/frame_layout_tutorial_dialog_eq_info"
         android:layout_below="@id/relative_layout_tutorial_dialog_add"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -49,7 +47,7 @@
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_tutorial_dialog_device_name"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_gravity="center"
                 android:text="@string/deviceName"
                 android:textColor="#030D1C"
@@ -80,7 +78,7 @@
             <include
                 layout="@layout/layout_battery"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:gravity="center"

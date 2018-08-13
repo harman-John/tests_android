@@ -10,12 +10,11 @@
     <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/text_view_item_connected_before_device_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:singleLine="true"
-        android:layout_marginTop="20dp"
         android:text="@string/everest_elite_750nc"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <RelativeLayout
@@ -23,7 +22,7 @@
         android:layout_width="242dp"
         android:layout_height="242dp"
         android:layout_gravity="center"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/shape_product_circle">
 
         <ImageView

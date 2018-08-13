@@ -10,6 +10,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import jbl.stc.com.logger.Logger;
+
 /**
  * UiUtils
  * Created by darren.lu on 08/06/2017.
@@ -104,6 +106,39 @@ public class UiUtils {
             }
         }
         return statusHeight;
+    }
+
+    public static int getDashboardDeviceImageHeight(Context context) {
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        int screenheight = dm.heightPixels;
+        int deviceHeight = 0;
+        int statusHeight = getStatusHeight(context);
+        deviceHeight = (int) (screenheight - UiUtils.dip2px(context, 200) - statusHeight) / 2;
+        if (deviceHeight > UiUtils.dip2px(context, 240)) {
+            deviceHeight = UiUtils.dip2px(context, 240);
+        }
+        return deviceHeight;
+
+    }
+
+    public static int getDeviceNameMarginTop(Context context) {
+        int marginTop = 0;
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        int screenheight = dm.heightPixels;
+        int dashboardDeviceNameHeight = dip2px(context, 25);
+        int dashboardDeviceImageHeight = getDashboardDeviceImageHeight(context);
+        int dashboardDeviceImage_marginTop = dip2px(context, 10);
+        int dashboaddDeviceBaterryHeight = dip2px(context, 25);
+        int dashboardDeviceBattery_marginTop = dip2px(context, 10);
+        int dashboardNoiseCancleHeight = dip2px(context, 128);
+        int dashboardNoiseCancle_marginTop = dip2px(context, 20);
+        int deviceInfoHeight = dashboardDeviceNameHeight + dashboardDeviceImageHeight + dashboardDeviceImage_marginTop
+                + dashboaddDeviceBaterryHeight + dashboardDeviceBattery_marginTop + dashboardNoiseCancleHeight
+                + dashboardNoiseCancle_marginTop;
+        int dashboardTitleBarHeight = dip2px(context, 62);
+        int dashboardBottomEq = dip2px(context, 70);
+        marginTop = (screenheight - getStatusHeight(context) - dashboardTitleBarHeight - dashboardBottomEq - deviceInfoHeight) / 2;
+        return marginTop;
     }
 }
 

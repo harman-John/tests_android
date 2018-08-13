@@ -46,10 +46,11 @@ import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.InsertPredefinePreset;
+import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.MyDragGridView;
 
-public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnDownloadedListener ,ConnectListener{
+public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnDownloadedListener, ConnectListener {
     private static final String TAG = DashboardActivity.class.getSimpleName() + "aa";
     private static DashboardActivity dashboardActivity;
     private final static int MSG_SHOW_MY_PRODUCTS = 0;
@@ -102,6 +103,8 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
         gridView = findViewById(R.id.grid_view_dashboard);
         myGridAdapter = new MyGridAdapter();
+        int marginTop = UiUtils.getDeviceNameMarginTop(this);
+        gridView.setPadding(0, marginTop, 0, UiUtils.dip2px(this, 20));
         lists = new ArrayList<>();
         initMyGridAdapterList();
         myGridAdapter.setMyAdapterList(lists);
@@ -216,16 +219,16 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         DeviceManager.getInstance(this).setOnResume();
-        Logger.d(TAG, "onResume isConnectedCalled ="+isConnectedCalled+",isInBackground ="+isInBackground);
+        Logger.d(TAG, "onResume isConnectedCalled =" + isConnectedCalled + ",isInBackground =" + isInBackground);
         checkBluetooth();
-        if (isConnected()){
+        if (isConnected()) {
             dashboardHandler.removeMessages(MSG_START_SCAN);
             dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
         }
-        if (isConnected() && isInBackground){
+        if (isConnected() && isInBackground) {
             isInBackground = false;
             dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
-        } else if (isConnected() && isConnectedCalled){
+        } else if (isConnected() && isConnectedCalled) {
             isConnectedCalled = false;
             dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
         }
@@ -248,7 +251,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        DeviceManager.getInstance(this).setOnActivityResult(requestCode,resultCode,data);
+        DeviceManager.getInstance(this).setOnActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -261,6 +264,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     }
 
     private boolean isInBackground = false;
+
     @Override
     public void connectDeviceStatus(boolean isConnected) {
 
@@ -270,12 +274,12 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 dashboardHandler.sendEmptyMessageDelayed(MSG_OTA_SUCCESS, 200);
             } else {
                 removeAllFragment();
-                if ( !(currentActivity() instanceof DashboardActivity ) && !DeviceManager.getInstance(this).isNeedOtaAgain()){
+                if (!(currentActivity() instanceof DashboardActivity) && !DeviceManager.getInstance(this).isNeedOtaAgain()) {
                     currentActivity().finish();
                 }
                 if (isForeground()) {
                     dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
-                }else{
+                } else {
                     isInBackground = true;
                 }
             }
@@ -283,7 +287,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         } else {
             Logger.d(TAG, "connectDeviceStatus false, isOTADoing = " + isOTADoing);
             if (!isOTADoing) {
-                if (!(currentActivity() instanceof DashboardActivity )){//&& fr instanceof HomeFragment) {
+                if (!(currentActivity() instanceof DashboardActivity)) {//&& fr instanceof HomeFragment) {
                     Logger.d(TAG, "disconnect home fragment ");
                     removeAllFragment();
                     currentActivity().finish();
@@ -326,7 +330,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_dashboard_white_menu: {
-                startActivity(new Intent(this,InfoActivity.class));
+                startActivity(new Intent(this, InfoActivity.class));
                 break;
             }
             case R.id.image_view_dashboard_white_plus: {

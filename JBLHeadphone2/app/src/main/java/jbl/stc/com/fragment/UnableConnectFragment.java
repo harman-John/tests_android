@@ -28,12 +28,16 @@ import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.utils.BreathLight;
+import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.ImageViewLR;
 import jbl.stc.com.view.RelativeLayoutImage;
 
 public class UnableConnectFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = UnableConnectFragment.class.getSimpleName();
     private LinearLayout linearLayoutTips;
+    private RelativeLayoutImage relativeLayoutDeviceIcon;
+    private LinearLayout linear_layout_unable_device;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +50,9 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
                 container, false);
         view.findViewById(R.id.image_view_unable_back).setOnClickListener(this);
         ImageViewLR imageViewDeviceIcon = view.findViewById(R.id.image_view_unable_device_icon);
-        RelativeLayoutImage relativeLayoutDeviceIcon = view.findViewById(R.id.relative_layout_unable_breathing_lamp);
+        relativeLayoutDeviceIcon = view.findViewById(R.id.relative_layout_unable_breathing_lamp);
+        linear_layout_unable_device = view.findViewById(R.id.linear_layout_unable_device);
+        setDeviceImageHeight();
         linearLayoutTips = view.findViewById(R.id.linear_layout_unable_tips);
         linearLayoutTips.setVisibility(View.INVISIBLE);
         relativeLayoutDeviceIcon.setOnClickListener(this);
@@ -56,61 +62,61 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
         TextView textViewTipsFour = view.findViewById(R.id.text_view_unable_advice_four);
         TextView textViewTipsFive = view.findViewById(R.id.text_view_unable_advice_five);
         String deviceModelName = getArguments().getString(JBLConstant.DEVICE_MODEL_NAME);
-        if (deviceModelName != null){
-            switch (deviceModelName){
-                case JBLConstant.DEVICE_LIVE_650BTNC:{
+        if (deviceModelName != null) {
+            switch (deviceModelName) {
+                case JBLConstant.DEVICE_LIVE_650BTNC: {
                     textViewDeviceName.setText(JBLConstant.DEVICE_LIVE_650BTNC);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.everest_elite_700_icon));
+                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_700_icon));
                     break;
                 }
-                case JBLConstant.DEVICE_LIVE_400BT:{
+                case JBLConstant.DEVICE_LIVE_400BT: {
                     textViewDeviceName.setText(JBLConstant.DEVICE_LIVE_400BT);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.everest_elite_700_icon));
+                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_700_icon));
                     break;
                 }
-                case JBLConstant.DEVICE_LIVE_500BT:{
+                case JBLConstant.DEVICE_LIVE_500BT: {
                     textViewDeviceName.setText(JBLConstant.DEVICE_LIVE_500BT);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.everest_elite_700_icon));
+                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_700_icon));
                     break;
                 }
-                case JBLConstant.DEVICE_EVEREST_ELITE_750NC:{
+                case JBLConstant.DEVICE_EVEREST_ELITE_750NC: {
                     textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_750NC);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.everest_elite_750nc_icon));
+                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_750nc_icon));
                     break;
                 }
-                case JBLConstant.DEVICE_REFLECT_AWARE:{
+                case JBLConstant.DEVICE_REFLECT_AWARE: {
                     textViewDeviceName.setText(JBLConstant.DEVICE_REFLECT_AWARE);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.reflect_aware_icon));
+                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.reflect_aware_icon));
                     break;
                 }
-                case JBLConstant.DEVICE_EVEREST_ELITE_150NC:{
+                case JBLConstant.DEVICE_EVEREST_ELITE_150NC: {
                     textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_150NC);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.everest_elite_150nc_icon));
+                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_150nc_icon));
                     break;
                 }
-                case JBLConstant.DEVICE_EVEREST_ELITE_700:{
+                case JBLConstant.DEVICE_EVEREST_ELITE_700: {
                     textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_700);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.everest_elite_700_icon));
+                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_700_icon));
                     break;
                 }
-                case JBLConstant.DEVICE_EVEREST_ELITE_100:{
+                case JBLConstant.DEVICE_EVEREST_ELITE_100: {
                     textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_100);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.everest_elite_100_icon));
+                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_100_icon));
                     break;
                 }
-                case JBLConstant.DEVICE_EVEREST_ELITE_300:{
+                case JBLConstant.DEVICE_EVEREST_ELITE_300: {
                     textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_300);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.mipmap.everest_elite_300_icon));
+                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_300_icon));
                     break;
                 }
             }
         }
-        if (textViewDeviceName.getText().equals(JBLConstant.DEVICE_REFLECT_AWARE)){
+        if (textViewDeviceName.getText().equals(JBLConstant.DEVICE_REFLECT_AWARE)) {
             textViewTipsTwo.setText(R.string.advice_reflect_aware);
             textViewTipsThree.setVisibility(View.GONE);
             textViewTipsFour.setVisibility(View.GONE);
             textViewTipsFive.setVisibility(View.GONE);
-        }else {
+        } else {
             textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
             SpannableString spannableString = new SpannableString(getString(R.string.advice_three));
             spannableString.setSpan(new ClickableSpan() {
@@ -143,8 +149,21 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
         return view;
     }
 
+    private void setDeviceImageHeight() {
+        int height = UiUtils.getDashboardDeviceImageHeight(mContext);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) relativeLayoutDeviceIcon.getLayoutParams();
+        if (params != null) {
+            params.height = height;
+            params.width = height;
+            relativeLayoutDeviceIcon.setLayoutParams(params);
+        }
+        int marginTop = UiUtils.getDeviceNameMarginTop(getActivity());
+        linear_layout_unable_device.setPadding(0, marginTop, 0, UiUtils.dip2px(getActivity(), 20));
+    }
+
     private BreathLight breathLight;
     private Handler handler = new Handler();
+
     @Override
     public void onResume() {
         super.onResume();
@@ -154,17 +173,17 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
                 breathLight.stopBreathing();
                 linearLayoutTips.setVisibility(View.VISIBLE);
             }
-        },2000);
+        }, 2000);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.image_view_unable_back:{
+        switch (v.getId()) {
+            case R.id.image_view_unable_back: {
                 getActivity().onBackPressed();
                 break;
             }
-            case R.id.relative_layout_unable_breathing_lamp:{
+            case R.id.relative_layout_unable_breathing_lamp: {
 
                 break;
             }

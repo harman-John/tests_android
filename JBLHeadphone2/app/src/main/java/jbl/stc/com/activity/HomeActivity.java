@@ -83,7 +83,7 @@ import jbl.stc.com.view.SaPopupWindow;
 import static java.lang.Integer.valueOf;
 
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener , ConnectListener{
+public class HomeActivity extends BaseActivity implements View.OnClickListener, ConnectListener {
     public static final String TAG = HomeActivity.class.getSimpleName() + "aa";
     private BlurringView mBlurView;
 
@@ -124,7 +124,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private NotConnectedPopupWindow notConnectedPopupWindow;
     private TutorialAncDialog tutorialAncDialog;
 
-    public TutorialAncDialog getTutorialAncDialog(){
+    public TutorialAncDialog getTutorialAncDialog() {
         return tutorialAncDialog;
     }
 
@@ -225,9 +225,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     @Override
     public void connectDeviceStatus(boolean isConnected) {
         super.connectDeviceStatus(isConnected);
-        if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
+        if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             finish();
-        }else if (!isConnected){
+        } else if (!isConnected) {
             removeAllFragment();
             finish();
         }
@@ -237,7 +237,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     public void onBackPressed() {
         super.onBackPressed();
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        if ((fr != null)&& fr instanceof EqSettingFragment) {
+        if ((fr != null) && fr instanceof EqSettingFragment) {
             doResume();
         }
     }
@@ -266,7 +266,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             case R.id.image_view_home_ambient_aware: {
                 if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                     if (AppUtils.isOldDevice(deviceName)) {
-                        if (!checkBoxNoiseCancel.isChecked()){
+                        if (!checkBoxNoiseCancel.isChecked()) {
                             checkBoxNoiseCancel.setChecked(true);
                         }
                         setANC();
@@ -307,7 +307,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         }
     }
 
-    private void showTutorial(){
+    private void showTutorial() {
         if (DeviceManager.getInstance(this).isConnected() && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
             if (!isShowTutorialManyTimes) {
@@ -323,7 +323,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         }
     }
 
-    private void doResume(){
+    private void doResume() {
         DeviceManager.getInstance(this).setAppLightXDelegate(this);
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
@@ -341,8 +341,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     break;
             }
             getDeviceInfo();
-        }
-        else if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+        } else if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             if (!PreferenceUtils.getBoolean(PreferenceKeys.SHOW_NC_POP, this)) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_NC_POP, true, this);
                 findViewById(R.id.relative_layout_home_activity).post(new Runnable() {
@@ -356,16 +355,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     }
 
     private void setDeviceImageHeight() {
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        int screenheigth = dm.heightPixels;
-        int screenwidth = dm.widthPixels;
-        int statusHeight = UiUtils.getStatusHeight(this);
-        int height = (int) (screenheigth - UiUtils.dip2px(this, 200) - statusHeight) / 2;
-        Logger.d(TAG, "HomeFrag statusHeigth:" + statusHeight + "screenheight:" + screenheigth + "200dp:" + UiUtils.dip2px(this, 200) + "height:" + height);
-        if (height > UiUtils.dip2px(this, 240)) {
-            height = UiUtils.dip2px(this, 240);
-            Logger.d(TAG, "height:" + "240dp");
-        }
+        int height = UiUtils.getDashboardDeviceImageHeight(this);
+        Logger.d(TAG, "height:" + height);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imageViewDevice.getLayoutParams();
         params.height = height;
         params.width = height;
@@ -543,7 +534,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         this.mSaListener = listener;
     }
 
-    public void showSaPopupWindow(View view,SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
+    public void showSaPopupWindow(View view, SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
         mBlurView.setBlurredView(bluredView);
 //        if (mBlurView.getBackground() == null) {
 //            Bitmap image = BlurBuilder.blur(view);
@@ -647,7 +638,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 public void run() {
                     lightX.readBootVersionFileResource();
                 }
-            },200);
+            }, 200);
         }
     }
 
@@ -711,7 +702,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 }
                 case MSG_UPDATE_CUSTOME_EQ: {
                     relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
-                    ((JBLApplication)getApplication()).deviceInfo.eqOn = true;
+                    ((JBLApplication) getApplication()).deviceInfo.eqOn = true;
                     String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getApplicationContext(), null);
                     PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, name, getApplicationContext());
                     Logger.d(TAG, "turnOnEq name:" + name);
@@ -761,7 +752,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             case 1: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.jazz), this);
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.jazz), this);
-                ((JBLApplication)getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) getApplication()).deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.jazz));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
@@ -769,7 +760,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             case 2: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.vocal), this);
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.vocal), this);
-                ((JBLApplication)getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) getApplication()).deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.vocal));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
@@ -777,7 +768,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             case 3: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.bass), this);
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.bass), this);
-                ((JBLApplication)getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) getApplication()).deviceInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.bass));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
@@ -859,21 +850,23 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     }
 
     private NetworkChangeReceiver networkChangeReceiver;
+
     private void registerConnectivity() {
         networkChangeReceiver = new NetworkChangeReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        Logger.i(TAG,"registerConnectivity");
+        Logger.i(TAG, "registerConnectivity");
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         this.registerReceiver(networkChangeReceiver, intentFilter);
         mReceiverTag = true;
     }
 
     private boolean mReceiverTag = false;
+
     private void unregisterNetworkReceiverSafely() {
         try {
             if (mReceiverTag) {
                 mReceiverTag = false;
-                Logger.i(TAG,"unregisterNetworkReceiverSafely");
+                Logger.i(TAG, "unregisterNetworkReceiverSafely");
                 this.unregisterReceiver(networkChangeReceiver);
             }
         } catch (Exception e) {
@@ -885,9 +878,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            Logger.i(TAG,"onReceive");
-            if (isFinishing()){
-                Logger.d(TAG,"NetworkChangeReceiver, activity is finishing, return");
+            Logger.i(TAG, "onReceive");
+            if (isFinishing()) {
+                Logger.d(TAG, "NetworkChangeReceiver, activity is finishing, return");
                 return;
             }
             ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -895,7 +888,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 NetworkInfo netInfo = cm.getActiveNetworkInfo();
                 if (netInfo != null && netInfo.isConnected()) {
                     startCheckingIfUpdateIsAvailable(HomeActivity.this);
-                }else{
+                } else {
                     showOta(false);
                 }
             }
@@ -1085,7 +1078,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             case AmCmds.CMD_AmbientLevelingNotification: {
 
                 if (aaPopupWindow == null) {
-                    Logger.i(TAG,"aaPopupWindow is null");
+                    Logger.i(TAG, "aaPopupWindow is null");
                     return;
                 }
                 aaPopupWindow.updateAAUI(AppUtils.levelTransfer(Integer.valueOf(values.iterator().next().getValue().toString())));//new devices
@@ -1131,7 +1124,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     break;
                 case AppGraphicEQCurrentPreset:
                     long currentPreset = Utility.getUnsignedInt(var4, 0);
-                    Logger.d(TAG, "lightXAppReadResult"+ command + " is " + currentPreset);
+                    Logger.d(TAG, "lightXAppReadResult" + command + " is " + currentPreset);
                     updateCurrentEQ((int) currentPreset);
                     break;
                 case AppGraphicEQBandFreq:
@@ -1146,7 +1139,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     int major = var4[0];
                     int minor = var4[1];
                     int revision = var4[2];
-                    Logger.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision+",modelNumber"+AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()));
+                    Logger.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision + ",modelNumber" + AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()));
                     PreferenceUtils.setString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, major + "." + minor + "." + revision, this);
                     break;
 
@@ -1174,8 +1167,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     @Override
     public void lightXReadBootResult(final LightX lightX, final Command command, final boolean success, final int i, final byte[] buffer) {
         Logger.d(TAG, "lightXReadBootResult command is " + command + " result is " + success);
-        if (isFinishing()){
-            Logger.d(TAG,"lightXReadBootResult, activity is finishing, return");
+        if (isFinishing()) {
+            Logger.d(TAG, "lightXReadBootResult, activity is finishing, return");
             return;
         }
         if (success) {
@@ -1217,10 +1210,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     @Override
     public void lightXReadConfigResult(LightX var1, Command command, boolean success, String var4) {
         super.lightXReadConfigResult(var1, command, success, var4);
-        if (this == null){
+        if (this == null) {
             return;
         }
-        Logger.d(TAG, "lightXReadConfigResult command = "+command);
+        Logger.d(TAG, "lightXReadConfigResult command = " + command);
         if (success) {
             switch (command) {
                 case ConfigProductName:
@@ -1228,7 +1221,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     break;
                 case ConfigModelNumber:
                     deviceName = var4;
-                    Logger.d(TAG, "lightXReadConfigResult deviceName = "+deviceName);
+                    Logger.d(TAG, "lightXReadConfigResult deviceName = " + deviceName);
                     AppUtils.setModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext(), deviceName);
                     updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
                     homeHandler.sendEmptyMessageDelayed(MSG_SEND_CMD_GET_FIRMWARE, 200);
