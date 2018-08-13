@@ -12,7 +12,6 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import jbl.stc.com.R;
-import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.activity.JBLApplication;
 
@@ -73,8 +72,8 @@ public class SaPopupWindow extends PopupWindow implements View.OnClickListener {
 
         mDaImg.setSelected(true);
         mTtImg.setSelected(false);
-        mDaTvTitle.setTextColor(ContextCompat.getColor(JBLApplication.getJBLApplicationContext(), R.color.smart_audio_popup_text_color1));
-        mDaTvDetail.setTextColor(ContextCompat.getColor(JBLApplication.getJBLApplicationContext(), R.color.smart_audio_popup_text_color1));
+        mDaTvTitle.setTextColor(ContextCompat.getColor(JBLApplication.getJBLApplicationContext(), R.color.black_4C596B));
+        mDaTvDetail.setTextColor(ContextCompat.getColor(JBLApplication.getJBLApplicationContext(), R.color.black_4C596B));
         mTtTvTitle.setTextColor(ContextCompat.getColor(JBLApplication.getJBLApplicationContext(), R.color.smart_audio_popup_text_color2));
         mTtTvDetail.setTextColor(ContextCompat.getColor(JBLApplication.getJBLApplicationContext(), R.color.smart_audio_popup_text_color2));
         if(mListener != null){
@@ -86,8 +85,8 @@ public class SaPopupWindow extends PopupWindow implements View.OnClickListener {
         mTtImg.setSelected(true);
         mDaTvTitle.setTextColor(ContextCompat.getColor(JBLApplication.getJBLApplicationContext(), R.color.smart_audio_popup_text_color2));
         mDaTvDetail.setTextColor(ContextCompat.getColor(JBLApplication.getJBLApplicationContext(), R.color.smart_audio_popup_text_color2));
-        mTtTvTitle.setTextColor(ContextCompat.getColor(JBLApplication.getJBLApplicationContext(), R.color.smart_audio_popup_text_color1));
-        mTtTvDetail.setTextColor(ContextCompat.getColor(JBLApplication.getJBLApplicationContext(), R.color.smart_audio_popup_text_color1));
+        mTtTvTitle.setTextColor(ContextCompat.getColor(JBLApplication.getJBLApplicationContext(), R.color.black_4C596B));
+        mTtTvDetail.setTextColor(ContextCompat.getColor(JBLApplication.getJBLApplicationContext(), R.color.black_4C596B));
         if(mListener != null){
             mListener.onSaStatusReceived(false, true);
         }

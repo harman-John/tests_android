@@ -62,7 +62,7 @@
                 android:paddingStart="@dimen/settings_item_padding_left"
                 android:paddingEnd="@dimen/settings_item_padding_right"
                 android:text="@string/text_jbl_com"
-                android:textColor="@color/text_color"
+                android:textColor="@color/black_4C596B"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -82,7 +82,7 @@
                 android:paddingStart="@dimen/settings_item_padding_left"
                 android:paddingEnd="@dimen/settings_item_padding_right"
                 android:text="@string/text_open_source_license"
-                android:textColor="@color/text_color"
+                android:textColor="@color/black_4C596B"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -102,7 +102,7 @@
                 android:paddingStart="@dimen/settings_item_padding_left"
                 android:paddingEnd="@dimen/settings_item_padding_right"
                 android:text="@string/text_eula"
-                android:textColor="@color/text_color"
+                android:textColor="@color/black_4C596B"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -122,7 +122,7 @@
                 android:paddingStart="@dimen/settings_item_padding_left"
                 android:paddingEnd="@dimen/settings_item_padding_right"
                 android:text="@string/text_harman_privacy_policy"
-                android:textColor="@color/text_color"
+                android:textColor="@color/black_4C596B"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -150,7 +150,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/app_version"
-            android:textColor="@color/text_color"
+            android:textColor="@color/black_4C596B"
             android:textStyle="normal" />
     </LinearLayout>
 

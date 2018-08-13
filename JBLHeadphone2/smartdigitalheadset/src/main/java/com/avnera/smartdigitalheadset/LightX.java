@@ -1390,6 +1390,7 @@ public final class LightX {
     private void firmwareOperationPrepare(FirmwareRegion region, byte[] data, int from, int to) {
         int dataSize, regionSize;
 
+        Logger.d(TAG,"firmwareOperationPrepare mFirmwareIsUpdating = " +mFirmwareIsUpdating+",region ="+region);
         firmwareUpdateBegin();
 
         try {
@@ -1512,17 +1513,23 @@ public final class LightX {
     private synchronized void firmwareUpdateBegin() {
         if (mFirmwareIsUpdating)
             throw new ConcurrentModificationException("a firmware update is already in progress");
-
+        Logger.d(TAG,"firmwareUpdateBegin mFirmwareIsUpdating = " +mFirmwareIsUpdating);
         mFirmwareIsUpdating = true;
     }
 
     private synchronized void firmwareUpdateEnd(Exception exception, boolean notifyDelegate) {
+        Logger.d(TAG,"firmwareUpdateEnd mFirmwareIsUpdating= "+mFirmwareIsUpdating);
         if (mFirmwareIsUpdating) {
             if (notifyDelegate) {
+                Logger.d(TAG,"firmwareUpdateEnd notifyDelegate= "+notifyDelegate);
                 if (mFirmwareData != null) {        // write operation
+                    Logger.d(TAG,"firmwareUpdateEnd mFirmwareData is not null");
                     mDelegate.lightXFirmwareWriteStatus(this, mFirmwareRegion, FirmwareWriteOperation.Complete, exception == null ? 1.0 : 0, exception);
                 } else if (exception != null) {    // read operation with error
+                    Logger.d(TAG,"firmwareUpdateEnd exception is null ");
                     mDelegate.lightXFirmwareReadStatus(this, mFirmwareRegion, mFirmwareBlockCurrent * kReadBlockSize, null, exception);
+                }else {
+                    Logger.d(TAG,"firmwareUpdateEnd else");
                 }
             }
 

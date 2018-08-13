@@ -59,7 +59,6 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     private Switch toggleVoicePrompt;
     private Switch toggleAutoOffTimer;
     private Handler mHandler = new Handler();
-    private LightX lightX;
     private String deviceNameStr;
     private TextView textViewFirmware;
     private MyDevice myDevice;
@@ -154,11 +153,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         deviceNameStr = myDevice.deviceName;
 //        deviceNameStr=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
         Logger.d(TAG, "deviceName:" + textViewDeviceName.getText());
-        lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
         updateDeviceNameAndImage(deviceNameStr, deviceImage, textViewDeviceName);
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            ANCControlManager.getANCManager(getActivity()).getVoicePrompt(lightX);
-            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
+            ANCControlManager.getANCManager(getActivity()).getVoicePrompt();
+            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
         }
         updateUI();
         showOta(false);
@@ -201,7 +199,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             toggleAutoOffTimer.setVisibility(View.VISIBLE);
             //get autooff timer
             if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                ANCControlManager.getANCManager(getActivity()).getAutoOffFeature(lightX);
+                ANCControlManager.getANCManager(getActivity()).getAutoOffFeature();
             }
         } else if (deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_500BT).toUpperCase()) ||
                 deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_400BT).toUpperCase()) ||
@@ -281,7 +279,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     private Runnable autoOffToggleRunnable = new Runnable() {
         @Override
         public void run() {
-            writeAppAutoOffFeature(toggleAutoOffTimer.isChecked());
+            ANCControlManager.getANCManager(getContext()).setAutoOffFeature((toggleAutoOffTimer.isChecked()));
             AnalyticsManager.getInstance(getActivity()).reportAutoOffToggle(toggleAutoOffTimer.isChecked());
             Logger.d(TAG, "AutoOffFeature " + toggleAutoOffTimer.isChecked() + " sent");
         }
@@ -291,27 +289,11 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     private Runnable enableVoicePromptRunnable = new Runnable() {
         @Override
         public void run() {
-            writeEnableVoicePrompt(toggleVoicePrompt.isChecked());
+            ANCControlManager.getANCManager(getContext()).setVoicePrompt(toggleVoicePrompt.isChecked());
             AnalyticsManager.getInstance(getActivity()).reportVoicePromptToggle(toggleVoicePrompt.isChecked());
             Logger.d(TAG, "VoicePrompt " + toggleVoicePrompt.isChecked() + " sent");
         }
     };
-
-    private void writeAppAutoOffFeature(boolean checked) {
-        if (lightX != null) {
-            lightX.writeAppOnEarDetectionWithAutoOff(checked);
-        } else {
-            ANCControlManager.getANCManager(getContext()).setAutoOffFeature(lightX, checked);
-        }
-    }
-
-    private void writeEnableVoicePrompt(boolean voiceprompt) {
-        if (lightX != null) {
-            lightX.writeAppVoicePromptEnable(voiceprompt);
-        } else {
-            ANCControlManager.getANCManager(getContext()).setVoicePrompt(lightX, voiceprompt);
-        }
-    }
 
     private int reTry = 1;
     @Override
@@ -343,8 +325,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                     textViewFwVersion.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
-                            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion(lightX);
+                            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
                             ++reTry;
                         }
                     }, 150 * reTry);

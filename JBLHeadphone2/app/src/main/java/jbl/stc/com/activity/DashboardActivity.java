@@ -17,12 +17,9 @@ import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -35,7 +32,6 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.DiscoveryFragment;
-import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.listener.OnDownloadedListener;
@@ -56,19 +52,16 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     private final static int MSG_SHOW_MY_PRODUCTS = 0;
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
     private final static int MSG_SHOW_DISCOVERY = 2;
-    private final static int MSG_OTA_SUCCESS = 3;
     private final static int MSG_START_SCAN = 4;
-    private final static int MSG_CHECK_DEVICES = 5;
+    private final static int MSG_CHECK_MY_DEVICE = 5;
 
     private DashboardHandler dashboardHandler = new DashboardHandler(Looper.getMainLooper());
 
     private CheckUpdateAvailable checkUpdateAvailable;
 
-    public static boolean isOTADoing = false;
     public static CopyOnWriteArrayList<FirmwareModel> mFwList = new CopyOnWriteArrayList<>();
 
     private MyDragGridView gridView;
-    private List<MyDevice> lists;
     private MyGridAdapter myGridAdapter;
     private TextView textViewTips;
     private EqArcView viewDelete;
@@ -105,8 +98,10 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         myGridAdapter = new MyGridAdapter();
         int marginTop = UiUtils.getDeviceNameMarginTop(this);
         gridView.setPadding(0, marginTop, 0, UiUtils.dip2px(this, 20));
-        lists = new ArrayList<>();
-        initMyGridAdapterList();
+        if (lists == null) {
+            lists = new ArrayList<>();
+        }
+        initMyDeviceList();
         myGridAdapter.setMyAdapterList(lists);
         gridView.setDeleteView(viewDelete);
         gridView.setMenuBar((RelativeLayout) findViewById(R.id.relative_layout_dashboard_title));
@@ -121,85 +116,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         }
         findViewById(R.id.image_view_dashboard_white_menu).setOnClickListener(this);
         findViewById(R.id.image_view_dashboard_white_plus).setOnClickListener(this);
-    }
-
-    private void initMyGridAdapterList() {
-        lists.clear();
-        Set<String> devicesSet = PreferenceUtils.getStringSet(getApplicationContext(), PreferenceKeys.MY_DEVICES);
-        Logger.i(TAG, "deviceSet = " + devicesSet);
-        for (String value : devicesSet) {
-            lists.add(AppUtils.getMyDevice(value));
-        }
-    }
-
-    private void updateDisconnectedAdapter() {
-        for (MyDevice myDevice : lists) {
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
-                break;
-            }
-        }
-    }
-
-    private void updateConnectedStatusAdapter(Set<String> deviceList) {
-        for (MyDevice myDevice : lists) {
-            myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
-        }
-        List<MyDevice> myDeviceListA2dp = new ArrayList<>();
-        for (String key : deviceList) {
-            myDeviceListA2dp.add(AppUtils.getMyDevice(key));
-        }
-        for (MyDevice myDeviceA2dp : myDeviceListA2dp) {
-            for (MyDevice myDevice : lists) {
-                if (myDeviceA2dp.equals(myDevice)) {
-                    Logger.i(TAG, "myDeviceA2dp deviceKey= " + myDeviceA2dp.deviceKey);
-                    if (myDevice.deviceName.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
-                        Logger.i(TAG, "isConnected = " + DeviceManager.getInstance(this).isConnected());
-                        if (DeviceManager.getInstance(this).isConnected()) {
-                            myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
-                        }
-                    } else {
-                        if (DeviceManager.getInstance(this).getSpecifiedDevice() != null) {
-                            String mainDeviceKey = DeviceManager.getInstance(this).getSpecifiedDevice().getName() + "-" + DeviceManager.getInstance(this).getSpecifiedDevice().getAddress();
-                            Logger.i(TAG, "mainDeviceKey = " + mainDeviceKey);
-                            if (DeviceManager.getInstance(this).isConnected() && mainDeviceKey.toUpperCase().equalsIgnoreCase(myDeviceA2dp.deviceKey.toUpperCase())) {
-                                Logger.i(TAG, "DEVICE_CONNECTED = " + mainDeviceKey);
-                                myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
-                            } else {
-                                myDevice.connectStatus = ConnectStatus.A2DP_HALF_CONNECTED;
-                            }
-                        } else {
-                            myDevice.connectStatus = ConnectStatus.A2DP_HALF_CONNECTED;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public MyDevice getMyDeviceConnected() {
-        for (MyDevice myDevice : lists) {
-            Logger.i(TAG, "deviceKey= " + myDevice.deviceKey + ",connectStatus = " + myDevice.connectStatus);
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                return myDevice;
-            }
-        }
-        return null;
-    }
-
-    private boolean hasNewDevice(Set<String> deviceList) {
-        Set<String> set1 = new HashSet<>(deviceList);
-        Set<String> set2 = new HashSet<>();
-        for (MyDevice myDevice : lists) {
-            String device = myDevice.deviceKey;
-            set2.add(device);
-        }
-        set2.retainAll(set1);
-        if (set2.size() == set1.size()) {
-            return false;
-        }
-        Logger.i(TAG, "has new Device");
-        return true;
     }
 
     @Override
@@ -269,32 +185,27 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     public void connectDeviceStatus(boolean isConnected) {
 
         if (isConnected) {
-            Logger.d(TAG, " connectDeviceStatus true, isOTADoing = " + isOTADoing);
-            if (isOTADoing) {
-                dashboardHandler.sendEmptyMessageDelayed(MSG_OTA_SUCCESS, 200);
+            Logger.d(TAG, " connectDeviceStatus true");
+
+            removeAllFragment();
+            if (!(currentActivity() instanceof DashboardActivity) && !DeviceManager.getInstance(this).isNeedOtaAgain()) {
+                currentActivity().finish();
+            }
+            if (isForeground()) {
+                dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
             } else {
-                removeAllFragment();
-                if (!(currentActivity() instanceof DashboardActivity) && !DeviceManager.getInstance(this).isNeedOtaAgain()) {
-                    currentActivity().finish();
-                }
-                if (isForeground()) {
-                    dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
-                } else {
-                    isInBackground = true;
-                }
+                isInBackground = true;
             }
 
         } else {
-            Logger.d(TAG, "connectDeviceStatus false, isOTADoing = " + isOTADoing);
-            if (!isOTADoing) {
-                if (!(currentActivity() instanceof DashboardActivity)) {//&& fr instanceof HomeFragment) {
-                    Logger.d(TAG, "disconnect home fragment ");
-                    removeAllFragment();
-                    currentActivity().finish();
-                }
-                updateDisconnectedAdapter();
-                myGridAdapter.setMyAdapterList(lists);
+            Logger.d(TAG, "connectDeviceStatus false");
+            if (!(currentActivity() instanceof DashboardActivity)) {//&& fr instanceof HomeFragment) {
+                Logger.d(TAG, "disconnect home fragment ");
+                removeAllFragment();
+                currentActivity().finish();
             }
+            updateDisconnectedAdapter();
+            myGridAdapter.setMyAdapterList(lists);
         }
     }
 
@@ -317,7 +228,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     public void checkDevices(Set<String> deviceList) {
         Message msg = new Message();
-        msg.what = MSG_CHECK_DEVICES;
+        msg.what = MSG_CHECK_MY_DEVICE;
         msg.obj = deviceList;
         dashboardHandler.sendMessage(msg);
     }
@@ -349,27 +260,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-        if (isOTADoing) {
-            if (fr != null && fr instanceof OTAFragment && DeviceManager.getInstance(this).isInBootloader() && DeviceManager.getInstance(this).isConnected()) {
-                final Toast toast = Toast.makeText(this, "Can't perform this action.", Toast.LENGTH_SHORT);
-                toast.show();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        toast.cancel();
-                    }
-                }, 300);
-                return;
-            }
-        } else {
-            if (fr != null && fr instanceof OTAFragment) {
-                if (((OTAFragment) fr).isDisableGoBack()) {
-                    return;
-                }
-            }
-        }
+
 
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             AppUtils.hideFromForeground(this);
@@ -435,15 +326,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                     }
                     break;
                 }
-                case MSG_OTA_SUCCESS: {
-                    Logger.d(TAG, "Ota success");
-                    checkDevices(DeviceManager.getInstance(getDashboardActivity()).getDevicesSet());
-                    Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                    if (fr != null && fr instanceof OTAFragment) {
-                        ((OTAFragment) fr).otaSuccess();
-                    }
-                    break;
-                }
                 case MSG_START_SCAN: {
                     if (isConnected()) {
                         startA2DPCheck();
@@ -451,15 +333,15 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                     dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
                     break;
                 }
-                case MSG_CHECK_DEVICES: {
+                case MSG_CHECK_MY_DEVICE: {
                     Set<String> deviceList = (Set<String>) msg.obj;
-                    Logger.i(TAG, "MSG_CHECK_DEVICES deviceList = " + deviceList);
+                    Logger.i(TAG, "MSG_CHECK_MY_DEVICE deviceList = " + deviceList);
                     if (hasNewDevice(deviceList)) {
-                        initMyGridAdapterList();
-                        updateConnectedStatusAdapter(deviceList);
+                        initMyDeviceList();
+                        updateMyDeviceStatus(deviceList);
                         showMyProducts();
                     } else {
-                        updateConnectedStatusAdapter(deviceList);
+                        updateMyDeviceStatus(deviceList);
                         myGridAdapter.setMyAdapterList(lists);
                     }
                     break;
@@ -574,7 +456,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                             dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
                             dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
                             dashboardHandler.removeMessages(MSG_SHOW_MY_PRODUCTS);
-                            dashboardHandler.removeMessages(MSG_OTA_SUCCESS);
                             dashboardHandler.removeMessages(MSG_START_SCAN);
                             if (fr == null) {
                                 switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
