@@ -105,35 +105,15 @@ public class BaseDeviceManager implements AppUSBDelegate {
         return result;
     }
 
-    public void updateDeviceNameAndImage(String deviceName, ImageView imageViewDevice, TextView textViewDeviceName) {
-        if (TextUtils.isEmpty(deviceName)) {
-            return;
-        }
-        //update device name
-        textViewDeviceName.setText(deviceName);
-        //update device image
-        if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_REFLECT_AWARE).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.reflect_aware_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_100_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_150nc_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_300_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_700_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_750nc_icon);
-        }
-    }
-
     @Override
     public void usbAttached(UsbDevice usbDevice) {
+        Logger.d(TAG, "usbAttached usbDevice = " + usbDevice);
 
     }
 
     @Override
     public void usbDetached(UsbDevice usbDevice) {
+        Logger.d(TAG, "usbDetached usbDevice = " + usbDevice);
 
     }
 
@@ -164,10 +144,11 @@ public class BaseDeviceManager implements AppUSBDelegate {
         @Override
         public void onReceive(Context context, Intent intent) {
             UsbDevice usbDevice = (UsbDevice) intent.getExtras().get(UsbManager.EXTRA_DEVICE);
+            Logger.d(TAG,"USBReceiver action = "+intent.getAction());
             if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-                BaseDeviceManager.this.usbDetached(usbDevice);
+                usbDetached(usbDevice);
             } else {
-                BaseDeviceManager.this.usbAttached(usbDevice);
+                usbAttached(usbDevice);
             }
         }
     }

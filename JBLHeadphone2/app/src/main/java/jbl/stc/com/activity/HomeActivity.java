@@ -15,7 +15,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -90,7 +89,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     public static final String TAG = HomeActivity.class.getSimpleName() + "aa";
     private BlurringView mBlurView;
 
-    private HomeHandler homeHandler = new HomeHandler(Looper.getMainLooper());
     private final static int MSG_ANC = 0;
     private final static int MSG_BATTERY = 1;
     private final static int MSG_FIRMWARE_VERSION = 2;
@@ -105,7 +103,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private final static int MSG_SEND_CMD_GET_FIRMWARE = 7;
     private final static int MSG_UPDATE_CUSTOM_EQ = 8;
     private final static int MSG_CHECK_MY_DEVICE = 9;
-
+    private final static int MSG_CHECK_UPDATE = 10;
 
     private final long timeInterval = 30 * 1000L, pollingTime = 1000L;
     private ProgressBar progressBarBattery;
@@ -121,27 +119,34 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private FrameLayout relative_layout_home_eq_info;
     private String deviceName;
     private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
-    private View bluredView;
-    private MyDevice myDevice;
+    private View blurdView;
     private TextView titleEqText;
     private AppImageView image_view_ota_download;
     private NotConnectedPopupWindow notConnectedPopupWindow;
     private TutorialAncDialog tutorialAncDialog;
+    private HomeHandler homeHandler = new HomeHandler(Looper.getMainLooper());
 
     public TutorialAncDialog getTutorialAncDialog() {
         return tutorialAncDialog;
     }
-
+    private int mConnectStatus = -1;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        addActivity(this);
-        Logger.d(TAG, "onCreateView");
-        Bundle b = getIntent().getBundleExtra("bundle");
-        if (b != null) {
-            myDevice = b.getParcelable(JBLConstant.KEY_MY_DEVICE);
+        mConnectStatus = getIntent().getIntExtra(JBLConstant.KEY_CONNECT_STATUS,-1);
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        Logger.d(TAG, "onResume action ="+action+",mConnectStatus ="+mConnectStatus);
+        if (!TextUtils.isEmpty(action)
+                && "android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action) && mConnectStatus == -1) {
+            Logger.i(TAG,"onCreate finished");
+            startActivity(new Intent(this,DashboardActivity.class));
+            finish();
+            return;
         }
+        addActivity(this);
+        Logger.d(TAG, "onCreate");
         showTutorial();
         generateAAPopupWindow();
         generateSaPopupWindow();
@@ -150,12 +155,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         textViewDeviceName = findViewById(R.id.text_view_home_device_name);
 
         imageViewDevice = findViewById(R.id.image_view_home_device_image);
-        bluredView = findViewById(R.id.relative_Layout_home);
+        blurdView = findViewById(R.id.relative_Layout_home);
         relative_layout_home_eq_info = (FrameLayout) findViewById(R.id.relative_layout_home_eq_info);
         relative_layout_home_eq_info.setVisibility(View.VISIBLE);
         titleEqText = (TextView) findViewById(R.id.titleEqText);
         titleEqText.setOnClickListener(this);
-        if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+        if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             setEqMenuColor(false);
             relative_layout_home_eq_info.setAlpha((float) 0.5);
         } else {
@@ -183,12 +188,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             }
         });
         RelativeLayout linearLayoutNoiseCanceling = findViewById(R.id.relative_layout_home_noise_cancel);
-        if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_NOISE_CANCEL)) {
+        if (!DeviceFeatureMap.isFeatureSupported(DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName, Feature.ENABLE_NOISE_CANCEL)) {
             linearLayoutNoiseCanceling.setVisibility(View.GONE);
         } else {
             linearLayoutNoiseCanceling.setVisibility(View.VISIBLE);
             checkBoxNoiseCancel = findViewById(R.id.image_view_home_noise_cancel);
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 checkBoxNoiseCancel.setOnClickListener(this);
             } else {
                 linearLayoutNoiseCanceling.setAlpha((float) 0.5);
@@ -196,21 +201,21 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         }
 
         RelativeLayout linearLayoutAmbientAware = findViewById(R.id.relative_layout_home_ambient_aware);
-        if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_AMBIENT_AWARE)) {
+        if (!DeviceFeatureMap.isFeatureSupported(DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName, Feature.ENABLE_AMBIENT_AWARE)) {
             linearLayoutAmbientAware.setVisibility(View.GONE);
         } else {
             findViewById(R.id.image_view_home_ambient_aware).setOnClickListener(this);
-            if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+            if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                 linearLayoutAmbientAware.setAlpha((float) 0.5);
             }
-            if (myDevice.deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
-                    || myDevice.deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
-                    || myDevice.deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
+            if (DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
+                    || DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
+                    || DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
                 TextView textViewAmbientAware = findViewById(R.id.text_view_home_ambient_aware);
                 textViewAmbientAware.setText(R.string.smart_ambient);
             }
         }
-        deviceName = myDevice.deviceName;
+        deviceName = DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName;
 //        deviceName = PreferenceUtils.getString(PreferenceKeys.MODEL, this, "");
         updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
         initEvent();
@@ -218,18 +223,32 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        AnalyticsManager.getInstance(this).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
-        Logger.d(TAG, "onResume " + DeviceConnectionManager.getInstance().getCurrentDevice());
-        doResume();
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        Logger.d(TAG, "onResume action ="+action);
+        if (!TextUtils.isEmpty(action)
+                && "android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action)) {
+
+        }else{
+            AnalyticsManager.getInstance(this).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
+            Logger.d(TAG, "onResume " + DeviceConnectionManager.getInstance().getCurrentDevice());
+            doResume();
+        }
     }
 
     @Override
     public void connectDeviceStatus(boolean isConnected) {
         super.connectDeviceStatus(isConnected);
 
-        if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
+        if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
             Logger.i(TAG, "connectDeviceStatus A2DP_HALF_CONNECTED");
             finish();
         }else if (!isConnected && !isOTADoing && !DeviceManager.getInstance(this).isNeedOtaAgain()){
@@ -239,8 +258,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         }else if (isConnected && isOTADoing && !DeviceManager.getInstance(this).isNeedOtaAgain()){
             Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
             if (fr != null && fr instanceof OTAFragment) {
-                Logger.i(TAG, "connectDeviceStatus myDevice = " + myDevice);
-                DeviceManager.getInstance(this).startA2DPCheck();
+                Logger.i(TAG, "connectDeviceStatus myDevice = " + mConnectStatus);
+//                DeviceManager.getInstance(this).startA2DPCheck();
                 ((OTAFragment) fr).otaSuccess(this);
             }
         }
@@ -249,11 +268,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     @Override
     public void checkDevices(Set<String> deviceList) {
         super.checkDevices(deviceList);
-        Logger.i(TAG, "MSG_CHECK_DEVICES deviceList = " + deviceList);
-        Message msg = new Message();
-        msg.what = MSG_CHECK_MY_DEVICE;
-        msg.obj = deviceList;
-        homeHandler.sendMessage(msg);
+//        Logger.i(TAG, "MSG_CHECK_DEVICES deviceList = " + deviceList);
+//        Message msg = new Message();
+//        msg.what = MSG_CHECK_MY_DEVICE;
+//        msg.obj = deviceList;
+//        homeHandler.sendMessage(msg);
     }
 
     @Override
@@ -276,10 +295,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             }
         } else {
             if (fr != null && fr instanceof OTAFragment) {
-                if (((OTAFragment) fr).isDisableGoBack()) {
-                    onButtonDone();
-                    return;
-                }
+                onButtonDone();
             }
         }
 
@@ -295,6 +311,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         if (notConnectedPopupWindow != null) {
             notConnectedPopupWindow.dismiss();
         }
+        unregisterNetworkReceiverSafely();
     }
 
     @Override
@@ -310,7 +327,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_home_ambient_aware: {
-                if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+                if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
                     if (AppUtils.isOldDevice(deviceName)) {
                         if (!checkBoxNoiseCancel.isChecked()) {
                             checkBoxNoiseCancel.setChecked(true);
@@ -328,15 +345,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 break;
             }
             case R.id.image_view_home_back: {
+                DeviceManager.getInstance(this).setIsFromHome(true);
                 this.onBackPressed();
                 break;
             }
             case R.id.image_view_home_settings: {
-                SettingsFragment settingsFragment = new SettingsFragment();
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-//                settingsFragment.setArguments(bundle);
-                switchFragment(settingsFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                switchFragment(new SettingsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
             case R.id.image_view_home_noise_cancel: {
@@ -354,7 +368,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     }
 
     private void showTutorial() {
-        if (DeviceManager.getInstance(this).isConnected() && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+        if (DeviceManager.getInstance(this).isConnected() && mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
             boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
             if (!isShowTutorialManyTimes) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
@@ -371,23 +385,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 
     private void doResume() {
         DeviceManager.getInstance(this).setAppLightXDelegate(this);
-        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
-                case NONE:
-                    break;
-                case Connected_USBDevice:
-                    linearLayoutBattery.setVisibility(View.VISIBLE);
-                    progressBarBattery.setProgress(100);
-                    textViewBattery.setText("100%");
-                    break;
-                case Connected_BluetoothDevice:
-                    linearLayoutBattery.setVisibility(View.VISIBLE);
-                    ANCControlManager.getANCManager(this).getBatterLeverl();
-                    homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
-                    break;
-            }
+        if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
             getDeviceInfo();
-        }else if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+        }else if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             if (!PreferenceUtils.getBoolean(PreferenceKeys.SHOW_NC_POP, this)) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_NC_POP, true, this);
                 findViewById(R.id.relative_layout_home_activity).post(new Runnable() {
@@ -470,12 +470,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             }
 
         });
-
-
-    }
-
-    public MyDevice getMyDeviceInHome() {
-        return myDevice;
     }
 
     private void generateSaPopupWindow() {
@@ -581,7 +575,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     }
 
     public void showSaPopupWindow(View view, SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
-        mBlurView.setBlurredView(bluredView);
+        mBlurView.setBlurredView(blurdView);
 //        if (mBlurView.getBackground() == null) {
 //            Bitmap image = BlurBuilder.blur(view);
 //            mBlurView.setBackground(new BitmapDrawable(this.getResources(), image));
@@ -618,7 +612,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 //            Bitmap image = BlurBuilder.blur(view);
 //            mBlurView.setBackground(new BitmapDrawable(this.getResources(), image));
 //        }
-        mBlurView.setBlurredView(bluredView);
+        mBlurView.setBlurredView(blurdView);
         mBlurView.invalidate();
         mBlurView.setVisibility(View.VISIBLE);
         mBlurView.setAlpha(0f);
@@ -647,7 +641,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 }
             }
         });
-        mBlurView.setBlurredView(bluredView);
+        mBlurView.setBlurredView(blurdView);
         mBlurView.invalidate();
         mBlurView.setVisibility(View.VISIBLE);
         mBlurView.setAlpha(0f);
@@ -663,12 +657,23 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     }
 
     private void getDeviceInfo() {
-
-        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd();
-            Logger.e(TAG, "readBootImageType");
-            ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).readBootImageType();
+        switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
+            case NONE:
+                break;
+            case Connected_USBDevice:
+                linearLayoutBattery.setVisibility(View.VISIBLE);
+                progressBarBattery.setProgress(100);
+                textViewBattery.setText("100%");
+                break;
+            case Connected_BluetoothDevice:
+                linearLayoutBattery.setVisibility(View.VISIBLE);
+                ANCControlManager.getANCManager(this).getBatterLeverl();
+                homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
+                break;
         }
+        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd();
+        Logger.e(TAG, "readBootImageType");
+        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).readBootImageType();
         ANCControlManager.getANCManager(this).getANCValue();
         if (AvneraManager.getAvenraManager(this).getLightX() == null) {
             updateFirmwareVersion();
@@ -694,8 +699,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     @Override
     public void onButtonDone() {
         DeviceManager.getInstance(this).setAppLightXDelegate(this);
-        myDevice = getMyDeviceConnected();
-        doResume();
+        getDeviceInfo();
     }
 
     private class HomeHandler extends Handler {
@@ -771,14 +775,20 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     }
                     break;
                 }
-                case MSG_CHECK_MY_DEVICE:{
-                    Logger.i(TAG, "handleMessage MSG_CHECK_DEVICES start");
-                    Set<String> deviceList = (Set<String>) msg.obj;
-                    if (hasNewDevice(deviceList)) {
-                        initMyDeviceList();
-                    }
-                    updateMyDeviceStatus(deviceList);
-                    Logger.i(TAG, "handleMessage MSG_CHECK_DEVICES end");
+//                case MSG_CHECK_MY_DEVICE:{
+//                    Logger.i(TAG, "handleMessage MSG_CHECK_DEVICES start");
+//                    Set<String> deviceList = (Set<String>) msg.obj;
+//                    if (hasNewDevice(deviceList)) {
+//                        initMyDeviceList();
+//                    }
+//                    updateMyDeviceStatus(deviceList);
+//                    Logger.i(TAG, "handleMessage MSG_CHECK_DEVICES end");
+//                    break;
+//                }
+                case MSG_CHECK_UPDATE:{
+                    startCheckingIfUpdateIsAvailable(HomeActivity.this);
+                    registerConnectivity();
+                    break;
                 }
             }
         }
@@ -901,8 +911,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             PreferenceUtils.setString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, hardVersion, this);
         }
         AnalyticsManager.getInstance(this).reportFirmwareVersion(hardVersion);
-        startCheckingIfUpdateIsAvailable(HomeActivity.this);
-        registerConnectivity();
+        homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
     }
 
     @Override
@@ -915,12 +924,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private NetworkChangeReceiver networkChangeReceiver;
 
     private void registerConnectivity() {
-        networkChangeReceiver = new NetworkChangeReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        Logger.i(TAG, "registerConnectivity");
-        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        this.registerReceiver(networkChangeReceiver, intentFilter);
-        mReceiverTag = true;
+        if (!mReceiverTag ) {
+            networkChangeReceiver = new NetworkChangeReceiver();
+            IntentFilter intentFilter = new IntentFilter();
+            Logger.i(TAG, "registerConnectivity");
+            intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+            this.registerReceiver(networkChangeReceiver, intentFilter);
+            mReceiverTag = true;
+        }
     }
 
     private boolean mReceiverTag = false;
@@ -1204,6 +1215,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     int revision = var4[2];
                     Logger.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision + ",modelNumber" + AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()));
                     PreferenceUtils.setString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, major + "." + minor + "." + revision, this);
+                    homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
                     break;
 
                 case AppGraphicEQPresetBandSettings: {
@@ -1244,14 +1256,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     String rsrcSavedVersion = major + "." + minor + "." + revision;
                     PreferenceUtils.setString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, rsrcSavedVersion, this);
                     Logger.d(TAG, "rsrcSavedVersion=" + rsrcSavedVersion);
-                    startCheckingIfUpdateIsAvailable(HomeActivity.this); /** Now start checking for update to show red bubble on setting icon*/
-                    registerConnectivity();
+                    homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
                 }
                 break;
             }
         } else {
-            startCheckingIfUpdateIsAvailable(HomeActivity.this);
-            registerConnectivity();
+            homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
         }
     }
 

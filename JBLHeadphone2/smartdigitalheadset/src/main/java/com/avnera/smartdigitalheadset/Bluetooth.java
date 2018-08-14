@@ -38,6 +38,7 @@ import java.util.UUID;
  */
 public final class Bluetooth implements BluetoothProfile.ServiceListener {
 
+	private static final String TAG = Bluetooth.class.getSimpleName()+".lightX";
 	private BluetoothA2dp												mA2DPProxy = null;
 	private final Activity												mActivity;
 	private	final BluetoothAdapter										mBluetoothAdapter;
@@ -238,6 +239,9 @@ public final class Bluetooth implements BluetoothProfile.ServiceListener {
 		for ( BluetoothDevice device : devices ) {
 			disconnect( device );
 		}
+		Logger.d(TAG,"close profile proxy");
+		mBluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP,mA2DPProxy);
+		mBluetoothAdapter.closeProfileProxy(BluetoothProfile.HEADSET,mHeadsetProxy);
 	}
 
 	private BluetoothSocket createRfcommSocketToSPP( BluetoothDevice device ) throws IOException {

@@ -1,5 +1,6 @@
 package jbl.stc.com.activity;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -33,10 +34,12 @@ public class JBLApplication extends Application {
     public boolean isUpgrading = false;
     public AtomicBoolean mDeviceConnected = new AtomicBoolean(false);
     private static Context context;
+    private static Activity activity;
 
     public static Context getJBLApplicationContext() {
         return context;
     }
+
     @Override
     public void onCreate() {
         super.onCreate();

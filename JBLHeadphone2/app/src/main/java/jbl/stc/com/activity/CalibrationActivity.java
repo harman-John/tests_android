@@ -22,6 +22,7 @@ import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.listener.OnHeadphoneconnectListener;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.CalibrationManager;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.view.AppButton;
 import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.ShadowLayout;
@@ -78,10 +79,7 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
         tv_calibratingDone.setOnClickListener(this);
         shadowLayout = (ShadowLayout) findViewById(R.id.shadowLayout);
         iv_complete = (ImageView) findViewById(R.id.iv_complete);
-        Bundle b = getIntent().getBundleExtra("bundle");
-        if (b != null) {
-            myDevice = b.getParcelable(JBLConstant.KEY_MY_DEVICE);
-        }
+        myDevice = DeviceManager.getInstance(this).getMyDeviceConnected();
     }
 
 
@@ -163,11 +161,7 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
         } else {
             removeAllFragment();
             finish();
-            Bundle b = new Bundle();
-            b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-            Intent intent = new Intent(this, HomeActivity.class);
-            intent.putExtra("bundle", b);
-            startActivity(intent);
+            startActivity(new Intent(this, HomeActivity.class));
         }
     }
 

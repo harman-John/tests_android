@@ -60,8 +60,13 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         notifyDataSetChanged();
     }
 
-    public void removeAllMessage() {
-        cbHandler.removeMessages(MSG_SHOW_FRAGMENT);
+    private OnDeviceItemSelectedListener mOnDeviceItemSelectedListener;
+    public void setOnDeviceSelectedListener(OnDeviceItemSelectedListener onDeviceItemSelectedListener){
+        mOnDeviceItemSelectedListener = onDeviceItemSelectedListener;
+    }
+
+    public interface OnDeviceItemSelectedListener{
+        void onSelected(int position);
     }
 
     @Override
@@ -89,7 +94,6 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             viewHolder.relativeLayoutBreathingIcon = convertView.findViewById(R.id.relative_layout_item_connected_before_breathing_icon);
             viewHolder.textViewDeviceName = convertView.findViewById(R.id.text_view_item_connected_before_device_name);
             viewHolder.imageViewIcon = convertView.findViewById(R.id.image_view_item_connected_before_device_icon);
-            viewHolder.linear_layout_item_connected_before_device = convertView.findViewById(R.id.linear_layout_item_connected_before_device);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -129,10 +133,9 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             @Override
             public void onClick(View v) {
                 Logger.i(TAG, "v = " + v + ",position = " + position);
-                Message msg = new Message();
-                msg.what = MSG_SHOW_FRAGMENT;
-                msg.arg1 = position;
-                cbHandler.sendMessage(msg);
+                if (mOnDeviceItemSelectedListener != null){
+                    mOnDeviceItemSelectedListener.onSelected(position);
+                }
             }
         });
         if (position == mHidePosition) {
@@ -183,43 +186,5 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         private TextView textViewDeviceName;
         private ImageView imageViewIcon;
         private RelativeLayout relativeLayoutBreathingIcon;
-        private LinearLayout linear_layout_item_connected_before_device;
-    }
-
-
-    private CbaHandler cbHandler = new CbaHandler(Looper.getMainLooper());
-    private final static int MSG_SHOW_FRAGMENT = 0;
-
-    private class CbaHandler extends Handler {
-        CbaHandler(Looper looper) {
-            super(looper);
-        }
-
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_SHOW_FRAGMENT: {
-                    cbHandler.removeMessages(MSG_SHOW_FRAGMENT);
-                    MyDevice myDevice = mLists.get(msg.arg1);
-                    if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
-                            || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
-                        Logger.d(TAG, "Show home fragment");
-                        DashboardActivity.getDashboardActivity().showHomeActivity(myDevice);
-                    } else {
-                        Fragment fr = DashboardActivity.getDashboardActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                        if (fr instanceof UnableConnectFragment) {
-                            Logger.d(TAG, "fr is already UnableConnectFragment");
-                            return;
-                        }
-                        Bundle bundle = new Bundle();
-                        bundle.putString(JBLConstant.DEVICE_MODEL_NAME, myDevice.deviceName);
-                        UnableConnectFragment unableConnectFragment = new UnableConnectFragment();
-                        unableConnectFragment.setArguments(bundle);
-                        DashboardActivity.getDashboardActivity().switchFragment(unableConnectFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                    }
-                    break;
-                }
-            }
-            super.handleMessage(msg);
-        }
     }
 }

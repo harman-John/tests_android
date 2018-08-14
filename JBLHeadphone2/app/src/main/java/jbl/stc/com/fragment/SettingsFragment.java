@@ -41,6 +41,7 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -73,8 +74,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        myDevice = getArguments().getParcelable(JBLConstant.KEY_MY_DEVICE);
-        myDevice = DashboardActivity.getDashboardActivity().getMyDeviceConnected();
+        myDevice = DeviceManager.getInstance(getActivity()).getMyDeviceConnected();
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         textViewFirmware = view.findViewById(R.id.text_view_settings_firmware);
@@ -154,10 +154,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
 //        deviceNameStr=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
         Logger.d(TAG, "deviceName:" + textViewDeviceName.getText());
         updateDeviceNameAndImage(deviceNameStr, deviceImage, textViewDeviceName);
-        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            ANCControlManager.getANCManager(getActivity()).getVoicePrompt();
-            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
-        }
+
         updateUI();
         showOta(false);
         registerConnectivity();
@@ -187,6 +184,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void updateUI() {
+        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            ANCControlManager.getANCManager(getActivity()).getVoicePrompt();
+            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
+        }
         if (TextUtils.isEmpty(deviceNameStr)) {
             return;
         }
@@ -256,11 +257,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             }
             case R.id.relative_layout_settings_true_note: {
                 Logger.d(TAG, "true note clicked");
-                Bundle b = new Bundle();
-                b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-                Intent intent = new Intent(getActivity(), CalibrationActivity.class);
-                intent.putExtra("bundle", b);
-                startActivity(intent);
+                startActivity(new Intent(getActivity(), CalibrationActivity.class));
                 break;
             }
             case R.id.text_view_settings_smart_button: {

@@ -136,7 +136,6 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         shadowLayout=view.findViewById(R.id.shadowLayout);
 //        iv_ok = view.findViewById(R.id.iv_ok);
         textViewButtonDone.setOnClickListener(this);
-        disableGoBack = false;
         otaInit();
         return view;
     }
@@ -192,18 +191,18 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             }
             case R.id.button_done:{
                 if (((TextView)v).getText().equals(getString(R.string.got_it))){
-
+                    getActivity().onBackPressed();
                 }else if (((TextView)v).getText().equals(getString(R.string.retry))){
                     if (FirmwareUtil.isUpdatingFirmWare.get()) {
                         if (AvneraManager.getAvenraManager(getActivity()).getLightX()!= null) {
                             progressFactor = 0.0f;
                             DeviceManager.getInstance(getActivity()).setIsNeedOtaAgain(true);
-                            myHandler.sendEmptyMessage(MSG_GO_TO_BOOTLOADER);
+                            startCheckingIfUpdateIsAvailable();
                             otaUpdating();
                         }
                     }
                 }else {
-                    removeAllFragment();
+                    getActivity().onBackPressed();
                     if (mOnOtaListener!= null) {
                         mOnOtaListener.onButtonDone();
                     }
@@ -702,6 +701,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         Logger.e(TAG, "isLightXInitialize FirmwareUtil.isUpdatingFirmWare.get() =" + FirmwareUtil.isUpdatingFirmWare.get());
         if (FirmwareUtil.isUpdatingFirmWare.get()) {
             myHandler.sendEmptyMessageDelayed(MSG_GO_TO_BOOTLOADER,1000);
+        }else if (isOTADoing && !FirmwareUtil.isUpdatingFirmWare.get()){
+            otaSuccess(null);
         }
     }
 
@@ -985,7 +986,6 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         shadowLayout.setVisibility(View.VISIBLE);
     }
 
-    private boolean disableGoBack = false;
     private void deviceRePlug(){
         imageViewBack.setVisibility(View.GONE);
         textViewUpdateStatus.setVisibility(View.VISIBLE);
@@ -994,12 +994,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         textViewUpdateStatus.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
         textViewOTACircle.setBackground(ContextCompat.getDrawable(getActivity(),R.mipmap.update_succeeded));
         textViewButtonDone.setVisibility(View.GONE);
-        isOTADoing = false;
-        disableGoBack = true;
-    }
-
-    public boolean isDisableGoBack() {
-        return disableGoBack;
+        textViewProgress.setVisibility(View.GONE);
     }
 
     private void deviceRestarting(){
@@ -1095,7 +1090,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     break;
                 case MSG_GO_TO_BOOTLOADER:
                     if (DeviceManager.getInstance(getActivity()).isNeedOtaAgain()){
-                        startCheckingIfUpdateIsAvailable();
+                        otaError(true,R.string.update_failed_firmware,R.string.update_failed_firmware_detail_1);
                     }else {
                         if (AvneraManager.getAvenraManager(getActivity()).getLightX() != null) {
                             Logger.e(TAG, "MSG_GO_TO_BOOTLOADER readBootImageType");
@@ -1122,7 +1117,6 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 //        isOTADoing = false;
 //        FirmwareUtil.isUpdatingFirmWare.set(false);
         AnalyticsManager.getInstance(getActivity()).reportFirmwareUpdateFailed(mOnLineFirmware);
-        disableGoBack = true;
     }
 
     private FirmwareModel findImage(FwTYPE type){
