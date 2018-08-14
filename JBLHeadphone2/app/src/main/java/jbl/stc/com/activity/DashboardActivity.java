@@ -29,6 +29,8 @@ import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.data.ConnectedDeviceType;
+import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.DiscoveryFragment;
@@ -103,7 +105,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 MyDevice myDevice = myGridAdapter.mLists.get(position);
                 if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                         || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
-                    Logger.d(TAG, "Show home fragment");
+                    Logger.d(TAG, "onSelected Show home fragment");
                     DashboardActivity.getDashboardActivity().showHomeActivity(myDevice);
                 } else {
                     Fragment fr = DashboardActivity.getDashboardActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
@@ -122,15 +124,11 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
         //int marginTop = UiUtils.getDeviceNameMarginTop(this);
         //gridView.setPadding(0, marginTop, 0, UiUtils.dip2px(this, 20));
-        if (lists == null) {
-            lists = new ArrayList<>();
-        }
-        initMyDeviceList();
-        myGridAdapter.setMyAdapterList(lists);
+        myGridAdapter.setMyAdapterList(DeviceManager.getInstance(this).getMyDeviceList());
         gridView.setDeleteView(viewDelete);
         gridView.setMenuBar((RelativeLayout) findViewById(R.id.relative_layout_dashboard_title));
         gridView.setAdapter(myGridAdapter);
-        if (lists.size() == 0) {
+        if (DeviceManager.getInstance(this).getMyDeviceList().size() == 0) {
             gridView.setVisibility(View.GONE);
             textViewTips.setVisibility(View.VISIBLE);
             dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 2000);
@@ -140,6 +138,12 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         }
         findViewById(R.id.image_view_dashboard_white_menu).setOnClickListener(this);
         findViewById(R.id.image_view_dashboard_white_plus).setOnClickListener(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     @Override
@@ -159,18 +163,26 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         DeviceManager.getInstance(this).setOnResume();
-        Logger.d(TAG, "onResume isConnectedCalled =" + isConnectedCalled + ",isInBackground =" + isInBackground);
+        Logger.d(TAG, "onResume isInBackground =" + isInBackground+",isConnected ="+DeviceManager.getInstance(this).isConnected());
         checkBluetooth();
-        if (isConnected()) {
+        if (DeviceManager.getInstance(this).isConnected()) {
             dashboardHandler.removeMessages(MSG_START_SCAN);
             dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
         }
-        if (isConnected() && isInBackground) {
-            isInBackground = false;
-            dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
-        } else if (isConnected() && isConnectedCalled) {
-            isConnectedCalled = false;
-            dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
+        if (DeviceManager.getInstance(this).isConnected()) {
+            Logger.d(TAG, "onResume isFirstUser ="+DeviceManager.getInstance(this).isFromHome());
+            if (DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.Connected_USBDevice
+                    && !DeviceManager.getInstance(this).isFromHome()) {
+                DeviceManager.getInstance(this).setIsFromHome(false);
+                Logger.d(TAG, "onResume Connected_USBDevice");
+                dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
+            } else {
+                Logger.d(TAG, "onResume bt device");
+                if (isInBackground) {
+                    isInBackground = false;
+                    dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
+                }
+            }
         }
     }
 
@@ -185,7 +197,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
         Logger.d(TAG, "onStop");
-        DeviceManager.getInstance(this).setOnStop();
     }
 
     @Override
@@ -200,6 +211,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         unregisterReceiver(mBtReceiver);
         super.onDestroy();
         finishActivity(this);
+        DeviceManager.getInstance(this).setUsbDeviceStop();
         DeviceManager.getInstance(this).setOnDestroy();
     }
 
@@ -215,6 +227,8 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             if (!(currentActivity() instanceof DashboardActivity) && !DeviceManager.getInstance(this).isNeedOtaAgain()) {
                 currentActivity().finish();
             }
+
+            Logger.d(TAG, " connectDeviceStatus isForeground = "+isForeground());
             if (isForeground()) {
                 dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
             } else {
@@ -228,21 +242,21 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 removeAllFragment();
                 currentActivity().finish();
             }
-            updateDisconnectedAdapter();
-            myGridAdapter.setMyAdapterList(lists);
+//            updateDisconnectedAdapter();
+            myGridAdapter.setMyAdapterList(DeviceManager.getInstance(this).getMyDeviceList());
         }
     }
 
     public void removeDeviceList(String key) {
         MyDevice temp = null;
-        for (MyDevice myDevice : lists) {
+        for (MyDevice myDevice : DeviceManager.getInstance(this).getMyDeviceList()) {
             if (myDevice.deviceKey.equalsIgnoreCase(key)) {
                 temp = myDevice;
                 break;
             }
         }
         if (temp != null)
-            lists.remove(temp);
+            DeviceManager.getInstance(this).getMyDeviceList().remove(temp);
         AppUtils.removeMyDevice(mContext, key);
         if (AppUtils.getMyDeviceSize(mContext) == 0) {
             textViewTips.setVisibility(View.VISIBLE);
@@ -251,14 +265,11 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     }
 
     public void checkDevices(Set<String> deviceList) {
-        Message msg = new Message();
-        msg.what = MSG_CHECK_MY_DEVICE;
-        msg.obj = deviceList;
-        dashboardHandler.sendMessage(msg);
-    }
-
-    public boolean isConnected() {
-        return DeviceManager.getInstance(this).isConnected();
+//        Message msg = new Message();
+//        msg.what = MSG_CHECK_MY_DEVICE;
+//        msg.obj = deviceList;
+//        dashboardHandler.sendMessage(msg);
+        showMyProducts();
     }
 
     @Override
@@ -300,15 +311,9 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     private void showMyProducts() {
         removeAllFragment();
-        dashboardHandler.removeMessages(MSG_SHOW_MY_PRODUCTS);
-        dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
-        myGridAdapter.setMyAdapterList(lists);
+        myGridAdapter.setMyAdapterList(DeviceManager.getInstance(this).getMyDeviceList());
         gridView.setVisibility(View.VISIBLE);
         textViewTips.setVisibility(View.GONE);
-    }
-
-    public void startA2DPCheck() {
-        DeviceManager.getInstance(this).startA2DPCheck();
     }
 
     public static DashboardActivity getDashboardActivity() {
@@ -326,21 +331,24 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_SHOW_MY_PRODUCTS: {
+                    Logger.d(TAG, "msg show my product");
                     showMyProducts();
-                    startA2DPCheck();
+                    DeviceManager.getInstance(getDashboardActivity()).startA2DPCheck();
                     dashboardHandler.removeMessages(MSG_START_SCAN);
+                    dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
                     dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT, 2000);
+                    Logger.d(TAG, "msg show my product end");
                     break;
                 }
                 case MSG_SHOW_HOME_FRAGMENT: {
                     Logger.d(TAG, "show homeFragment");
                     removeAllFragment();
-                    showHomeActivity(getMyDeviceConnected());
+                    showHomeActivity(DeviceManager.getInstance(getDashboardActivity()).getMyDeviceConnected());
                     break;
                 }
                 case MSG_SHOW_DISCOVERY: {
                     Logger.d(TAG, "show discovery page");
-                    if (lists.size() == 0) {
+                    if (DeviceManager.getInstance(getDashboardActivity()).getMyDeviceList().size() == 0) {
                         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                         if (fr == null) {
                             switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
@@ -351,30 +359,31 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                     break;
                 }
                 case MSG_START_SCAN: {
-                    if (isConnected()) {
-                        startA2DPCheck();
+                    if (DeviceManager.getInstance(getDashboardActivity()).isConnected()) {
+                        DeviceManager.getInstance(getDashboardActivity()).startA2DPCheck();
                     }
                     dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
                     break;
                 }
-                case MSG_CHECK_MY_DEVICE: {
-                    Set<String> deviceList = (Set<String>) msg.obj;
-                    Logger.i(TAG, "MSG_CHECK_MY_DEVICE deviceList = " + deviceList);
-                    if (hasNewDevice(deviceList)) {
-                        initMyDeviceList();
-                        updateMyDeviceStatus(deviceList);
-                        showMyProducts();
-                    } else {
-                        updateMyDeviceStatus(deviceList);
-                        myGridAdapter.setMyAdapterList(lists);
-                    }
-                    break;
-                }
+//                case MSG_CHECK_MY_DEVICE: {
+//                    Set<String> deviceList = (Set<String>) msg.obj;
+//                    Logger.i(TAG, "MSG_CHECK_MY_DEVICE deviceList = " + deviceList);
+//                    if (hasNewDevice(DeviceManager.getInstance(getDashboardActivity()).getDevicesSet())) {
+//                        initMyDeviceList();
+//                        updateMyDeviceStatus(deviceList);
+//                        showMyProducts();
+//                    } else {
+//                        updateMyDeviceStatus(DeviceManager.getInstance(getDashboardActivity()).getDevicesSet());
+//                        myGridAdapter.setMyAdapterList(DeviceManager.getInstance(getDashboardActivity()).getMyDeviceList());
+//                    }
+//                    break;
+//                }
             }
         }
     }
 
     public void showHomeActivity(MyDevice myDevice) {
+        Logger.d(TAG, "show home activity");
         dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
         dashboardHandler.removeMessages(MSG_SHOW_MY_PRODUCTS);
         dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
@@ -385,17 +394,10 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                 && DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
             Logger.d(TAG, "truenote");
-
-            Bundle b = new Bundle();
-            b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
-            Intent intent = new Intent(this, CalibrationActivity.class);
-            intent.putExtra("bundle", b);
-            startActivity(intent);
+            startActivity(new Intent(this, CalibrationActivity.class));
         } else {
-            Bundle b = new Bundle();
-            b.putParcelable(JBLConstant.KEY_MY_DEVICE, myDevice);
             Intent intent = new Intent(this, HomeActivity.class);
-            intent.putExtra("bundle", b);
+            intent.putExtra(JBLConstant.KEY_CONNECT_STATUS, myDevice.connectStatus);
             startActivity(intent);
             overridePendingTransition(R.anim.fadin, R.anim.fadeout);
         }
@@ -471,7 +473,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                             if (fr instanceof TurnOnBtTipsFragment) {
                                 removeAllFragment();
                             }
-                            if (lists.size() == 0) {
+                            if (DeviceManager.getInstance(getDashboardActivity()).getMyDeviceList().size() == 0) {
                                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 2000);
                             }
                             break;

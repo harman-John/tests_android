@@ -10,6 +10,9 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -60,11 +63,10 @@ import jbl.stc.com.utils.StatusBarUtil;
 
 
 public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,View.OnTouchListener, AppLightXDelegate,OnDownloadedListener,ConnectListener {
-    private final static String TAG = BaseActivity.class.getSimpleName();
+    private final static String TAG = BaseActivity.class.getSimpleName()+"aa";
     protected Context mContext;
-    protected USBReceiver usbReceiver;
+//    protected USBReceiver usbReceiver;
     public static boolean isOTADoing = false;
-    protected static List<MyDevice> lists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +74,11 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
         DeviceManager.getInstance(this).setConnectListener(this);
         mContext = this;
         LightX.sEnablePacketDumps = false;
-        usbReceiver = new USBReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        registerReceiver(usbReceiver, intentFilter);
+//        usbReceiver = new USBReceiver();
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+//        intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+//        registerReceiver(usbReceiver, intentFilter);
     }
 
     @Override
@@ -113,98 +115,9 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     protected void onDestroy() {
         super.onDestroy();
         finishActivity(this);
-        unregisterReceiver(usbReceiver);
+//        unregisterReceiver(usbReceiver);
     }
 
-    public void checkMyDevice(){
-        Set<String> deviceList = DeviceManager.getInstance(this).getDevicesSet();
-        Logger.i(TAG, "MSG_CHECK_DEVICES deviceList = " + deviceList);
-        if (hasNewDevice(deviceList)) {
-            initMyDeviceList();
-        }
-        updateMyDeviceStatus(deviceList);
-    }
-
-    public void initMyDeviceList() {
-        lists.clear();
-        Set<String> devicesSet = PreferenceUtils.getStringSet(getApplicationContext(), PreferenceKeys.MY_DEVICES);
-        Logger.i(TAG, "deviceSet = " + devicesSet);
-        for (String value : devicesSet) {
-            lists.add(AppUtils.getMyDevice(value));
-        }
-    }
-
-    public void updateMyDeviceStatus(Set<String> deviceList) {
-        Logger.i(TAG, "updateMyDeviceStatus lists= " + lists.size());
-        for (MyDevice myDevice : lists) {
-            myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
-        }
-        List<MyDevice> myDeviceListA2dp = new ArrayList<>();
-        for (String key : deviceList) {
-            myDeviceListA2dp.add(AppUtils.getMyDevice(key));
-        }
-        for (MyDevice myDeviceA2dp : myDeviceListA2dp) {
-            for (MyDevice myDevice : lists) {
-                if (myDeviceA2dp.equals(myDevice)) {
-                    Logger.i(TAG, "myDeviceA2dp deviceKey= " + myDeviceA2dp.deviceKey);
-                    if (myDevice.deviceName.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
-                        Logger.i(TAG, "isConnected = " + DeviceManager.getInstance(this).isConnected());
-                        if (DeviceManager.getInstance(this).isConnected()) {
-                            myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
-                        }
-                    } else {
-                        if (DeviceManager.getInstance(this).getSpecifiedDevice() != null) {
-                            String mainDeviceKey = DeviceManager.getInstance(this).getSpecifiedDevice().getName() + "-" + DeviceManager.getInstance(this).getSpecifiedDevice().getAddress();
-                            Logger.i(TAG, "mainDeviceKey = " + mainDeviceKey);
-                            if (DeviceManager.getInstance(this).isConnected() && mainDeviceKey.toUpperCase().equalsIgnoreCase(myDeviceA2dp.deviceKey.toUpperCase())) {
-                                Logger.i(TAG, "DEVICE_CONNECTED = " + mainDeviceKey);
-                                myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
-                            } else {
-                                myDevice.connectStatus = ConnectStatus.A2DP_HALF_CONNECTED;
-                            }
-                        } else {
-                            myDevice.connectStatus = ConnectStatus.A2DP_HALF_CONNECTED;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public void updateDisconnectedAdapter() {
-        for (MyDevice myDevice : lists) {
-            Logger.i(TAG, "updateDisconnectedAdapter deviceKey= " + myDevice.deviceKey + ",connectStatus = " + myDevice.connectStatus);
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
-                break;
-            }
-        }
-    }
-
-    public MyDevice getMyDeviceConnected() {
-        for (MyDevice myDevice : lists) {
-            Logger.i(TAG, "getMyDeviceConnected deviceKey= " + myDevice.deviceKey + ",connectStatus = " + myDevice.connectStatus);
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                return myDevice;
-            }
-        }
-        return null;
-    }
-
-    public boolean hasNewDevice(Set<String> deviceList) {
-        Set<String> set1 = new HashSet<>(deviceList);
-        Set<String> set2 = new HashSet<>();
-        for (MyDevice myDevice : lists) {
-            String device = myDevice.deviceKey;
-            set2.add(device);
-        }
-        set2.retainAll(set1);
-        if (set2.size() == set1.size()) {
-            return false;
-        }
-        Logger.i(TAG, "has new Device");
-        return true;
-    }
 
     private boolean isStopped = false;
     public boolean isStopped(){
@@ -413,12 +326,9 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
 
     }
 
-    public static boolean isConnectedCalled = false;
     @Override
     public void connectDeviceStatus(boolean isConnected) {
-        if (isConnected) {
-            isConnectedCalled = true;
-        }
+
     }
 
     @Override
@@ -431,6 +341,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
         @Override
         public void onReceive(Context context, Intent intent) {
             UsbDevice usbDevice = (UsbDevice) intent.getExtras().get(UsbManager.EXTRA_DEVICE);
+            Logger.d(TAG,"usbDevice action = " + intent.getAction());
             if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
                 BaseActivity.this.usbDetached(usbDevice);
             } else {
