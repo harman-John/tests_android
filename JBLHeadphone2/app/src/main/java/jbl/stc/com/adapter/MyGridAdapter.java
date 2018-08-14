@@ -39,7 +39,6 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
     public List<MyDevice> mLists = new ArrayList<>();
     private Context mContext;
     public int mHidePosition = -1;
-    private OnDeviceItemSelectedListener onDeviceItemSelectedListener;
 
     public void setMyAdapterList(List<MyDevice> lists) {
         Collections.sort(lists, new Comparator<MyDevice>() {
@@ -63,14 +62,6 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
 
     public void removeAllMessage() {
         cbHandler.removeMessages(MSG_SHOW_FRAGMENT);
-    }
-
-    public void setOnDeviceSelectedListener(OnDeviceItemSelectedListener onItemSelectedListener) {
-        this.onDeviceItemSelectedListener = onItemSelectedListener;
-    }
-
-    public interface OnDeviceItemSelectedListener{
-        void onSelected(int position);
     }
 
     @Override
@@ -142,9 +133,6 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
                 msg.what = MSG_SHOW_FRAGMENT;
                 msg.arg1 = position;
                 cbHandler.sendMessage(msg);
-                /*if (onDeviceItemSelectedListener != null) {
-                    onDeviceItemSelectedListener.onSelected(position);
-                }*/
             }
         });
         if (position == mHidePosition) {

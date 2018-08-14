@@ -97,28 +97,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         textViewTips.append(getString(R.string.my_products_tips_end));
         gridView = findViewById(R.id.grid_view_dashboard);
         myGridAdapter = new MyGridAdapter();
-        myGridAdapter.setOnDeviceSelectedListener(new MyGridAdapter.OnDeviceItemSelectedListener() {
-            @Override
-            public void onSelected(int position) {
-                MyDevice myDevice = myGridAdapter.mLists.get(position);
-                if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
-                        || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
-                    Logger.d(TAG, "Show home fragment");
-                    DashboardActivity.getDashboardActivity().showHomeActivity(myDevice);
-                } else {
-                    Fragment fr = DashboardActivity.getDashboardActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                    if (fr instanceof UnableConnectFragment) {
-                        Logger.d(TAG, "fr is already UnableConnectFragment");
-                        return;
-                    }
-                    Bundle bundle = new Bundle();
-                    bundle.putString(JBLConstant.DEVICE_MODEL_NAME, myDevice.deviceName);
-                    UnableConnectFragment unableConnectFragment = new UnableConnectFragment();
-                    unableConnectFragment.setArguments(bundle);
-                    DashboardActivity.getDashboardActivity().switchFragment(unableConnectFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                }
-            }
-        });
         if (lists == null) {
             lists = new ArrayList<>();
         }
