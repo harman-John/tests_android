@@ -6,12 +6,16 @@ import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import jbl.stc.com.logger.Logger;
+
 /**
  * AppImageView
  * Created by darren.lu on 2017/8/26.
  */
 
 public class AppImageView extends AppCompatImageView {
+    private static final String TAG = AppImageView.class.getSimpleName();
+
     public AppImageView(Context context) {
         super(context);
     }
@@ -28,18 +32,19 @@ public class AppImageView extends AppCompatImageView {
     public boolean onTouchEvent(MotionEvent event) {
         //Logger.d("AppImageView", "onTouchEvent " + event.getAction());
 
+        Logger.d(TAG,"get alpha is "+getAlpha());
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                setAlpha(0.5f);
+                setAlpha((float) (getAlpha()*0.5));
                 break;
             case MotionEvent.ACTION_MOVE:
-                setAlpha(0.5f);
+                setAlpha((float) (getAlpha()*0.5));
                 break;
             case MotionEvent.ACTION_UP:
-                setAlpha(1f);
+                setAlpha(getAlpha());
                 break;
             case MotionEvent.ACTION_CANCEL:
-                setAlpha(1f);
+                setAlpha(getAlpha());
                 break;
         }
         return super.onTouchEvent(event);

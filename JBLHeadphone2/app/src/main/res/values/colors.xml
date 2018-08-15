@@ -54,7 +54,7 @@
     <color name="dialogBackGround">#99000000</color>
     <color name="gray_aa_bg">#D7DBDF</color>
 
-    <color name="black">@android:color/black</color>
+    <color name="black">#000000</color>
 
     <color name="orange">#EE4000</color>
     <color name="red_discovery">#FF3301</color>

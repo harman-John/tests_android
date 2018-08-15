@@ -367,7 +367,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         Set<String> devicesSet = PreferenceUtils.getStringSet(mContext, PreferenceKeys.MY_DEVICES);
         Logger.i(TAG, "deviceSet = " + devicesSet);
         for (String value : devicesSet) {
-            lists.add(AppUtils.getMyDevice(value));
+            lists.add(AppUtils.getMyDevice(mContext,value));
         }
     }
 
@@ -393,7 +393,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         }
         List<MyDevice> myDeviceListA2dp = new ArrayList<>();
         for (String key : deviceList) {
-            myDeviceListA2dp.add(AppUtils.getMyDevice(key));
+            myDeviceListA2dp.add(AppUtils.getMyDevice(mContext,key));
         }
         for (MyDevice myDeviceA2dp : myDeviceListA2dp) {
             for (MyDevice myDevice : lists) {

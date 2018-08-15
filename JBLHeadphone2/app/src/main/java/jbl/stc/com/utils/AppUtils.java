@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -341,37 +342,37 @@ public class AppUtils {
        return PreferenceUtils.getStringSet(context, PreferenceKeys.MY_DEVICES).size();
     }
 
-    public static MyDevice getMyDevice(String value){
+    public static MyDevice getMyDevice(Context context,String value){
         MyDevice myDevice = new MyDevice();
         myDevice.deviceKey = value;
         myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
         if (value.toUpperCase().contains(JBLConstant.DEVICE_LIVE_650BTNC)) {
             myDevice.deviceName = JBLConstant.DEVICE_LIVE_650BTNC;
-            myDevice.deviceIcon = R.mipmap.everest_elite_700_icon;
+            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_700_icon);
         } else if (value.toUpperCase().contains(JBLConstant.DEVICE_LIVE_400BT)) {
             myDevice.deviceName = JBLConstant.DEVICE_LIVE_400BT;
-            myDevice.deviceIcon = R.mipmap.everest_elite_700_icon;
+            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_700_icon);
         } else if (value.toUpperCase().contains(JBLConstant.DEVICE_LIVE_500BT)) {
             myDevice.deviceName = JBLConstant.DEVICE_LIVE_500BT;
-            myDevice.deviceIcon = R.mipmap.everest_elite_700_icon;
+            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_700_icon);
         } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_750NC)) {
             myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_750NC;
-            myDevice.deviceIcon = R.mipmap.everest_elite_750nc_icon;
+            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_750nc_icon);
         } else if (value.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
             myDevice.deviceName = JBLConstant.DEVICE_REFLECT_AWARE;
-            myDevice.deviceIcon = R.mipmap.reflect_aware_icon;
+            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.reflect_aware_icon);
         } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_150NC)) {
             myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_150NC;
-            myDevice.deviceIcon = R.mipmap.everest_elite_150nc_icon;
+            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_150nc_icon);
         } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_700)) {
             myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_700;
-            myDevice.deviceIcon = R.mipmap.everest_elite_700_icon;
+            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_700_icon);
         } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_100)) {
             myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_100;
-            myDevice.deviceIcon = R.mipmap.everest_elite_100_icon;
+            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_100_icon);
         } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_300)) {
             myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_300;
-            myDevice.deviceIcon = R.mipmap.everest_elite_300_icon;
+            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_300_icon);
         }
         return myDevice;
     }

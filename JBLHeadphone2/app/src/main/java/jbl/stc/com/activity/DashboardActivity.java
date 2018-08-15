@@ -14,7 +14,10 @@ import android.support.v4.app.Fragment;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -67,8 +70,9 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     private MyDragGridView gridView;
     private MyGridAdapter myGridAdapter;
-    private TextView textViewTips;
+//    private TextView textViewTips;
     private EqArcView viewDelete;
+    private ImageView imageViewWhitePlus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,17 +90,12 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initView() {
-        viewDelete = findViewById(R.id.delete_view);
-        textViewTips = findViewById(R.id.text_view_dashboard_tips);
 
-        Drawable drawable = getResources().getDrawable(R.mipmap.white_plus);
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        SpannableString spannableString = new SpannableString("+");
-        ImageSpan imageSpan = new ImageSpan(drawable, ImageSpan.ALIGN_BOTTOM);
-        spannableString.setSpan(imageSpan, 0, spannableString.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-        textViewTips.append(getString(R.string.my_products_tips_front));
-        textViewTips.append(spannableString);
-        textViewTips.append(getString(R.string.my_products_tips_end));
+        imageViewWhitePlus = findViewById(R.id.image_view_dashboard_white_plus);
+        imageViewWhitePlus.setOnClickListener(this);
+        viewDelete = findViewById(R.id.delete_view);
+//        textViewTips = findViewById(R.id.text_view_dashboard_tips);
+
         gridView = findViewById(R.id.grid_view_dashboard);
         myGridAdapter = new MyGridAdapter();
 
@@ -104,6 +103,10 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onSelected(int position) {
                 MyDevice myDevice = myGridAdapter.mLists.get(position);
+                if (myDevice.deviceKey.equals(mContext.getString(R.string.plus))){
+                    switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                    return;
+                }
                 if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                         || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                     Logger.d(TAG, "onSelected Show home fragment");
@@ -124,19 +127,56 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         });
 
         myGridAdapter.setMyAdapterList(DeviceManager.getInstance(this).getMyDeviceList());
+        myGridAdapter.setMenuBar((RelativeLayout) findViewById(R.id.relative_layout_dashboard_title));
+        myGridAdapter.setImageViewPlus(imageViewWhitePlus);
         gridView.setDeleteView(viewDelete);
         gridView.setMenuBar((RelativeLayout) findViewById(R.id.relative_layout_dashboard_title));
         gridView.setAdapter(myGridAdapter);
+        gridView.setVisibility(View.VISIBLE);
+        gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                Logger.d(TAG,"onScroll state changed view = "+view
+                        +",scrollState ="+scrollState);
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                Logger.d(TAG,"on scroll firstVisibleItem = "+ firstVisibleItem
+                        +",visibleItemCount = "+visibleItemCount
+                        +",totalItemCount = "+totalItemCount);
+                if (gridView.getLastVisiblePosition() == totalItemCount -1){
+                    View v = view.getChildAt(view.getChildCount()-1);
+                    int[] location = new int[2];
+                    v.getLocationOnScreen(location);
+                    Logger.d(TAG,"get view height = "+ v.getHeight()
+                            +",getScreenSize = "+UiUtils.getScreenSize(mContext)[1]
+                            +",screen 30dp = "+UiUtils.dip2px(mContext,20)
+                            +",location1 =" + location[1]);
+                    int viewTop = UiUtils.getScreenSize(mContext)[1] - UiUtils.dip2px(mContext,20);
+                    if (location[1] <= viewTop  &&  location[1] >= viewTop- v.getHeight()/2){
+                        float percent = ((float)viewTop - (float)location[1])/((float)(v.getHeight()/2));
+                        float alpha = 1 - percent;
+                        Logger.d(TAG,"alpha is "+ alpha+",percent ="+percent);
+                        imageViewWhitePlus.setAlpha(alpha);
+                        imageViewWhitePlus.setVisibility(View.VISIBLE);
+                    }else if (location[1] <= viewTop - v.getHeight()/2 && location[1] >= viewTop- v.getHeight()){
+                        imageViewWhitePlus.setAlpha((float) 0);
+                        imageViewWhitePlus.setVisibility(View.GONE);
+                    }
+                }else{
+                    imageViewWhitePlus.setAlpha((float) 1.0);
+                }
+            }
+        });
         if (DeviceManager.getInstance(this).getMyDeviceList().size() == 0) {
-            gridView.setVisibility(View.GONE);
-            textViewTips.setVisibility(View.VISIBLE);
+//            textViewTips.setVisibility(View.VISIBLE);
             dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 2000);
         } else {
-            textViewTips.setVisibility(View.GONE);
-            gridView.setVisibility(View.VISIBLE);
+//            textViewTips.setVisibility(View.GONE);
         }
         findViewById(R.id.image_view_dashboard_white_menu).setOnClickListener(this);
-        findViewById(R.id.image_view_dashboard_white_plus).setOnClickListener(this);
     }
 
     @Override
@@ -257,9 +297,9 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         if (temp != null)
             DeviceManager.getInstance(this).getMyDeviceList().remove(temp);
         AppUtils.removeMyDevice(mContext, key);
-        if (AppUtils.getMyDeviceSize(mContext) == 0) {
-            textViewTips.setVisibility(View.VISIBLE);
-        }
+//        if (AppUtils.getMyDeviceSize(mContext) == 0) {
+//            textViewTips.setVisibility(View.VISIBLE);
+//        }
         DeviceManager.getInstance(this).removeDeviceList(key);
     }
 
@@ -312,7 +352,11 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         removeAllFragment();
         myGridAdapter.setMyAdapterList(DeviceManager.getInstance(this).getMyDeviceList());
         gridView.setVisibility(View.VISIBLE);
-        textViewTips.setVisibility(View.GONE);
+//        if(DeviceManager.getInstance(this).getMyDeviceList().size() ==0) {
+//            textViewTips.setVisibility(View.VISIBLE);
+//        }else{
+//            textViewTips.setVisibility(View.GONE);
+//        }
     }
 
     public static DashboardActivity getDashboardActivity() {

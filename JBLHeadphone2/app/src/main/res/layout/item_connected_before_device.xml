@@ -34,4 +34,16 @@
             android:scaleType="fitCenter"
             android:src="@mipmap/everest_elite_700_icon" />
     </RelativeLayout>
+
+    <jbl.stc.com.view.CustomFontTextView
+        android:id="@+id/text_view_item_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:textColor="@color/white"
+        android:textAlignment="center"
+        android:text="@string/no_product_tips"
+        android:textSize="18sp"
+        android:textStyle="normal" />
 </LinearLayout>

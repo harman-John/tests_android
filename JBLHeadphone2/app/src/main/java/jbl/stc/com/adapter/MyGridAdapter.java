@@ -1,18 +1,12 @@
 package jbl.stc.com.adapter;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.AdapterView;
+import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -25,11 +19,9 @@ import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.ConnectStatus;
-import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
-import jbl.stc.com.fragment.UnableConnectFragment;
-import jbl.stc.com.listener.OnEqItemSelectedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.MyDragGridView;
@@ -57,7 +49,21 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         });
         this.mLists.clear();
         this.mLists.addAll(lists);
+        MyDevice myDevicePlus = new MyDevice();
+        myDevicePlus.deviceKey = JBLApplication.getJBLApplicationContext().getString(R.string.plus);
+        myDevicePlus.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
+        myDevicePlus.drawable = ContextCompat.getDrawable(JBLApplication.getJBLApplicationContext(),R.mipmap.big_plus);
+        mLists.add(myDevicePlus);
         notifyDataSetChanged();
+    }
+
+    private RelativeLayout relativeLayoutMenu;
+    public void setMenuBar(RelativeLayout relativeLayout){
+        relativeLayoutMenu = relativeLayout;
+    }
+    private ImageView imageViewPlus;
+    public void setImageViewPlus(ImageView imageView){
+        imageViewPlus = imageView;
     }
 
     private OnDeviceItemSelectedListener mOnDeviceItemSelectedListener;
@@ -94,9 +100,15 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             viewHolder.relativeLayoutBreathingIcon = convertView.findViewById(R.id.relative_layout_item_connected_before_breathing_icon);
             viewHolder.textViewDeviceName = convertView.findViewById(R.id.text_view_item_connected_before_device_name);
             viewHolder.imageViewIcon = convertView.findViewById(R.id.image_view_item_connected_before_device_icon);
+            viewHolder.textViewTips = convertView.findViewById(R.id.text_view_item_tips);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
+        }
+        if (mLists.size() <=1){
+            viewHolder.textViewTips.setVisibility(View.VISIBLE);
+        }else{
+            viewHolder.textViewTips.setVisibility(View.GONE);
         }
         int marginTop = UiUtils.getDeviceNameMarginTop(mContext);
         int height = UiUtils.getDashboardDeviceImageHeight(mContext);
@@ -115,24 +127,33 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             deviceNameParams.topMargin = UiUtils.dip2px(mContext,30);
             viewHolder.textViewDeviceName.setLayoutParams(deviceNameParams);
         }
+        if (mLists.get(position).deviceKey.equals(mContext.getString(R.string.plus))){
+            viewHolder.relativeLayoutBreathingIcon.setBackground(ContextCompat.getDrawable(mContext,R.drawable.shape_product_circle_black));
+            viewHolder.relativeLayoutBreathingIcon.setGravity(Gravity.CENTER);
+            viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(16);
+            viewHolder.imageViewIcon.setImageAlpha(255);
+            viewHolder.textViewDeviceName.setText("");
+        }else{
+            viewHolder.relativeLayoutBreathingIcon.setBackground(ContextCompat.getDrawable(mContext,R.drawable.shape_product_circle));
 
-        if (mLists.get(position).connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(255);
-            viewHolder.imageViewIcon.setImageAlpha(255);
-        } else if (mLists.get(position).connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
-            viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(128);
-            viewHolder.imageViewIcon.setImageAlpha(255);
-        } else {
-            viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(128);
-            viewHolder.imageViewIcon.setImageAlpha(128);
+            if (mLists.get(position).connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+                viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(255);
+                viewHolder.imageViewIcon.setImageAlpha(255);
+            } else if (mLists.get(position).connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+                viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(128);
+                viewHolder.imageViewIcon.setImageAlpha(255);
+            } else {
+                viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(128);
+                viewHolder.imageViewIcon.setImageAlpha(128);
+            }
+            viewHolder.textViewDeviceName.setText(mLists.get(position).deviceName);
         }
-        viewHolder.textViewDeviceName.setText(mLists.get(position).deviceName);
+        viewHolder.imageViewIcon.setImageDrawable(mLists.get(position).drawable);
 
-        viewHolder.imageViewIcon.setImageDrawable(ContextCompat.getDrawable(mContext, mLists.get(position).deviceIcon));
-        viewHolder.imageViewIcon.setOnClickListener(new View.OnClickListener() {
+        viewHolder.relativeLayoutBreathingIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Logger.i(TAG, "v = " + v + ",position = " + position);
+                Logger.i(TAG, "v = " + v );
                 if (mOnDeviceItemSelectedListener != null){
                     mOnDeviceItemSelectedListener.onSelected(position);
                 }
@@ -186,5 +207,6 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         private TextView textViewDeviceName;
         private ImageView imageViewIcon;
         private RelativeLayout relativeLayoutBreathingIcon;
+        private TextView textViewTips;
     }
 }

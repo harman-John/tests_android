@@ -49,20 +49,6 @@
 
         </RelativeLayout>
 
-        <jbl.stc.com.view.CustomFontTextView
-            android:id="@+id/text_view_dashboard_tips"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginEnd="@dimen/marginLRBorder"
-            android:layout_marginStart="@dimen/marginLRBorder"
-            android:layout_marginTop="148dp"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
         <jbl.stc.com.view.MyDragGridView
             android:id="@+id/grid_view_dashboard"
             android:layout_width="wrap_content"
