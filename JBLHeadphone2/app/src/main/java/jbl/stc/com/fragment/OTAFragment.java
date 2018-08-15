@@ -194,7 +194,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     getActivity().onBackPressed();
                 }else if (((TextView)v).getText().equals(getString(R.string.retry))){
                     if (FirmwareUtil.isUpdatingFirmWare.get()) {
-                        if (AvneraManager.getAvenraManager(getActivity()).getLightX()!= null) {
+                        if (AvneraManager.getAvenraManager().getLightX()!= null) {
                             progressFactor = 0.0f;
                             DeviceManager.getInstance(getActivity()).setIsNeedOtaAgain(true);
                             startCheckingIfUpdateIsAvailable();
@@ -343,7 +343,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             Logger.i(TAG,"isSuccessFulDownload = "+isSuccessFulDownload);
             if (isSuccessFulDownload) {
                 isOTADoing = true;
-                if (AvneraManager.getAvenraManager(getActivity()).getLightX() == null) {
+                if (AvneraManager.getAvenraManager().getLightX() == null) {
                     Logger.i(TAG," lightX is null");
                     startUpdate();
                     if (fwList.size() <= 0) {
@@ -425,13 +425,13 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     data = FirmwareUtil.readInputStream(new FileInputStream(firmwareModel.getFile()));
                     Logger.i(TAG,"startWritingFirmware APP getName =  "+firmwareModel.getName() );
                     Logger.d(TAG, "first 1024 bytes of firmware to write:\n" + Debug.hexify(data, 0, 1024));
-                    AvneraManager.getAvenraManager(getActivity()).getLightX().writeFirmware(LightX.FirmwareRegion.Application, data);
+                    AvneraManager.getAvenraManager().getLightX().writeFirmware(LightX.FirmwareRegion.Application, data);
                     break;
                 case RSRC:
                     data = FirmwareUtil.readInputStream(new FileInputStream(firmwareModel.getFile()));
                     Logger.i(TAG,"startWritingFirmware RSRC getName =  "+firmwareModel.getName() );
                     Logger.d(TAG, "first 1024 bytes of firmware to write:\n" + Debug.hexify(data, 0, 1024));
-                    AvneraManager.getAvenraManager(getActivity()).getLightX().writeFirmware(LightX.FirmwareRegion.Resource, data);
+                    AvneraManager.getAvenraManager().getLightX().writeFirmware(LightX.FirmwareRegion.Resource, data);
                     break;
                 case BOOT:
                     startWritingFirmware();
@@ -449,7 +449,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
 
     private void updateParam(){
         Logger.d(TAG, "disable accessory interrupts");
-        Cmd150Manager.getInstance().setFirmwareUpdateState(AvneraManager.getAvenraManager(getActivity()).getAudioManager(),JBLConstant.DISABLE_ACCESSORY_INTERRUPTS);
+        Cmd150Manager.getInstance().setFirmwareUpdateState(AvneraManager.getAvenraManager().getAudioManager(),JBLConstant.DISABLE_ACCESSORY_INTERRUPTS);
         FirmwareModel firmwareModel = findImage(FwTYPE.PARAM);
         String version = firmwareModel.getVersion();
         String currentVersion = transferCurrentVersion(version);
@@ -470,7 +470,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             imageUpdateError();
             return;
         }
-        Cmd150Manager.getInstance().updateImage(AvneraManager.getAvenraManager(getActivity()).getAudioManager(),
+        Cmd150Manager.getInstance().updateImage(AvneraManager.getAvenraManager().getAudioManager(),
                 data, currentVersion,
                 ImageType.Parameters,currentFW == 0 ? (byte) 1 : (byte) 0);
     }
@@ -490,7 +490,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         }
         otaSteps = 1;
         Logger.d(TAG,"Data length ="+data.length);
-        Cmd150Manager.getInstance().updateImage(AvneraManager.getAvenraManager(getActivity()).getAudioManager(),
+        Cmd150Manager.getInstance().updateImage(AvneraManager.getAvenraManager().getAudioManager(),
                 data, currentVersion,
                 ImageType.Data,currentFW == 0 ? (byte) 1 : (byte) 0);
     }
@@ -510,7 +510,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         }
         otaSteps = 2;
         Logger.d(TAG,"Firmware length ="+data.length);
-        Cmd150Manager.getInstance().updateImage(AvneraManager.getAvenraManager(getActivity()).getAudioManager(),
+        Cmd150Manager.getInstance().updateImage(AvneraManager.getAvenraManager().getAudioManager(),
                 data, currentVersion,
                 ImageType.Firmware,currentFW == 0 ? (byte) 1 : (byte) 0);
     }
@@ -636,7 +636,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                                 deviceRePlug();
                                 break;
                             case Connected_BluetoothDevice:
-                                AvneraManager.getAvenraManager(getActivity()).getLightX().enterApplication();
+                                AvneraManager.getAvenraManager().getLightX().enterApplication();
                                 Logger.d(TAG, "OTA enterApplication");
                                 deviceRestarting();
                                 break;
@@ -674,7 +674,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
             startWritingFirmware();
         } else {
             FirmwareUtil.isUpdatingFirmWare.set(true);
-            AvneraManager.getAvenraManager(getActivity()).getLightX().enterBootloader();
+            AvneraManager.getAvenraManager().getLightX().enterBootloader();
             Logger.d(TAG, "OTA enterBootloader");
         }
     }
@@ -719,7 +719,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                 break;
             }
             case AmCmds.CMD_FirmwareVersion: {
-                AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager(getActivity()).getAudioManager().getAccessoryStatus();
+                AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager().getAudioManager().getAccessoryStatus();
                 String version = accessoryInfo.getFirmwareRev();
                 Logger.e(TAG,"onLineFwVersion : "+version);
                 onLineFwVersion = version;
@@ -857,12 +857,12 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                                             Logger.d(TAG, "OTA startFirmware deviceFwVersion = "+ mOnLineFirmware);
                                             String curVer = transferCurrentVersion(mOnLineFirmware);
                                             int valueOf = Integer.valueOf(curVer, 16);
-                                            Cmd150Manager.getInstance().setFirmwareVersion(AvneraManager.getAvenraManager(getActivity()).getAudioManager()
+                                            Cmd150Manager.getInstance().setFirmwareVersion(AvneraManager.getAvenraManager().getAudioManager()
                                                     ,valueOf);
                                             Logger.d(TAG, "enable accessory interrupts handle ImageUpdateFinalize step 2 then start firmware");
-                                            Cmd150Manager.getInstance().setFirmwareUpdateState(AvneraManager.getAvenraManager(getActivity()).getAudioManager(), JBLConstant.ENABLE_ACCESSORY_INTERRUPTS);
+                                            Cmd150Manager.getInstance().setFirmwareUpdateState(AvneraManager.getAvenraManager().getAudioManager(), JBLConstant.ENABLE_ACCESSORY_INTERRUPTS);
                                             Logger.d(TAG, "OTA " + "startFirmware");
-                                            Cmd150Manager.getInstance().startFirmware(AvneraManager.getAvenraManager(getActivity()).getAudioManager(),
+                                            Cmd150Manager.getInstance().startFirmware(AvneraManager.getAvenraManager().getAudioManager(),
                                                     currentFW == 0 ? (byte) 1 : (byte) 0);
                                             Logger.d(TAG, "OTA startFirmware over");
                                         }
@@ -1092,9 +1092,9 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
                     if (DeviceManager.getInstance(getActivity()).isNeedOtaAgain()){
                         otaError(true,R.string.update_failed_firmware,R.string.update_failed_firmware_detail_1);
                     }else {
-                        if (AvneraManager.getAvenraManager(getActivity()).getLightX() != null) {
+                        if (AvneraManager.getAvenraManager().getLightX() != null) {
                             Logger.e(TAG, "MSG_GO_TO_BOOTLOADER readBootImageType");
-                            AvneraManager.getAvenraManager(getActivity()).getLightX().readBootImageType();
+                            AvneraManager.getAvenraManager().getLightX().readBootImageType();
                         }
                     }
                     break;
@@ -1112,7 +1112,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener,On
         imageViewBack.setVisibility(View.GONE);
         FirmwareUtil.disconnectHeadphoneText = getString(R.string.plsConnect);
         Logger.d(TAG, "imageUpdateError");
-        Cmd150Manager.getInstance().setFirmwareUpdateState(AvneraManager.getAvenraManager(getActivity()).getAudioManager(),JBLConstant.ENABLE_ACCESSORY_INTERRUPTS);
+        Cmd150Manager.getInstance().setFirmwareUpdateState(AvneraManager.getAvenraManager().getAudioManager(),JBLConstant.ENABLE_ACCESSORY_INTERRUPTS);
         otaError(true,R.string.update_failed_firmware,R.string.update_failed_firmware_detail_1);
 //        isOTADoing = false;
 //        FirmwareUtil.isUpdatingFirmWare.set(false);

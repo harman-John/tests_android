@@ -72,7 +72,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Logger.d("EqSettingFragment:", "onCreateView");
         rootView = inflater.inflate(R.layout.fragment_eq_settings, container, false);
-        lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
+        lightX = AvneraManager.getAvenraManager().getLightX();
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenHeght = dm.heightPixels;
         initView();

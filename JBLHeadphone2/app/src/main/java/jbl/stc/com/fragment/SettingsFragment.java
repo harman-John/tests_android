@@ -365,7 +365,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case AmCmds.CMD_FirmwareVersion:{
-                AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager(getActivity()).getAudioManager().getAccessoryStatus();
+                AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager().getAudioManager().getAccessoryStatus();
                 String version = accessoryInfo.getFirmwareRev();
                 textViewFwVersion.setText(version);
                 break;

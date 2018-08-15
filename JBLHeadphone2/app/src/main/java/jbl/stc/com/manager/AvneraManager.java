@@ -11,18 +11,12 @@ import com.avnera.smartdigitalheadset.LightX;
  */
 public class AvneraManager {
     private static AvneraManager avneraManager;
-    private final Context context;
-
-    private AvneraManager(Context context) {
-        this.context = context;
-    }
-
     private audioManager mAudioManager = null;
     private LightX lightX;
 
-    public static AvneraManager getAvenraManager(Context context) {
+    public static AvneraManager getAvenraManager() {
         if (avneraManager == null)
-            avneraManager = new AvneraManager(context);
+            avneraManager = new AvneraManager();
         return avneraManager;
     }
 

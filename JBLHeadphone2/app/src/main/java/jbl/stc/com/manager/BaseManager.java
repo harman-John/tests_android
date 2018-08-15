@@ -28,7 +28,7 @@ public interface BaseManager {
 
     void setVoicePrompt(Object object,boolean voicePrompt);
 
-    void getSmartButtion(Object object);
+    void getSmartButton(Object object);
 
     void setSmartButton(Object object,boolean smartButton);
 

@@ -145,7 +145,7 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
 
         retryWaitForCalibration = 0;
         isCalibrationComplete = false;
-        calibrationManager.setLightX(AvneraManager.getAvenraManager(this).getLightX());
+        calibrationManager.setLightX(AvneraManager.getAvenraManager().getLightX());
         calibrationManager.startCalibration();
         handler.postDelayed(runnable, 5000);
     }

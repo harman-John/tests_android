@@ -249,7 +249,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         } catch (Exception e) {
             showExitDialog("Unable to enable Bluetooth.");
         }
-        mHandler.postDelayed(a2dpRunable, 500);
+        mHandler.postDelayed(a2dpRunnable, 500);
     }
 
     private void initAudioManager() {
@@ -260,7 +260,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         }
     }
 
-    private Runnable a2dpRunable = new Runnable() {
+    private Runnable a2dpRunnable = new Runnable() {
         @Override
         public void run() {
             if (isConnected && !isNeedOtaAgain) {
@@ -273,7 +273,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
             }
             Logger.d(TAG, "startA2DPCheck ... isConnected = " + isConnected);
             startA2DPCheck();
-            mHandler.postDelayed(a2dpRunable, 2000);
+            mHandler.postDelayed(a2dpRunnable, 2000);
         }
     };
 
@@ -328,7 +328,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                     if (deviceList.size() > 0
                             && position < deviceList.size()
                             && deviceList.get(position).getName().toUpperCase().contains("JBL Everest".toUpperCase())) {
-                        mHandler.removeCallbacks(a2dpRunable);
+                        mHandler.removeCallbacks(a2dpRunnable);
                         specifiedDevice = deviceList.get(position);
                         initAudioManager();
                         mBluetooth.start();
@@ -460,7 +460,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
             if (mLightX != null) {
                 mLightX.close();
                 mLightX = null;
-                AvneraManager.getAvenraManager(mContext).setLightX(null);
+                AvneraManager.getAvenraManager().setLightX(null);
             }
             disconnectBluetoothLibrary();
         } catch (Exception e) {
@@ -540,7 +540,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
 
         mBluetoothDevice = null;
         mLightX = null;
-        AvneraManager.getAvenraManager(mContext).setLightX(null);
+        AvneraManager.getAvenraManager().setLightX(null);
     }
 
     public void setOnPostResume() {
@@ -595,7 +595,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 if (mLightX != null) {
                     mLightX.close();
                     mLightX = null;
-                    AvneraManager.getAvenraManager(mContext).setLightX(null);
+                    AvneraManager.getAvenraManager().setLightX(null);
                 }
             } catch (NullPointerException e) {
                 e.printStackTrace();
@@ -707,7 +707,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         }
         mIsConnectedPhysically = true;
         if (mLightX != null) {
-            AvneraManager.getAvenraManager(mContext).setLightX(mLightX);
+            AvneraManager.getAvenraManager().setLightX(mLightX);
             mLightX.readConfigModelNumber();
             isConnected = true;
             mContext.runOnUiThread(new Runnable() {
@@ -1171,7 +1171,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 if (mLightX != null) {
                     mLightX.close();
                     mLightX = null;
-                    AvneraManager.getAvenraManager(mContext).setLightX(null);
+                    AvneraManager.getAvenraManager().setLightX(null);
                 }
             }
             if (mUSB != null) {
@@ -1269,7 +1269,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                         mLightX = null;
                     }
                     specifiedDevice = null;
-                    mHandler.removeCallbacks(a2dpRunable);
+                    mHandler.removeCallbacks(a2dpRunnable);
                     mLightX = new LightX(ModuleId.USB, this, usbSocket);
                     LightX.mIs750Device = AppUtils.is750Device(mContext);
                     mIsConnectedPhysically = false;
@@ -1296,7 +1296,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                     }
                     //Remove this condition
                     AppUtils.setJBLDeviceName(mContext, usbDevice.getDeviceName());
-                    AvneraManager.getAvenraManager(mContext).setLightX(mLightX);
+                    AvneraManager.getAvenraManager().setLightX(mLightX);
                     isConnected = true;
                     Logger.d(TAGReconnect, "USB connected");
                     isNeedShowDashboard = true;
@@ -1336,7 +1336,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 mLightX.close();
                 mLightX = null;
                 Logger.i(TAG, "usbDeviceDisconnected set lightX null");
-                AvneraManager.getAvenraManager(mContext).setLightX(null);
+                AvneraManager.getAvenraManager().setLightX(null);
             }
         }
         if (usb != null) {
@@ -1360,7 +1360,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                         mLightX.close();
                         mLightX = null;
                     }
-                    AvneraManager.getAvenraManager(mContext).setLightX(null);
+                    AvneraManager.getAvenraManager().setLightX(null);
                     AccessoryInfo accessoryInfo = bt150Manager.getAccessoryStatus();
                     PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), mContext);
                     AppUtils.setModelNumber(mContext, accessoryInfo.getModelNumber());
@@ -1427,6 +1427,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
      */
     @Override
     public void receivedResponse(@NotNull final String command, @NotNull final ArrayList<responseResult> values, @NotNull final Status status) {
+       Logger.d(TAG,"receive 150nc command = "+command);
         mContext.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -1503,6 +1504,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
 
     @Override
     public void receivedPushNotification(@NotNull final Action action, @NotNull final String command, @NotNull final ArrayList<responseResult> values, @NotNull final Status status) {
+        Logger.d(TAG,"receive 150nc push notification command = "+command);
         mContext.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -1551,7 +1553,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
 //            EQSettingManager.EQKeyNAME = specifiedDevice == null ? "" : specifiedDevice.getAddress();
             mIsConnectedPhysically = true;
             isConnected = true;
-            AvneraManager.getAvenraManager(mContext).setAudioManager(bt150Manager);
+            AvneraManager.getAvenraManager().setAudioManager(bt150Manager);
             mContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

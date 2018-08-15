@@ -53,7 +53,7 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_eq_more_setting_new, container, false);
-        lightX = AvneraManager.getAvenraManager(getActivity()).getLightX();
+        lightX = AvneraManager.getAvenraManager().getLightX();
         initView();
         initEvent();
         initValue();

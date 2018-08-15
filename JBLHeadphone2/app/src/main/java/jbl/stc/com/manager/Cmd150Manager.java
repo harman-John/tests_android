@@ -159,7 +159,7 @@ public class Cmd150Manager implements BaseManager {
     }
 
     @Override
-    public void getSmartButtion(Object object) {
+    public void getSmartButton(Object object) {
         if (object == null) {
             Logger.d(TAG, "object is null, call setManager first");
             return;
