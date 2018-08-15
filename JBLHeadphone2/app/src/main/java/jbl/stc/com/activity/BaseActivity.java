@@ -156,6 +156,8 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
                 ft.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
             }else if (type == JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT){
                 ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
+            }else if (type == JBLConstant.FADE_IN_OUT){
+                ft.setCustomAnimations(R.anim.fadin, R.anim.fadeout, R.anim.fadin, R.anim.fadeout);
             }
             if (getSupportFragmentManager().findFragmentById(R.id.containerLayout) == null) {
                 ft.add(R.id.containerLayout, baseFragment);

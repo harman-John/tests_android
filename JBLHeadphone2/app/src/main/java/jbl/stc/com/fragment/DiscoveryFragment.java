@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.utils.StatusBarUtil;
 import jbl.stc.com.view.JblCircleView;
 
 public class DiscoveryFragment extends BaseFragment implements View.OnClickListener {
@@ -37,6 +39,7 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
 
         relativeLayoutAnimation = view.findViewById(R.id.relative_layout_discovery_animation);
         view.findViewById(R.id.image_view_discovery_back).setOnClickListener(this);
+//        StatusBarUtil.setColor(getActivity(), ContextCompat.getColor(getContext(),R.color.orange_dark_FF5201));
         return view;
     }
 

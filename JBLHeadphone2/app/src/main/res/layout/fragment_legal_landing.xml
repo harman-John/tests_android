@@ -129,7 +129,7 @@
             android:gravity="center"
             android:text="@string/start_caps"
             android:textAllCaps="false"
-            android:textColor="@color/orange_discovery"
+            android:textColor="@color/orange_dark_FF5201"
             android:textSize="18sp"
             android:textStyle="bold" />
     </jbl.stc.com.view.ShadowLayout>

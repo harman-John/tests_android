@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:background="@color/orange_gradient_start"
+        android:background="@color/orange_dark_FF5201"
         >
         <RelativeLayout
             android:id="@+id/titleBar"

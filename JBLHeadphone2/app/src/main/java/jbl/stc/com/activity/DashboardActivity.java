@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
@@ -48,6 +49,7 @@ import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.InsertPredefinePreset;
+import jbl.stc.com.utils.StatusBarUtil;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.MyDragGridView;
@@ -87,6 +89,8 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         initView();
         InsertPredefinePreset insertPredefinePreset = new InsertPredefinePreset();
         insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
+
+//        StatusBarUtil.setColor(this, ContextCompat.getColor(this,R.color.orange_dark_FF5201));
     }
 
     private void initView() {
@@ -104,7 +108,8 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             public void onSelected(int position) {
                 MyDevice myDevice = myGridAdapter.mLists.get(position);
                 if (myDevice.deviceKey.equals(mContext.getString(R.string.plus))){
-                    switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
+                    dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
+                    dashboardHandler.sendEmptyMessage(MSG_SHOW_DISCOVERY);
                     return;
                 }
                 if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
@@ -136,29 +141,29 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                Logger.d(TAG,"onScroll state changed view = "+view
-                        +",scrollState ="+scrollState);
+//                Logger.d(TAG,"onScroll state changed view = "+view
+//                        +",scrollState ="+scrollState);
             }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-                Logger.d(TAG,"on scroll firstVisibleItem = "+ firstVisibleItem
-                        +",visibleItemCount = "+visibleItemCount
-                        +",totalItemCount = "+totalItemCount);
+//                Logger.d(TAG,"on scroll firstVisibleItem = "+ firstVisibleItem
+//                        +",visibleItemCount = "+visibleItemCount
+//                        +",totalItemCount = "+totalItemCount);
                 if (gridView.getLastVisiblePosition() == totalItemCount -1){
                     View v = view.getChildAt(view.getChildCount()-1);
                     int[] location = new int[2];
                     v.getLocationOnScreen(location);
-                    Logger.d(TAG,"get view height = "+ v.getHeight()
-                            +",getScreenSize = "+UiUtils.getScreenSize(mContext)[1]
-                            +",screen 30dp = "+UiUtils.dip2px(mContext,20)
-                            +",location1 =" + location[1]);
+//                    Logger.d(TAG,"get view height = "+ v.getHeight()
+//                            +",getScreenSize = "+UiUtils.getScreenSize(mContext)[1]
+//                            +",screen 30dp = "+UiUtils.dip2px(mContext,20)
+//                            +",location1 =" + location[1]);
                     int viewTop = UiUtils.getScreenSize(mContext)[1] - UiUtils.dip2px(mContext,20);
                     if (location[1] <= viewTop  &&  location[1] >= viewTop- v.getHeight()/2){
                         float percent = ((float)viewTop - (float)location[1])/((float)(v.getHeight()/2));
                         float alpha = 1 - percent;
-                        Logger.d(TAG,"alpha is "+ alpha+",percent ="+percent);
+//                        Logger.d(TAG,"alpha is "+ alpha+",percent ="+percent);
                         imageViewWhitePlus.setAlpha(alpha);
                         imageViewWhitePlus.setVisibility(View.VISIBLE);
                     }else if (location[1] <= viewTop - v.getHeight()/2 && location[1] >= viewTop- v.getHeight()){
@@ -304,11 +309,8 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     }
 
     public void checkDevices(Set<String> deviceList) {
-//        Message msg = new Message();
-//        msg.what = MSG_CHECK_MY_DEVICE;
-//        msg.obj = deviceList;
-//        dashboardHandler.sendMessage(msg);
-        showMyProducts();
+        myGridAdapter.setMyAdapterList(DeviceManager.getInstance(this).getMyDeviceList());
+        gridView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -320,12 +322,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             }
             case R.id.image_view_dashboard_white_plus: {
                 dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
-                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                if (fr == null) {
-                    switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
-                } else if (!(fr instanceof DiscoveryFragment)) {
-                    switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
-                }
+                dashboardHandler.sendEmptyMessage(MSG_SHOW_DISCOVERY);
                 break;
             }
         }
@@ -391,13 +388,11 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 }
                 case MSG_SHOW_DISCOVERY: {
                     Logger.d(TAG, "show discovery page");
-                    if (DeviceManager.getInstance(getDashboardActivity()).getMyDeviceList().size() == 0) {
-                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                        if (fr == null) {
-                            switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                        } else if (!((fr instanceof DiscoveryFragment) || (fr instanceof TurnOnBtTipsFragment))) {
-                            switchFragment(new DiscoveryFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                        }
+                    Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                    if (fr == null) {
+                        switchFragment(new DiscoveryFragment(), JBLConstant.FADE_IN_OUT);
+                    } else if (!((fr instanceof DiscoveryFragment) || (fr instanceof TurnOnBtTipsFragment))) {
+                        switchFragment(new DiscoveryFragment(), JBLConstant.FADE_IN_OUT);
                     }
                     break;
                 }
@@ -408,19 +403,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                     dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
                     break;
                 }
-//                case MSG_CHECK_MY_DEVICE: {
-//                    Set<String> deviceList = (Set<String>) msg.obj;
-//                    Logger.i(TAG, "MSG_CHECK_MY_DEVICE deviceList = " + deviceList);
-//                    if (hasNewDevice(DeviceManager.getInstance(getDashboardActivity()).getDevicesSet())) {
-//                        initMyDeviceList();
-//                        updateMyDeviceStatus(deviceList);
-//                        showMyProducts();
-//                    } else {
-//                        updateMyDeviceStatus(DeviceManager.getInstance(getDashboardActivity()).getDevicesSet());
-//                        myGridAdapter.setMyAdapterList(DeviceManager.getInstance(getDashboardActivity()).getMyDeviceList());
-//                    }
-//                    break;
-//                }
             }
         }
     }

@@ -4,7 +4,12 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.view.ViewCompat;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.avnera.audiomanager.audioManager;
 import com.crashlytics.android.Crashlytics;

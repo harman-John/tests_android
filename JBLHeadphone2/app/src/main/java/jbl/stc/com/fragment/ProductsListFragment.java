@@ -3,6 +3,7 @@ package jbl.stc.com.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -17,6 +18,7 @@ import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.utils.StatusBarUtil;
 
 public class ProductsListFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = ProductsListFragment.class.getSimpleName();
@@ -64,6 +66,8 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
         view.findViewById(R.id.image_view_pro_everest_700).setOnClickListener(this);
         view.findViewById(R.id.image_view_pro_everest_100).setOnClickListener(this);
         view.findViewById(R.id.image_view_pro_everest_300).setOnClickListener(this);
+
+//        StatusBarUtil.setColor(getActivity(), ContextCompat.getColor(getContext(),R.color.gray_dee2e6));
         return view;
     }
 

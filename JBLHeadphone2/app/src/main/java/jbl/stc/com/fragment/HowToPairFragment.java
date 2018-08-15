@@ -45,7 +45,7 @@ public class HowToPairFragment extends BaseFragment implements View.OnClickListe
             @Override
             public void updateDrawState(@NonNull TextPaint ds) {
                 super.updateDrawState(ds);
-                ds.setColor(getResources().getColor(R.color.orange_discovery));
+                ds.setColor(getResources().getColor(R.color.orange_dark_FF5201));
                 ds.setUnderlineText(true);
                 ds.clearShadowLayer();
             }
