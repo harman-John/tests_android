@@ -683,7 +683,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).readBootImageType();
                 ANCControlManager.getANCManager(getApplicationContext()).getANCValue();
                 if (AvneraManager.getAvenraManager().getLightX() == null) {
-                    updateFirmwareVersion();
+                    homeHandler.sendEmptyMessage(MSG_FIRMWARE_VERSION);
                 }
                 ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
 
