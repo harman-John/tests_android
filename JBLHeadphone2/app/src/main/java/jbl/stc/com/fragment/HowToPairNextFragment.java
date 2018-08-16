@@ -56,8 +56,7 @@ public class HowToPairNextFragment extends BaseFragment implements View.OnClickL
                 break;
             }
             case R.id.image_view_how_to_pair_next_close:{
-                getActivity().onBackPressed();
-                getActivity().onBackPressed();
+                removeAllFragment();
                 break;
             }
         }

@@ -183,7 +183,7 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_unable_back: {
-                getActivity().onBackPressed();
+                removeAllFragment();
                 break;
             }
             case R.id.relative_layout_unable_breathing_lamp: {

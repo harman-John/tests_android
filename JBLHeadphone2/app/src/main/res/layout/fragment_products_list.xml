@@ -28,7 +28,7 @@
                 android:paddingLeft="@dimen/margin_top_10dp">
 
                 <jbl.stc.com.view.AppImageView
-                    android:id="@+id/image_view_pro_white_back"
+                    android:id="@+id/image_view_pro_list_close"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_alignParentEnd="true"

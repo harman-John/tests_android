@@ -3,7 +3,6 @@ package jbl.stc.com.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -18,7 +17,6 @@ import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.logger.Logger;
-import jbl.stc.com.utils.StatusBarUtil;
 
 public class ProductsListFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = ProductsListFragment.class.getSimpleName();
@@ -55,7 +53,7 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
         }, 67, textViewTipsOne.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textViewTipsOne.setText(spannableString);
         textViewTipsOne.setMovementMethod(LinkMovementMethod.getInstance());
-        view.findViewById(R.id.image_view_pro_white_back).setOnClickListener(this);
+        view.findViewById(R.id.image_view_pro_list_close).setOnClickListener(this);
         view.findViewById(R.id.image_view_pro_live_650).setOnClickListener(this);
         view.findViewById(R.id.image_view_pro_live_500).setOnClickListener(this);
         view.findViewById(R.id.image_view_pro_live_400).setOnClickListener(this);
@@ -81,8 +79,8 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
     public void onClick(View v) {
         Bundle bundle = new Bundle();
         switch (v.getId()){
-            case R.id.image_view_pro_white_back:{
-                getActivity().onBackPressed();
+            case R.id.image_view_pro_list_close:{
+                removeAllFragment();
                 return;
             }
             case R.id.image_view_pro_live_650:{
