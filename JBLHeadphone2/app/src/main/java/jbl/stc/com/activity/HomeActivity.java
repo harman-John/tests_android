@@ -308,6 +308,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onPause() {
         super.onPause();
+        homeHandler.removeMessages(MSG_FIRMWARE_VERSION);
         homeHandler.removeMessages(MSG_READ_BATTERY_INTERVAL);
         if (notConnectedPopupWindow != null) {
             notConnectedPopupWindow.dismiss();
