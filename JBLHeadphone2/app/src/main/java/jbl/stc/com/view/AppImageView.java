@@ -32,19 +32,18 @@ public class AppImageView extends AppCompatImageView {
     public boolean onTouchEvent(MotionEvent event) {
         //Logger.d("AppImageView", "onTouchEvent " + event.getAction());
 
-        Logger.d(TAG,"get alpha is "+getAlpha());
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                setAlpha((float) (getAlpha()*0.5));
+                setAlpha((float) 0.5);
                 break;
             case MotionEvent.ACTION_MOVE:
-                setAlpha((float) (getAlpha()*0.5));
+                setAlpha((float) 0.5);
                 break;
             case MotionEvent.ACTION_UP:
-                setAlpha(getAlpha());
+                setAlpha((float) 1);
                 break;
             case MotionEvent.ACTION_CANCEL:
-                setAlpha(getAlpha());
+                setAlpha((float) 1);
                 break;
         }
         return super.onTouchEvent(event);
