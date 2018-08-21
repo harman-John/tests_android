@@ -161,7 +161,9 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
         } else {
             removeAllFragment();
             finish();
-            startActivity(new Intent(this, HomeActivity.class));
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.putExtra(JBLConstant.KEY_CONNECT_STATUS, myDevice.connectStatus);
+            startActivity(intent);
         }
     }
 
