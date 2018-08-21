@@ -23,6 +23,7 @@
         android:layout_height="242dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
+        android:transitionName="@string/share_element"
         android:background="@drawable/shape_product_circle">
 
         <ImageView

@@ -209,4 +209,5 @@
     <string name="searching_for_product">Searching for product ...</string>
 
     <string name="no_product_tips">You don\'t have any product yet, add a product now!</string>
+    <string name="share_element">Share element</string>
 </resources>

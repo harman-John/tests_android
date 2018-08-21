@@ -31,6 +31,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
     public List<MyDevice> mLists = new ArrayList<>();
     private Context mContext;
     public int mHidePosition = -1;
+    private RelativeLayout relativeLayoutSelected;
 
     public void setMyAdapterList(List<MyDevice> lists) {
         Collections.sort(lists, new Comparator<MyDevice>() {
@@ -149,6 +150,9 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             viewHolder.textViewDeviceName.setText(mLists.get(position).deviceName);
         }
         viewHolder.imageViewIcon.setImageDrawable(mLists.get(position).drawable);
+        if(mLists.get(position).connectStatus == ConnectStatus.DEVICE_CONNECTED){
+            relativeLayoutSelected = viewHolder.relativeLayoutBreathingIcon;
+        }
 
         viewHolder.relativeLayoutBreathingIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,6 +160,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
                 Logger.i(TAG, "v = " + v );
                 if (mOnDeviceItemSelectedListener != null){
                     mOnDeviceItemSelectedListener.onSelected(position);
+                    relativeLayoutSelected = viewHolder.relativeLayoutBreathingIcon;
                 }
             }
         });
@@ -188,6 +193,13 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
     public void setHideItem(int hidePosition) {
         mHidePosition = hidePosition;
         notifyDataSetChanged();
+    }
+
+    public View getShareView(){
+        if (relativeLayoutSelected != null ){
+            return relativeLayoutSelected;
+        }
+        return null;
     }
 
     @Override

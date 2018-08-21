@@ -10,14 +10,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -423,8 +426,11 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         } else {
             Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra(JBLConstant.KEY_CONNECT_STATUS, myDevice.connectStatus);
-            startActivity(intent);
-            overridePendingTransition(R.anim.fadin, R.anim.fadeout);
+            myGridAdapter.getShareView().setVisibility(View.INVISIBLE);
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(this, myGridAdapter.getShareView(), getString(R.string.share_element));
+            startActivity(intent, options.toBundle());
+//            overridePendingTransition(R.anim.fadin, R.anim.fadeout);
         }
     }
 

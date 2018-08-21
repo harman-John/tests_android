@@ -7,18 +7,27 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Outline;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewOutlineProvider;
+import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -123,6 +132,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private AppImageView image_view_ota_download;
     private NotConnectedPopupWindow notConnectedPopupWindow;
     private TutorialAncDialog tutorialAncDialog;
+
+    private FrameLayout frameLayout;
     private HomeHandler homeHandler = new HomeHandler(Looper.getMainLooper());
 
     public TutorialAncDialog getTutorialAncDialog() {
@@ -130,7 +141,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private int mConnectStatus = -1;
-
+    private RelativeLayout rootLayout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,13 +159,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
         addActivity(this);
         Logger.d(TAG, "onCreate");
+        rootLayout = findViewById(R.id.relative_layout_home_activity);
         showTutorial();
         generateAAPopupWindow();
         generateSaPopupWindow();
         findViewById(R.id.image_view_home_settings).setOnClickListener(this);
         findViewById(R.id.image_view_home_back).setOnClickListener(this);
         textViewDeviceName = findViewById(R.id.text_view_home_device_name);
-
+        frameLayout = findViewById(R.id.frame_layout_home_device_image);
         imageViewDevice = findViewById(R.id.image_view_home_device_image);
         blurdView = findViewById(R.id.relative_Layout_home);
         relative_layout_home_eq_info = (FrameLayout) findViewById(R.id.relative_layout_home_eq_info);
@@ -221,6 +233,109 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
         initEvent();
         setDeviceImageHeight();
+        setupEnterAnimations();
+        setupExitAnimations();
+    }
+
+    private void setupEnterAnimations() {
+        Transition transition = TransitionInflater.from(this).inflateTransition(R.transition
+                .changebounds_with_arcmotion);
+        getWindow().setSharedElementEnterTransition(transition);
+        transition.addListener(new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                transition.removeListener(this);
+                enterReveal();
+            }
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+
+            }
+        });
+    }
+
+    void enterReveal() {
+        int[] location = new int[2];
+        frameLayout.getLocationOnScreen(location);
+        int cx = location[0];
+        int cy = location[1];
+        int startRadius = frameLayout.getMeasuredHeight() / 2;
+        int finalRadius = Math.max(rootLayout.getWidth(), rootLayout.getHeight());
+
+        Animator anim =
+                ViewAnimationUtils.createCircularReveal(rootLayout,
+                        cx+startRadius,
+                        cy+startRadius,
+                        startRadius,
+                        finalRadius);
+        anim.setDuration(500);
+        rootLayout.setVisibility(View.VISIBLE);
+        anim.start();
+    }
+
+    private void setupExitAnimations() {
+        Fade fade = new Fade();
+        getWindow().setReturnTransition(fade);
+        fade.addListener(new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+                transition.removeListener(this);
+                exitReveal();
+            }
+
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+            }
+
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+            }
+
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+            }
+
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+            }
+        });
+    }
+
+    void exitReveal() {
+        int[] location = new int[2];
+        frameLayout.getLocationOnScreen(location);
+        int cx = location[0];
+        int cy = location[1];
+        int startRadius = frameLayout.getHeight() / 2;
+        int initialRadius = (rootLayout.getWidth() +rootLayout.getHeight())/ 2;
+        Animator anim =
+                ViewAnimationUtils.createCircularReveal(rootLayout,
+                        cx+startRadius,
+                        cy+startRadius,
+                        initialRadius,
+                        startRadius);
+        anim.setDuration(300);
+        anim.start();
     }
 
     @Override
@@ -348,7 +463,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
             case R.id.image_view_home_back: {
                 DeviceManager.getInstance(this).setIsFromHome(true);
-                this.onBackPressed();
+                onBackPressed();
                 break;
             }
             case R.id.image_view_home_settings: {
