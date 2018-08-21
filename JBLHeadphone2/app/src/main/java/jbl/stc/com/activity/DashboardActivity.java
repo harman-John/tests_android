@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -109,7 +110,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         myGridAdapter.setOnDeviceSelectedListener(new MyGridAdapter.OnDeviceItemSelectedListener() {
             @Override
             public void onSelected(int position) {
-                MyDevice myDevice = myGridAdapter.mLists.get(position);
+                final MyDevice myDevice = myGridAdapter.mLists.get(position);
                 if (myDevice.deviceKey.equals(mContext.getString(R.string.plus))){
                     dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
                     dashboardHandler.sendEmptyMessage(MSG_SHOW_DISCOVERY);
@@ -118,7 +119,13 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                         || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                     Logger.d(TAG, "onSelected Show home fragment");
-                    showHomeActivity(myDevice);
+                    gridView.smoothScrollToPosition(0);
+                    dashboardHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            showHomeActivity(myDevice);
+                        }
+                    },300);
                 } else {
                     Fragment fr = DashboardActivity.getDashboardActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                     if (fr instanceof UnableConnectFragment) {
@@ -386,7 +393,13 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 case MSG_SHOW_HOME_FRAGMENT: {
                     Logger.d(TAG, "show homeFragment");
                     removeAllFragment();
-                    showHomeActivity(DeviceManager.getInstance(getDashboardActivity()).getMyDeviceConnected());
+                    gridView.smoothScrollToPosition(0);
+                    dashboardHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            showHomeActivity(DeviceManager.getInstance(getDashboardActivity()).getMyDeviceConnected());
+                        }
+                    },300);
                     break;
                 }
                 case MSG_SHOW_DISCOVERY: {

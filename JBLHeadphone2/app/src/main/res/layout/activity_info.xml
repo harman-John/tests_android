@@ -19,6 +19,8 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:rotation="180"
             android:src="@mipmap/black_arrow_back" />
 
         <ImageView
