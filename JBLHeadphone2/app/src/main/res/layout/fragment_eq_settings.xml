@@ -5,111 +5,156 @@
     android:background="@color/transparent"
     android:orientation="vertical">
 
+
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:background="@color/orange_dark_FF5201"
-        >
+        android:background="@drawable/shape_gradient_eq"
+        android:orientation="vertical">
+
         <RelativeLayout
-            android:id="@+id/titleBar"
+            android:id="@+id/rl_dragtitlebar"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:focusableInTouchMode="true"
-            android:paddingLeft="@dimen/margin_top_10dp"
-            android:paddingRight="@dimen/margin_top_10dp">
+            android:visibility="gone">
 
             <jbl.stc.com.view.CustomFontTextView
-                style="@style/PoppinsMediumTextStyle"
-                android:textSize="18sp"
-                android:layout_width="wrap_content"
+                android:id="@+id/titleEqText"
+                style="@style/PoppinsRegularTextStyle"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="@string/title_eq"
+                android:textColor="@color/white"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:text="@string/title_eq_setting" />
+                android:visibility="gone" />
 
-            <jbl.stc.com.view.AppImageView
-                android:id="@+id/addImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/white_plus"
-                />
-
-            <jbl.stc.com.view.AppImageView
-                android:id="@+id/moreImageView"
-                android:layout_width="@dimen/image_button_width_and_height"
-                android:layout_height="@dimen/image_button_width_and_height"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/closeImageView"
-                android:src="@mipmap/icon_more_eq" />
-
-            <jbl.stc.com.view.AppImageView
-                android:id="@+id/closeImageView"
-                android:layout_width="@dimen/image_button_width_and_height"
-                android:layout_height="@dimen/image_button_width_and_height"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:rotation="270"
-                android:src="@mipmap/white_arrow_back" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/rl_eq_view"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
-            <jbl.stc.com.view.EqualizerShowView
-                android:id="@+id/equalizerView"
+            <View
+                android:id="@+id/shade_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="-1dp"
+                android:background="@color/gray_dee2e6"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/eqEditLayout"
-                />
+                android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/eqEditLayout"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_alignParentBottom="true"
-                android:paddingLeft="@dimen/page_padding_left"
-                android:paddingRight="@dimen/page_padding_right">
-
-                <jbl.stc.com.view.CustomFontTextView
-                    android:id="@+id/text_view_eq_settings_eq_name"
-                    android:textSize="20sp"
-                    style="@style/PoppinsRegularTextStyle"
+                <RelativeLayout
+                    android:id="@+id/titleBar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/image_button_width_and_height"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:textStyle="bold"
-                    android:text="@string/create_eq_default_name"
-                    android:textColor="#FFFFFF" />
+                    android:layout_height="70dp"
+                    android:focusableInTouchMode="true"
+                    android:paddingLeft="@dimen/margin_top_10dp"
+                    android:paddingRight="@dimen/margin_top_10dp">
 
-                <jbl.stc.com.view.AppImageView
-                    android:id="@+id/eqEditImage"
-                    android:layout_width="@dimen/image_button_width_and_height"
-                    android:layout_height="@dimen/image_button_width_and_height"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:scaleType="fitXY"
-                    android:src="@mipmap/icon_eq_edit" />
-            </RelativeLayout>
-        </RelativeLayout>
+                    <jbl.stc.com.view.CustomFontTextView
+                        android:id="@+id/eqTitleTextView"
+                        style="@style/PoppinsMediumTextStyle"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:text="@string/title_eq_setting"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
+                    <jbl.stc.com.view.AppImageView
+                        android:id="@+id/addImageView"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/white_plus" />
+
+                    <jbl.stc.com.view.AppImageView
+                        android:id="@+id/moreImageView"
+                        android:layout_width="@dimen/image_button_width_and_height"
+                        android:layout_height="@dimen/image_button_width_and_height"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/closeImageView"
+                        android:src="@mipmap/icon_more_eq" />
+
+                    <jbl.stc.com.view.AppImageView
+                        android:id="@+id/closeImageView"
+                        android:layout_width="@dimen/image_button_width_and_height"
+                        android:layout_height="@dimen/image_button_width_and_height"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:rotation="270"
+                        android:src="@mipmap/white_arrow_back" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_eq_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <jbl.stc.com.view.EqualizerShowView
+                        android:id="@+id/equalizerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@+id/eqEditLayout" />
+
+                    <RelativeLayout
+                        android:id="@+id/eqEditLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_alignParentBottom="true">
+
+                        <jbl.stc.com.view.CustomFontTextView
+                            android:id="@+id/text_view_eq_settings_eq_name"
+                            style="@style/PoppinsRegularTextStyle"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/image_button_width_and_height"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:text="@string/create_eq_default_name"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <jbl.stc.com.view.AppImageView
+                            android:id="@+id/eqEditImage"
+                            android:layout_width="@dimen/image_button_width_and_height"
+                            android:layout_height="@dimen/image_button_width_and_height"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/icon_eq_edit" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </FrameLayout>
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_eqRecycleView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/gray_dee2e6"
-        >
+        android:background="@color/gray_dee2e6">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/eqRecycleView"
             android:layout_width="270dp"
