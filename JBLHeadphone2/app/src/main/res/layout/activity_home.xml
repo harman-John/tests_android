@@ -27,7 +27,7 @@
                 android:layout_height="@dimen/image_button_width_and_height"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/black_arrow_back" />
+                android:src="@mipmap/button_icon_list" />
 
             <jbl.stc.com.view.AppImageView
                 android:id="@+id/image_view_home_settings"

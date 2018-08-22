@@ -61,7 +61,7 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
         TextView textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
         TextView textViewTipsFour = view.findViewById(R.id.text_view_unable_advice_four);
         TextView textViewTipsFive = view.findViewById(R.id.text_view_unable_advice_five);
-        String deviceModelName = getArguments().getString(JBLConstant.DEVICE_MODEL_NAME);
+        final String deviceModelName = getArguments().getString(JBLConstant.DEVICE_MODEL_NAME);
         if (deviceModelName != null) {
             switch (deviceModelName) {
                 case JBLConstant.DEVICE_LIVE_650BTNC: {
@@ -122,7 +122,11 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
             spannableString.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(View arg0) {
-                    DashboardActivity.getDashboardActivity().switchFragment(new HowToPairFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    HowToPairFragment howToPairFragment = new HowToPairFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(JBLConstant.DEVICE_MODEL_NAME, deviceModelName);
+                    howToPairFragment.setArguments(bundle);
+                    DashboardActivity.getDashboardActivity().switchFragment(howToPairFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 }
 
                 @Override

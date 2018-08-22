@@ -348,13 +348,13 @@ public class AppUtils {
         myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
         if (value.toUpperCase().contains(JBLConstant.DEVICE_LIVE_650BTNC)) {
             myDevice.deviceName = JBLConstant.DEVICE_LIVE_650BTNC;
-            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_700_icon);
+            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.live_650_btnc_icon);
         } else if (value.toUpperCase().contains(JBLConstant.DEVICE_LIVE_400BT)) {
             myDevice.deviceName = JBLConstant.DEVICE_LIVE_400BT;
-            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_700_icon);
+            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.live_400_bt_icon);
         } else if (value.toUpperCase().contains(JBLConstant.DEVICE_LIVE_500BT)) {
             myDevice.deviceName = JBLConstant.DEVICE_LIVE_500BT;
-            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_700_icon);
+            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.live_500_bt_icon);
         } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_750NC)) {
             myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_750NC;
             myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_750nc_icon);
