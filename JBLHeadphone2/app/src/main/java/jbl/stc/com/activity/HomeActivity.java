@@ -7,6 +7,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -15,10 +18,12 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -79,13 +84,15 @@ import jbl.stc.com.view.AaPopupWindow;
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.BlurringView;
+import jbl.stc.com.view.CustomFontTextView;
 import jbl.stc.com.view.NotConnectedPopupWindow;
 import jbl.stc.com.view.SaPopupWindow;
 
+import static java.lang.Integer.highestOneBit;
 import static java.lang.Integer.valueOf;
 
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener , ConnectListener,OnOtaListener{
+public class HomeActivity extends BaseActivity implements View.OnClickListener, ConnectListener, OnOtaListener {
     public static final String TAG = HomeActivity.class.getSimpleName() + "aa";
     private BlurringView mBlurView;
 
@@ -116,7 +123,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private AaPopupWindow aaPopupWindow;
     private SaPopupWindow saPopupwindow;
 
-    private FrameLayout relative_layout_home_eq_info;
+    private RelativeLayout relative_layout_home_eq_info;
     private String deviceName;
     private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
     private View blurdView;
@@ -125,38 +132,66 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private NotConnectedPopupWindow notConnectedPopupWindow;
     private TutorialAncDialog tutorialAncDialog;
     private HomeHandler homeHandler = new HomeHandler(Looper.getMainLooper());
+    private float yDown;
+    private float yMove;
+    public static boolean isEnter = false;
+    private RelativeLayout relative_layout_home_activity;
+    private int screenHeight;
+    private int screenWidth;
+
+    public static CustomFontTextView titleEq;
+    public static LinearLayout ll_bottomeq;
+    public static View eqDividerView;
+    public static TextView eq;
+    public static TextView appImageView;
+    public static WindowManager mWindowManager;
+    public static WindowManager.LayoutParams mWindowLayoutParams;
+    public static WindowManager mEqWindowManager;
+    public static WindowManager.LayoutParams mEqWindowLayoutParams;
+    public static LinearLayout ll_eqtext;
+    public static TextView tv_drageq;
 
     public TutorialAncDialog getTutorialAncDialog() {
         return tutorialAncDialog;
     }
+
     private int mConnectStatus = -1;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        mConnectStatus = getIntent().getIntExtra(JBLConstant.KEY_CONNECT_STATUS,-1);
+        mConnectStatus = getIntent().getIntExtra(JBLConstant.KEY_CONNECT_STATUS, -1);
         Intent intent = getIntent();
         String action = intent.getAction();
-        Logger.d(TAG, "onResume action ="+action+",mConnectStatus ="+mConnectStatus);
+        Logger.d(TAG, "onResume action =" + action + ",mConnectStatus =" + mConnectStatus);
         if (!TextUtils.isEmpty(action)
                 && "android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action) && mConnectStatus == -1) {
-            Logger.i(TAG,"onCreate finished");
-            startActivity(new Intent(this,DashboardActivity.class));
+            Logger.i(TAG, "onCreate finished");
+            startActivity(new Intent(this, DashboardActivity.class));
             finish();
             return;
         }
         addActivity(this);
         Logger.d(TAG, "onCreate");
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        screenHeight = dm.heightPixels;
+        screenWidth = dm.widthPixels;
+        mWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+        mEqWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+        mWindowLayoutParams = new WindowManager.LayoutParams();
         showTutorial();
         generateAAPopupWindow();
         generateSaPopupWindow();
+        relative_layout_home_activity = findViewById(R.id.relative_Layout_home);
         findViewById(R.id.image_view_home_settings).setOnClickListener(this);
         findViewById(R.id.image_view_home_back).setOnClickListener(this);
         textViewDeviceName = findViewById(R.id.text_view_home_device_name);
 
         imageViewDevice = findViewById(R.id.image_view_home_device_image);
         blurdView = findViewById(R.id.relative_Layout_home);
-        relative_layout_home_eq_info = (FrameLayout) findViewById(R.id.relative_layout_home_eq_info);
+        relative_layout_home_eq_info = findViewById(R.id.relative_layout_home_eq_info);
         relative_layout_home_eq_info.setVisibility(View.VISIBLE);
         titleEqText = (TextView) findViewById(R.id.titleEqText);
         titleEqText.setOnClickListener(this);
@@ -165,7 +200,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             relative_layout_home_eq_info.setAlpha((float) 0.5);
         } else {
             setEqMenuColor(true);
-            relative_layout_home_eq_info.setOnClickListener(this);
+            //relative_layout_home_eq_info.setOnClickListener(this);
+            findViewById(R.id.arrowUpImage).setOnClickListener(this);
         }
         textViewCurrentEQ = findViewById(R.id.text_view_home_eq_name);
         linearLayoutBattery = findViewById(R.id.linear_layout_home_battery);
@@ -233,11 +269,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         super.onResume();
         Intent intent = getIntent();
         String action = intent.getAction();
-        Logger.d(TAG, "onResume action ="+action);
+        Logger.d(TAG, "onResume action =" + action);
         if (!TextUtils.isEmpty(action)
                 && "android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action)) {
 
-        }else{
+        } else {
             AnalyticsManager.getInstance(this).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
             Logger.d(TAG, "onResume " + DeviceConnectionManager.getInstance().getCurrentDevice());
             doResume();
@@ -248,14 +284,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     public void connectDeviceStatus(boolean isConnected) {
         super.connectDeviceStatus(isConnected);
 
-        if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED){
+        if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             Logger.i(TAG, "connectDeviceStatus A2DP_HALF_CONNECTED");
             finish();
-        }else if (!isConnected && !isOTADoing && !DeviceManager.getInstance(this).isNeedOtaAgain()){
+        } else if (!isConnected && !isOTADoing && !DeviceManager.getInstance(this).isNeedOtaAgain()) {
             Logger.i(TAG, "connectDeviceStatus not connected, not ota");
             removeAllFragment();
             finish();
-        }else if (isConnected && isOTADoing && !DeviceManager.getInstance(this).isNeedOtaAgain()){
+        } else if (isConnected && isOTADoing && !DeviceManager.getInstance(this).isNeedOtaAgain()) {
             Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
             if (fr != null && fr instanceof OTAFragment) {
                 Logger.i(TAG, "connectDeviceStatus myDevice = " + mConnectStatus);
@@ -299,7 +335,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             }
         }
 
-        if ((fr != null)&& fr instanceof EqSettingFragment) {
+        if ((fr != null) && fr instanceof EqSettingFragment) {
+            doResume();
+        }
+
+        if (fr == null) {
             doResume();
         }
     }
@@ -340,7 +380,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 }
                 break;
             }
-            case R.id.relative_layout_home_eq_info: {
+            case R.id.arrowUpImage: {
                 switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 break;
             }
@@ -387,7 +427,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         DeviceManager.getInstance(this).setAppLightXDelegate(this);
         if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
             getDeviceInfo();
-        }else if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+        } else if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             if (!PreferenceUtils.getBoolean(PreferenceKeys.SHOW_NC_POP, this)) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_NC_POP, true, this);
                 findViewById(R.id.relative_layout_home_activity).post(new Runnable() {
@@ -427,50 +467,91 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 
     private void initEvent() {
 
-        final GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
-            @Override
-            public boolean onDown(MotionEvent e) {
-                return false;
-            }
-
-            @Override
-            public void onShowPress(MotionEvent e) {
-
-            }
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                return false;
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                return false;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent e) {
-
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (e1.getY() - e2.getY() > 25 && Math.abs(velocityY) > 25) {
-                    switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
-                }
-                return false;
-            }
-        };
-        final GestureDetector gestureDetector = new GestureDetector(gestureListener);
-        relative_layout_home_eq_info.setOnTouchListener(new View.OnTouchListener() {
+        final int distance = UiUtils.dip2px(this, 80);
+        final int bottomHeight = UiUtils.dip2px(HomeActivity.this, 70);
+        relative_layout_home_activity.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        yDown = event.getRawY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        yMove = event.getRawY();
+                        Logger.d(TAG, "yMove" + yMove);
+                        if (!isEnter) {
+                            if ((yDown - yMove) > distance && Math.abs(yMove - yDown) > distance) {
+                                isEnter = true;
+                                Logger.d(TAG, "Enter EqFragment");
+                                Logger.d(TAG, String.valueOf(yMove));
+                                EqSettingFragment fragment = new EqSettingFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putFloat("rawY", screenHeight - bottomHeight);
+                                fragment.setArguments(bundle);
+                                switchFragment(fragment, 4);
+                                return false;
+                            }
+                        }
+                        if (isEnter) {
+                            if ((yDown - yMove) > distance && Math.abs(yMove - yDown) > distance) {
+                                EqSettingFragment.rootView.setTranslationY(yMove);
+                                int height = (int) (screenHeight / 2 - UiUtils.dip2px(HomeActivity.this, 70) - (yDown - yMove) / 2);
+                                EqSettingFragment.changeShadeViewHeight(height, HomeActivity.this);
+                                int dragEqHeight = (int) ((yMove) / (screenHeight + UiUtils.getStatusHeight(HomeActivity.this) - UiUtils.dip2px(HomeActivity.this, 70)) * UiUtils.dip2px(HomeActivity.this, 70));
+                                EqSettingFragment.changeDragEqTitleBarHeight(dragEqHeight, HomeActivity.this);
 
+                                int fullWidth = (screenWidth - UiUtils.dip2px(HomeActivity.this, 70)) / 2;
+                                int x = (int) (fullWidth - yMove / (screenHeight + UiUtils.getStatusHeight(HomeActivity.this) - UiUtils.dip2px(HomeActivity.this, 70)) * fullWidth);
+                                int y = (int) (yMove - dragEqHeight / 2 + UiUtils.getStatusHeight(HomeActivity.this));
+                                EqSettingFragment.updateEqTitleLocation(x, y);
+
+                            } else {
+                                EqSettingFragment.startDragEqGoneAnimation();
+                                EqSettingFragment.startBottomEqGonenAnimation();
+                                isEnter = false;
+                                onBackPressed();
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if ((screenHeight - bottomHeight < yDown && yDown < screenHeight)
+                                && (screenHeight - bottomHeight < yMove && yMove < screenHeight)
+                                && (Math.abs(yMove - yDown) < 10)) {
+                            //single click
+                            Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                            if (((fr != null) && !(fr instanceof EqSettingFragment)) || (fr == null)) {
+                                switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                            }
+                        } else {
+                            if (yMove > screenHeight / 2) {
+                                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                                if ((fr != null) && fr instanceof EqSettingFragment) {
+                                    Logger.d("EqSettingFragment", "onBack");
+                                    EqSettingFragment.startDragEqGoneAnimation();
+                                    EqSettingFragment.startBottomEqGonenAnimation();
+                                    isEnter = false;
+                                    onBackPressed();
+                                }
+                            } else {
+                                EqSettingFragment.rootView.setTranslationY(0);
+                                EqSettingFragment.startRecycleViewShowAnimation();
+                                int height = 0;
+                                EqSettingFragment.changeShadeViewHeight(height, HomeActivity.this);
+                                EqSettingFragment.setDragEqTitleBarGone();
+                                EqSettingFragment.startDragEqGoneAnimation();
+                                EqSettingFragment.startBottomEqGonenAnimation();
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                return true;
             }
-
         });
+
     }
+
 
     private void generateSaPopupWindow() {
         saPopupwindow = new SaPopupWindow(this);
@@ -680,7 +761,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
         }
         ANCControlManager.getANCManager(this).getCurrentPreset();
         ANCControlManager.getANCManager(this).getFirmwareInfo();
-            Logger.d(TAG, "getDeviceInfo");
+        Logger.d(TAG, "getDeviceInfo");
 
         ANCControlManager.getANCManager(this).readConfigModelNumber();
         ANCControlManager.getANCManager(this).readConfigProductName();
@@ -689,7 +770,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
             public void run() {
                 ANCControlManager.getANCManager(getApplicationContext()).readBootVersionFileResource();
             }
-        },200);
+        }, 200);
     }
 
     private void getAAValue() {
@@ -714,7 +795,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 
             switch (msg.what) {
                 case MSG_READ_BATTERY_INTERVAL: {
-                    if (getSupportFragmentManager().getBackStackEntryCount()<= 0) {
+                    if (getSupportFragmentManager().getBackStackEntryCount() <= 0) {
                         homeHandler.removeMessages(MSG_READ_BATTERY_INTERVAL);
                         ANCControlManager.getANCManager(getApplicationContext()).getBatterLeverl();
                     }
@@ -785,7 +866,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
 //                    Logger.i(TAG, "handleMessage MSG_CHECK_DEVICES end");
 //                    break;
 //                }
-                case MSG_CHECK_UPDATE:{
+                case MSG_CHECK_UPDATE: {
                     startCheckingIfUpdateIsAvailable(HomeActivity.this);
                     registerConnectivity();
                     break;
@@ -924,7 +1005,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     private NetworkChangeReceiver networkChangeReceiver;
 
     private void registerConnectivity() {
-        if (!mReceiverTag ) {
+        if (!mReceiverTag) {
             networkChangeReceiver = new NetworkChangeReceiver();
             IntentFilter intentFilter = new IntentFilter();
             Logger.i(TAG, "registerConnectivity");
@@ -967,6 +1048,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                 }
             }
         }
+
     }
 
     private void sendMessageTo(int command, String arg1) {
@@ -1173,7 +1255,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     break;
                 case AppANCAwarenessPreset:
                     Logger.d(TAG, "AppANCAwarenessPreset");
-                    int intValue = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0);
+                    int intValue = Utility.getInt(var4, 0);
 //                    update(intValue);
                     sendMessageTo(MSG_AMBIENT_LEVEL, String.valueOf(intValue));
                     break;
@@ -1191,7 +1273,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
                     break;
                 case AppAwarenessRawSteps:
 //                    readAppReturn = Utility.getUnsignedInt(var4, 0);
-                    int rawSteps = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0) - 1;
+                    int rawSteps = Utility.getInt(var4, 0) - 1;
                     Logger.d(TAG, "received raw steps call back rawSteps = " + rawSteps);
                     ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRawSteps(rawSteps);
 
@@ -1283,7 +1365,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener ,
     @Override
     public void lightXReadConfigResult(LightX var1, Command command, boolean success, String var4) {
         super.lightXReadConfigResult(var1, command, success, var4);
-        Logger.d(TAG, "lightXReadConfigResult command = "+command);
+        Logger.d(TAG, "lightXReadConfigResult command = " + command);
         if (success) {
             switch (command) {
                 case ConfigProductName:
