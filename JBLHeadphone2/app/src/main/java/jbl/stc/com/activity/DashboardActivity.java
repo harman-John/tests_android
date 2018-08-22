@@ -371,7 +371,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 case MSG_SHOW_HOME_FRAGMENT: {
                     Logger.d(TAG, "show homeFragment");
                     removeAllFragment();
-                    gridView.smoothScrollToPosition(0);
+                    gridView.smoothScrollToPositionFromTop(0,0);
                     dashboardHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
