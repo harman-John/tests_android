@@ -42,7 +42,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/relative_layout_home_eq_info"
+            android:layout_above="@id/frame_layout_home_eq_info"
             android:layout_below="@id/titleBar"
             android:layout_centerInParent="true"
             android:orientation="vertical">
@@ -177,7 +177,7 @@
         </RelativeLayout>
 
         <FrameLayout
-            android:id="@+id/relative_layout_home_eq_info"
+            android:id="@+id/frame_layout_home_eq_info"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
@@ -185,20 +185,21 @@
             android:visibility="visible">
 
             <RelativeLayout
+                android:id="@+id/relative_layout_home_eq_info"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingRight="@dimen/page_padding_right">
+                android:paddingRight="10dp">
 
                 <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/titleEqText"
                     style="@style/PoppinsRegularTextStyle"
-                    android:layout_width="60dp"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:gravity="center"
                     android:text="@string/title_eq"
                     android:textColor="@color/white"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <View
@@ -213,16 +214,17 @@
                 <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/text_view_home_eq_name"
                     style="@style/PoppinsRegularTextStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/image_button_width_and_height"
                     android:layout_toRightOf="@+id/eqDividerView"
                     android:ellipsize="end"
+                    android:gravity="left|center_vertical"
                     android:singleLine="true"
                     android:text="@string/off"
                     android:textColor="@color/white"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:textStyle="normal" />
 
                 <jbl.stc.com.view.AppImageView

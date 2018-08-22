@@ -136,7 +136,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                     bundle.putString(JBLConstant.DEVICE_MODEL_NAME, myDevice.deviceName);
                     UnableConnectFragment unableConnectFragment = new UnableConnectFragment();
                     unableConnectFragment.setArguments(bundle);
-                    DashboardActivity.getDashboardActivity().switchFragment(unableConnectFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                    switchFragment(unableConnectFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 }
             }
         });

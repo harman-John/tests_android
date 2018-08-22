@@ -10,7 +10,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-import jbl.stc.com.logger.Logger;
 
 /**
  * UiUtils
