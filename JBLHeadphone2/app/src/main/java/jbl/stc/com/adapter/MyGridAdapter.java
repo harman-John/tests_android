@@ -159,8 +159,8 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             public void onClick(View v) {
                 Logger.i(TAG, "v = " + v );
                 if (mOnDeviceItemSelectedListener != null){
-                    mOnDeviceItemSelectedListener.onSelected(position);
                     relativeLayoutSelected = viewHolder.relativeLayoutBreathingIcon;
+                    mOnDeviceItemSelectedListener.onSelected(position);
                 }
             }
         });

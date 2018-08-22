@@ -3,6 +3,7 @@ package jbl.stc.com.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -176,7 +177,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         generateAAPopupWindow();
         generateSaPopupWindow();
         relative_layout_home_activity = findViewById(R.id.relative_Layout_home);
-        findViewById(R.id.image_view_home_settings).setOnClickListener(this);
         findViewById(R.id.image_view_home_back).setOnClickListener(this);
         textViewDeviceName = findViewById(R.id.text_view_home_device_name);
         frameLayout = findViewById(R.id.frame_layout_home_device_image);
@@ -185,12 +185,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         relative_layout_home_eq_info = findViewById(R.id.relative_layout_home_eq_info);
         relative_layout_home_eq_info.setVisibility(View.VISIBLE);
         titleEqText = (TextView) findViewById(R.id.titleEqText);
-        titleEqText.setOnClickListener(this);
         if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             setEqMenuColor(false);
             relative_layout_home_eq_info.setAlpha((float) 0.5);
         } else {
             setEqMenuColor(true);
+            titleEqText.setOnClickListener(this);
+            findViewById(R.id.image_view_home_settings).setOnClickListener(this);
             //relative_layout_home_eq_info.setOnClickListener(this);
             findViewById(R.id.arrowUpImage).setOnClickListener(this);
         }
@@ -215,7 +216,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
         RelativeLayout linearLayoutNoiseCanceling = findViewById(R.id.relative_layout_home_noise_cancel);
-        if (!DeviceFeatureMap.isFeatureSupported(DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName, Feature.ENABLE_NOISE_CANCEL)) {
+        deviceName = DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName;
+        if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_NOISE_CANCEL)) {
             linearLayoutNoiseCanceling.setVisibility(View.GONE);
         } else {
             linearLayoutNoiseCanceling.setVisibility(View.VISIBLE);
@@ -228,22 +230,20 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
 
         RelativeLayout linearLayoutAmbientAware = findViewById(R.id.relative_layout_home_ambient_aware);
-        if (!DeviceFeatureMap.isFeatureSupported(DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName, Feature.ENABLE_AMBIENT_AWARE)) {
+        if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_AMBIENT_AWARE)) {
             linearLayoutAmbientAware.setVisibility(View.GONE);
         } else {
             findViewById(R.id.image_view_home_ambient_aware).setOnClickListener(this);
             if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                 linearLayoutAmbientAware.setAlpha((float) 0.5);
             }
-            if (DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
-                    || DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
-                    || DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
+            if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
+                    || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
+                    || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
                 TextView textViewAmbientAware = findViewById(R.id.text_view_home_ambient_aware);
                 textViewAmbientAware.setText(R.string.smart_ambient);
             }
         }
-        deviceName = DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName;
-//        deviceName = PreferenceUtils.getString(PreferenceKeys.MODEL, this, "");
         updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
         initEvent();
         setDeviceImageHeight();
@@ -560,90 +560,93 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initEvent() {
 
         final int distance = UiUtils.dip2px(this, 80);
         final int bottomHeight = UiUtils.dip2px(HomeActivity.this, 70);
-        relative_layout_home_activity.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        yDown = event.getRawY();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        yMove = event.getRawY();
-                        Logger.d(TAG, "yMove" + yMove);
-                        if (!isEnter) {
-                            if ((yDown - yMove) > distance && Math.abs(yMove - yDown) > distance) {
-                                isEnter = true;
-                                Logger.d(TAG, "Enter EqFragment");
-                                Logger.d(TAG, String.valueOf(yMove));
-                                EqSettingFragment fragment = new EqSettingFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putFloat("rawY", screenHeight - bottomHeight);
-                                fragment.setArguments(bundle);
-                                switchFragment(fragment, 4);
-                                return false;
+        if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            relative_layout_home_activity.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            yDown = event.getRawY();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            yMove = event.getRawY();
+                            Logger.d(TAG, "yMove" + yMove);
+                            if (!isEnter) {
+                                if ((yDown - yMove) > distance && Math.abs(yMove - yDown) > distance) {
+                                    isEnter = true;
+                                    Logger.d(TAG, "Enter EqFragment");
+                                    Logger.d(TAG, String.valueOf(yMove));
+                                    EqSettingFragment fragment = new EqSettingFragment();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putFloat("rawY", screenHeight - bottomHeight);
+                                    fragment.setArguments(bundle);
+                                    switchFragment(fragment, 4);
+                                    return false;
+                                }
                             }
-                        }
-                        if (isEnter) {
-                            if ((yDown - yMove) > distance && Math.abs(yMove - yDown) > distance) {
-                                EqSettingFragment.rootView.setTranslationY(yMove);
-                                int height = (int) (screenHeight / 2 - UiUtils.dip2px(HomeActivity.this, 70) - (yDown - yMove) / 2);
-                                EqSettingFragment.changeShadeViewHeight(height, HomeActivity.this);
-                                int dragEqHeight = (int) ((yMove) / (screenHeight + UiUtils.getStatusHeight(HomeActivity.this) - UiUtils.dip2px(HomeActivity.this, 70)) * UiUtils.dip2px(HomeActivity.this, 70));
-                                EqSettingFragment.changeDragEqTitleBarHeight(dragEqHeight, HomeActivity.this);
+                            if (isEnter) {
+                                if ((yDown - yMove) > distance && Math.abs(yMove - yDown) > distance) {
+                                    EqSettingFragment.rootView.setTranslationY(yMove);
+                                    int height = (int) (screenHeight / 2 - UiUtils.dip2px(HomeActivity.this, 70) - (yDown - yMove) / 2);
+                                    EqSettingFragment.changeShadeViewHeight(height, HomeActivity.this);
+                                    int dragEqHeight = (int) ((yMove) / (screenHeight + UiUtils.getStatusHeight(HomeActivity.this) - UiUtils.dip2px(HomeActivity.this, 70)) * UiUtils.dip2px(HomeActivity.this, 70));
+                                    EqSettingFragment.changeDragEqTitleBarHeight(dragEqHeight, HomeActivity.this);
 
-                                int fullWidth = (screenWidth - UiUtils.dip2px(HomeActivity.this, 70)) / 2;
-                                int x = (int) (fullWidth - yMove / (screenHeight + UiUtils.getStatusHeight(HomeActivity.this) - UiUtils.dip2px(HomeActivity.this, 70)) * fullWidth);
-                                int y = (int) (yMove - dragEqHeight / 2 + UiUtils.getStatusHeight(HomeActivity.this));
-                                EqSettingFragment.updateEqTitleLocation(x, y);
+                                    int fullWidth = (screenWidth - UiUtils.dip2px(HomeActivity.this, 70)) / 2;
+                                    int x = (int) (fullWidth - yMove / (screenHeight + UiUtils.getStatusHeight(HomeActivity.this) - UiUtils.dip2px(HomeActivity.this, 70)) * fullWidth);
+                                    int y = (int) (yMove - dragEqHeight / 2 + UiUtils.getStatusHeight(HomeActivity.this));
+                                    EqSettingFragment.updateEqTitleLocation(x, y);
 
-                            } else {
-                                EqSettingFragment.startDragEqGoneAnimation();
-                                EqSettingFragment.startBottomEqGonenAnimation();
-                                isEnter = false;
-                                onBackPressed();
-                            }
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        if ((screenHeight - bottomHeight < yDown && yDown < screenHeight)
-                                && (screenHeight - bottomHeight < yMove && yMove < screenHeight)
-                                && (Math.abs(yMove - yDown) < 10)) {
-                            //single click
-                            Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                            if (((fr != null) && !(fr instanceof EqSettingFragment)) || (fr == null)) {
-                                switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
-                            }
-                        } else {
-                            if (yMove > screenHeight / 2) {
-                                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                                if ((fr != null) && fr instanceof EqSettingFragment) {
-                                    Logger.d("EqSettingFragment", "onBack");
+                                } else {
                                     EqSettingFragment.startDragEqGoneAnimation();
                                     EqSettingFragment.startBottomEqGonenAnimation();
                                     isEnter = false;
                                     onBackPressed();
                                 }
-                            } else {
-                                EqSettingFragment.rootView.setTranslationY(0);
-                                EqSettingFragment.startRecycleViewShowAnimation();
-                                int height = 0;
-                                EqSettingFragment.changeShadeViewHeight(height, HomeActivity.this);
-                                EqSettingFragment.setDragEqTitleBarGone();
-                                EqSettingFragment.startDragEqGoneAnimation();
-                                EqSettingFragment.startBottomEqGonenAnimation();
                             }
-                        }
-                        break;
-                    default:
-                        break;
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            if ((screenHeight - bottomHeight < yDown && yDown < screenHeight)
+                                    && (screenHeight - bottomHeight < yMove && yMove < screenHeight)
+                                    && (Math.abs(yMove - yDown) < 10)) {
+                                //single click
+                                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                                if (((fr != null) && !(fr instanceof EqSettingFragment)) || (fr == null)) {
+                                    switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                                }
+                            } else {
+                                if (yMove > screenHeight / 2) {
+                                    Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                                    if ((fr != null) && fr instanceof EqSettingFragment) {
+                                        Logger.d("EqSettingFragment", "onBack");
+                                        EqSettingFragment.startDragEqGoneAnimation();
+                                        EqSettingFragment.startBottomEqGonenAnimation();
+                                        isEnter = false;
+                                        onBackPressed();
+                                    }
+                                } else {
+                                    EqSettingFragment.rootView.setTranslationY(0);
+                                    EqSettingFragment.startRecycleViewShowAnimation();
+                                    int height = 0;
+                                    EqSettingFragment.changeShadeViewHeight(height, HomeActivity.this);
+                                    EqSettingFragment.setDragEqTitleBarGone();
+                                    EqSettingFragment.startDragEqGoneAnimation();
+                                    EqSettingFragment.startBottomEqGonenAnimation();
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    return true;
                 }
-                return true;
-            }
-        });
+            });
+        }
 
     }
 

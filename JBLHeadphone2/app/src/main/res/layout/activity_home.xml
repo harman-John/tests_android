@@ -181,7 +181,6 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/shape_gradient_eq"
             android:visibility="visible">
 
             <RelativeLayout
