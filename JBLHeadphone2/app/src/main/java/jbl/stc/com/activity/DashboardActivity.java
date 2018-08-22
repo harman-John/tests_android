@@ -102,7 +102,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                         || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                     Logger.d(TAG, "onSelected Show home fragment");
-                    gridView.smoothScrollToPositionFromTop(position,100);
+                    gridView.smoothScrollToPositionFromTop(position,0);
                     dashboardHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
