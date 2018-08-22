@@ -106,11 +106,6 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        if (mLists.size() <=1){
-            viewHolder.textViewTips.setVisibility(View.VISIBLE);
-        }else{
-            viewHolder.textViewTips.setVisibility(View.GONE);
-        }
         int marginTop = UiUtils.getDeviceNameMarginTop(mContext);
         int height = UiUtils.getDashboardDeviceImageHeight(mContext);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.relativeLayoutBreathingIcon.getLayoutParams();
@@ -128,12 +123,19 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             deviceNameParams.topMargin = UiUtils.dip2px(mContext,30);
             viewHolder.textViewDeviceName.setLayoutParams(deviceNameParams);
         }
+
         if (mLists.get(position).deviceKey.equals(mContext.getString(R.string.plus))){
             viewHolder.relativeLayoutBreathingIcon.setBackground(ContextCompat.getDrawable(mContext,R.drawable.shape_product_circle_black));
             viewHolder.relativeLayoutBreathingIcon.setGravity(Gravity.CENTER);
             viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(16);
             viewHolder.imageViewIcon.setImageAlpha(255);
             viewHolder.textViewDeviceName.setText("");
+            viewHolder.textViewTips.setVisibility(View.INVISIBLE);
+            if (mLists.size() <=1){
+                viewHolder.textViewTips.setVisibility(View.VISIBLE);
+            }else{
+                viewHolder.textViewTips.setVisibility(View.INVISIBLE);
+            }
         }else{
             viewHolder.relativeLayoutBreathingIcon.setBackground(ContextCompat.getDrawable(mContext,R.drawable.shape_product_circle));
 
@@ -148,6 +150,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
                 viewHolder.imageViewIcon.setImageAlpha(128);
             }
             viewHolder.textViewDeviceName.setText(mLists.get(position).deviceName);
+            viewHolder.textViewTips.setVisibility(View.GONE);
         }
         viewHolder.imageViewIcon.setImageDrawable(mLists.get(position).drawable);
         if(mLists.get(position).connectStatus == ConnectStatus.DEVICE_CONNECTED){

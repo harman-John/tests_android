@@ -3,59 +3,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/shape_gradient_discovery">
+    android:clickable="true"
+    android:clipChildren="false"
+    android:focusable="true">
+
+    <RelativeLayout
+        android:id="@+id/relative_layout_dashboard_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/orange_dark_FF5201">
+
+        <jbl.stc.com.view.AppImageView
+            android:id="@+id/image_view_dashboard_white_menu"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="@dimen/marginTop10dp"
+            android:contentDescription="TODO"
+            android:src="@mipmap/app_menu" />
+
+        <jbl.stc.com.view.CustomFontTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/my_products"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="normal" />
+
+        <jbl.stc.com.view.AppImageView
+            android:id="@+id/image_view_dashboard_white_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:background="@mipmap/white_plus" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:clickable="true"
-        android:clipChildren="false"
-        android:focusable="true"
+        android:layout_below="@id/relative_layout_dashboard_title"
+        android:background="@drawable/shape_gradient_discovery"
         android:orientation="vertical">
-
-        <RelativeLayout
-            android:id="@+id/relative_layout_dashboard_title"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_height">
-
-            <jbl.stc.com.view.AppImageView
-                android:id="@+id/image_view_dashboard_white_menu"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="@dimen/marginTop10dp"
-                android:contentDescription="TODO"
-                android:src="@mipmap/app_menu" />
-
-            <jbl.stc.com.view.CustomFontTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="@string/my_products"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="normal" />
-
-            <jbl.stc.com.view.AppImageView
-                android:id="@+id/image_view_dashboard_white_plus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
-                android:background="@mipmap/white_plus" />
-
-        </RelativeLayout>
 
         <jbl.stc.com.view.MyDragGridView
             android:id="@+id/grid_view_dashboard"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_below="@id/relative_layout_dashboard_title"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
             android:background="@android:color/transparent"
             android:cacheColorHint="@android:color/transparent"
             android:listSelector="@android:color/transparent"

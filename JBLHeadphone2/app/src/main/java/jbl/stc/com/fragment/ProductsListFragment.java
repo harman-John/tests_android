@@ -44,7 +44,7 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
             @Override
             public void updateDrawState(@NonNull TextPaint ds) {
                 super.updateDrawState(ds);
-                ds.setColor(getResources().getColor(R.color.black));
+                ds.setColor(getResources().getColor(R.color.black_4C596B));
                 ds.setUnderlineText(true);
                 ds.setFakeBoldText(true);
                 ds.clearShadowLayer();
