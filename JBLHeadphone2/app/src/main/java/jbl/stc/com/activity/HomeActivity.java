@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Outline;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -20,14 +19,14 @@ import android.text.TextUtils;
 import android.transition.Fade;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.view.ViewOutlineProvider;
-import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -87,9 +86,11 @@ import jbl.stc.com.view.AaPopupWindow;
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.BlurringView;
+import jbl.stc.com.view.CustomFontTextView;
 import jbl.stc.com.view.NotConnectedPopupWindow;
 import jbl.stc.com.view.SaPopupWindow;
 
+import static java.lang.Integer.highestOneBit;
 import static java.lang.Integer.valueOf;
 
 
@@ -124,7 +125,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private AaPopupWindow aaPopupWindow;
     private SaPopupWindow saPopupwindow;
 
-    private FrameLayout relative_layout_home_eq_info;
+    private RelativeLayout relative_layout_home_eq_info;
     private String deviceName;
     private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
     private View blurdView;
@@ -135,6 +136,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private FrameLayout frameLayout;
     private HomeHandler homeHandler = new HomeHandler(Looper.getMainLooper());
+    private float yDown;
+    private float yMove;
+    public static boolean isEnter = false;
+    private RelativeLayout relative_layout_home_activity;
+    private int screenHeight;
+    private int screenWidth;
 
     public TutorialAncDialog getTutorialAncDialog() {
         return tutorialAncDialog;
@@ -142,6 +149,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private int mConnectStatus = -1;
     private RelativeLayout rootLayout;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,16 +169,20 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         addActivity(this);
         Logger.d(TAG, "onCreate");
         rootLayout = findViewById(R.id.relative_layout_home_activity);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        screenHeight = dm.heightPixels;
+        screenWidth = dm.widthPixels;
         showTutorial();
         generateAAPopupWindow();
         generateSaPopupWindow();
+        relative_layout_home_activity = findViewById(R.id.relative_Layout_home);
         findViewById(R.id.image_view_home_settings).setOnClickListener(this);
         findViewById(R.id.image_view_home_back).setOnClickListener(this);
         textViewDeviceName = findViewById(R.id.text_view_home_device_name);
         frameLayout = findViewById(R.id.frame_layout_home_device_image);
         imageViewDevice = findViewById(R.id.image_view_home_device_image);
         blurdView = findViewById(R.id.relative_Layout_home);
-        relative_layout_home_eq_info = (FrameLayout) findViewById(R.id.relative_layout_home_eq_info);
+        relative_layout_home_eq_info = findViewById(R.id.relative_layout_home_eq_info);
         relative_layout_home_eq_info.setVisibility(View.VISIBLE);
         titleEqText = (TextView) findViewById(R.id.titleEqText);
         titleEqText.setOnClickListener(this);
@@ -178,7 +191,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             relative_layout_home_eq_info.setAlpha((float) 0.5);
         } else {
             setEqMenuColor(true);
-            relative_layout_home_eq_info.setOnClickListener(this);
+            //relative_layout_home_eq_info.setOnClickListener(this);
+            findViewById(R.id.arrowUpImage).setOnClickListener(this);
         }
         textViewCurrentEQ = findViewById(R.id.text_view_home_eq_name);
         linearLayoutBattery = findViewById(R.id.linear_layout_home_battery);
@@ -280,8 +294,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
         Animator anim =
                 ViewAnimationUtils.createCircularReveal(rootLayout,
-                        cx+startRadius,
-                        cy+startRadius,
+                        cx + startRadius,
+                        cy + startRadius,
                         startRadius,
                         finalRadius);
         anim.setDuration(500);
@@ -327,11 +341,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         int cx = location[0];
         int cy = location[1];
         int startRadius = frameLayout.getHeight() / 2;
-        int initialRadius = (rootLayout.getWidth() +rootLayout.getHeight())/ 2;
+        int initialRadius = (rootLayout.getWidth() + rootLayout.getHeight()) / 2;
         Animator anim =
                 ViewAnimationUtils.createCircularReveal(rootLayout,
-                        cx+startRadius,
-                        cy+startRadius,
+                        cx + startRadius,
+                        cy + startRadius,
                         initialRadius,
                         startRadius);
         anim.setDuration(300);
@@ -418,6 +432,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         if ((fr != null) && fr instanceof EqSettingFragment) {
             doResume();
         }
+
+        if (fr == null) {
+            doResume();
+        }
     }
 
     @Override
@@ -457,7 +475,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 break;
             }
-            case R.id.relative_layout_home_eq_info: {
+            case R.id.arrowUpImage: {
                 switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 break;
             }
@@ -544,50 +562,91 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void initEvent() {
 
-        final GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
-            @Override
-            public boolean onDown(MotionEvent e) {
-                return false;
-            }
-
-            @Override
-            public void onShowPress(MotionEvent e) {
-
-            }
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                return false;
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                return false;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent e) {
-
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (e1.getY() - e2.getY() > 25 && Math.abs(velocityY) > 25) {
-                    switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
-                }
-                return false;
-            }
-        };
-        final GestureDetector gestureDetector = new GestureDetector(gestureListener);
-        relative_layout_home_eq_info.setOnTouchListener(new View.OnTouchListener() {
+        final int distance = UiUtils.dip2px(this, 80);
+        final int bottomHeight = UiUtils.dip2px(HomeActivity.this, 70);
+        relative_layout_home_activity.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        yDown = event.getRawY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        yMove = event.getRawY();
+                        Logger.d(TAG, "yMove" + yMove);
+                        if (!isEnter) {
+                            if ((yDown - yMove) > distance && Math.abs(yMove - yDown) > distance) {
+                                isEnter = true;
+                                Logger.d(TAG, "Enter EqFragment");
+                                Logger.d(TAG, String.valueOf(yMove));
+                                EqSettingFragment fragment = new EqSettingFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putFloat("rawY", screenHeight - bottomHeight);
+                                fragment.setArguments(bundle);
+                                switchFragment(fragment, 4);
+                                return false;
+                            }
+                        }
+                        if (isEnter) {
+                            if ((yDown - yMove) > distance && Math.abs(yMove - yDown) > distance) {
+                                EqSettingFragment.rootView.setTranslationY(yMove);
+                                int height = (int) (screenHeight / 2 - UiUtils.dip2px(HomeActivity.this, 70) - (yDown - yMove) / 2);
+                                EqSettingFragment.changeShadeViewHeight(height, HomeActivity.this);
+                                int dragEqHeight = (int) ((yMove) / (screenHeight + UiUtils.getStatusHeight(HomeActivity.this) - UiUtils.dip2px(HomeActivity.this, 70)) * UiUtils.dip2px(HomeActivity.this, 70));
+                                EqSettingFragment.changeDragEqTitleBarHeight(dragEqHeight, HomeActivity.this);
 
+                                int fullWidth = (screenWidth - UiUtils.dip2px(HomeActivity.this, 70)) / 2;
+                                int x = (int) (fullWidth - yMove / (screenHeight + UiUtils.getStatusHeight(HomeActivity.this) - UiUtils.dip2px(HomeActivity.this, 70)) * fullWidth);
+                                int y = (int) (yMove - dragEqHeight / 2 + UiUtils.getStatusHeight(HomeActivity.this));
+                                EqSettingFragment.updateEqTitleLocation(x, y);
+
+                            } else {
+                                EqSettingFragment.startDragEqGoneAnimation();
+                                EqSettingFragment.startBottomEqGonenAnimation();
+                                isEnter = false;
+                                onBackPressed();
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if ((screenHeight - bottomHeight < yDown && yDown < screenHeight)
+                                && (screenHeight - bottomHeight < yMove && yMove < screenHeight)
+                                && (Math.abs(yMove - yDown) < 10)) {
+                            //single click
+                            Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                            if (((fr != null) && !(fr instanceof EqSettingFragment)) || (fr == null)) {
+                                switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                            }
+                        } else {
+                            if (yMove > screenHeight / 2) {
+                                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                                if ((fr != null) && fr instanceof EqSettingFragment) {
+                                    Logger.d("EqSettingFragment", "onBack");
+                                    EqSettingFragment.startDragEqGoneAnimation();
+                                    EqSettingFragment.startBottomEqGonenAnimation();
+                                    isEnter = false;
+                                    onBackPressed();
+                                }
+                            } else {
+                                EqSettingFragment.rootView.setTranslationY(0);
+                                EqSettingFragment.startRecycleViewShowAnimation();
+                                int height = 0;
+                                EqSettingFragment.changeShadeViewHeight(height, HomeActivity.this);
+                                EqSettingFragment.setDragEqTitleBarGone();
+                                EqSettingFragment.startDragEqGoneAnimation();
+                                EqSettingFragment.startBottomEqGonenAnimation();
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                return true;
             }
-
         });
+
     }
+
 
     private void generateSaPopupWindow() {
         saPopupwindow = new SaPopupWindow(this);
@@ -774,7 +833,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void getDeviceInfo() {
-        new Thread(new Runnable() {
+
+        homeHandler.post(new Runnable() {
             @Override
             public void run() {
 
@@ -812,7 +872,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     }
                 }, 200);
             }
-        }).start();
+        });
+
     }
 
     private void getAAValue() {
@@ -909,7 +970,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     registerConnectivity();
                     break;
                 }
-                case MSG_FIRMWARE_INFO:{
+                case MSG_FIRMWARE_INFO: {
                     ANCControlManager.getANCManager(getApplicationContext()).getFirmwareInfo();
                     break;
                 }
@@ -1090,6 +1151,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
         }
+
     }
 
     private void sendMessageTo(int command, String arg1) {
@@ -1295,7 +1357,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     break;
                 case AppANCAwarenessPreset:
                     Logger.d(TAG, "AppANCAwarenessPreset");
-                    int intValue = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0);
+                    int intValue = Utility.getInt(var4, 0);
 //                    update(intValue);
                     sendMessageTo(MSG_AMBIENT_LEVEL, String.valueOf(intValue));
                     break;
@@ -1313,7 +1375,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     break;
                 case AppAwarenessRawSteps:
 //                    readAppReturn = Utility.getUnsignedInt(var4, 0);
-                    int rawSteps = com.avnera.smartdigitalheadset.Utility.getInt(var4, 0) - 1;
+                    int rawSteps = Utility.getInt(var4, 0) - 1;
                     Logger.d(TAG, "received raw steps call back rawSteps = " + rawSteps);
                     ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRawSteps(rawSteps);
 

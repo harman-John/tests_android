@@ -37,10 +37,22 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
     private int lastAnimatedPosition = -1;
     private boolean animationsLocked = false;
     private boolean delayEnterAnimation = true;
+    private boolean mIsEnterAnimation = false;
+    private boolean mIsExitAnimation = false;
+    private RecyclerView mRecyclerView;
+    private int screenHeight;
 
-    public void setEqModels(List<EQModel> models) {
+    public void setEqModels(List<EQModel> models, boolean mIsEnterAnimation, boolean mIsExitAnimation, RecyclerView recyclerView) {
         this.eqModels.clear();
         this.eqModels.addAll(models);
+        this.mIsEnterAnimation = mIsEnterAnimation;
+        if (mIsEnterAnimation) {
+            lastAnimatedPosition = -1;
+            animationsLocked = false;
+            delayEnterAnimation = true;
+        }
+        this.mIsExitAnimation = mIsExitAnimation;
+        this.mRecyclerView = recyclerView;
         notifyDataSetChanged();
     }
 
@@ -97,6 +109,10 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
             Context context = itemView.getContext();
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+            DisplayMetrics dm = itemView.getContext().getResources().getDisplayMetrics();
+            screenHeight = dm.heightPixels;
+
+
             eqNameText.setText(eqModel.eqName);
             eqNameText.setVisibility(View.VISIBLE);
             if (eqModel.isSelected) {
@@ -122,7 +138,13 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
                 layoutParams.topMargin = UiUtils.dip2px(context, 0);
             }
             eqNameLayout.setLayoutParams(layoutParams);
-            runEnterAnimation(itemView, position);
+            if (mIsEnterAnimation) {
+                runEnterAnimation(itemView, position);
+            }
+
+            if (mIsExitAnimation) {
+                runExitAnimation(itemView, position);
+            }
         }
     }
 
@@ -136,7 +158,7 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
                     .translationY(0).alpha(1.f)
                     .setStartDelay(delayEnterAnimation ? 40 * (position) : 0)
                     .setInterpolator(new DecelerateInterpolator(0.5f))
-                    .setDuration(400)
+                    .setDuration(500)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
@@ -146,5 +168,26 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
                     .start();
         }
     }
+
+    private void runExitAnimation(View view, final int position) {
+        view.setTranslationY(0);
+        view.setAlpha(1f);
+        view.animate()
+                .translationY(800).alpha(0.8f)
+                .setStartDelay(40 * (eqModels.size() - position))
+                .setInterpolator(new DecelerateInterpolator(0.5f))
+                .setDuration(100)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (position == 0) {
+                            mRecyclerView.setVisibility(View.GONE);
+                        }
+                    }
+                })
+                .start();
+
+    }
+
 
 }
