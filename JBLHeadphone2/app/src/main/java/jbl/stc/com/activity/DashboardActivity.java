@@ -5,29 +5,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -48,12 +40,10 @@ import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.DeviceManager;
-import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.InsertPredefinePreset;
-import jbl.stc.com.utils.StatusBarUtil;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.MyDragGridView;
@@ -65,18 +55,12 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     private final static int MSG_SHOW_HOME_FRAGMENT = 1;
     private final static int MSG_SHOW_DISCOVERY = 2;
     private final static int MSG_START_SCAN = 4;
-    private final static int MSG_CHECK_MY_DEVICE = 5;
-    private final static int MSG_SHOW_FRAGMENT = 6;
-
+    private final static int MSG_SHOW_PLUS_ANIMATION_UP = 5;
+    private final static int MSG_SHOW_PLUS_ANIMATION_DOWN = 6;
     private DashboardHandler dashboardHandler = new DashboardHandler(Looper.getMainLooper());
-
-    private CheckUpdateAvailable checkUpdateAvailable;
-
     public static CopyOnWriteArrayList<FirmwareModel> mFwList = new CopyOnWriteArrayList<>();
-
     private MyDragGridView gridView;
     private MyGridAdapter myGridAdapter;
-//    private TextView textViewTips;
     private EqArcView viewDelete;
     private ImageView imageViewWhitePlus;
 
@@ -102,7 +86,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         imageViewWhitePlus = findViewById(R.id.image_view_dashboard_white_plus);
         imageViewWhitePlus.setOnClickListener(this);
         viewDelete = findViewById(R.id.delete_view);
-//        textViewTips = findViewById(R.id.text_view_dashboard_tips);
 
         gridView = findViewById(R.id.grid_view_dashboard);
         myGridAdapter = new MyGridAdapter();
@@ -111,7 +94,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onSelected(int position) {
                 final MyDevice myDevice = myGridAdapter.mLists.get(position);
-                if (myDevice.deviceKey.equals(mContext.getString(R.string.plus))){
+                if (myDevice.deviceKey.equals(mContext.getString(R.string.plus))) {
                     dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
                     dashboardHandler.sendEmptyMessage(MSG_SHOW_DISCOVERY);
                     return;
@@ -125,7 +108,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                         public void run() {
                             showHomeActivity(myDevice);
                         }
-                    },300);
+                    }, 200);
                 } else {
                     Fragment fr = DashboardActivity.getDashboardActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                     if (fr instanceof UnableConnectFragment) {
@@ -151,47 +134,51 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-//                Logger.d(TAG,"onScroll state changed view = "+view
-//                        +",scrollState ="+scrollState);
             }
+
+            int lastLocation = 0;
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-//                Logger.d(TAG,"on scroll firstVisibleItem = "+ firstVisibleItem
-//                        +",visibleItemCount = "+visibleItemCount
-//                        +",totalItemCount = "+totalItemCount);
-                if (gridView.getLastVisiblePosition() == totalItemCount -1){
-                    View v = view.getChildAt(view.getChildCount()-1);
+                if (gridView.getLastVisiblePosition() == totalItemCount - 1) {
+                    View v = view.getChildAt(view.getChildCount() - 1);
                     int[] location = new int[2];
                     v.getLocationOnScreen(location);
-//                    Logger.d(TAG,"get view height = "+ v.getHeight()
-//                            +",getScreenSize = "+UiUtils.getScreenSize(mContext)[1]
-//                            +",screen 30dp = "+UiUtils.dip2px(mContext,20)
-//                            +",location1 =" + location[1]);
-                    int viewTop = UiUtils.getScreenSize(mContext)[1] - UiUtils.dip2px(mContext,20);
-                    if (location[1] <= viewTop  &&  location[1] >= viewTop- v.getHeight()/2){
-                        float percent = ((float)viewTop - (float)location[1])/((float)(v.getHeight()/2));
-                        float alpha = 1 - percent;
-//                        Logger.d(TAG,"alpha is "+ alpha+",percent ="+percent);
-                        imageViewWhitePlus.setAlpha(alpha);
-                        imageViewWhitePlus.setVisibility(View.VISIBLE);
-                    }else if (location[1] <= viewTop - v.getHeight()/2 && location[1] >= viewTop- v.getHeight()){
-                        imageViewWhitePlus.setAlpha((float) 0);
-                        imageViewWhitePlus.setVisibility(View.GONE);
+                    int viewTop = UiUtils.getScreenSize(mContext)[1] - UiUtils.dip2px(mContext, 20);
+                    int top = viewTop - v.getHeight() / 2;
+                    if (!animateFirstUp && lastLocation < location[1] && location[1] > top) {
+                        Logger.d(TAG, "plus icon fade in ");
+                        animateFirstUp = true;
+                        animateFirstDown = false;
+                        startFadeAnim(imageViewWhitePlus, R.anim.fadin);
+                    } else if (!animateFirstDown && lastLocation > location[1] && location[1] > top) {
+                        Logger.d(TAG, "plus icon fade out ");
+                        animateFirstDown = true;
+                        animateFirstUp = false;
+                        startFadeAnim(imageViewWhitePlus, R.anim.fadeout);
                     }
-                }else{
-                    imageViewWhitePlus.setAlpha((float) 1.0);
+                    lastLocation = location[1];
+                } else {
+                    animateFirstDown = false;
+                    animateFirstUp = false;
                 }
             }
         });
         if (DeviceManager.getInstance(this).getMyDeviceList().size() == 0) {
-//            textViewTips.setVisibility(View.VISIBLE);
             dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 2000);
-        } else {
-//            textViewTips.setVisibility(View.GONE);
         }
         findViewById(R.id.image_view_dashboard_white_menu).setOnClickListener(this);
+    }
+
+    private boolean animateFirstUp = false;
+    private boolean animateFirstDown = false;
+
+    private void startFadeAnim(View view, int ani) {
+        Animation animation = AnimationUtils.loadAnimation(this, ani);
+        animation.setInterpolator(new LinearInterpolator());
+        animation.setFillAfter(true);
+        if (view != null)
+            view.startAnimation(animation);
     }
 
     @Override
@@ -217,14 +204,14 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         DeviceManager.getInstance(this).setOnResume();
-        Logger.d(TAG, "onResume isInBackground =" + isInBackground+",isConnected ="+DeviceManager.getInstance(this).isConnected());
+        Logger.d(TAG, "onResume isInBackground =" + isInBackground + ",isConnected =" + DeviceManager.getInstance(this).isConnected());
         checkBluetooth();
         if (DeviceManager.getInstance(this).isConnected()) {
             dashboardHandler.removeMessages(MSG_START_SCAN);
             dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
         }
         if (DeviceManager.getInstance(this).isConnected()) {
-            Logger.d(TAG, "onResume isFirstUser ="+DeviceManager.getInstance(this).isFromHome());
+            Logger.d(TAG, "onResume isFirstUser =" + DeviceManager.getInstance(this).isFromHome());
             if (DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.Connected_USBDevice
                     && !DeviceManager.getInstance(this).isFromHome()) {
                 DeviceManager.getInstance(this).setIsFromHome(false);
@@ -282,7 +269,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 currentActivity().finish();
             }
 
-            Logger.d(TAG, " connectDeviceStatus isForeground = "+isForeground());
+            Logger.d(TAG, " connectDeviceStatus isForeground = " + isForeground());
             if (isForeground()) {
                 dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
             } else {
@@ -296,7 +283,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 removeAllFragment();
                 currentActivity().finish();
             }
-//            updateDisconnectedAdapter();
             myGridAdapter.setMyAdapterList(DeviceManager.getInstance(this).getMyDeviceList());
         }
     }
@@ -312,9 +298,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         if (temp != null)
             DeviceManager.getInstance(this).getMyDeviceList().remove(temp);
         AppUtils.removeMyDevice(mContext, key);
-//        if (AppUtils.getMyDeviceSize(mContext) == 0) {
-//            textViewTips.setVisibility(View.VISIBLE);
-//        }
         DeviceManager.getInstance(this).removeDeviceList(key);
     }
 
@@ -359,11 +342,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         removeAllFragment();
         myGridAdapter.setMyAdapterList(DeviceManager.getInstance(this).getMyDeviceList());
         gridView.setVisibility(View.VISIBLE);
-//        if(DeviceManager.getInstance(this).getMyDeviceList().size() ==0) {
-//            textViewTips.setVisibility(View.VISIBLE);
-//        }else{
-//            textViewTips.setVisibility(View.GONE);
-//        }
     }
 
     public static DashboardActivity getDashboardActivity() {
@@ -399,7 +377,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                         public void run() {
                             showHomeActivity(DeviceManager.getInstance(getDashboardActivity()).getMyDeviceConnected());
                         }
-                    },300);
+                    }, 200);
                     break;
                 }
                 case MSG_SHOW_DISCOVERY: {
@@ -417,6 +395,16 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                         DeviceManager.getInstance(getDashboardActivity()).startA2DPCheck();
                     }
                     dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
+                    break;
+                }
+                case MSG_SHOW_PLUS_ANIMATION_UP: {
+                    animateFirstUp = true;
+                    startFadeAnim(imageViewWhitePlus, R.anim.fadin);
+                    break;
+                }
+                case MSG_SHOW_PLUS_ANIMATION_DOWN: {
+                    animateFirstDown = true;
+                    startFadeAnim(imageViewWhitePlus, R.anim.fadeout);
                     break;
                 }
             }
