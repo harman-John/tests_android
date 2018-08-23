@@ -589,7 +589,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                                     return false;
                                 }
                             }
-                            if (isEnter) {
+                            if (isEnter && EqSettingFragment.rootView!=null) {
                                 if ((yDown - yMove) > distance && Math.abs(yMove - yDown) > distance) {
                                     EqSettingFragment.rootView.setTranslationY(yMove);
                                     int height = (int) (screenHeight / 2 - UiUtils.dip2px(HomeActivity.this, 70) - (yDown - yMove) / 2);
@@ -611,32 +611,34 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                             }
                             break;
                         case MotionEvent.ACTION_UP:
-                            if ((screenHeight - bottomHeight < yDown && yDown < screenHeight)
-                                    && (screenHeight - bottomHeight < yMove && yMove < screenHeight)
-                                    && (Math.abs(yMove - yDown) < 10)) {
-                                //single click
-                                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                                if (((fr != null) && !(fr instanceof EqSettingFragment)) || (fr == null)) {
-                                    switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
-                                }
-                            } else {
-                                if (yMove > screenHeight / 2) {
+                            if (EqSettingFragment.rootView != null) {
+                                if ((screenHeight - bottomHeight < yDown && yDown < screenHeight)
+                                        && (screenHeight - bottomHeight < yMove && yMove < screenHeight)
+                                        && (Math.abs(yMove - yDown) < 10)) {
+                                    //single click
                                     Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                                    if ((fr != null) && fr instanceof EqSettingFragment) {
-                                        Logger.d("EqSettingFragment", "onBack");
-                                        EqSettingFragment.startDragEqGoneAnimation();
-                                        EqSettingFragment.startBottomEqGonenAnimation();
-                                        isEnter = false;
-                                        onBackPressed();
+                                    if (((fr != null) && !(fr instanceof EqSettingFragment)) || (fr == null)) {
+                                        switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                                     }
                                 } else {
-                                    EqSettingFragment.rootView.setTranslationY(0);
-                                    EqSettingFragment.startRecycleViewShowAnimation();
-                                    int height = 0;
-                                    EqSettingFragment.changeShadeViewHeight(height, HomeActivity.this);
-                                    EqSettingFragment.setDragEqTitleBarGone();
-                                    EqSettingFragment.startDragEqGoneAnimation();
-                                    EqSettingFragment.startBottomEqGonenAnimation();
+                                    if (yMove > screenHeight / 2) {
+                                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                                        if ((fr != null) && fr instanceof EqSettingFragment) {
+                                            Logger.d("EqSettingFragment", "onBack");
+                                            EqSettingFragment.startDragEqGoneAnimation();
+                                            EqSettingFragment.startBottomEqGonenAnimation();
+                                            isEnter = false;
+                                            onBackPressed();
+                                        }
+                                    } else {
+                                        EqSettingFragment.rootView.setTranslationY(0);
+                                        EqSettingFragment.startRecycleViewShowAnimation();
+                                        int height = 0;
+                                        EqSettingFragment.changeShadeViewHeight(height, HomeActivity.this);
+                                        EqSettingFragment.setDragEqTitleBarGone();
+                                        EqSettingFragment.startDragEqGoneAnimation();
+                                        EqSettingFragment.startBottomEqGonenAnimation();
+                                    }
                                 }
                             }
                             break;
