@@ -20,6 +20,8 @@ import com.avnera.smartdigitalheadset.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 import jbl.stc.com.R;
 import jbl.stc.com.entity.EQModel;
@@ -40,7 +42,6 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
     private boolean mIsEnterAnimation = false;
     private boolean mIsExitAnimation = false;
     private RecyclerView mRecyclerView;
-    private int screenHeight;
 
     public void setEqModels(List<EQModel> models, boolean mIsEnterAnimation, boolean mIsExitAnimation, RecyclerView recyclerView) {
         this.eqModels.clear();
@@ -109,10 +110,6 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
             Context context = itemView.getContext();
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-            DisplayMetrics dm = itemView.getContext().getResources().getDisplayMetrics();
-            screenHeight = dm.heightPixels;
-
-
             eqNameText.setText(eqModel.eqName);
             eqNameText.setVisibility(View.VISIBLE);
             if (eqModel.isSelected) {
@@ -149,6 +146,7 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
     }
 
     private void runEnterAnimation(View view, int position) {
+        view.clearAnimation();
         if (animationsLocked) return;
         if (position > lastAnimatedPosition) {
             lastAnimatedPosition = position;
@@ -171,24 +169,21 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
     }
 
     private void runExitAnimation(View view, final int position) {
+        view.clearAnimation();
         view.setTranslationY(0);
         view.setAlpha(1f);
         view.animate()
-                .translationY(800).alpha(0.8f)
+                .translationY(UiUtils.dip2px(view.getContext(),130)*(eqModels.size()+1)/2).alpha(0.8f)
                 .setStartDelay(40 * (eqModels.size() - position))
                 .setInterpolator(new DecelerateInterpolator(0.5f))
-                .setDuration(100)
+                .setDuration(500)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        if (position == 0) {
-                            mRecyclerView.setVisibility(View.GONE);
-                        }
                     }
                 })
                 .start();
 
     }
-
 
 }

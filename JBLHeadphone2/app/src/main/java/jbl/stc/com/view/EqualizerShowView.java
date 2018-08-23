@@ -67,8 +67,6 @@ public class EqualizerShowView extends View {
 
     private int STEP = AppUtils.EQ_VIEW_DEFAULT_STEP;
 
-    private float mPosX, mCurPosX;
-
     private boolean isDynamicDrawCurve;
 
     public EqualizerShowView(Context context) {
@@ -147,32 +145,6 @@ public class EqualizerShowView extends View {
 //        return (int) (Math.ceil(fm.descent - fm.ascent) / 3);
 //    }
 
-
-    /*@Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-
-            case MotionEvent.ACTION_DOWN:
-                mPosX = event.getX();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                mCurPosX = event.getX();
-                break;
-            case MotionEvent.ACTION_UP:
-                if (mCurPosX - mPosX > 0
-                        && (Math.abs(mCurPosX - mPosX) > 25)) {
-                    //scroll to right
-                    ToastUtil.ToastLong(mContext,"scroll to right");
-                } else if (mCurPosX - mPosX < 0
-                        && (Math.abs(mCurPosX - mPosX) > 25)) {
-                    //scroll to left
-                    ToastUtil.ToastLong(mContext,"scroll to left");
-                }
-
-                break;
-        }
-        return true;
-    }*/
 
     private Canvas mCanvas;
 
