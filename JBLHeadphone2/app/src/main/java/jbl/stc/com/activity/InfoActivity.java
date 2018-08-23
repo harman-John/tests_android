@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import jbl.stc.com.R;
+import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.legal.LegalApi;
 
 public class InfoActivity extends BaseActivity implements View.OnClickListener {
@@ -39,12 +40,20 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
     public void connectDeviceStatus(boolean isConnected) {
         super.connectDeviceStatus(isConnected);
         removeAllFragment();
+        setResult(JBLConstant.REQUEST_CODE_INFO_ACTIVITY);
         finish();
+        overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
     }
 
     @Override

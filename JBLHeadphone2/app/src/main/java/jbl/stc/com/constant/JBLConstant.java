@@ -21,6 +21,7 @@ public class JBLConstant {
     public static final int EULA_FRAGMENT = 6;
     public static final int DEBUG_TOGGLES_FRAGMENT = 7;
 
+    public static final int REQUEST_CODE_INFO_ACTIVITY = 10;
     public static final int MAX_MARQUEE_LEN = 30;
     public static final int THUMB_TOUCH_FACTOR = 50;
 

@@ -502,15 +502,16 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
             }
             if (!shouldConnectToBluetoothDevice(bluetoothDevice)) return;
 
-            Logger.d(TAG, "Pairing Failed " + bluetoothDevice.getName() + " " + bluetoothDevice.getBondState());
             if (bluetoothDevice.getBondState() != BluetoothDevice.BOND_BONDED && bluetoothDevice.getBondState() != BluetoothDevice.BOND_BONDING) {
                 disconnect();
+                Logger.d(TAG, "Pairing Failed " + bluetoothDevice.getName() + " " + bluetoothDevice.getBondState());
                 return;
             }
             Thread.sleep(2000);
             Logger.d(TAG, bluetoothDevice.getName() + " connecting...");
             mBluetooth.connect(bluetoothDevice);
             mBluetoothDevice = bluetoothDevice;
+            myHandler.sendEmptyMessageDelayed(MSG_CONNECT_TIME_OUT,5000);
         } catch (Exception e) {
             e.printStackTrace();
             Logger.e(TAG, "Connect to device failed: " + e.getLocalizedMessage());
@@ -675,6 +676,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
             AnalyticsManager.getInstance(mContext).reportDeviceConnect(bluetoothDevice.getName());
             synchronized (this) {
                 /** set device type **/
+                myHandler.removeMessages(MSG_CONNECT_TIME_OUT);
                 DeviceConnectionManager.getInstance().setCurrentDevice(ConnectedDeviceType.Connected_BluetoothDevice);
                 showCommunicationIssue = true;
                 mHandler.removeCallbacks(resetRunnable);
@@ -1360,6 +1362,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                         mLightX.close();
                         mLightX = null;
                     }
+                    myHandler.removeMessages(MSG_CONNECT_TIME_OUT);
                     AvneraManager.getAvenraManager().setLightX(null);
                     AccessoryInfo accessoryInfo = bt150Manager.getAccessoryStatus();
                     PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), mContext);
@@ -1518,6 +1521,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
     private MyHandler myHandler = new MyHandler();
     private final static int MSG_CONNECTED = 0;
     private final static int MSG_DISCONNECTED = 1;
+    private final static int MSG_CONNECT_TIME_OUT = 2;
 
     private class MyHandler extends Handler {
 
@@ -1531,6 +1535,10 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 }
                 case MSG_DISCONNECTED: {
                     disconnectToDevice(msg.obj);
+                    break;
+                }
+                case MSG_CONNECT_TIME_OUT:{
+                    initializeOrResetLibrary();
                     break;
                 }
                 default: {

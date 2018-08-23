@@ -244,6 +244,13 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         DeviceManager.getInstance(this).setOnActivityResult(requestCode, resultCode, data);
+        Logger.d(TAG, "onActivityResult requestCode ="+requestCode);
+        switch (requestCode){
+            case JBLConstant.REQUEST_CODE_INFO_ACTIVITY:{
+                dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
+                break;
+            }
+        }
     }
 
     @Override
@@ -310,7 +317,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_dashboard_white_menu: {
-                startActivity(new Intent(this, InfoActivity.class));
+                startActivityForResult(new Intent(this, InfoActivity.class),JBLConstant.REQUEST_CODE_INFO_ACTIVITY);
                 break;
             }
             case R.id.image_view_dashboard_white_plus: {
@@ -371,6 +378,9 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 case MSG_SHOW_HOME_FRAGMENT: {
                     Logger.d(TAG, "show homeFragment");
                     removeAllFragment();
+                    if (currentActivity() instanceof InfoActivity){
+                        currentActivity().onBackPressed();
+                    }
                     gridView.smoothScrollToPositionFromTop(0,0);
                     dashboardHandler.postDelayed(new Runnable() {
                         @Override
