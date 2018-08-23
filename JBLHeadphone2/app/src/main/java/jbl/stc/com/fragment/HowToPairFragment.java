@@ -66,35 +66,35 @@ public class HowToPairFragment extends BaseFragment implements View.OnClickListe
         if (deviceModelName != null) {
             switch (deviceModelName) {
                 case JBLConstant.DEVICE_LIVE_650BTNC: {
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.live_650));
+                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_650));
                     break;
                 }
                 case JBLConstant.DEVICE_LIVE_400BT: {
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.live_400));
+                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_live_500bt_400bt));
                     break;
                 }
                 case JBLConstant.DEVICE_LIVE_500BT: {
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.live_400));
+                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_live_500bt_400bt));
                     break;
                 }
                 case JBLConstant.DEVICE_EVEREST_ELITE_750NC: {
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.elite_750));
+                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_750));
                     break;
                 }
                 case JBLConstant.DEVICE_EVEREST_ELITE_150NC: {
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.elite_150nc));
+                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_150nc));
                     break;
                 }
                 case JBLConstant.DEVICE_EVEREST_ELITE_700: {
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.elite_700));
+                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_700_300));
                     break;
                 }
                 case JBLConstant.DEVICE_EVEREST_ELITE_100: {
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.elite_100));
+                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_100));
                     break;
                 }
                 case JBLConstant.DEVICE_EVEREST_ELITE_300: {
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.elite_300));
+                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_700_300));
                     break;
                 }
             }

@@ -21,9 +21,9 @@
 
             <ImageView
                 android:id="@+id/image_view_splash_turn_on_bt"
-                android:layout_width="340dp"
-                android:layout_height="320dp"
-                android:background="@mipmap/turn_on_bluetooth" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/pair_bluetooth_step_android" />
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_splash_turn_on_bt"

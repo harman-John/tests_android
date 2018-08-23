@@ -42,10 +42,10 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="340dp"
-            android:layout_height="320dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@mipmap/turn_on_bluetooth" />
+            android:background="@mipmap/pair_bluetooth_step2_android" />
 
     </RelativeLayout>
 

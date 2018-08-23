@@ -373,6 +373,8 @@ public class AppUtils {
         } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_300)) {
             myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_300;
             myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_300_icon);
+        }else{
+            return null;
         }
         return myDevice;
     }

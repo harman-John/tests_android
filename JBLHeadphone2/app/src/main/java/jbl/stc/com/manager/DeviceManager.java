@@ -367,7 +367,10 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         Set<String> devicesSet = PreferenceUtils.getStringSet(mContext, PreferenceKeys.MY_DEVICES);
         Logger.i(TAG, "deviceSet = " + devicesSet);
         for (String value : devicesSet) {
-            lists.add(AppUtils.getMyDevice(mContext,value));
+            MyDevice myDevice = AppUtils.getMyDevice(mContext,value);
+            if (myDevice != null) {
+                lists.add(myDevice);
+            }
         }
     }
 
@@ -397,8 +400,11 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         }
         for (MyDevice myDeviceA2dp : myDeviceListA2dp) {
             for (MyDevice myDevice : lists) {
-                if (myDeviceA2dp.equals(myDevice)) {
+                if (myDeviceA2dp!=null &&myDeviceA2dp.equals(myDevice)) {
                     Logger.i(TAG, "myDeviceA2dp deviceKey= " + myDeviceA2dp.deviceKey);
+                    if (myDevice.deviceName== null){
+                        continue;
+                    }
                     if (myDevice.deviceName.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
                         Logger.i(TAG, "isConnected = " + isConnected);
                         if (isConnected) {
