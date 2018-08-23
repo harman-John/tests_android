@@ -1,15 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relative_layout_splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/shape_gradient_discovery">
 
 
-    <jbl.stc.com.view.CustomFontTextView
-        android:gravity="center"
+
+    <ViewSwitcher
+        android:id="@+id/viewswicther"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textStyle="normal"
-        android:text="Show JBL brand Story"/>
+        android:inAnimation="@anim/fadin"
+        android:outAnimation="@anim/fadeout">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background"
+            tools:context=".activity.SplashActivity">
+
+            <ImageView
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/splash_jbl_logo" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/btnGoNext"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background">
+
+            <SurfaceView
+                android:id="@+id/videoHolder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true" />
+        </RelativeLayout>
+    </ViewSwitcher>
 </RelativeLayout>
