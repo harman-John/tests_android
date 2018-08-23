@@ -1,22 +1,16 @@
 package jbl.stc.com.fragment;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextPaint;
 import android.util.DisplayMetrics;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -24,11 +18,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,7 +29,6 @@ import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Logger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import jbl.stc.com.R;
@@ -57,9 +45,7 @@ import jbl.stc.com.listener.OnCustomEqListener;
 import jbl.stc.com.listener.OnEqItemSelectedListener;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
-import jbl.stc.com.utils.FastClickHelper;
 import jbl.stc.com.utils.UiUtils;
-import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.CustomFontTextView;
 import jbl.stc.com.view.EqualizerShowView;
 import jbl.stc.com.view.MyGridLayoutManager;
@@ -76,39 +62,31 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private ImageView addImageView;
     private RecyclerView eqRecycleView;
     public static EqRecyclerAdapter eqAdapter;
-    private RelativeLayout rl_eq_view;
-    private LinearLayout linearLayout;
     private LinearLayout frameLayout;
-    private RelativeLayout rl_dragtitlebar;
-
-
     public static List<EQModel> eqModelList = new ArrayList<>();
     private EQModel currSelectedEq;
     private int currSelectedEqIndex;
     private LightX lightX;
     private Handler mHandler = new Handler();
     private float mPosX = 0, mCurPosX;
+    private float yDown;
+    private float yMove;
     private int screenHeght;
     private int screenWidth;
     private boolean isDynamicDrawCurve = false;
     public static View rootView;
-    private RelativeLayout rl_eqRecycleView;
-    private View shade_view;
     public static int downNum;
     public static CustomFontTextView titleEq;
-
     public static LinearLayout ll_bottomeq;
     public static View eqDividerView;
     public static TextView eq;
     public static TextView appImageView;
     public static WindowManager mWindowManager;
     public static WindowManager.LayoutParams mWindowLayoutParams;
-    public static WindowManager mEqWindowManager;
     public static WindowManager.LayoutParams mEqWindowLayoutParams;
     public static LinearLayout ll_eqtext;
     public static TextView tv_drageq;
     private float rawY = 0.0f;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -116,7 +94,6 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         rootView = inflater.inflate(R.layout.fragment_eq_settings, container, false);
         lightX = AvneraManager.getAvenraManager().getLightX();
         mWindowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-        mEqWindowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenHeght = dm.heightPixels;
         screenWidth = dm.widthPixels;
@@ -168,13 +145,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         if (rawY > 0.0) {
             eqRecycleView.setVisibility(View.GONE);
         }
-        rl_eq_view = rootView.findViewById(R.id.rl_eq_view);
-        linearLayout = rootView.findViewById(R.id.linearLayout);
-        rl_eqRecycleView = rootView.findViewById(R.id.rl_eqRecycleView);
-        shade_view = rootView.findViewById(R.id.shade_view);
         frameLayout = rootView.findViewById(R.id.frameLayout);
-        rl_dragtitlebar = rootView.findViewById(R.id.rl_dragtitlebar);
-
     }
 
     private void initEvent() {
@@ -199,7 +170,6 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         titleBar.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                createVelocityTracker(event);
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         yDown = event.getRawY();
@@ -207,47 +177,42 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                         downNum = eqModelList.size() - 1;
                         startRecyleViewGoneAnimation(downNum);
                         startBottomEqShownAnimation(getActivity(), screenHeght, screenWidth, 0.f);
-
                         int startX = (screenWidth) / 2 - UiUtils.dip2px(getActivity(), 35);
                         int startY = (int) (UiUtils.dip2px(getActivity(), 20) + UiUtils.getStatusHeight(getActivity()) - yDown / 2);
                         startEqTitleTextShown(getActivity(), startX, startY);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         yMove = event.getRawY();
-                        int ySpeed = getScrollVelocity();
-                        rootView.setTranslationY(yMove - UiUtils.getStatusHeight(getActivity()));
-                        Logger.d(TAG, "yMove" + String.valueOf(yMove) + "screenHeight:" + screenHeght);
-
-                        if (yMove > screenHeght / 3 && ySpeed < screenHeght / 3 + 10) {
-                            changeBottomEqAlpha(1);
-                        }
-                        if ((yMove - yDown) > 25) {
-                            int height = (int) (yMove - yDown) / 2;
-                            changeShadeViewHeight(height, getActivity());
-                            int dragEqHeight = (int) ((yMove) / (screenHeght + UiUtils.getStatusHeight(getActivity()) - UiUtils.dip2px(getActivity(), 70)) * UiUtils.dip2px(getActivity(), 70));
-                            changeDragEqTitleBarHeight(dragEqHeight, getActivity());
-
-                            int fullWidth = (screenWidth - UiUtils.dip2px(getActivity(), 70)) / 2;
-                            int x = (int) (fullWidth - yMove / (screenHeght + UiUtils.getStatusHeight(getActivity()) - UiUtils.dip2px(getActivity(), 70)) * fullWidth);
-                            int y = 0;
-                            if (x < fullWidth / 2) {
-                                y = (int) (yMove - dragEqHeight / 2 + UiUtils.getStatusHeight(getActivity()));
-                            } else {
-                                y = (int) (yMove - dragEqHeight / 2);
+                        if (yMove > UiUtils.getStatusHeight(getActivity())) {
+                            rootView.setTranslationY(yMove - UiUtils.getStatusHeight(getActivity()));
+                            Logger.d(TAG, "yMove" + String.valueOf(yMove) + "screenHeight:" + screenHeght);
+                            if (yMove > screenHeght / 3) {
+                                changeBottomEqAlpha(1);
                             }
-                            updateEqTitleLocation(x, y);
+                            if ((yMove - yDown) > 25) {
+                                int height = (int) (yMove - yDown) / 2;
+                                changeShadeViewHeight(height, getActivity());
+                                int dragEqHeight = (int) ((yMove) / (screenHeght + UiUtils.getStatusHeight(getActivity()) - UiUtils.dip2px(getActivity(), 70)) * UiUtils.dip2px(getActivity(), 70));
+                                changeDragEqTitleBarHeight(dragEqHeight, getActivity());
+                                int fullWidth = (screenWidth - UiUtils.dip2px(getActivity(), 70)) / 2;
+                                int x = (int) (fullWidth - yMove / (screenHeght + UiUtils.getStatusHeight(getActivity()) - UiUtils.dip2px(getActivity(), 70)) * fullWidth);
+                                int y = 0;
+                                if (x < fullWidth / 2) {
+                                    y = (int) (yMove - dragEqHeight / 2 + UiUtils.getStatusHeight(getActivity()));
+                                } else {
+                                    y = (int) (yMove - dragEqHeight / 2);
+                                }
+                                updateEqTitleLocation(x, y);
+                            }
+                            if ((yMove + UiUtils.dip2px(getActivity(), 70)) > screenHeght) {
+                                startBottomEqGonenAnimation();
+                                startDragEqGoneAnimation();
+                                HomeActivity.isEnter = false;
+                                getActivity().onBackPressed();
+                            }
                         }
-
-                        if ((yMove + UiUtils.dip2px(getActivity(), 70)) > screenHeght) {
-                            startBottomEqGonenAnimation();
-                            startDragEqGoneAnimation();
-                            HomeActivity.isEnter = false;
-                            getActivity().onBackPressed();
-                        }
-
                         break;
                     case MotionEvent.ACTION_UP:
-                        recycleVelocityTracker();
                         startBottomEqGonenAnimation();
                         startDragEqGoneAnimation();
                         if (yMove > screenHeght / 2) {
@@ -257,15 +222,12 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
                         } else {
                             EqSettingFragment.rootView.setTranslationY(0);
-                            //rl_dragtitlebar.setVisibility(View.GONE);
                             setDragEqTitleBarGone();
                             int height = 0;
                             changeShadeViewHeight(height, getActivity());
                             eqRecycleView.setVisibility(View.VISIBLE);
                             eqAdapter.setEqModels(eqModelList, true, false, eqRecycleView);
                         }
-
-
                         break;
                     default:
                         break;
@@ -292,29 +254,20 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                             //scroll to right
                             if (currSelectedEqIndex >= 1) {
                                 eqAdapter.setSelectedIndex(currSelectedEqIndex - 1);
-                            } else {
-                                eqAdapter.setSelectedIndex(eqModelList.size() - 1);
                             }
-
-
                         } else if (mPosX - mCurPosX > distance
                                 && (Math.abs(mCurPosX - mPosX) > distance)) {
                             //scroll to left
                             if (currSelectedEqIndex < eqModelList.size() - 1) {
                                 eqAdapter.setSelectedIndex(currSelectedEqIndex + 1);
-                            } else {
-                                eqAdapter.setSelectedIndex(0);
                             }
                         }
-
                         break;
                 }
                 return true;
             }
 
         });
-
-
     }
 
     public static void setDragTitleBarVisible() {
@@ -349,7 +302,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         tv_drageq.setTypeface(Typeface.createFromAsset(context.getAssets(), JBLConstant.OPEN_SANS_BOLD));
         tv_drageq.setText("EQ");
         ll_eqtext.addView(tv_drageq, dragEqParams);
-        mEqWindowManager.addView(ll_eqtext, mEqWindowLayoutParams);
+        mWindowManager.addView(ll_eqtext, mEqWindowLayoutParams);
     }
 
     public static void startDragEqGoneAnimation() {
@@ -357,7 +310,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         eqTitleTextView.setVisibility(View.VISIBLE);
         if (tv_drageq != null) {
             Logger.d(TAG, "tv_drageq is not null");
-            mEqWindowManager.removeView(ll_eqtext);
+            mWindowManager.removeView(ll_eqtext);
             ll_eqtext = null;
             tv_drageq = null;
         } else {
@@ -368,7 +321,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     public static void updateEqTitleLocation(int x, int y) {
         mEqWindowLayoutParams.x = x;
         mEqWindowLayoutParams.y = y;
-        mEqWindowManager.updateViewLayout(ll_eqtext, mEqWindowLayoutParams);
+        mWindowManager.updateViewLayout(ll_eqtext, mEqWindowLayoutParams);
     }
 
     public static void changeDragEqTitleBarHeight(int height, Context context) {
@@ -488,12 +441,6 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         eqModelList.clear();
         eqModelList.addAll(eqModels);
         currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""), mContext);
-        //LogUtil.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""));
-
-        /*if (eqModelList == null || eqModelList.isEmpty()) {
-            getActivity().getSupportFragmentManager().popBackStack();
-            return;
-        }*/
         Logger.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, getResources().getString(R.string.off)));
         if (currSelectedEq != null && currSelectedEq.eqName != null) {
             if (application.deviceInfo.eqOn) {
@@ -554,6 +501,170 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             eqEditImage.setClickable(true);
         }
         smoothToPosition();
+
+        //create the cicle view under the EqualizerShowView
+        createCircleView();
+    }
+
+    private void createCircleView() {
+        int circleNum = 7;
+        LinearLayout ll_small_circle = rootView.findViewById(R.id.ll_small_circle);
+        int width = UiUtils.dip2px(getActivity(), 6);
+        ll_small_circle.removeAllViews();
+        if (eqModelList.size() > 6) {
+            int ll_width = (circleNum + circleNum - 1) * width;
+            RelativeLayout.LayoutParams ll_params = new RelativeLayout.LayoutParams(ll_width, width);
+            if (currSelectedEqIndex < 3) {
+                ll_params.leftMargin = (int) (screenWidth - ll_width) / 2;
+                ll_params.rightMargin = (int) (screenWidth - ll_width) / 2;
+            } else {
+                ll_params.leftMargin = (int) (screenWidth - ll_width) / 2 - (currSelectedEqIndex - 3) * width;
+                ll_params.rightMargin = (int) (screenWidth - ll_width) / 2 + (currSelectedEqIndex - 3) * width;
+            }
+            ll_params.topMargin = (int) (UiUtils.dip2px(getActivity(), 45) - UiUtils.dip2px(getActivity(), 6)) / 2;
+            ll_params.bottomMargin = (int) (UiUtils.dip2px(getActivity(), 45) - UiUtils.dip2px(getActivity(), 6)) / 2;
+            ll_small_circle.setLayoutParams(ll_params);
+            for (int i = 0; i < circleNum; i++) {
+                ImageView imageView = new ImageView(getActivity());
+                imageView.setImageResource(R.drawable.eq_choose_small_circle);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, width);
+                imageView.setAlpha(0f);
+                if (i < circleNum - 1) {
+                    params.rightMargin = width;
+                }
+                int leftNum = currSelectedEqIndex;
+                int rightNum = eqModelList.size() - 1 - currSelectedEqIndex;
+                if (leftNum < 4) {
+                    if (leftNum == 0) {
+                        if (i == 0) {
+                            imageView.setAlpha(1f);
+                        } else if (i == 1) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 2) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 3) {
+                            imageView.setAlpha(0.2f);
+                        } else if (i == 4) {
+                            imageView.setAlpha(0.1f);
+                        }
+                    } else if (leftNum == 1) {
+                        if (i == 0) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 1) {
+                            imageView.setAlpha(1.0f);
+                        } else if (i == 2) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 3) {
+                            imageView.setAlpha(0.2f);
+                        } else if (i == 4) {
+                            imageView.setAlpha(0.1f);
+                        }
+                    } else if (leftNum == 2) {
+                        if (i == 0) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 1) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 2) {
+                            imageView.setAlpha(1.0f);
+                        } else if (i == 3) {
+                            imageView.setAlpha(0.2f);
+                        } else if (i == 4) {
+                            imageView.setAlpha(0.1f);
+                        }
+                    } else if (leftNum == 3) {
+                        if (i == 0) {
+                            imageView.setAlpha(0.2f);
+                        } else if (i == 1) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 2) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 3) {
+                            imageView.setAlpha(1.0f);
+                        } else if (i == 4) {
+                            imageView.setAlpha(0.2f);
+                        } else if (i == 5) {
+                            imageView.setAlpha(0.1f);
+                        }
+                    }
+                } else {
+                    if (rightNum == 0) {
+                        if (i == 0) {
+                            imageView.setAlpha(0.1f);
+                        } else if (i == 1) {
+                            imageView.setAlpha(0.2f);
+                        } else if (i == 2) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 3) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 4) {
+                            imageView.setAlpha(1.0f);
+                        }
+
+                    }
+                    if (rightNum == 1) {
+                        if (i == 0) {
+                            imageView.setAlpha(0.1f);
+                        } else if (i == 1) {
+                            imageView.setAlpha(0.2f);
+                        } else if (i == 2) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 3) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 4) {
+                            imageView.setAlpha(1.0f);
+                        }
+                        if (i == 5) {
+                            imageView.setAlpha(0.4f);
+                        }
+                    }
+                    if (rightNum > 1) {
+                        if (i == 0) {
+                            imageView.setAlpha(0.1f);
+                        } else if (i == 1) {
+                            imageView.setAlpha(0.2f);
+                        } else if (i == 2) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 3) {
+                            imageView.setAlpha(0.4f);
+                        } else if (i == 4) {
+                            imageView.setAlpha(1.0f);
+                        }
+                        if (i == 5 || i == 6) {
+                            imageView.setAlpha(0.4f);
+                        }
+                    }
+                }
+                ll_small_circle.addView(imageView, params);
+            }
+        } else {
+            circleNum = eqModelList.size();
+            int ll_width = (circleNum + circleNum - 1) * width;
+            RelativeLayout.LayoutParams ll_params = new RelativeLayout.LayoutParams(ll_width, width);
+            ll_params.leftMargin = (int) (screenWidth - ll_width) / 2;
+            ll_params.rightMargin = (int) (screenWidth - ll_width) / 2;
+            ll_params.topMargin = (int) (UiUtils.dip2px(getActivity(), 45) - UiUtils.dip2px(getActivity(), 6)) / 2;
+            ll_params.bottomMargin = (int) (UiUtils.dip2px(getActivity(), 45) - UiUtils.dip2px(getActivity(), 6)) / 2;
+            ll_small_circle.setLayoutParams(ll_params);
+            for (int i = 0; i < circleNum; i++) {
+                ImageView imageView = new ImageView(getActivity());
+                imageView.setImageResource(R.drawable.eq_choose_small_circle);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, width);
+                imageView.setAlpha(0f);
+                if (i < circleNum - 1) {
+                    params.rightMargin = width;
+                }
+                if (i == currSelectedEqIndex) {
+                    imageView.setAlpha(1f);
+                } else if (Math.abs(i - currSelectedEqIndex) == 1 || (Math.abs(i - currSelectedEqIndex) == 2)) {
+                    imageView.setAlpha(0.4f);
+                } else if (Math.abs(i - currSelectedEqIndex) == 3) {
+                    imageView.setAlpha(0.2f);
+                } else if (Math.abs(i - currSelectedEqIndex) == 4) {
+                    imageView.setAlpha(0.1f);
+                }
+                ll_small_circle.addView(imageView, params);
+            }
+        }
     }
 
     private static int pos = 0;
@@ -588,8 +699,6 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             }
         }
     }
-
-    ;
 
     private void smoothToPosition() {
         if (currSelectedEqIndex > 1) {
@@ -633,6 +742,8 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         }
         mHandler.removeCallbacks(applyRunnable);
         mHandler.postDelayed(applyRunnable, 300);
+
+        createCircleView();
     }
 
     /**
@@ -707,7 +818,6 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 break;
         }
     }
-
 
     private OnCustomEqListener onCustomEqListener = new OnCustomEqListener() {
         @Override
