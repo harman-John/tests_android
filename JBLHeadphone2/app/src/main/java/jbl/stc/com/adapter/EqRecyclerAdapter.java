@@ -163,6 +163,7 @@ public class EqRecyclerAdapter extends RecyclerView.Adapter {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             animationsLocked = true;
+                            mRecyclerView.setVisibility(View.VISIBLE);
                         }
                     })
                     .start();

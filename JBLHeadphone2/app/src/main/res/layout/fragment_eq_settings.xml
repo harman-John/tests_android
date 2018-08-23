@@ -21,19 +21,6 @@
             android:focusableInTouchMode="true"
             android:visibility="gone">
 
-            <jbl.stc.com.view.CustomFontTextView
-                android:id="@+id/titleEqText"
-                style="@style/PoppinsRegularTextStyle"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:gravity="center"
-                android:text="@string/title_eq"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
         </RelativeLayout>
 
         <FrameLayout
@@ -71,6 +58,7 @@
                         android:layout_centerInParent="true"
                         android:gravity="center"
                         android:text="@string/title_eq_setting"
+                        android:textColor="#FFFFFF"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -140,6 +128,15 @@
                             android:layout_marginRight="10dp"
                             android:scaleType="fitXY"
                             android:src="@mipmap/icon_eq_edit" />
+
+                        <LinearLayout
+                            android:id="@+id/ll_small_circle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/eqEditImage"
+                            android:layout_toRightOf="@id/text_view_eq_settings_eq_name"
+                            android:orientation="horizontal"></LinearLayout>
                     </RelativeLayout>
                 </RelativeLayout>
 
