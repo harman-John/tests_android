@@ -216,10 +216,8 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                         startBottomEqGonenAnimation();
                         startDragEqGoneAnimation();
                         if (yMove > screenHeght / 2) {
-
                             HomeActivity.isEnter = false;
                             getActivity().onBackPressed();
-
                         } else {
                             EqSettingFragment.rootView.setTranslationY(0);
                             setDragEqTitleBarGone();
@@ -227,6 +225,13 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                             changeShadeViewHeight(height, getActivity());
                             eqRecycleView.setVisibility(View.VISIBLE);
                             eqAdapter.setEqModels(eqModelList, true, false, eqRecycleView);
+                            if (currSelectedEqIndex == 0) {
+                                frameLayout.setBackgroundResource(R.drawable.shape_gradient_eq_off);
+                                eqEditImage.setClickable(false);
+                            } else {
+                                frameLayout.setBackgroundResource(R.drawable.shape_gradient_eq);
+                                eqEditImage.setClickable(true);
+                            }
                         }
                         break;
                     default:

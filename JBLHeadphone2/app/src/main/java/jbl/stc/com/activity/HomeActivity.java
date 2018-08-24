@@ -514,6 +514,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 if (!tutorialAncDialog.isShowing()) {
                     tutorialAncDialog.show();
                 }
+
+                tutorialAncDialog.setOnDialogListener(new OnDialogListener() {
+                    @Override
+                    public void onConfirm() {
+                        doResume();
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
             }
         }
     }
