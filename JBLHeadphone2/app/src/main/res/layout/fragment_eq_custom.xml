@@ -16,8 +16,10 @@
             style="@style/PoppinsMediumTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="normal"
+            android:textStyle="bold"
             android:layout_centerInParent="true"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
             android:text="@string/title_eq_edit" />
 
         <jbl.stc.com.view.AppImageView

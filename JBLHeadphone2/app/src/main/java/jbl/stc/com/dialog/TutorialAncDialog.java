@@ -116,11 +116,13 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
             @Override
             public void onEqValueChanged(int eqIndex, float value) {
                 dismiss();
+                onDialogListener.onConfirm();
             }
 
             @Override
             public void onEqDragFinished(float[] pointX, float[] pointY) {
                 dismiss();
+                onDialogListener.onConfirm();
             }
         });
         WindowManager.LayoutParams lp = getWindow().getAttributes();
@@ -221,13 +223,14 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
 
     public void setTextViewTips(int restId) {
         if (textViewTips != null) {
+            textViewTips.setVisibility(View.VISIBLE);
             textViewTips.setText(restId);
         }
     }
 
     public void showEqInfo() {
         if (mActivity instanceof HomeActivity) {
-            ((HomeActivity) mActivity).setEqMenuColor(true);
+            ((HomeActivity) mActivity).setEqMenuColor(false);
         }
 
         if (textViewEqName != null) {
@@ -270,6 +273,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     }
 
     public void updateCurrentEQ(int index) {
+        textViewEqName.setVisibility(View.VISIBLE);
         switch (index) {
             case 0: {
                 textViewEqName.setText(R.string.off);
@@ -403,6 +407,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
             case R.id.image_view_tutorial_dialog_ambient_aware: {
                 if (mActivity instanceof HomeActivity) {
                     if (!isShowOnlySmartAmbientType()) {
+                        setTextViewTips(R.string.tutorial_tips_two);
                         checkBoxANC.setChecked(true);
                         ((HomeActivity) mActivity).showAncPopupWindow(relativeLayout);
                     } else {
@@ -451,6 +456,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
             }
             case R.id.text_view_tutorial_dialog_skip: {
                 dismiss();
+                onDialogListener.onConfirm();
                 break;
             }
             case R.id.text_view_tutorial_dialog_eq_grey: {
@@ -463,8 +469,11 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                 if (mActivity instanceof HomeActivity) {
                     ((HomeActivity) mActivity).setEqMenuColor(true);
                 }
+                if (textViewEqName!=null){
+                    textViewEqName.setVisibility(View.VISIBLE);
+                }
                 setTextViewTips(R.string.tutorial_tips_four);
-                showTripleArrowsAnimation();
+                //showTripleArrowsAnimation();
                 break;
             }
         }

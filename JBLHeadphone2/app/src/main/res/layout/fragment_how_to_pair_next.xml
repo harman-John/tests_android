@@ -21,7 +21,7 @@
             android:layout_height="45dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/button_close" />
+            android:src="@mipmap/delete_speaker_icon" />
 
         <jbl.stc.com.view.AppImageView
             android:id="@+id/image_view_how_to_pair_next_back"
