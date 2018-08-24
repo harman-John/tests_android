@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -427,8 +428,6 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) shade_view.getLayoutParams();
         params.height = height;
         shade_view.setLayoutParams(params);
-        LinearLayout frameLayout = rootView.findViewById(R.id.frameLayout);
-        frameLayout.setBackgroundResource(R.drawable.shape_gradient_eq);
     }
 
     public static void startRecyleViewGoneAnimation(int position) {
