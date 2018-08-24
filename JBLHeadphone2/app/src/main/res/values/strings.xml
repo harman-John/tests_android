@@ -98,10 +98,10 @@
     <string name="TrueNote">TruNote</string>
 
     <string name="advice_reflect_aware">Try unplugging and plugging in your headphones.</string>
-    <string name="advice_two">1. Power off and then on your product</string>
-    <string name="advice_three">2. Make sure your product is paired with your mobile via Bluetooth\nhow to pair my headphones?</string>
-    <string name="advice_four">3. Disconnect your product from other mobile</string>
-    <string name="advice_five">4. Pause music on your product</string>
+    <string name="advice_three">1. Make sure your product is paired with your mobile via Bluetooth.\nhow to pair my headphones?</string>
+    <string name="advice_four">2. Pause music on your headphones.</string>
+    <string name="advice_five">3. Disconnect your product from other Bluetooth device.</string>
+    <string name="advice_six">4. Restart your product</string>
     <string name="try_again">Try again</string>
     <string name="turn_on_bluetooth">Turn on Bluetooth</string>
     <string name="turn_on_bluetooth_detail_1">Visit control center and turn on Bluetooth.</string>
@@ -151,7 +151,7 @@
     <string name="talkthru">TalkThru</string>
     <string name="no_headphones_found">No headphones found</string>
     <string name="make_sure_your_headphones_are_in_the_list_below">Make sure your headphones\nare in the list bellow</string>
-    <string name="All_product_lists">Only compatible products listed above are supported by <b>My JBL Headphones</b> app. We continuously work on adding more products supports, please go to JBL.com to fond more updates.</string>
+    <string name="All_product_lists">If you can\'t find your product here,please make sure the app is the latest version.</string>
 
     <string name="live_650bt_nc">LIVE 650BTNC</string>
     <string name="live_500bt">LIVE 500BT</string>
@@ -181,13 +181,14 @@
 
 
     <string name="my_products">My products</string>
-    <string name="my_products_tips_zero">Don\'t see your products?</string>
+    <string name="my_products_tips_zero">We can\'t seem to find your product</string>
     <string name="my_products_tips_one">1.Make sure your product is paired with your mobile via Bluetooth.\n<b>how to pair my headphones?</b></string>
-    <string name="my_products_tips_two">2.Pause music on your product or your mobile</string>
-    <string name="my_products_tips_three">3.To make sure your headphones are compatible with the app.\n<b>Check the compatible product list bellow:</b></string>
+    <string name="my_products_tips_three">2.To make sure your headphones are compatible with the app.\n<b>Check the compatible product list bellow:</b></string>
 
     <string name="how_to_pair_tips_zero"><b>Enter Bluetooth pairing mode</b></string>
-    <string name="how_to_pair_tips_one">Press and hold the power button for 3s to enter pairing mode. You will see blue LED flashing.</string>
+    <string name="how_to_pair_700_300_100">Press and hold the power button in power off state for 6s, you will see the LED flashes with RED and WHITE alternately.</string>
+    <string name="how_to_pair_750_150">Press and hold the BT button for 3s to enter pairing mode. You will see blue LED flashing.</string>
+    <string name="how_to_pair_650_500_400">Press and hold the BT button for 2s to enter pairing mode. You will see blue LED flashing.</string>
     <string name="how_to_pair_tips_two">Watch a video</string>
 
     <string name="next">Next</string>

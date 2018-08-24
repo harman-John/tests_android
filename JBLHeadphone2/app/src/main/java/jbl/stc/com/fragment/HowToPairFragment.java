@@ -24,6 +24,7 @@ public class HowToPairFragment extends BaseFragment implements View.OnClickListe
     private View view;
     private TextView textViewLink;
     private ImageView imageView;
+    private TextView textViewTips;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,9 +36,9 @@ public class HowToPairFragment extends BaseFragment implements View.OnClickListe
         view = inflater.inflate(R.layout.fragment_how_to_pair,
                 container, false);
         imageView = view.findViewById(R.id.image_view_htp);
-        initImageView();
         view.findViewById(R.id.text_view_how_to_pair_next).setOnClickListener(this);
         textViewLink = view.findViewById(R.id.text_view_how_to_pair_link);
+        textViewTips = view.findViewById(R.id.text_view_tips_one_in_htp);
         view.findViewById(R.id.image_view_how_to_pair_back).setOnClickListener(this);
         view.findViewById(R.id.image_view_how_to_pair_close).setOnClickListener(this);
         SpannableString spannableString = new SpannableString(getString(R.string.how_to_pair_tips_two));
@@ -58,6 +59,7 @@ public class HowToPairFragment extends BaseFragment implements View.OnClickListe
         }, 0, textViewLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textViewLink.setText(spannableString);
         textViewLink.setMovementMethod(LinkMovementMethod.getInstance());
+        initImageView();
         return view;
     }
 
@@ -66,34 +68,50 @@ public class HowToPairFragment extends BaseFragment implements View.OnClickListe
         if (deviceModelName != null) {
             switch (deviceModelName) {
                 case JBLConstant.DEVICE_LIVE_650BTNC: {
+                    textViewTips.setText(getString(R.string.how_to_pair_650_500_400));
+                    textViewLink.setVisibility(View.GONE);
                     imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_650));
                     break;
                 }
                 case JBLConstant.DEVICE_LIVE_400BT: {
+                    textViewTips.setText(getString(R.string.how_to_pair_650_500_400));
+                    textViewLink.setVisibility(View.GONE);
                     imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_live_500bt_400bt));
                     break;
                 }
                 case JBLConstant.DEVICE_LIVE_500BT: {
+                    textViewTips.setText(getString(R.string.how_to_pair_650_500_400));
+                    textViewLink.setVisibility(View.GONE);
                     imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_live_500bt_400bt));
                     break;
                 }
                 case JBLConstant.DEVICE_EVEREST_ELITE_750NC: {
+                    textViewTips.setText(getString(R.string.how_to_pair_750_150));
+                    textViewLink.setVisibility(View.GONE);
                     imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_750));
                     break;
                 }
                 case JBLConstant.DEVICE_EVEREST_ELITE_150NC: {
+                    textViewTips.setText(getString(R.string.how_to_pair_750_150));
+                    textViewLink.setVisibility(View.GONE);
                     imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_150nc));
                     break;
                 }
                 case JBLConstant.DEVICE_EVEREST_ELITE_700: {
+                    textViewTips.setText(getString(R.string.how_to_pair_700_300_100));
+                    textViewLink.setVisibility(View.VISIBLE);
                     imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_700_300));
                     break;
                 }
                 case JBLConstant.DEVICE_EVEREST_ELITE_100: {
+                    textViewTips.setText(getString(R.string.how_to_pair_700_300_100));
+                    textViewLink.setVisibility(View.GONE);
                     imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_100));
                     break;
                 }
                 case JBLConstant.DEVICE_EVEREST_ELITE_300: {
+                    textViewTips.setText(getString(R.string.how_to_pair_700_300_100));
+                    textViewLink.setVisibility(View.VISIBLE);
                     imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_700_300));
                     break;
                 }
