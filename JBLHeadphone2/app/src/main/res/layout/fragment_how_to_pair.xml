@@ -76,6 +76,7 @@
             android:textStyle="normal" />
 
         <LinearLayout
+            android:id="@+id/linear_layout_video_in_htp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

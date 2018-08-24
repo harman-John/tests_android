@@ -84,7 +84,7 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
                 return;
             }
             case R.id.image_view_400_in_pl:{
-                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_LIVE_650BTNC);
+                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_LIVE_400BT);
                 break;
             }
             case R.id.image_view_500_in_pl:{
@@ -92,20 +92,20 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
                 break;
             }
             case R.id.image_view_650_in_pl:{
-                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_LIVE_400BT);
+                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_LIVE_650BTNC);
                 break;
             }
 
             case R.id.image_view_100_in_pl:{
-                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_750NC);
+                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_100);
                 break;
             }
             case R.id.image_view_150_in_pl:{
-                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_REFLECT_AWARE);
+                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_150NC);
                 break;
             }
             case R.id.image_view_300_in_pl:{
-                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_150NC);
+                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_300);
                 break;
             }
             case R.id.image_view_700_in_pl:{
@@ -113,11 +113,11 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
                 break;
             }
             case R.id.image_view_750_in_pl:{
-                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_100);
+                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_750NC);
                 break;
             }
             case R.id.image_view_reflect_in_pl:{
-                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_300);
+                bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_REFLECT_AWARE);
                 break;
             }
         }
