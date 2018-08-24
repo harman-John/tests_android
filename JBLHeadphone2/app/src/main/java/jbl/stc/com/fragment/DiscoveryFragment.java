@@ -6,23 +6,24 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.logger.Logger;
-import jbl.stc.com.utils.StatusBarUtil;
 import jbl.stc.com.view.JblCircleView;
 
 public class DiscoveryFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = DiscoveryFragment.class.getSimpleName();
     private View view;
+    private ImageView imageViewLogo;
     private final static int MSG_SHOW_PRODUCT_LIST_FRAGMENT = 0;
 
     private DHandler dHandler = new DHandler(Looper.getMainLooper());
@@ -36,6 +37,26 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_discovery,
                 container, false);
+        imageViewLogo = view.findViewById(R.id.image_view_dashboard_logo);
+        Animation mAnimation = AnimationUtils.loadAnimation(getActivity(),R.anim.anim_scale_on_slow);
+        imageViewLogo.setAnimation(mAnimation );
+        mAnimation.start();
+        mAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                showProductList();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
 
         relativeLayoutAnimation = view.findViewById(R.id.relative_layout_discovery_animation);
         view.findViewById(R.id.image_view_discovery_back).setOnClickListener(this);
@@ -46,7 +67,6 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onResume() {
         super.onResume();
-        showProductLIst();
     }
 
     @Override
@@ -66,7 +86,7 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
 
     }
 
-    private void showProductLIst() {
+    private void showProductList() {
         startCircle();
         dHandler.removeMessages(MSG_SHOW_PRODUCT_LIST_FRAGMENT);
         dHandler.sendEmptyMessageDelayed(MSG_SHOW_PRODUCT_LIST_FRAGMENT, 5000);

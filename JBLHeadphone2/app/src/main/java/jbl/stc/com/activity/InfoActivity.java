@@ -34,7 +34,7 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
             e.printStackTrace();
         }
         if (packageInfo != null) {
-            String version = getString(R.string.app_version) + packageInfo.versionName +"("+ packageInfo.versionCode+")";
+            String version = getString(R.string.app_version) + packageInfo.versionName +"."+ packageInfo.versionCode;
             textView.setText(version);
         }
     }
