@@ -146,6 +146,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             eqRecycleView.setVisibility(View.GONE);
         }
         frameLayout = rootView.findViewById(R.id.frameLayout);
+        rootView.findViewById(R.id.rl_eqRecycleView).setOnClickListener(this);
     }
 
     private void initEvent() {
