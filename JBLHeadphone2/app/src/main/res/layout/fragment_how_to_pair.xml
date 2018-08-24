@@ -21,7 +21,7 @@
             android:layout_height="45dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_close" />
+            android:src="@mipmap/button_close" />
 
         <jbl.stc.com.view.AppImageView
             android:id="@+id/image_view_how_to_pair_back"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:background="@mipmap/black_arrow_back" />
+            android:background="@mipmap/grey_arrow_back" />
 
     </RelativeLayout>
 
@@ -85,7 +85,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:scaleType="centerInside"
-                android:src="@mipmap/video" />
+                android:src="@mipmap/button_icon_video" />
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_how_to_pair_link"

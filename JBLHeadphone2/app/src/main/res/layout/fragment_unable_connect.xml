@@ -20,7 +20,7 @@
             android:layout_height="45dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/icon_close" />
+            android:src="@mipmap/button_close_white" />
 
     </RelativeLayout>
 

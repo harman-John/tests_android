@@ -21,7 +21,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginStart="@dimen/marginTop10dp"
             android:contentDescription="TODO"
-            android:src="@mipmap/app_menu" />
+            android:src="@mipmap/button_app_menu" />
 
         <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
-            android:background="@mipmap/white_plus" />
+            android:background="@mipmap/button_addition" />
 
     </RelativeLayout>
 
@@ -84,5 +84,5 @@
         android:layout_marginRight="-100dp"
         android:visibility="gone"
         app:color="#ffffff"
-        app:drawable="@mipmap/delete_red" />
+        app:drawable="@mipmap/button_delete_red" />
 </RelativeLayout>

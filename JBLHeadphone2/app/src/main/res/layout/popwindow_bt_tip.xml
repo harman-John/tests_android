@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
-                android:src="@mipmap/icon_arrow_down"
+                android:src="@mipmap/grey_arrow_down_icon"
                 android:tint="@color/black" />
 
         </RelativeLayout>

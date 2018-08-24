@@ -20,7 +20,7 @@
             android:layout_height="45dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/black_arrow_back" />
+            android:src="@mipmap/grey_arrow_back" />
 
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_title"
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/check_empty"
+                android:src="@mipmap/checkbox_empty"
                 android:visibility="gone" />
         </RelativeLayout>
 
@@ -143,7 +143,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:src="@mipmap/check_empty"
+                android:src="@mipmap/checkbox_empty"
                 android:visibility="gone" />
 
 

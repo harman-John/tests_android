@@ -50,7 +50,7 @@ public class AutoOffTimeFragment extends BaseFragment implements View.OnClickLis
                 iv_check_ten.setVisibility(View.GONE);
                 iv_check_thirty.setVisibility(View.GONE);
                 iv_check_never.setVisibility(View.GONE);
-                iv_check_five.setImageResource(R.mipmap.selected_orange);
+                iv_check_five.setImageResource(R.mipmap.button_selected);
                 break;
             case R.id.tenminutesLayout:
                 PreferenceUtils.setString(PreferenceKeys.AUTOOFFTIMER,getContext().getString(R.string.ten_minute),getActivity());
@@ -58,7 +58,7 @@ public class AutoOffTimeFragment extends BaseFragment implements View.OnClickLis
                 iv_check_ten.setVisibility(View.VISIBLE);
                 iv_check_thirty.setVisibility(View.GONE);
                 iv_check_never.setVisibility(View.GONE);
-                iv_check_ten.setImageResource(R.mipmap.selected_orange);
+                iv_check_ten.setImageResource(R.mipmap.button_selected);
                 break;
             case R.id.thirtyminutesLayout:
                 PreferenceUtils.setString(PreferenceKeys.AUTOOFFTIMER,getContext().getString(R.string.thirty_minute),getActivity());
@@ -66,7 +66,7 @@ public class AutoOffTimeFragment extends BaseFragment implements View.OnClickLis
                 iv_check_ten.setVisibility(View.GONE);
                 iv_check_thirty.setVisibility(View.VISIBLE);
                 iv_check_never.setVisibility(View.GONE);
-                iv_check_thirty.setImageResource(R.mipmap.selected_orange);
+                iv_check_thirty.setImageResource(R.mipmap.button_selected);
                 break;
             case R.id.neverLayout:
                 PreferenceUtils.setString(PreferenceKeys.AUTOOFFTIMER,getContext().getString(R.string.never),getActivity());
@@ -74,7 +74,7 @@ public class AutoOffTimeFragment extends BaseFragment implements View.OnClickLis
                 iv_check_ten.setVisibility(View.GONE);
                 iv_check_thirty.setVisibility(View.GONE);
                 iv_check_never.setVisibility(View.VISIBLE);
-                iv_check_never.setImageResource(R.mipmap.selected_orange);
+                iv_check_never.setImageResource(R.mipmap.button_selected);
                 break;
 
 

@@ -53,7 +53,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         MyDevice myDevicePlus = new MyDevice();
         myDevicePlus.deviceKey = JBLApplication.getJBLApplicationContext().getString(R.string.plus);
         myDevicePlus.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
-        myDevicePlus.drawable = ContextCompat.getDrawable(JBLApplication.getJBLApplicationContext(),R.mipmap.big_plus);
+        myDevicePlus.drawable = ContextCompat.getDrawable(JBLApplication.getJBLApplicationContext(),R.mipmap.big_addition);
         mLists.add(myDevicePlus);
         notifyDataSetChanged();
     }
