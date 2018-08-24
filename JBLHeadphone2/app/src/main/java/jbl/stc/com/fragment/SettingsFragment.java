@@ -80,6 +80,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         textViewFirmware = view.findViewById(R.id.text_view_settings_firmware);
         textViewDeviceName = view.findViewById(R.id.deviceName);
         deviceImage = view.findViewById(R.id.deviceImage);
+        deviceImage.setOnClickListener(this);
         tv_toggleautoOff = view.findViewById(R.id.tv_toggleautoOff);
         toggleVoicePrompt = view.findViewById(R.id.toggleVoicePrompt);
         view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
@@ -250,7 +251,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
-
+            case R.id.deviceImage:
             case R.id.image_view_settings_back: {
                 getActivity().onBackPressed();
                 break;

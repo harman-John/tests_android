@@ -129,7 +129,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private RelativeLayout relative_layout_home_eq_info;
     private String deviceName;
     private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
-    private View blurdView;
     private TextView titleEqText;
     private AppImageView image_view_ota_download;
     private NotConnectedPopupWindow notConnectedPopupWindow;
@@ -180,8 +179,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         findViewById(R.id.image_view_home_back).setOnClickListener(this);
         textViewDeviceName = findViewById(R.id.text_view_home_device_name);
         frameLayout = findViewById(R.id.frame_layout_home_device_image);
+        frameLayout.setOnClickListener(this);
         imageViewDevice = findViewById(R.id.image_view_home_device_image);
-        blurdView = findViewById(R.id.relative_Layout_home);
         relative_layout_home_eq_info = findViewById(R.id.relative_layout_home_eq_info);
         relative_layout_home_eq_info.setVisibility(View.VISIBLE);
         titleEqText = (TextView) findViewById(R.id.titleEqText);
@@ -484,6 +483,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 onBackPressed();
                 break;
             }
+            case R.id.frame_layout_home_device_image:
             case R.id.image_view_home_settings: {
                 switchFragment(new SettingsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
@@ -756,7 +756,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     public void showSaPopupWindow(View view, SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
-        mBlurView.setBlurredView(blurdView);
+        mBlurView.setBlurredView(relative_layout_home_activity);
 //        if (mBlurView.getBackground() == null) {
 //            Bitmap image = BlurBuilder.blur(view);
 //            mBlurView.setBackground(new BitmapDrawable(this.getResources(), image));
@@ -793,7 +793,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //            Bitmap image = BlurBuilder.blur(view);
 //            mBlurView.setBackground(new BitmapDrawable(this.getResources(), image));
 //        }
-        mBlurView.setBlurredView(blurdView);
+        mBlurView.setBlurredView(relative_layout_home_activity);
         mBlurView.invalidate();
         mBlurView.setVisibility(View.VISIBLE);
         mBlurView.setAlpha(0f);
@@ -822,7 +822,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
         });
-        mBlurView.setBlurredView(blurdView);
+        mBlurView.setBlurredView(relative_layout_home_activity);
         mBlurView.invalidate();
         mBlurView.setVisibility(View.VISIBLE);
         mBlurView.setAlpha(0f);
