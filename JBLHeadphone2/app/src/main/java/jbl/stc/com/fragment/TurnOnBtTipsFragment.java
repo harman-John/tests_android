@@ -35,8 +35,8 @@ public class TurnOnBtTipsFragment extends BaseFragment implements View.OnClickLi
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_turn_on_bt,
                 container, false);
-        tv_stillsee = view.findViewById(R.id.tv_stillsee);
-        tv_stillsee.setOnClickListener(this);
+        //tv_stillsee = view.findViewById(R.id.tv_stillsee);
+        //tv_stillsee.setOnClickListener(this);
         bluredView = view.findViewById(R.id.relative_layout_splash_turn_on_bt);
         mBlurView = view.findViewById(R.id.view_blur);
         btTipPopupWindow = new BtTipPopupWindow(getActivity());
@@ -65,7 +65,7 @@ public class TurnOnBtTipsFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_stillsee: {
+            /*case R.id.tv_stillsee: {
 
                 mBlurView.setBlurredView(bluredView);
                 mBlurView.invalidate();
@@ -82,7 +82,7 @@ public class TurnOnBtTipsFragment extends BaseFragment implements View.OnClickLi
                 });
                 btTipPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
                 break;
-            }
+            }*/
         }
 
     }

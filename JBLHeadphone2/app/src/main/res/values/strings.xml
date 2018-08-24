@@ -10,7 +10,7 @@
     <string name="mediumView">MEDIUM</string>
     <string name="lowView">LOW</string>
 
-    <string name="text_noise_canceling">Noise\ncanceling</string>
+    <string name="text_noise_canceling">Noise\ncancelling</string>
     <string name="text_ambient_aware">Ambient\nAware</string>
     <string name="text_ambient_aware_1">Ambient Aware</string>
     <string name="title_eq">EQ</string>
@@ -104,7 +104,7 @@
     <string name="advice_five">4. Pause music on your product</string>
     <string name="try_again">Try again</string>
     <string name="turn_on_bluetooth">Turn on Bluetooth</string>
-    <string name="turn_on_bluetooth_detail_1">Turn on Bluetooth from your control center.</string>
+    <string name="turn_on_bluetooth_detail_1">Visit control center and turn on Bluetooth.</string>
     <string name="turn_on_bluetooth_detail_2">The Bluetooth icon will turn blue.</string>
     <string name="turn_on_bluetooth_detail_3"><u>Still see this screen?</u></string>
     <string name="turn_on_bluetooth_still_see">Still see this screen</string>
