@@ -424,6 +424,10 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     }
 
     public void showHomeActivity(MyDevice myDevice) {
+        if (myDevice == null){
+            Logger.d(TAG, "myDevice is null, can't show home activity");
+            return;
+        }
         Logger.d(TAG, "show home activity");
         dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
         dashboardHandler.removeMessages(MSG_SHOW_MY_PRODUCTS);
