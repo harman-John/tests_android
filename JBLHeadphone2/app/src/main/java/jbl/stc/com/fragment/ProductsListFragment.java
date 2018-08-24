@@ -53,17 +53,17 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
         }, 67, textViewTipsOne.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textViewTipsOne.setText(spannableString);
         textViewTipsOne.setMovementMethod(LinkMovementMethod.getInstance());
-        view.findViewById(R.id.image_view_pro_list_close).setOnClickListener(this);
-        view.findViewById(R.id.image_view_pro_live_650).setOnClickListener(this);
-        view.findViewById(R.id.image_view_pro_live_500).setOnClickListener(this);
-        view.findViewById(R.id.image_view_pro_live_400).setOnClickListener(this);
+        view.findViewById(R.id.image_view_close_in_pl).setOnClickListener(this);
+        view.findViewById(R.id.image_view_400_in_pl).setOnClickListener(this);
+        view.findViewById(R.id.image_view_500_in_pl).setOnClickListener(this);
+        view.findViewById(R.id.image_view_650_in_pl).setOnClickListener(this);
 
-        view.findViewById(R.id.image_view_pro_everest_750).setOnClickListener(this);
-        view.findViewById(R.id.image_view_pro_reflect_aware).setOnClickListener(this);
-        view.findViewById(R.id.image_view_pro_everest_150).setOnClickListener(this);
-        view.findViewById(R.id.image_view_pro_everest_700).setOnClickListener(this);
-        view.findViewById(R.id.image_view_pro_everest_100).setOnClickListener(this);
-        view.findViewById(R.id.image_view_pro_everest_300).setOnClickListener(this);
+        view.findViewById(R.id.image_view_100_in_pl).setOnClickListener(this);
+        view.findViewById(R.id.image_view_150_in_pl).setOnClickListener(this);
+        view.findViewById(R.id.image_view_300_in_pl).setOnClickListener(this);
+        view.findViewById(R.id.image_view_700_in_pl).setOnClickListener(this);
+        view.findViewById(R.id.image_view_750_in_pl).setOnClickListener(this);
+        view.findViewById(R.id.image_view_reflect_in_pl).setOnClickListener(this);
 
 //        StatusBarUtil.setColor(getActivity(), ContextCompat.getColor(getContext(),R.color.gray_dee2e6));
         return view;
@@ -79,44 +79,44 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
     public void onClick(View v) {
         Bundle bundle = new Bundle();
         switch (v.getId()){
-            case R.id.image_view_pro_list_close:{
+            case R.id.image_view_close_in_pl:{
                 removeAllFragment();
                 return;
             }
-            case R.id.image_view_pro_live_650:{
+            case R.id.image_view_400_in_pl:{
                 bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_LIVE_650BTNC);
                 break;
             }
-            case R.id.image_view_pro_live_500:{
+            case R.id.image_view_500_in_pl:{
                 bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_LIVE_500BT);
                 break;
             }
-            case R.id.image_view_pro_live_400:{
+            case R.id.image_view_650_in_pl:{
                 bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_LIVE_400BT);
                 break;
             }
 
-            case R.id.image_view_pro_everest_750:{
+            case R.id.image_view_100_in_pl:{
                 bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_750NC);
                 break;
             }
-            case R.id.image_view_pro_reflect_aware:{
+            case R.id.image_view_150_in_pl:{
                 bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_REFLECT_AWARE);
                 break;
             }
-            case R.id.image_view_pro_everest_150:{
+            case R.id.image_view_300_in_pl:{
                 bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_150NC);
                 break;
             }
-            case R.id.image_view_pro_everest_700:{
+            case R.id.image_view_700_in_pl:{
                 bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_700);
                 break;
             }
-            case R.id.image_view_pro_everest_100:{
+            case R.id.image_view_750_in_pl:{
                 bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_100);
                 break;
             }
-            case R.id.image_view_pro_everest_300:{
+            case R.id.image_view_reflect_in_pl:{
                 bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_EVEREST_ELITE_300);
                 break;
             }
