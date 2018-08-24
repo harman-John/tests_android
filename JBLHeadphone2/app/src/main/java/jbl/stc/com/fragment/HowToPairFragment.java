@@ -39,29 +39,14 @@ public class HowToPairFragment extends BaseFragment implements View.OnClickListe
                 container, false);
         imageView = view.findViewById(R.id.image_view_htp);
         view.findViewById(R.id.text_view_how_to_pair_next).setOnClickListener(this);
-        textViewLink = view.findViewById(R.id.text_view_how_to_pair_link);
         linearLayoutVideo = view.findViewById(R.id.linear_layout_video_in_htp);
         textViewTips = view.findViewById(R.id.text_view_tips_one_in_htp);
         view.findViewById(R.id.image_view_how_to_pair_back).setOnClickListener(this);
         view.findViewById(R.id.image_view_how_to_pair_close).setOnClickListener(this);
-        SpannableString spannableString = new SpannableString(getString(R.string.how_to_pair_tips_two));
-        spannableString.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View arg0) {
-                DashboardActivity.getDashboardActivity().switchFragment(new WebViewFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-            }
 
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setColor(getResources().getColor(R.color.orange_dark_FF5201));
-                ds.setUnderlineText(true);
-                ds.clearShadowLayer();
-            }
-
-        }, 0, textViewLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textViewLink.setText(spannableString);
-        textViewLink.setMovementMethod(LinkMovementMethod.getInstance());
+        textViewLink = view.findViewById(R.id.text_view_how_to_pair_link);
+        textViewLink.getPaint().setUnderlineText(true);
+        textViewLink.setOnClickListener(this);
         initImageView();
         return view;
     }
@@ -139,6 +124,10 @@ public class HowToPairFragment extends BaseFragment implements View.OnClickListe
                 break;
             case R.id.image_view_how_to_pair_close:{
                 removeAllFragment();
+                break;
+            }
+            case R.id.text_view_how_to_pair_link:{
+                DashboardActivity.getDashboardActivity().switchFragment(new WebViewFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
         }

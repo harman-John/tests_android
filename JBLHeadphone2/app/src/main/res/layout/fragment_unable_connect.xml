@@ -76,17 +76,33 @@
             android:paddingEnd="30dp"
             android:paddingStart="30dp">
 
-
-            <jbl.stc.com.view.CustomFontTextView
-                android:id="@+id/text_view_unable_advice_three"
-                style="@android:style/TextAppearance.Large"
+            <LinearLayout
+                android:id="@+id/linear_layout_three_in_fuc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.25"
                 android:gravity="center_vertical"
-                android:text="@string/advice_three"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:orientation="vertical"
+                android:layout_weight="0.25">
+
+                <jbl.stc.com.view.CustomFontTextView
+                    style="@android:style/TextAppearance.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/advice_three"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <jbl.stc.com.view.CustomFontTextView
+                    android:id="@+id/text_view_unable_advice_three"
+                    style="@android:style/TextAppearance.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:textStyle="bold"
+                    android:text="@string/how_to_pair"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_unable_advice_four"
@@ -98,6 +114,7 @@
                 android:text="@string/advice_four"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
+
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_unable_advice_five"

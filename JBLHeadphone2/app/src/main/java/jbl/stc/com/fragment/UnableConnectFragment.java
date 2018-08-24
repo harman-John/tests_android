@@ -37,6 +37,7 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
     private LinearLayout linearLayoutTips;
     private RelativeLayoutImage relativeLayoutDeviceIcon;
     private LinearLayout linear_layout_unable_device;
+    String deviceModelName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,8 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
         TextView textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
         TextView textViewTipsFour = view.findViewById(R.id.text_view_unable_advice_four);
         TextView textViewTipsFive = view.findViewById(R.id.text_view_unable_advice_five);
-        final String deviceModelName = getArguments().getString(JBLConstant.DEVICE_MODEL_NAME);
+        deviceModelName = getArguments().getString(JBLConstant.DEVICE_MODEL_NAME);
+
         if (deviceModelName != null) {
             switch (deviceModelName) {
                 case JBLConstant.DEVICE_LIVE_650BTNC: {
@@ -113,37 +115,14 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
         }
         if (textViewDeviceName.getText().equals(JBLConstant.DEVICE_REFLECT_AWARE)) {
             textViewTipsTwo.setText(R.string.advice_reflect_aware);
-            textViewTipsThree.setVisibility(View.GONE);
             textViewTipsFour.setVisibility(View.GONE);
             textViewTipsFive.setVisibility(View.GONE);
+            view.findViewById(R.id.linear_layout_three_in_fuc).setVisibility(View.GONE);
         } else {
+            view.findViewById(R.id.linear_layout_three_in_fuc).setVisibility(View.VISIBLE);
             textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
-            SpannableString spannableString = new SpannableString(getString(R.string.advice_three));
-            spannableString.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(View arg0) {
-                    HowToPairFragment howToPairFragment = new HowToPairFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(JBLConstant.DEVICE_MODEL_NAME, deviceModelName);
-                    howToPairFragment.setArguments(bundle);
-                    DashboardActivity.getDashboardActivity().switchFragment(howToPairFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-                }
-
-                @Override
-                public void updateDrawState(@NonNull TextPaint ds) {
-                    super.updateDrawState(ds);
-                    if (getContext() != null) {
-                        ds.setColor(getContext().getResources().getColor(android.R.color.white));
-                        ds.setUnderlineText(true);
-                        ds.setFakeBoldText(true);
-                        ds.clearShadowLayer();
-                    }
-
-                }
-
-            }, 66, textViewTipsThree.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            textViewTipsThree.setText(spannableString);
-            textViewTipsThree.setMovementMethod(LinkMovementMethod.getInstance());
+            textViewTipsThree.getPaint().setUnderlineText(true);
+            textViewTipsThree.setOnClickListener(this);
         }
 
         breathLight = new BreathLight(getActivity(),
@@ -192,6 +171,14 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
             }
             case R.id.relative_layout_unable_breathing_lamp: {
 
+                break;
+            }
+            case R.id.text_view_unable_advice_three:{
+                HowToPairFragment howToPairFragment = new HowToPairFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(JBLConstant.DEVICE_MODEL_NAME, deviceModelName);
+                howToPairFragment.setArguments(bundle);
+                DashboardActivity.getDashboardActivity().switchFragment(howToPairFragment, JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
         }

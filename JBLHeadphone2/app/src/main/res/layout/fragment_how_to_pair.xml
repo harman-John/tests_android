@@ -92,6 +92,7 @@
                 android:id="@+id/text_view_how_to_pair_link"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/orange_dark_FF5201"
                 android:layout_marginStart="5dp"
                 android:text="@string/how_to_pair_tips_two" />
         </LinearLayout>

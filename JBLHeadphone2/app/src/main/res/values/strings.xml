@@ -98,7 +98,8 @@
     <string name="TrueNote">TruNote</string>
 
     <string name="advice_reflect_aware">Try unplugging and plugging in your headphones.</string>
-    <string name="advice_three">1. Make sure your product is paired with your mobile via Bluetooth.\nhow to pair my headphones?</string>
+    <string name="advice_three">1. Make sure your product is paired with your mobile via Bluetooth.</string>
+    <string name="how_to_pair">how to pair my headphones?</string>
     <string name="advice_four">2. Pause music on your headphones.</string>
     <string name="advice_five">3. Disconnect your product from other Bluetooth device.</string>
     <string name="advice_six">4. Restart your product</string>
