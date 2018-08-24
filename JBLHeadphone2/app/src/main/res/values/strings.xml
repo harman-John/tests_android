@@ -168,16 +168,16 @@
     <string name="tutorial_tips_two_live">Now the smart ambient button is used for TalkTru.</string>
 
 
-    <string name="tutorial_tips_zero_live_650">Noise cancelling is on.\nToggle on and off noise cancelling by tapping the icon.</string>
-    <string name="tutorial_tips_one_live_650">Noise cancelling is off.\nToggle on an off noise\ncancelling by tapping the icon.</string>
+    <string name="tutorial_tips_zero_live_650">Noise cancelling is switched on.\nToggle on and off noise\ncancelling by tapping the icon.</string>
+    <string name="tutorial_tips_one_live_650">Noise cancelling is switched off.\nToggle on and off noise\ncancelling by tapping the icon.</string>
 
-    <string name="tutorial_tips_zero">Noise cancelling is off.\nTurn on noise cancelling to\nadjust ambient awareness.</string>
-    <string name="tutorial_tips_one">Noise cancelling is on.\nTap the right icon to adjust\nambient awareness.</string>
+    <string name="tutorial_tips_zero">Noise cancelling is switched off.\nTurn it on to adjust ambient\nawareness.</string>
+    <string name="tutorial_tips_one">Noise cancelling is switched on.\nTap the right icon to adjust\nambient awareness.</string>
     <string name="tutorial_tips_two">Adjust ambient awareness\nusing presets or sliders.</string>
-    <string name="tutorial_tips_three">Turn on equalizer by tapping\nthe EQ button</string>
-    <string name="tutorial_tips_four">Swipe up or tap the bottom bar\nto explore equalizer</string>
-    <string name="tutorial_tips_five">Add your own EQ for your\nheadphones by tapping the +\nbutton</string>
-    <string name="tutorial_tips_six">Tap the line to add and move a knob</string>
+    <string name="tutorial_tips_three">Enable equalizer by tapping the\nEQ button.</string>
+    <string name="tutorial_tips_four">Turn on equalizer by tapping\nthe EQ button.</string>
+    <string name="tutorial_tips_five">Add your own customized EQ\nby tapping the + button.</string>
+    <string name="tutorial_tips_six">Tap the line to add the dot to\nadjust your curve.</string>
 
 
     <string name="my_products">My products</string>
