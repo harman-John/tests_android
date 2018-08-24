@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -77,6 +78,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         myDevice = DeviceManager.getInstance(getActivity()).getMyDeviceConnected();
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
+        view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);
         textViewFirmware = view.findViewById(R.id.text_view_settings_firmware);
         textViewDeviceName = view.findViewById(R.id.deviceName);
         deviceImage = view.findViewById(R.id.deviceImage);
@@ -234,6 +236,11 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.text_view_settings_product_help: {
+                Uri uri = Uri.parse("http://www.jbl.com");
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                intent.setData(uri);
+                startActivity(intent);
                 break;
             }
             case R.id.toggleAutoOffTimer: {

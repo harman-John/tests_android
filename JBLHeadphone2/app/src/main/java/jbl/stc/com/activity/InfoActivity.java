@@ -1,8 +1,10 @@
 package jbl.stc.com.activity;
 
 
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
         addActivity(this);
         setContentView(R.layout.activity_info);
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
+        findViewById(R.id.text_jbl_com).setOnClickListener(this);
         findViewById(R.id.text_view_open_source_license).setOnClickListener(this);
         findViewById(R.id.text_view_eula).setOnClickListener(this);
         findViewById(R.id.text_view_harman_privacy_policy).setOnClickListener(this);
@@ -75,6 +78,14 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
 //                onBackPressed();
                 finish();
                 overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
+                break;
+            }
+            case R.id.text_jbl_com:{
+                Uri uri = Uri.parse("http://www.jbl.com");
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                intent.setData(uri);
+                startActivity(intent);
                 break;
             }
         }
