@@ -34,7 +34,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:contentDescription="TODO"
-                    android:src="@mipmap/ic_close" />
+                    android:src="@mipmap/delete_speaker_icon" />
 
             </RelativeLayout>
 

@@ -75,7 +75,7 @@ public class EqArcView extends View {
         }
 
         if (mDrawable == null) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.eq_delete);
+            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.button_delete);
         } else {
             bitmap = ((BitmapDrawable) mDrawable).getBitmap();
         }

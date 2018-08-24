@@ -81,7 +81,7 @@ public class AlertsDialog {
 
         if (!TextUtils.isEmpty(title)) {
             builder.setTitle(title);
-            builder.setIcon(R.mipmap.ic_launcher);
+            builder.setIcon(R.mipmap.app_icon);
         }
 
         if (!TextUtils.isEmpty(message)) {
@@ -109,7 +109,7 @@ public class AlertsDialog {
 
         if (!TextUtils.isEmpty(title)) {
             builder.setTitle(title);
-            builder.setIcon(R.mipmap.ic_launcher);
+            builder.setIcon(R.mipmap.app_icon);
         }
 
         if (!TextUtils.isEmpty(message)) {
@@ -138,7 +138,7 @@ public class AlertsDialog {
 
         if (!TextUtils.isEmpty(title)) {
             builder.setTitle(title);
-            builder.setIcon(R.mipmap.ic_launcher);
+            builder.setIcon(R.mipmap.app_icon);
         }
 
         if (!TextUtils.isEmpty(message)) {
@@ -176,7 +176,7 @@ public class AlertsDialog {
 
         if (TextUtils.isEmpty(title)) {
             builder.setTitle(title);
-            builder.setIcon(R.mipmap.ic_launcher);
+            builder.setIcon(R.mipmap.app_icon);
         }
 
         if (TextUtils.isEmpty(message)) {
@@ -199,7 +199,7 @@ public class AlertsDialog {
 
         if (TextUtils.isEmpty(title)) {
             builder.setTitle(title);
-            builder.setIcon(R.mipmap.ic_launcher);
+            builder.setIcon(R.mipmap.app_icon);
         }
 
         if (TextUtils.isEmpty(message)) {

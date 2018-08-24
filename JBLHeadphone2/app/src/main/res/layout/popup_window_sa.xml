@@ -28,7 +28,7 @@
                 android:id="@+id/aa_popup_close_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_arrow_down"
+                android:src="@mipmap/grey_arrow_down_icon"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
                 android:tint="@color/black"/>

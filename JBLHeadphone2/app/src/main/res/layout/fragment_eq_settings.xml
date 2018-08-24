@@ -67,7 +67,7 @@
                         android:layout_width="45dp"
                         android:layout_height="45dp"
                         android:layout_centerVertical="true"
-                        android:src="@mipmap/white_plus" />
+                        android:src="@mipmap/button_add" />
 
                     <jbl.stc.com.view.AppImageView
                         android:id="@+id/moreImageView"
@@ -75,7 +75,7 @@
                         android:layout_height="@dimen/image_button_width_and_height"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/closeImageView"
-                        android:src="@mipmap/icon_more_eq" />
+                        android:src="@mipmap/button_more" />
 
                     <jbl.stc.com.view.AppImageView
                         android:id="@+id/closeImageView"
@@ -127,7 +127,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginRight="10dp"
                             android:scaleType="fitXY"
-                            android:src="@mipmap/icon_eq_edit" />
+                            android:src="@mipmap/button_edit" />
 
                         <LinearLayout
                             android:id="@+id/ll_small_circle"
@@ -136,7 +136,7 @@
                             android:layout_centerVertical="true"
                             android:layout_toLeftOf="@id/eqEditImage"
                             android:layout_toRightOf="@id/text_view_eq_settings_eq_name"
-                            android:orientation="horizontal"></LinearLayout>
+                            android:orientation="horizontal" />
                     </RelativeLayout>
                 </RelativeLayout>
 

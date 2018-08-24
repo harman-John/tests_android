@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@mipmap/black_arrow_back"
+            android:src="@mipmap/grey_arrow_back"
             android:visibility="visible" />
 
         <jbl.stc.com.view.CustomFontTextView

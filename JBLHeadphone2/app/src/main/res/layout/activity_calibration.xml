@@ -17,7 +17,7 @@
             android:layout_height="45dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="@mipmap/icon_close" />
+            android:background="@mipmap/button_close_white" />
 
         <jbl.stc.com.view.CustomFontTextView
             android:layout_width="wrap_content"
@@ -152,7 +152,7 @@
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:layout_centerInParent="true"
-        android:src="@mipmap/completed_icon"
+        android:src="@mipmap/trunote_done"
         android:visibility="gone" />
 
 
