@@ -156,6 +156,8 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                         animateFirstDown = true;
                         animateFirstUp = false;
                         startFadeAnim(imageViewWhitePlus, R.anim.fadeout);
+                    }else if (location[1] <= top){
+                        imageViewWhitePlus.setVisibility(View.INVISIBLE);
                     }
                     lastLocation = location[1];
                 } else {

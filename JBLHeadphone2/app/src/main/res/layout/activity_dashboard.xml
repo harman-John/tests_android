@@ -40,7 +40,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
-            android:background="@mipmap/button_addition" />
+            android:background="@mipmap/button_add" />
 
     </RelativeLayout>
 
