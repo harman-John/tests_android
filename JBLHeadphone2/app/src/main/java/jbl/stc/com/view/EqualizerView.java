@@ -5,13 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.icu.text.SymbolTable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -24,12 +22,10 @@ import jbl.stc.com.R;
 import jbl.stc.com.entity.CircleModel;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.utils.ToastUtil;
 import jbl.stc.com.utils.UiUtils;
 
-
-public class EqualizerShowView extends View {
-    private static final String TAG = EqualizerShowView.class.getSimpleName();
+public class EqualizerView extends View {
+    private static final String TAG = EqualizerView.class.getSimpleName();
     private Context mContext;
     private Paint mPointPaint = new Paint();
     private Paint mTextPaint = new Paint();
@@ -69,15 +65,15 @@ public class EqualizerShowView extends View {
 
     private boolean isDynamicDrawCurve;
 
-    public EqualizerShowView(Context context) {
+    public EqualizerView(Context context) {
         this(context, null);
     }
 
-    public EqualizerShowView(Context context, AttributeSet attrs) {
+    public EqualizerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public EqualizerShowView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public EqualizerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         initView(context);
@@ -99,7 +95,6 @@ public class EqualizerShowView extends View {
         mCurvePaint.setStyle(Paint.Style.STROKE);
         mCurvePaint.setStrokeCap(Paint.Cap.ROUND);
         mCurvePaint.setStrokeWidth(dp2px(2));
-        mCurvePaint.setAlpha(0);
 
         mLinePaint.setColor(ContextCompat.getColor(mContext, R.color.white));
         mLinePaint.setAntiAlias(true);
@@ -153,8 +148,8 @@ public class EqualizerShowView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         mCanvas = canvas;
-        drawText(canvas);
-        drawLine(canvas);
+        //drawText(canvas);
+        //drawLine(canvas);
         Logger.d(TAG, "onDraw");
         if (isDynamicDrawCurve) {
             curvePath.reset();
@@ -247,7 +242,6 @@ public class EqualizerShowView extends View {
             return;
         }
         mCurvePaint.setColor(ContextCompat.getColor(mContext, curveColor));
-        mCurvePaint.setAlpha(0);
         curvePath.reset();
         pointX.clear();
         pointY.clear();
@@ -256,8 +250,8 @@ public class EqualizerShowView extends View {
             pointY.add(controlCircles.get(i).getY());
         }
 
-        List<Cubic> calculate_x = calculateCurve(pointX);
-        List<Cubic> calculate_y = calculateCurve(pointY);
+        List<EqualizerView.Cubic> calculate_x = calculateCurve(pointX);
+        List<EqualizerView.Cubic> calculate_y = calculateCurve(pointY);
         float nearX;
         float lastX;
         if (calculate_x != null && calculate_y != null && calculate_y.size() >= calculate_x.size()) {
@@ -332,8 +326,8 @@ public class EqualizerShowView extends View {
             pointY.add(produceCirce(getRelativelyX(px[i]), getRelativelyY(py[i]), CIRCLE_R).getY());
         }
 
-        List<Cubic> calculate_x = calculateCurve(pointX);
-        List<Cubic> calculate_y = calculateCurve(pointY);
+        List<EqualizerView.Cubic> calculate_x = calculateCurve(pointX);
+        List<EqualizerView.Cubic> calculate_y = calculateCurve(pointY);
         float nearX;
         float lastX;
         STEP = 180 / (px.length - 1);
@@ -377,7 +371,7 @@ public class EqualizerShowView extends View {
     /**
      * Calculate Curve.
      */
-    private List<Cubic> calculateCurve(List<Float> pointList) {
+    private List<EqualizerView.Cubic> calculateCurve(List<Float> pointList) {
         if (null != pointList && pointList.size() > 0) {
             int n = pointList.size() - 1;
             float[] gamma = new float[n + 1];
@@ -402,9 +396,9 @@ public class EqualizerShowView extends View {
             }
 
             /* now compute the coefficients of the cubics */
-            List<Cubic> cubicList = new LinkedList<>();
+            List<EqualizerView.Cubic> cubicList = new LinkedList<>();
             for (i = 0; i < n; i++) {
-                Cubic c = new Cubic(pointList.get(i), D[i], 3 * (pointList.get(i + 1) - pointList.get(i)) - 2 * D[i] - D[i + 1], 2 * (pointList.get(i) - pointList.get(i + 1)) + D[i] + D[i + 1]);
+                EqualizerView.Cubic c = new EqualizerView.Cubic(pointList.get(i), D[i], 3 * (pointList.get(i + 1) - pointList.get(i)) - 2 * D[i] - D[i + 1], 2 * (pointList.get(i) - pointList.get(i + 1)) + D[i] + D[i + 1]);
                 cubicList.add(c);
             }
             return cubicList;
@@ -541,5 +535,3 @@ public class EqualizerShowView extends View {
                 getResources().getDisplayMetrics());
     }
 }
-
-

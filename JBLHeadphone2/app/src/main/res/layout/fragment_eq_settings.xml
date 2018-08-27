@@ -92,11 +92,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <jbl.stc.com.view.EqualizerShowView
-                        android:id="@+id/equalizerView"
+                    <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_above="@+id/eqEditLayout" />
+                        android:layout_above="@+id/eqEditLayout">
+
+                        <jbl.stc.com.view.EqualizerView
+                            android:id="@+id/equalizerFinalView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <jbl.stc.com.view.EqualizerView
+                            android:id="@+id/equalizerLineView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <jbl.stc.com.view.EqualizerShowView
+                            android:id="@+id/equalizerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </FrameLayout>
 
                     <RelativeLayout
                         android:id="@+id/eqEditLayout"
@@ -115,6 +130,21 @@
                             android:gravity="center"
                             android:singleLine="true"
                             android:text="@string/create_eq_default_name"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <jbl.stc.com.view.CustomFontTextView
+                            android:id="@+id/text_view_eq_name_final"
+                            style="@style/PoppinsRegularTextStyle"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/image_button_width_and_height"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:text=""
                             android:textColor="#FFFFFF"
                             android:textSize="20sp"
                             android:textStyle="bold" />

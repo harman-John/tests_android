@@ -49,15 +49,19 @@ import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.CustomFontTextView;
 import jbl.stc.com.view.EqualizerShowView;
+import jbl.stc.com.view.EqualizerView;
 import jbl.stc.com.view.MyGridLayoutManager;
 
 
 public class EqSettingFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = EqSettingFragment.class.getSimpleName();
     private EqualizerShowView equalizerView;
+    private EqualizerView equalizerLineView;
+    private EqualizerView equalizerFinalView;
     private ImageView eqEditImage;
     private View titleBar;
     private TextView eqNameText;
+    private TextView eqNameFinalText;
     private ImageView closeImageView;
     private ImageView moreImageView;
     private ImageView addImageView;
@@ -88,6 +92,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     public static LinearLayout ll_eqtext;
     public static TextView tv_drageq;
     private float rawY = 0.0f;
+    private boolean isShownFinal = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -134,11 +139,14 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private void initView() {
         titleBar = rootView.findViewById(R.id.titleBar);
         equalizerView = rootView.findViewById(R.id.equalizerView);
+        equalizerLineView = rootView.findViewById(R.id.equalizerLineView);
+        equalizerFinalView = rootView.findViewById(R.id.equalizerFinalView);
         eqEditImage = rootView.findViewById(R.id.eqEditImage);
         closeImageView = rootView.findViewById(R.id.closeImageView);
         moreImageView = rootView.findViewById(R.id.moreImageView);
         addImageView = rootView.findViewById(R.id.addImageView);
         eqNameText = rootView.findViewById(R.id.text_view_eq_settings_eq_name);
+        eqNameFinalText = rootView.findViewById(R.id.text_view_eq_name_final);
         eqRecycleView = rootView.findViewById(R.id.eqRecycleView);
         eqRecycleView.setLayoutManager(new MyGridLayoutManager(getActivity(), 2));
         eqAdapter = new EqRecyclerAdapter();
@@ -147,6 +155,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             eqRecycleView.setVisibility(View.GONE);
         }
         frameLayout = rootView.findViewById(R.id.frameLayout);
+        frameLayout.setOnClickListener(this);
         rootView.findViewById(R.id.rl_eqRecycleView).setOnClickListener(this);
     }
 
@@ -166,7 +175,6 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                     myHandler.sendEmptyMessage(MSG_SHOW_LINE);
                     Logger.d(TAG, "aaaaa onEqNameSelected "); //dynamic draw curve
                 }
-
             }
         });
         titleBar.setOnTouchListener(new View.OnTouchListener() {
@@ -186,12 +194,12 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                     case MotionEvent.ACTION_MOVE:
                         yMove = event.getRawY();
                         if (yMove > UiUtils.getStatusHeight(getActivity())) {
-                            rootView.setTranslationY(yMove - UiUtils.getStatusHeight(getActivity()));
-                            Logger.d(TAG, "yMove" + String.valueOf(yMove) + "screenHeight:" + screenHeght);
                             if (yMove > screenHeght / 3) {
                                 changeBottomEqAlpha(1);
                             }
                             if ((yMove - yDown) > 25) {
+                                rootView.setTranslationY(yMove - UiUtils.getStatusHeight(getActivity()));
+                                Logger.d(TAG, "yMove" + String.valueOf(yMove) + "screenHeight:" + screenHeght);
                                 int height = (int) (yMove - yDown) / 2;
                                 changeShadeViewHeight(height, getActivity());
                                 int dragEqHeight = (int) ((yMove) / (screenHeght + UiUtils.getStatusHeight(getActivity()) - UiUtils.dip2px(getActivity(), 70)) * UiUtils.dip2px(getActivity(), 70));
@@ -243,19 +251,69 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             }
         });
 
-        final int distance = UiUtils.dip2px(getActivity(), 25);
-        equalizerView.setOnTouchListener(new View.OnTouchListener() {
+        final int distance = screenWidth / 11;
+        equalizerLineView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
-
                     case MotionEvent.ACTION_DOWN:
                         mPosX = event.getX();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         mCurPosX = event.getX();
+                        float dValue = mCurPosX - mPosX;
+                        if (Math.abs(dValue) > UiUtils.dip2px(getActivity(), 5)) {
+                            if (mCurPosX - mPosX > distance / 2) {
+                                if (!isShownFinal) {
+                                    if (currSelectedEqIndex >= 1) {
+                                        isShownFinal = true;
+                                        List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
+                                        EQModel eqModel = eqModels.get(currSelectedEqIndex - 1);
+                                        equalizerFinalView.setCurveData(eqModel.getPointX(), eqModel.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
+                                        equalizerFinalView.setAlpha(0);
+                                        equalizerFinalView.setTranslationX(-distance);
+                                        eqNameFinalText.setText(eqModel.eqName);
+                                        eqNameFinalText.setAlpha(0);
+                                    }
+                                }
+                            }
+                            if (mPosX - mCurPosX > distance / 2) {
+                                if (!isShownFinal) {
+                                    if (currSelectedEqIndex < eqModelList.size() - 1) {
+                                        isShownFinal = true;
+                                        List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
+                                        EQModel eqModel = eqModels.get(currSelectedEqIndex + 1);
+                                        equalizerFinalView.setCurveData(eqModel.getPointX(), eqModel.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
+                                        equalizerFinalView.setAlpha(0);
+                                        equalizerFinalView.setTranslationX(distance);
+                                        eqNameFinalText.setText(eqModel.eqName);
+                                        eqNameFinalText.setAlpha(0);
+                                    }
+                                }
+                            }
+                            if (Math.abs(dValue) > distance && dValue > 0) {
+                                dValue = distance;
+                            }
+                            if (Math.abs(dValue) > distance && dValue < 0) {
+                                dValue = (-distance);
+                            }
+                            equalizerLineView.setTranslationX(dValue);
+                            if (isShownFinal) {
+                                if (mCurPosX > mPosX) {
+                                    equalizerFinalView.setTranslationX(dValue - distance);
+                                }
+                                if (mCurPosX < mPosX) {
+                                    equalizerFinalView.setTranslationX(dValue + distance);
+                                }
+                                equalizerLineView.setAlpha(1 - Math.abs(dValue) / distance);
+                                eqNameText.setAlpha(1 - Math.abs(dValue) / distance);
+                                equalizerFinalView.setAlpha(Math.abs(dValue) / distance);
+                                eqNameFinalText.setAlpha(Math.abs(dValue) / distance);
+                            }
+                        }
                         break;
                     case MotionEvent.ACTION_UP:
+                        isShownFinal = false;
                         if (mCurPosX - mPosX > distance
                                 && (Math.abs(mCurPosX - mPosX) > distance)) {
                             //scroll to right
@@ -269,11 +327,16 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                                 eqAdapter.setSelectedIndex(currSelectedEqIndex + 1);
                             }
                         }
+                        equalizerLineView.setTranslationX(0);
+                        equalizerLineView.setAlpha(1);
+                        eqNameText.setAlpha(1);
+                        equalizerFinalView.setAlpha(0);
+                        equalizerFinalView.setTranslationX(0);
+                        eqNameFinalText.setAlpha(0);
                         break;
                 }
                 return true;
             }
-
         });
     }
 
@@ -495,6 +558,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 Logger.d(TAG, "aaaaa initValue");
             } else {
                 equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
+                equalizerLineView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
             }
 
         }
@@ -733,6 +797,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         //int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
         if (!isDynamicDrawCurve) {
             equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
+            equalizerLineView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
+            equalizerLineView.setTranslationX(0);
+            equalizerLineView.setAlpha(1);
         }
         AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
         if (fromUser) {
