@@ -1,5 +1,7 @@
 package jbl.stc.com.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -19,6 +21,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,6 +39,7 @@ import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.HomeActivity;
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.adapter.EqRecyclerAdapter;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.CircleModel;
@@ -93,6 +99,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     public static TextView tv_drageq;
     private float rawY = 0.0f;
     private boolean isShownFinal = false;
+    private float dValue;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -261,83 +268,114 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                         break;
                     case MotionEvent.ACTION_MOVE:
                         mCurPosX = event.getX();
-                        float dValue = mCurPosX - mPosX;
+                        dValue = mCurPosX - mPosX;
                         if (Math.abs(dValue) > UiUtils.dip2px(getActivity(), 5)) {
-                            if (mCurPosX - mPosX > distance / 2) {
-                                if (!isShownFinal) {
-                                    if (currSelectedEqIndex >= 1) {
-                                        isShownFinal = true;
-                                        List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
-                                        EQModel eqModel = eqModels.get(currSelectedEqIndex - 1);
-                                        equalizerFinalView.setCurveData(eqModel.getPointX(), eqModel.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
-                                        equalizerFinalView.setAlpha(0);
-                                        equalizerFinalView.setTranslationX(-distance);
-                                        eqNameFinalText.setText(eqModel.eqName);
-                                        eqNameFinalText.setAlpha(0);
-                                    }
-                                }
-                            }
-                            if (mPosX - mCurPosX > distance / 2) {
-                                if (!isShownFinal) {
-                                    if (currSelectedEqIndex < eqModelList.size() - 1) {
-                                        isShownFinal = true;
-                                        List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
-                                        EQModel eqModel = eqModels.get(currSelectedEqIndex + 1);
-                                        equalizerFinalView.setCurveData(eqModel.getPointX(), eqModel.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
-                                        equalizerFinalView.setAlpha(0);
-                                        equalizerFinalView.setTranslationX(distance);
-                                        eqNameFinalText.setText(eqModel.eqName);
-                                        eqNameFinalText.setAlpha(0);
-                                    }
-                                }
-                            }
+
                             if (Math.abs(dValue) > distance && dValue > 0) {
                                 dValue = distance;
                             }
                             if (Math.abs(dValue) > distance && dValue < 0) {
                                 dValue = (-distance);
                             }
+                            //equalizerLineView.scrollTo((int) -dValue, 0);
                             equalizerLineView.setTranslationX(dValue);
-                            if (isShownFinal) {
-                                if (mCurPosX > mPosX) {
-                                    equalizerFinalView.setTranslationX(dValue - distance);
-                                }
-                                if (mCurPosX < mPosX) {
-                                    equalizerFinalView.setTranslationX(dValue + distance);
-                                }
-                                equalizerLineView.setAlpha(1 - Math.abs(dValue) / distance);
-                                eqNameText.setAlpha(1 - Math.abs(dValue) / distance);
-                                equalizerFinalView.setAlpha(Math.abs(dValue) / distance);
-                                eqNameFinalText.setAlpha(Math.abs(dValue) / distance);
-                            }
+                            equalizerLineView.setAlpha(1 - Math.abs(dValue) / distance + 0.2f);
                         }
                         break;
                     case MotionEvent.ACTION_UP:
-                        isShownFinal = false;
-                        if (mCurPosX - mPosX > distance
-                                && (Math.abs(mCurPosX - mPosX) > distance)) {
-                            //scroll to right
+                        float alpha = equalizerLineView.getAlpha();
+                        if (mCurPosX - mPosX > distance / 2) {
                             if (currSelectedEqIndex >= 1) {
-                                eqAdapter.setSelectedIndex(currSelectedEqIndex - 1);
-                            }
-                        } else if (mPosX - mCurPosX > distance
-                                && (Math.abs(mCurPosX - mPosX) > distance)) {
-                            //scroll to left
-                            if (currSelectedEqIndex < eqModelList.size() - 1) {
-                                eqAdapter.setSelectedIndex(currSelectedEqIndex + 1);
+                                isShownFinal = true;
+                                List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
+                                EQModel eqModel = eqModels.get(currSelectedEqIndex - 1);
+                                equalizerLineView.setCurveData(eqModel.getPointX(), eqModel.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
+                                equalizerLineView.setAlpha(0.5f);
+                                equalizerLineView.setTranslationX(-distance);
+                                eqNameText.setText(eqModel.eqName);
+                                eqNameText.setAlpha(0);
+                                equalizerFinalView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
+                                equalizerFinalView.setAlpha(alpha);
+                                equalizerFinalView.setTranslationX(dValue);
+                                eqNameFinalText.setText(currSelectedEq.eqName);
+                                eqNameFinalText.setAlpha(1.0f);
+                                eqViewLocationAnimation(equalizerLineView, -distance, 0);
                             }
                         }
-                        equalizerLineView.setTranslationX(0);
-                        equalizerLineView.setAlpha(1);
-                        eqNameText.setAlpha(1);
-                        equalizerFinalView.setAlpha(0);
-                        equalizerFinalView.setTranslationX(0);
-                        eqNameFinalText.setAlpha(0);
+                        if (mPosX - mCurPosX > distance / 2) {
+                            if (currSelectedEqIndex < eqModelList.size() - 1) {
+                                isShownFinal = true;
+                                List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
+                                EQModel eqModel = eqModels.get(currSelectedEqIndex + 1);
+                                equalizerLineView.setCurveData(eqModel.getPointX(), eqModel.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
+                                equalizerLineView.setAlpha(0.5f);
+                                equalizerLineView.setTranslationX(distance);
+                                eqNameText.setText(eqModel.eqName);
+                                eqNameText.setAlpha(0);
+                                equalizerFinalView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
+                                equalizerFinalView.setAlpha(alpha);
+                                equalizerFinalView.setTranslationX(dValue);
+                                eqNameFinalText.setText(currSelectedEq.eqName);
+                                eqNameFinalText.setAlpha(1.0f);
+                                eqViewLocationAnimation(equalizerLineView, distance, 0);
+                            }
+                        }
+                        if (isShownFinal) {
+                            isShownFinal = false;
+                            eqNameAlphaAnimation(eqNameText, 0f, 1.0f);
+                            eqNameAlphaAnimation(eqNameFinalText, 1.0f, 0f);
+                        } else {
+                            equalizerLineView.setTranslationX(0);
+                            equalizerLineView.setAlpha(1);
+                        }
+
                         break;
                 }
                 return true;
             }
         });
+    }
+
+    private void eqViewLocationAnimation(View view, int transStartX, int transEndX) {
+        view.clearAnimation();
+        view.setTranslationX(transStartX);
+        view.setAlpha(0.f);
+        view.animate()
+                .translationX(transEndX).alpha(1.f)
+                .setInterpolator(new DecelerateInterpolator(0.5f))
+                .setDuration(400)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (mCurPosX - mPosX > 0) {
+                            //scroll to right
+                            eqAdapter.setSelectedIndex(currSelectedEqIndex - 1);
+                        } else if (mPosX - mCurPosX > 0) {
+                            //scroll to left
+                            eqAdapter.setSelectedIndex(currSelectedEqIndex + 1);
+                        }
+                        equalizerLineView.setTranslationX(0);
+                        equalizerLineView.setAlpha(1);
+                        equalizerFinalView.setAlpha(0);
+                    }
+                })
+                .start();
+
+    }
+
+    private void eqNameAlphaAnimation(View view, float startAlpha, float endAlpha) {
+        view.clearAnimation();
+        view.setAlpha(startAlpha);
+        view.animate()
+                .alpha(endAlpha)
+                .setInterpolator(new DecelerateInterpolator(0.5f))
+                .setDuration(400)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                    }
+                })
+                .start();
     }
 
     public static void setDragTitleBarVisible() {
