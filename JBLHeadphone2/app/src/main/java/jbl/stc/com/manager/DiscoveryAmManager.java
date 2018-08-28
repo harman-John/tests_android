@@ -125,7 +125,7 @@ public class DiscoveryAmManager implements audioManager.AudioDeviceDelegate  {
         switch (name) {
             /**
              * Get this event when discovering.
-             * The param value is a list of mac address.
+             * The param value is a mSet of mac address.
              */
             case DeviceList: {
                 Map<String, String> pairedDevices = (Map<String, String>) value;

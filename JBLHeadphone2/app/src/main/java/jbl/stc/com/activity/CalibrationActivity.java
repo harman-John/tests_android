@@ -22,7 +22,7 @@ import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.listener.OnHeadphoneconnectListener;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.CalibrationManager;
-import jbl.stc.com.manager.DeviceManager;
+import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.view.AppButton;
 import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.ShadowLayout;
@@ -79,7 +79,7 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
         tv_calibratingDone.setOnClickListener(this);
         shadowLayout = (ShadowLayout) findViewById(R.id.shadowLayout);
         iv_complete = (ImageView) findViewById(R.id.iv_complete);
-        myDevice = DeviceManager.getInstance(this).getMyDeviceConnected();
+        myDevice = ProductListManager.getInstance().getConnectedDevice();
     }
 
 

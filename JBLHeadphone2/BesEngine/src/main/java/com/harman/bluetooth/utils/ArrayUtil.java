@@ -1,4 +1,4 @@
-package jbl.stc.com.utils;
+package com.harman.bluetooth.utils;
 
 import java.util.zip.CRC32;
 
@@ -61,14 +61,6 @@ public class ArrayUtil {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < data.length; i++) {
             buffer.append(String.format("%02x", data[i])).append(",");
-        }
-        return buffer.toString();
-    }
-
-    public static String toHexNoAppend(byte[] data) {
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < data.length; i++) {
-            buffer.append(String.format("%02x", data[i]));
         }
         return buffer.toString();
     }

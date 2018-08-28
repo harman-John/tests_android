@@ -104,7 +104,7 @@ object LegalXmlParser {
 
     private fun versionCompare(context: Context, list: List<LegalData>?) {
         if (list == null) {
-            Logger.d(TAG, "versionCompare list is null ")
+            Logger.d(TAG, "versionCompare mSet is null ")
             return
         }
         for (item: LegalData in list) {

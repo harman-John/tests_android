@@ -185,7 +185,7 @@ public class EQSettingManager implements EqDbKey {
     }
 
     /**
-     * Returns complete EQ setting list from database.
+     * Returns complete EQ setting mSet from database.
      *
      * @return EQModel ArrayList
      */
@@ -269,7 +269,7 @@ public class EQSettingManager implements EqDbKey {
     }
 
     /**
-     * Returns complete list based on where clause constraint.
+     * Returns complete mSet based on where clause constraint.
      *
      * @param where String
      * @return EQModel ArrayList

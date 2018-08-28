@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 
 import jbl.stc.com.BuildConfig;
 import jbl.stc.com.R;
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
@@ -318,65 +319,102 @@ public class AppUtils {
         PreferenceUtils.setString(PreferenceKeys.MODEL, value, context);
     }
 
-    public static void addToMyDevices(Context context, String key) {
-        Set<String> myDevices=new HashSet<>(PreferenceUtils.getStringSet(context, PreferenceKeys.MY_DEVICES));
-        Logger.i(TAG, "myDevices "+ myDevices);
-        if (!myDevices.contains(key)) {
-            myDevices.add(key);
-            PreferenceUtils.setStringSet(context, PreferenceKeys.MY_DEVICES, myDevices);
-            Logger.i(TAG, "Add device: " + key +",size: "+ myDevices.size());
-        }
-    }
-
-    public static void removeMyDevice(Context context, String key) {
-        Set<String> myDevices = PreferenceUtils.getStringSet(context, PreferenceKeys.MY_DEVICES);
-        if (myDevices.contains(key)) {
-            myDevices.remove(key);
-            PreferenceUtils.clearStringSet(context);
-            PreferenceUtils.setStringSet(context,PreferenceKeys.MY_DEVICES, myDevices);
-            Logger.i(TAG, "remove device: " + key +",size: "+ myDevices.size());
-        }
-    }
-
-    public static int getMyDeviceSize(Context context) {
-       return PreferenceUtils.getStringSet(context, PreferenceKeys.MY_DEVICES).size();
-    }
-
-    public static MyDevice getMyDevice(Context context,String value){
+    public static MyDevice getMyDevice(Context context,String deviceName, int connectStatus,String pid,String mac){
         MyDevice myDevice = new MyDevice();
-        myDevice.deviceKey = value;
-        myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
-        if (value.toUpperCase().contains(JBLConstant.DEVICE_LIVE_650BTNC)) {
-            myDevice.deviceName = JBLConstant.DEVICE_LIVE_650BTNC;
-            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.live_650_btnc_icon);
-        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_LIVE_400BT)) {
-            myDevice.deviceName = JBLConstant.DEVICE_LIVE_400BT;
-            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.live_400_bt_icon);
-        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_LIVE_500BT)) {
-            myDevice.deviceName = JBLConstant.DEVICE_LIVE_500BT;
-            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.live_500_bt_icon);
-        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_750NC)) {
-            myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_750NC;
-            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_750nc_icon);
-        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
-            myDevice.deviceName = JBLConstant.DEVICE_REFLECT_AWARE;
-            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.reflect_aware_icon);
-        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_150NC)) {
-            myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_150NC;
-            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_150nc_icon);
-        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_700)) {
-            myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_700;
-            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_700_icon);
-        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_100)) {
-            myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_100;
-            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_100_icon);
-        } else if (value.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_300)) {
-            myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_300;
-            myDevice.drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_300_icon);
-        }else{
-            return null;
+        myDevice.deviceKey = deviceName+ "-" + mac;
+        myDevice.connectStatus = connectStatus;
+        myDevice.pid = pid;
+        myDevice.mac = mac;
+        switch (deviceName.toUpperCase()){
+            case JBLConstant.DEVICE_EVEREST_ELITE_750NC:{
+                myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_750NC;
+                break;
+            }
+            case JBLConstant.DEVICE_REFLECT_AWARE: {
+                myDevice.deviceName = JBLConstant.DEVICE_REFLECT_AWARE;
+                break;
+            }
+            case JBLConstant.DEVICE_EVEREST_ELITE_150NC: {
+                myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_150NC;
+                break;
+            }
+            case JBLConstant.DEVICE_EVEREST_ELITE_700: {
+                myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_700;
+                break;
+            }
+            case JBLConstant.DEVICE_EVEREST_ELITE_100: {
+                myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_100;
+                break;
+            }
+            case JBLConstant.DEVICE_EVEREST_ELITE_300: {
+                myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_300;
+                break;
+            }
+            case JBLConstant.DEVICE_LIVE_650BTNC:{
+                myDevice.deviceName = JBLConstant.DEVICE_LIVE_650BTNC;
+                break;
+            }
+            case JBLConstant.DEVICE_LIVE_400BT:{
+                myDevice.deviceName = JBLConstant.DEVICE_LIVE_400BT;
+                break;
+            }
+            case JBLConstant.DEVICE_LIVE_500BT:{
+                myDevice.deviceName = JBLConstant.DEVICE_LIVE_500BT;
+                break;
+            }
+            default:
+                return null;
         }
         return myDevice;
+    }
+
+    public static Drawable getDeviceIcon(Context context,String deviceName){
+        Drawable drawable ;
+        switch (deviceName.toUpperCase()){
+            case JBLConstant.DEVICE_EVEREST_ELITE_750NC:{
+                drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_750nc_icon);
+                break;
+            }
+            case JBLConstant.DEVICE_REFLECT_AWARE: {
+                drawable =  ContextCompat.getDrawable(context, R.mipmap.reflect_aware_icon);
+                break;
+            }
+            case JBLConstant.DEVICE_EVEREST_ELITE_150NC: {
+                drawable =  ContextCompat.getDrawable(context, R.mipmap.everest_elite_150nc_icon);
+                break;
+            }
+            case JBLConstant.DEVICE_EVEREST_ELITE_700: {
+                drawable =  ContextCompat.getDrawable(context, R.mipmap.everest_elite_700_icon);
+                break;
+            }
+            case JBLConstant.DEVICE_EVEREST_ELITE_100: {
+                drawable = ContextCompat.getDrawable(context, R.mipmap.everest_elite_100_icon);
+                break;
+            }
+            case JBLConstant.DEVICE_EVEREST_ELITE_300: {
+                drawable =  ContextCompat.getDrawable(context, R.mipmap.everest_elite_300_icon);
+                break;
+            }
+            case JBLConstant.DEVICE_LIVE_650BTNC:{
+                drawable =  ContextCompat.getDrawable(context, R.mipmap.live_650_btnc_icon);
+                break;
+            }
+            case JBLConstant.DEVICE_LIVE_400BT:{
+                drawable =  ContextCompat.getDrawable(context, R.mipmap.live_400_bt_icon);
+                break;
+            }
+            case JBLConstant.DEVICE_LIVE_500BT:{
+                drawable =  ContextCompat.getDrawable(context, R.mipmap.live_500_bt_icon);
+                break;
+            }
+            case JBLConstant.DEVICE_PLUS:{
+                drawable =  ContextCompat.getDrawable(context, R.mipmap.big_addition);
+                break;
+            }
+            default:
+                return null;
+        }
+        return drawable;
     }
 
     public static int[] parseVersionFromASCIIbuffer(byte[] bytes) {

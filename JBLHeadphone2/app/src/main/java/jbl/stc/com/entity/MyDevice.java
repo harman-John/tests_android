@@ -1,11 +1,12 @@
 package jbl.stc.com.entity;
 
-import android.graphics.drawable.Drawable;
+import java.io.Serializable;
 
-public class MyDevice {
+public class MyDevice implements Serializable {
     public String deviceKey;
     public String deviceName;
-    public Drawable drawable;
+    public String mac;
+    public String pid;
     public int connectStatus;
 
     @Override
@@ -14,5 +15,10 @@ public class MyDevice {
             return true;
         }
         return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return deviceKey.hashCode();
     }
 }

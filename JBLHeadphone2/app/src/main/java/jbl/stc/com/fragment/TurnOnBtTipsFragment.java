@@ -1,19 +1,14 @@
 package jbl.stc.com.fragment;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import jbl.stc.com.R;
-import jbl.stc.com.legal.LegalApi;
 import jbl.stc.com.view.BlurringView;
 import jbl.stc.com.view.BtTipPopupWindow;
 

@@ -5,7 +5,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,26 +14,34 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.ConnectStatus;
+import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.manager.ProductListManager;
+import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.SaveSetUtil;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.MyDragGridView;
 
 public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGridBaseAdapter {
     private static final String TAG = MyGridAdapter.class.getSimpleName();
-    public List<MyDevice> mLists = new ArrayList<>();
+    public List<MyDevice> mList = new ArrayList<>();
     private Context mContext;
     public int mHidePosition = -1;
     private RelativeLayout relativeLayoutSelected;
 
-    public void setMyAdapterList(List<MyDevice> lists) {
-        Collections.sort(lists, new Comparator<MyDevice>() {
+    public void setMyAdapterList(Set<MyDevice> set) {
+        this.mList.clear();
+        this.mList.addAll(set);
+        Collections.sort(mList, new Comparator<MyDevice>() {
 
             @Override
             public int compare(MyDevice o1, MyDevice o2) {
@@ -48,13 +55,11 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             }
 
         });
-        this.mLists.clear();
-        this.mLists.addAll(lists);
         MyDevice myDevicePlus = new MyDevice();
         myDevicePlus.deviceKey = JBLApplication.getJBLApplicationContext().getString(R.string.plus);
+        myDevicePlus.deviceName = JBLConstant.DEVICE_PLUS;
         myDevicePlus.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
-        myDevicePlus.drawable = ContextCompat.getDrawable(JBLApplication.getJBLApplicationContext(),R.mipmap.big_addition);
-        mLists.add(myDevicePlus);
+        mList.add(myDevicePlus);
         notifyDataSetChanged();
     }
 
@@ -78,12 +83,12 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
 
     @Override
     public int getCount() {
-        return mLists.size();
+        return mList.size();
     }
 
     @Override
     public MyDevice getItem(int position) {
-        return mLists.get(position);
+        return mList.get(position);
     }
 
     @Override
@@ -124,14 +129,14 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             viewHolder.textViewDeviceName.setLayoutParams(deviceNameParams);
         }
 
-        if (mLists.get(position).deviceKey.equals(mContext.getString(R.string.plus))){
+        if (mList.get(position).deviceName.equals(JBLConstant.DEVICE_PLUS)){
             viewHolder.relativeLayoutBreathingIcon.setBackground(ContextCompat.getDrawable(mContext,R.drawable.shape_product_circle_black));
             viewHolder.relativeLayoutBreathingIcon.setGravity(Gravity.CENTER);
             viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(16);
             viewHolder.imageViewIcon.setImageAlpha(255);
             viewHolder.textViewDeviceName.setText("");
             viewHolder.textViewTips.setVisibility(View.INVISIBLE);
-            if (mLists.size() <=1){
+            if (mList.size() <=1){
                 viewHolder.textViewTips.setVisibility(View.VISIBLE);
             }else{
                 viewHolder.textViewTips.setVisibility(View.INVISIBLE);
@@ -139,21 +144,21 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
         }else{
             viewHolder.relativeLayoutBreathingIcon.setBackground(ContextCompat.getDrawable(mContext,R.drawable.shape_product_circle));
 
-            if (mLists.get(position).connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            if (mList.get(position).connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(255);
                 viewHolder.imageViewIcon.setImageAlpha(255);
-            } else if (mLists.get(position).connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+            } else if (mList.get(position).connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                 viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(128);
                 viewHolder.imageViewIcon.setImageAlpha(255);
             } else {
                 viewHolder.relativeLayoutBreathingIcon.getBackground().setAlpha(128);
                 viewHolder.imageViewIcon.setImageAlpha(128);
             }
-            viewHolder.textViewDeviceName.setText(mLists.get(position).deviceName);
+            viewHolder.textViewDeviceName.setText(mList.get(position).deviceName);
             viewHolder.textViewTips.setVisibility(View.GONE);
         }
-        viewHolder.imageViewIcon.setImageDrawable(mLists.get(position).drawable);
-        if(mLists.get(position).connectStatus == ConnectStatus.DEVICE_CONNECTED){
+        viewHolder.imageViewIcon.setImageDrawable(AppUtils.getDeviceIcon(mContext,mList.get(position).deviceName));
+        if(mList.get(position).connectStatus == ConnectStatus.DEVICE_CONNECTED){
             relativeLayoutSelected = viewHolder.relativeLayoutBreathingIcon;
         }
 
@@ -178,18 +183,18 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
 
     @Override
     public void reorderItems(int oldPosition, int newPosition) {
-        MyDevice temp = mLists.get(oldPosition);
+        MyDevice temp = mList.get(oldPosition);
         if (oldPosition < newPosition) {
             for (int i = oldPosition; i < newPosition; i++) {
-                Collections.swap(mLists, i, i + 1);
+                Collections.swap(mList, i, i + 1);
             }
         } else if (oldPosition > newPosition) {
             for (int i = oldPosition; i > newPosition; i--) {
-                Collections.swap(mLists, i, i - 1);
+                Collections.swap(mList, i, i - 1);
             }
         }
 
-        mLists.set(newPosition, temp);
+        mList.set(newPosition, temp);
     }
 
     @Override
@@ -207,13 +212,13 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
 
     @Override
     public void deleteItem(int deletePosition) {
-        if (null != mLists && deletePosition < mLists.size()) {
-            MyDevice myDevice = mLists.get(deletePosition);
+        if (null != mList && deletePosition < mList.size()) {
+            MyDevice myDevice = mList.get(deletePosition);
             if (myDevice.connectStatus == ConnectStatus.A2DP_UNCONNECTED
                     && !myDevice.deviceKey.equals(mContext.getString(R.string.plus))) {
-                String key = myDevice.deviceKey;
-                mLists.remove(deletePosition);
-                DashboardActivity.getDashboardActivity().removeDeviceList(key);
+                mList.remove(deletePosition);
+                ProductListManager.getInstance().removeDevice(myDevice);
+                SaveSetUtil.remove(mContext,myDevice);
                 notifyDataSetChanged();
             }
         }

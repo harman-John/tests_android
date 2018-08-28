@@ -42,7 +42,7 @@ public class LeJBScanner extends BaseScanner {
     private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-            onFound(device, rssi, scanRecord);
+            onFound(device, "");
         }
     };
 }

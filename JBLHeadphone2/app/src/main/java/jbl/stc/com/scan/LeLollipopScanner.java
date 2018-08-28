@@ -2,13 +2,20 @@ package jbl.stc.com.scan;
 
 import android.annotation.TargetApi;
 import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+import android.util.SparseArray;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.utils.ArrayUtil;
 
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -29,8 +36,14 @@ public class LeLollipopScanner extends BaseScanner {
         if (mLeScanner == null) {
             mLeScanner = getBluetoothAdapter().getBluetoothLeScanner();
         }
-        mLeScanner.startScan(null, new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build(), mCallback);
-        onScanStart();
+        List<ScanFilter> filters = new ArrayList<>();
+//        byte[] mid = new byte[]{0x0e, (byte) 0xcb};
+//        ScanFilter filter = new ScanFilter.Builder().setManufacturerData(mid,).build();
+//        filters.add(filter);
+        if (mLeScanner != null) {
+            mLeScanner.startScan(filters, new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build(), mCallback);
+            onScanStart();
+        }
     }
 
     @Override
@@ -57,7 +70,24 @@ public class LeLollipopScanner extends BaseScanner {
 
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
-            onFound(result.getDevice(), result.getRssi(), result.getScanRecord().getBytes());
+            String deviceName = result.getDevice().getName();
+            if (deviceName!= null && result.getScanRecord()!= null) {
+//                Logger.d(TAG,"scan record all bytes"+ArrayUtil.toHex(result.getScanRecord().getBytes()));
+                byte[] manufacturerSpecificData = result.getScanRecord().getManufacturerSpecificData(JBLConstant.HARMAN_VENDOR_ID);
+                if (manufacturerSpecificData !=null && manufacturerSpecificData.length > 0) {
+                    byte[] pid = new byte[2];
+                    pid[0] = manufacturerSpecificData[0];
+                    pid[1] = manufacturerSpecificData[1];
+                    Logger.e(TAG, "onScanResult " + deviceName
+                            + ", Rssi = " + result.getRssi()
+                            + ", data = " + ArrayUtil.toHex(pid));
+                    // This is JBL Live 400BT
+                    if (pid[0] == 0x11 && pid[1] == 0x1f) {
+                        String sPid = ArrayUtil.toHexNoAppend(pid);
+                        onFound(result.getDevice(), sPid);
+                    }
+                }
+            }
         }
     };
 }

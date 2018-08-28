@@ -58,7 +58,7 @@ public class ClassicScanner extends BaseScanner {
                 case BluetoothDevice.ACTION_FOUND:
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, (short) -100);
-                    onFound(device, rssi, null);
+                    onFound(device, "");
                     break;
             }
         }

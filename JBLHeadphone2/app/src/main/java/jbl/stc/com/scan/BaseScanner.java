@@ -35,9 +35,9 @@ public abstract class BaseScanner implements BtScanner {
         mScanListener = null;
     }
 
-    protected void onFound(BluetoothDevice device, int rssi, byte[] scanRecord) {
+    protected void onFound(BluetoothDevice device, String pid) {
         if (mScanListener != null) {
-            mScanListener.onFound(device, rssi, scanRecord);
+            mScanListener.onFound(device, pid);
         }
     }
 
