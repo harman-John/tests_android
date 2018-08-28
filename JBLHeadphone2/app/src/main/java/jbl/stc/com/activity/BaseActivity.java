@@ -62,10 +62,10 @@ import jbl.stc.com.utils.OTAUtil;
 import jbl.stc.com.utils.StatusBarUtil;
 
 
-public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,View.OnTouchListener, AppLightXDelegate,OnDownloadedListener,ConnectListener {
-    private final static String TAG = BaseActivity.class.getSimpleName()+"aa";
+public class BaseActivity extends FragmentActivity implements AppUSBDelegate, View.OnTouchListener, AppLightXDelegate, OnDownloadedListener, ConnectListener {
+    private final static String TAG = BaseActivity.class.getSimpleName() + "aa";
     protected Context mContext;
-//    protected USBReceiver usbReceiver;
+    //    protected USBReceiver usbReceiver;
     public static boolean isOTADoing = false;
 
     @Override
@@ -120,11 +120,13 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
 
 
     private boolean isStopped = false;
-    public boolean isStopped(){
+
+    public boolean isStopped() {
         return isStopped;
     }
 
     private CheckUpdateAvailable checkUpdateAvailable;
+
     public void startCheckingIfUpdateIsAvailable(Object object) {
         Logger.d(TAG, "AppUtils.getModelNumber(this)=" + AppUtils.getModelNumber(this));
         Logger.d(TAG, "startCheckingIfUpdateIsAvailable isConnectionAvailable=" + FirmwareUtil.isConnectionAvailable(this));
@@ -152,11 +154,11 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             if (type == JBLConstant.SLIDE_FROM_DOWN_TO_TOP) {
                 ft.setCustomAnimations(R.anim.enter_from_down, R.anim.exit_to_up, R.anim.enter_from_up, R.anim.exit_to_down);
-            }else if (type == JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT){
+            } else if (type == JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT) {
                 ft.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
-            }else if (type == JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT){
+            } else if (type == JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT) {
                 ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
-            }else if (type == JBLConstant.FADE_IN_OUT){
+            } else if (type == JBLConstant.FADE_IN_OUT) {
                 ft.setCustomAnimations(R.anim.fadin, R.anim.fadeout, R.anim.fadin, R.anim.fadeout);
             }
             if (getSupportFragmentManager().findFragmentById(R.id.containerLayout) == null) {
@@ -174,7 +176,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     public void removeAllFragment() {
         Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if (fr == null) {
-            Logger.d(TAG,"fr is null");
+            Logger.d(TAG, "fr is null");
             return;
         }
         try {
@@ -186,8 +188,8 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
                 count = manager.getBackStackEntryCount();
                 Logger.d(TAG, "back stack count = " + count);
             }
-        }catch (Exception e){
-            Logger.e(TAG,"Fragment is not shown, then popBack will have exception ");
+        } catch (Exception e) {
+            Logger.e(TAG, "Fragment is not shown, then popBack will have exception ");
         }
     }
 
@@ -210,6 +212,12 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
             imageViewDevice.setImageResource(R.mipmap.everest_elite_700_icon);
         } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())) {
             imageViewDevice.setImageResource(R.mipmap.everest_elite_750nc_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_400BT).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.live_400_bt_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_500BT).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.live_500_bt_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_650BTNC).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.live_650_btnc_icon);
         }
     }
 
@@ -334,7 +342,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
     }
 
     @Override
-    public void checkDevices(Set<String> deviceList) {
+    public void checkDevices(Set<MyDevice> deviceList) {
 
     }
 
@@ -343,7 +351,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
         @Override
         public void onReceive(Context context, Intent intent) {
             UsbDevice usbDevice = (UsbDevice) intent.getExtras().get(UsbManager.EXTRA_DEVICE);
-            Logger.d(TAG,"usbDevice action = " + intent.getAction());
+            Logger.d(TAG, "usbDevice action = " + intent.getAction());
             if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
                 BaseActivity.this.usbDetached(usbDevice);
             } else {
@@ -406,15 +414,15 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate ,Vi
         int count = 0;
         for (int i = 0, size = activityStack.size(); i < size; i++) {
             if (null != activityStack.get(i)) {
-                boolean isStopped = ((BaseActivity)(activityStack.get(i))).isStopped();
-                Logger.i(TAG,"isStopped = "+isStopped +",activity = "+activityStack.get(i));
-                if (isStopped){
-                    count ++;
+                boolean isStopped = ((BaseActivity) (activityStack.get(i))).isStopped();
+                Logger.i(TAG, "isStopped = " + isStopped + ",activity = " + activityStack.get(i));
+                if (isStopped) {
+                    count++;
                 }
             }
         }
 
-        if (count == activityStack.size()){
+        if (count == activityStack.size()) {
             return false;
         }
         return true;

@@ -65,6 +65,7 @@ import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.CreateEqTipsDialog;
 import jbl.stc.com.dialog.TutorialAncDialog;
 import jbl.stc.com.entity.EQModel;
+import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.EqCustomFragment;
 import jbl.stc.com.fragment.EqSettingFragment;
 import jbl.stc.com.fragment.OTAFragment;
@@ -78,6 +79,7 @@ import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.EQSettingManager;
+import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -215,7 +217,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
         RelativeLayout linearLayoutNoiseCanceling = findViewById(R.id.relative_layout_home_noise_cancel);
-        deviceName = DeviceManager.getInstance(this).getSelectDevice(mConnectStatus).deviceName;
+        deviceName = ProductListManager.getInstance().getSelectDevice(mConnectStatus).deviceName;
         if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_NOISE_CANCEL)) {
             linearLayoutNoiseCanceling.setVisibility(View.GONE);
         } else {
@@ -395,7 +397,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void checkDevices(Set<String> deviceList) {
+    public void checkDevices(Set<MyDevice> deviceList) {
         super.checkDevices(deviceList);
 //        Logger.i(TAG, "MSG_CHECK_DEVICES deviceList = " + deviceList);
 //        Message msg = new Message();
@@ -976,7 +978,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //                    Logger.i(TAG, "handleMessage MSG_CHECK_DEVICES start");
 //                    Set<String> deviceList = (Set<String>) msg.obj;
 //                    if (hasNewDevice(deviceList)) {
-//                        initMyDeviceList();
+//                        initDeviceSet();
 //                    }
 //                    updateMyDeviceStatus(deviceList);
 //                    Logger.i(TAG, "handleMessage MSG_CHECK_DEVICES end");

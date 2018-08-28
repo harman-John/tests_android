@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -40,6 +41,8 @@ import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.DeviceManager;
+import jbl.stc.com.manager.ProductListManager;
+import jbl.stc.com.scan.LeScannerCompat;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -77,8 +80,13 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         initView();
         InsertPredefinePreset insertPredefinePreset = new InsertPredefinePreset();
         insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
-
+        LeScannerCompat.getInstance().addListener(this);
 //        StatusBarUtil.setColor(this, ContextCompat.getColor(this,R.color.orange_dark_FF5201));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        LeScannerCompat.getInstance().onRequestPermissionsResult(requestCode, grantResults);
     }
 
     private void initView() {
@@ -93,7 +101,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         myGridAdapter.setOnDeviceSelectedListener(new MyGridAdapter.OnDeviceItemSelectedListener() {
             @Override
             public void onSelected(int position) {
-                final MyDevice myDevice = myGridAdapter.mLists.get(position);
+                final MyDevice myDevice = myGridAdapter.mList.get(position);
                 if (myDevice.deviceKey.equals(mContext.getString(R.string.plus))) {
                     dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
                     dashboardHandler.sendEmptyMessage(MSG_SHOW_DISCOVERY);
@@ -102,7 +110,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                         || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                     Logger.d(TAG, "onSelected Show home fragment");
-                    gridView.smoothScrollToPositionFromTop(position,0);
+                    gridView.smoothScrollToPositionFromTop(position, 0);
                     dashboardHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -124,7 +132,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             }
         });
 
-        myGridAdapter.setMyAdapterList(DeviceManager.getInstance(this).getMyDeviceList());
+        myGridAdapter.setMyAdapterList(ProductListManager.getInstance().getDeviceSet());
         myGridAdapter.setMenuBar((RelativeLayout) findViewById(R.id.relative_layout_dashboard_title));
         myGridAdapter.setImageViewPlus(imageViewWhitePlus);
         gridView.setDeleteView(viewDelete);
@@ -156,7 +164,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                         animateFirstDown = true;
                         animateFirstUp = false;
                         startFadeAnim(imageViewWhitePlus, R.anim.fadeout);
-                    }else if (location[1] <= top){
+                    } else if (location[1] <= top) {
                         imageViewWhitePlus.setVisibility(View.INVISIBLE);
                     }
                     lastLocation = location[1];
@@ -166,7 +174,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 }
             }
         });
-        if (DeviceManager.getInstance(this).getMyDeviceList().size() == 0) {
+        if (ProductListManager.getInstance().getDeviceSet().size() == 0) {
             dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 2000);
         }
         findViewById(R.id.image_view_dashboard_white_menu).setOnClickListener(this);
@@ -208,6 +216,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         DeviceManager.getInstance(this).setOnResume();
         Logger.d(TAG, "onResume isInBackground =" + isInBackground + ",isConnected =" + DeviceManager.getInstance(this).isConnected());
         checkBluetooth();
+        LeScannerCompat.getInstance().checkPermission(this);
         if (DeviceManager.getInstance(this).isConnected()) {
             dashboardHandler.removeMessages(MSG_START_SCAN);
             dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
@@ -246,9 +255,9 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         DeviceManager.getInstance(this).setOnActivityResult(requestCode, resultCode, data);
-        Logger.d(TAG, "onActivityResult requestCode ="+requestCode);
-        switch (requestCode){
-            case JBLConstant.REQUEST_CODE_INFO_ACTIVITY:{
+        Logger.d(TAG, "onActivityResult requestCode =" + requestCode);
+        switch (requestCode) {
+            case JBLConstant.REQUEST_CODE_INFO_ACTIVITY: {
                 dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
                 break;
             }
@@ -263,6 +272,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         finishActivity(this);
         DeviceManager.getInstance(this).setUsbDeviceStop();
         DeviceManager.getInstance(this).setOnDestroy();
+        LeScannerCompat.getInstance().removeListener(this);
     }
 
     private boolean isInBackground = false;
@@ -292,26 +302,13 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 removeAllFragment();
                 currentActivity().finish();
             }
-            myGridAdapter.setMyAdapterList(DeviceManager.getInstance(this).getMyDeviceList());
+            LeScannerCompat.getInstance().checkPermission(this);
+            myGridAdapter.setMyAdapterList(ProductListManager.getInstance().getDeviceSet());
         }
     }
 
-    public void removeDeviceList(String key) {
-        MyDevice temp = null;
-        for (MyDevice myDevice : DeviceManager.getInstance(this).getMyDeviceList()) {
-            if (myDevice.deviceKey.equalsIgnoreCase(key)) {
-                temp = myDevice;
-                break;
-            }
-        }
-        if (temp != null)
-            DeviceManager.getInstance(this).getMyDeviceList().remove(temp);
-        AppUtils.removeMyDevice(mContext, key);
-        DeviceManager.getInstance(this).removeDeviceList(key);
-    }
-
-    public void checkDevices(Set<String> deviceList) {
-        myGridAdapter.setMyAdapterList(DeviceManager.getInstance(this).getMyDeviceList());
+    public void checkDevices(Set<MyDevice> deviceList) {
+        myGridAdapter.setMyAdapterList(ProductListManager.getInstance().getDeviceSet());
         gridView.setVisibility(View.VISIBLE);
     }
 
@@ -319,7 +316,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_dashboard_white_menu: {
-                startActivityForResult(new Intent(this, InfoActivity.class),JBLConstant.REQUEST_CODE_INFO_ACTIVITY);
+                startActivityForResult(new Intent(this, InfoActivity.class), JBLConstant.REQUEST_CODE_INFO_ACTIVITY);
                 break;
             }
             case R.id.image_view_dashboard_white_plus: {
@@ -333,8 +330,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-
-
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             AppUtils.hideFromForeground(this);
         } else {
@@ -349,7 +344,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     private void showMyProducts() {
         removeAllFragment();
-        myGridAdapter.setMyAdapterList(DeviceManager.getInstance(this).getMyDeviceList());
+        myGridAdapter.setMyAdapterList(ProductListManager.getInstance().getDeviceSet());
         gridView.setVisibility(View.VISIBLE);
     }
 
@@ -380,14 +375,14 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 case MSG_SHOW_HOME_FRAGMENT: {
                     Logger.d(TAG, "show homeFragment");
                     removeAllFragment();
-                    if (currentActivity() instanceof InfoActivity){
+                    if (currentActivity() instanceof InfoActivity) {
                         currentActivity().onBackPressed();
                     }
-                    gridView.smoothScrollToPositionFromTop(0,0);
+                    gridView.smoothScrollToPositionFromTop(0, 0);
                     dashboardHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            showHomeActivity(DeviceManager.getInstance(getDashboardActivity()).getMyDeviceConnected());
+                            showHomeActivity(ProductListManager.getInstance().getConnectedDevice());
                         }
                     }, 200);
                     break;
@@ -397,8 +392,10 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                     Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                     if (fr == null) {
                         switchFragment(new DiscoveryFragment(), JBLConstant.FADE_IN_OUT);
-                    } else if (!((fr instanceof DiscoveryFragment) || (fr instanceof TurnOnBtTipsFragment))) {
-                        switchFragment(new DiscoveryFragment(), JBLConstant.FADE_IN_OUT);
+                    } else if (!(fr instanceof DiscoveryFragment)) {
+                        if (!(fr instanceof TurnOnBtTipsFragment)) {
+                            switchFragment(new DiscoveryFragment(), JBLConstant.FADE_IN_OUT);
+                        }
                     }
                     break;
                 }
@@ -424,7 +421,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     }
 
     public void showHomeActivity(MyDevice myDevice) {
-        if (myDevice == null){
+        if (myDevice == null) {
             Logger.d(TAG, "myDevice is null, can't show home activity");
             return;
         }
@@ -521,9 +518,10 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                             if (fr instanceof TurnOnBtTipsFragment) {
                                 removeAllFragment();
                             }
-                            if (DeviceManager.getInstance(getDashboardActivity()).getMyDeviceList().size() == 0) {
+                            if (ProductListManager.getInstance().getDeviceSet().size() == 0) {
                                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 2000);
                             }
+                            LeScannerCompat.getInstance().checkPermission(DashboardActivity.this);
                             break;
                         }
                         default: {

@@ -42,7 +42,7 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
-import jbl.stc.com.manager.DeviceManager;
+import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -75,7 +75,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        myDevice = DeviceManager.getInstance(getActivity()).getMyDeviceConnected();
+        myDevice = ProductListManager.getInstance().getConnectedDevice();
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);
