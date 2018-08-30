@@ -8,6 +8,7 @@ import com.harman.bluetooth.constants.BesAction;
 import com.harman.bluetooth.constants.BesCommandType;
 import com.harman.bluetooth.listeners.BesListener;
 import com.harman.bluetooth.ota.BesOtaUpdate;
+import com.harman.bluetooth.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class BesEngine implements IBesEngine {
     private BesOtaUpdate besOtaUpdate;
 
     private Object mLock = new Object();
+    private final static String TAG = BesEngine.class.getSimpleName();
 
 //    private LeConnectorListener mLeConnectListener;
 
@@ -81,15 +83,12 @@ public class BesEngine implements IBesEngine {
     }
 
     @Override
-    public boolean sendCommand(BesCommandType commandType, BesAction besAction, byte[] payload) {
-        switch(commandType){
-            case EQ: {
-                break;
-            }
+    public boolean sendCommand(byte[] command) {
+        if (command.length <= 0){
+            Logger.e(TAG,"send command error, command is null");
+            return false;
         }
-        //byte[] data = {0x11};// create data based on command and action
-        mLeConnector.write(payload);
-        return false;
+        return mLeConnector.write(command);
     }
 
     @Override
@@ -113,4 +112,5 @@ public class BesEngine implements IBesEngine {
         besOtaUpdate.sendFileInfo(context);
         besOtaUpdate.setListener(listeners);
     }
+
 }

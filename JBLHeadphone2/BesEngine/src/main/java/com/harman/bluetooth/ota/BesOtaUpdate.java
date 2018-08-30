@@ -972,7 +972,7 @@ public class BesOtaUpdate implements BesListener {
 
 
     @Override
-    public void onBesReceived(BesCommandType commandType, BesAction besAction, byte[] data){
+    public void onBesReceived(byte[] data){
 //    }
 //    @Override
 //    public void onReceive(byte[] data) {
@@ -1071,7 +1071,7 @@ public class BesOtaUpdate implements BesListener {
 //    protected abstract void saveLastDeviceAddress(String address);
 
     private boolean sendData(byte[] data){
-        return BesEngine.getInstance().sendCommand(BesCommandType.OTA,BesAction.WRITE,data);
+        return BesEngine.getInstance().sendCommand(data);
     }
 
     private boolean isBle(){

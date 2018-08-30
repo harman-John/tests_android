@@ -19,7 +19,7 @@ public interface IBesEngine {
 
     boolean isConnected();
 
-    boolean sendCommand(BesCommandType commandType, BesAction besAction, byte[] payload);
+    boolean sendCommand(byte[] command);
 
     void updateImage(Context context);
 

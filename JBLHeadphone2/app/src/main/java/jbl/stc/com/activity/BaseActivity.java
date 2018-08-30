@@ -1,18 +1,12 @@
 package jbl.stc.com.activity;
 
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -22,63 +16,45 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.avnera.audiomanager.Action;
-import com.avnera.audiomanager.AdminEvent;
-import com.avnera.audiomanager.Status;
-import com.avnera.audiomanager.StatusEvent;
-import com.avnera.audiomanager.responseResult;
-import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.LightX;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
-import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
-import jbl.stc.com.dialog.AlertsDialog;
 import jbl.stc.com.entity.FirmwareModel;
-import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.BaseFragment;
-import jbl.stc.com.listener.AppLightXDelegate;
 import jbl.stc.com.listener.AppUSBDelegate;
-import jbl.stc.com.listener.ConnectListener;
+import jbl.stc.com.listener.OnConnectStatusListener;
 import jbl.stc.com.listener.OnDownloadedListener;
+import jbl.stc.com.listener.OnRetListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.DeviceManager;
+import jbl.stc.com.manager.LeManager;
 import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.utils.OTAUtil;
 import jbl.stc.com.utils.StatusBarUtil;
 
 
-public class BaseActivity extends FragmentActivity implements AppUSBDelegate, View.OnTouchListener, AppLightXDelegate, OnDownloadedListener, ConnectListener {
+public class BaseActivity extends FragmentActivity implements AppUSBDelegate, View.OnTouchListener, OnDownloadedListener,OnRetListener, OnConnectStatusListener {
     private final static String TAG = BaseActivity.class.getSimpleName() + "aa";
     protected Context mContext;
-    //    protected USBReceiver usbReceiver;
     public static boolean isOTADoing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DeviceManager.getInstance(this).setConnectListener(this);
         mContext = this;
+        LeManager.getInstance().setOnConnectStatusListener(this);
         LightX.sEnablePacketDumps = false;
-//        usbReceiver = new USBReceiver();
-//        IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-//        intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-//        registerReceiver(usbReceiver, intentFilter);
     }
 
     @Override
@@ -96,8 +72,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate, Vi
     @Override
     protected void onResume() {
         super.onResume();
-        DeviceManager.getInstance(this).setConnectListener(this);
-        DeviceManager.getInstance(this).setAppLightXDelegate(this);
+        DeviceManager.getInstance(this).setOnConnectStatusListener(this);
     }
 
     @Override
@@ -115,7 +90,6 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate, Vi
     protected void onDestroy() {
         super.onDestroy();
         finishActivity(this);
-//        unregisterReceiver(usbReceiver);
     }
 
 
@@ -231,85 +205,6 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate, Vi
 
     }
 
-    @Override
-    public void lightXAppReadResult(LightX var1, Command var2, boolean var3, byte[] var4) {
-
-    }
-
-    @Override
-    public void lightXAppReceivedPush(LightX var1, Command var2, byte[] var3) {
-
-    }
-
-    @Override
-    public void lightXAppWriteResult(LightX var1, Command var2, boolean var3) {
-
-    }
-
-    @Override
-    public void lightXError(LightX var1, Exception var2) {
-
-    }
-
-    @Override
-    public boolean lightXFirmwareReadStatus(LightX var1, LightX.FirmwareRegion var2, int var3, byte[] var4) {
-        return false;
-    }
-
-    @Override
-    public boolean lightXFirmwareWriteStatus(LightX var1, LightX.FirmwareRegion var2, LightX.FirmwareWriteOperation var3, double var4, Exception var6) {
-        return false;
-    }
-
-    @Override
-    public void lightXIsInBootloader(LightX var1, boolean var2) {
-
-    }
-
-    @Override
-    public void lightXReadConfigResult(LightX var1, Command var2, boolean var3, String var4) {
-
-    }
-
-    @Override
-    public boolean lightXWillRetransmit(LightX var1, Command var2) {
-        return false;
-    }
-
-    @Override
-    public void isLightXInitialize() {
-
-    }
-
-    @Override
-    public void headPhoneStatus(boolean isConnected) {
-
-    }
-
-    @Override
-    public void lightXReadBootResult(LightX var1, Command command, boolean success, int var4, byte[] var5) {
-
-    }
-
-    @Override
-    public void receivedAdminEvent(AdminEvent event, Object value) {
-
-    }
-
-    @Override
-    public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
-
-    }
-
-    @Override
-    public void receivedStatus(StatusEvent name, Object value) {
-
-    }
-
-    @Override
-    public void receivedPushNotification(Action action, String command, ArrayList<responseResult> values, Status status) {
-
-    }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -337,33 +232,33 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate, Vi
     }
 
     @Override
-    public void connectDeviceStatus(boolean isConnected) {
+    public void onReceive(EnumCommands enumCommands, Object... objects) {
 
     }
 
     @Override
-    public void checkDevices(Set<MyDevice> deviceList) {
+    public void onConnectStatus(Object... objects) {
 
     }
 
-    private class USBReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            UsbDevice usbDevice = (UsbDevice) intent.getExtras().get(UsbManager.EXTRA_DEVICE);
-            Logger.d(TAG, "usbDevice action = " + intent.getAction());
-            if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-                BaseActivity.this.usbDetached(usbDevice);
-            } else {
-                BaseActivity.this.usbAttached(usbDevice);
-            }
-        }
-    }
-
-    public HashMap<String, UsbDevice> getAllAttachedUSBdeviced() {
-        UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        return manager.getDeviceList();
-    }
+//    private class USBReceiver extends BroadcastReceiver {
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            UsbDevice usbDevice = (UsbDevice) intent.getExtras().get(UsbManager.EXTRA_DEVICE);
+//            Logger.d(TAG, "usbDevice action = " + intent.getAction());
+//            if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+//                BaseActivity.this.usbDetached(usbDevice);
+//            } else {
+//                BaseActivity.this.usbAttached(usbDevice);
+//            }
+//        }
+//    }
+//
+//    public HashMap<String, UsbDevice> getAllAttachedUSBdeviced() {
+//        UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
+//        return manager.getDeviceList();
+//    }
 
     private static Stack<Activity> activityStack;
 

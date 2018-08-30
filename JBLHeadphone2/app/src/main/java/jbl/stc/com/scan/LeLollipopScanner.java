@@ -63,7 +63,7 @@ public class LeLollipopScanner extends BaseScanner {
 
         @Override
         public void onScanFailed(int errorCode) {
-            Logger.e(TAG, "onScanFailed " + errorCode);
+            Logger.e(TAG, "on scan failed, le scan callback, erorr code: " + errorCode);
             super.onScanFailed(errorCode);
             onScanFinish();
         }
@@ -72,13 +72,16 @@ public class LeLollipopScanner extends BaseScanner {
         public void onScanResult(int callbackType, ScanResult result) {
             String deviceName = result.getDevice().getName();
             if (deviceName!= null && result.getScanRecord()!= null) {
-//                Logger.d(TAG,"scan record all bytes"+ArrayUtil.toHex(result.getScanRecord().getBytes()));
+                if (deviceName.contains("samsung")){
+                    return;
+                }
+                Logger.d(TAG,"on scan result, le scan callback, "+ deviceName);
                 byte[] manufacturerSpecificData = result.getScanRecord().getManufacturerSpecificData(JBLConstant.HARMAN_VENDOR_ID);
                 if (manufacturerSpecificData !=null && manufacturerSpecificData.length > 0) {
                     byte[] pid = new byte[2];
                     pid[0] = manufacturerSpecificData[0];
                     pid[1] = manufacturerSpecificData[1];
-                    Logger.e(TAG, "onScanResult " + deviceName
+                    Logger.e(TAG, "on scan result, le scan callback, device name = " + deviceName
                             + ", Rssi = " + result.getRssi()
                             + ", data = " + ArrayUtil.toHex(pid));
                     // This is JBL Live 400BT

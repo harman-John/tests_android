@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
@@ -40,8 +41,8 @@ public class LeConnector implements BaseConnector{
 
 //    private List<ConnectorListener> mConnectorListeners;
 
-    private Object mStateLock = new Object();
-    private Object mListenerLock = new Object();
+    private final Object mStateLock = new Object();
+    private final Object mListenerLock = new Object();
     private int mConnState = STATE_DISCONNECTED;
 
     private UUID mDescriptor;
@@ -122,7 +123,7 @@ public class LeConnector implements BaseConnector{
 
     @Override
     public boolean enableCharacteristicNotify(UUID service, UUID rxCharacteristic, UUID descriptor) {
-        Log.i(TAG , "enableCharacteristicNotify()");
+        Log.i(TAG , "enable  characteristic notify");
         if (mBluetoothGatt != null) {
             BluetoothGattService gattService = mBluetoothGatt.getService(service);
             if (gattService == null) {
@@ -137,11 +138,11 @@ public class LeConnector implements BaseConnector{
                 return false;
             }
             if (!mBluetoothGatt.setCharacteristicNotification(gattCharacteristic, true)) {
-                Log.i(TAG , " enableCharacteristicNotify  mBluetoothGatt.setCharacteristicNotification(gattCharacteristic, true) is false");
+                Log.i(TAG , " enable  characteristic notify set error");
                 return false;
             }
             if (!gattDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)) {
-                Log.i(TAG , " enableCharacteristicNotify  gattDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) is false");
+                Log.i(TAG , " enable  characteristic notify set value error");
                 return false;
             }
             mDescriptor = descriptor;
@@ -173,7 +174,7 @@ public class LeConnector implements BaseConnector{
         try {
             if (mBluetoothGatt != null) {
                 Method refresh = mBluetoothGatt.getClass().getMethod("refresh", new Class[0]);
-                return ((Boolean) refresh.invoke(mBluetoothGatt, new Object[0])).booleanValue();
+                return (Boolean) refresh.invoke(mBluetoothGatt, new Object[0]);
             }
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
@@ -183,7 +184,7 @@ public class LeConnector implements BaseConnector{
 
     @Override
     public boolean setWriteCharacteristic(UUID service, UUID characteristic) {
-        Log.i(TAG, "setWriteCharacteristic service " + service.toString() + "; characteristic " + characteristic.toString());
+        Log.i(TAG, "set write characteristic, service " + service.toString() + ",characteristic " + characteristic.toString());
         if (mBluetoothGatt == null) {
             return false;
         }
@@ -195,6 +196,7 @@ public class LeConnector implements BaseConnector{
         if (mCharacteristicTx == null) {
             return false;
         }
+        Log.i(TAG, "set write characteristic, mCharacteristicTx is not null");
         mCharacteristicTx.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
         return true;
     }
@@ -202,24 +204,27 @@ public class LeConnector implements BaseConnector{
     @Override
     public boolean write(byte[] data) {
         if (mBluetoothGatt != null) {
-            mCharacteristicTx.setValue(data);
-            mCharacteristicTx.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
-            boolean ret = mBluetoothGatt.writeCharacteristic(mCharacteristicTx);
-            return ret ;
+            boolean isValueSet = mCharacteristicTx.setValue(data);
+            Log.i(TAG, "write, mBluetoothGatt is not null, is value set = "+isValueSet );
+            if (isValueSet) {
+                mCharacteristicTx.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+                mBluetoothGatt.setCharacteristicNotification(mCharacteristicTx, true);
+                return mBluetoothGatt.writeCharacteristic(mCharacteristicTx);
+            }
         }
-        Log.i(TAG, "write  (mBluetoothGatt == null)" );
+        Log.i(TAG, "write, mBluetoothGatt is null" );
         return false;
     }
 
     @Override
     public boolean write_no_rsp(byte[] data) {
         if (mBluetoothGatt != null) {
+            Log.i(TAG, "write no rsp, mBluetoothGatt is not null)" );
             mCharacteristicTx.setValue(data);
             mCharacteristicTx.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
-            boolean ret = mBluetoothGatt.writeCharacteristic(mCharacteristicTx);
-            return ret ;
+            return mBluetoothGatt.writeCharacteristic(mCharacteristicTx) ;
         }
-        Log.i(TAG, "write  (mBluetoothGatt == null)" );
+        Log.i(TAG, "write no rsp, mBluetoothGatt is null" );
         return false;
     }
 
@@ -240,7 +245,7 @@ public class LeConnector implements BaseConnector{
     }
 
     private void enableCharacteristicNotification(){
-            if (!enableCharacteristicNotify(Constants.OTA_SERVICE_OTA_UUID, Constants.OTA_CHARACTERISTIC_OTA_UUID, Constants.OTA_DESCRIPTOR_OTA_UUID)) {
+            if (!enableCharacteristicNotify(Constants.BES_SERVICE_UUID, Constants.BES_CHARACTERISTIC_RX_UUID, Constants.BES_DESCRIPTOR_UUID)) {
                 Log.i(TAG, "enable characteristic notification false ");
                 notifyConnectionStateChanged(false);
                 refresh();
@@ -252,7 +257,7 @@ public class LeConnector implements BaseConnector{
     }
     private void setCharacteristics() {
         synchronized (mListenerLock) {
-                if (setWriteCharacteristic(Constants.OTA_SERVICE_OTA_UUID, Constants.OTA_CHARACTERISTIC_OTA_UUID)) {
+                if (setWriteCharacteristic(Constants.BES_SERVICE_UUID, Constants.BES_CHARACTERISTIC_TX_UUID)) {
                     if (requestMtu(DEFAULT_MTU)) {
                         Log.i(TAG, "requestMtu DEFAULT_MTU = "+DEFAULT_MTU);
 //                        updateInfo(R.string.configing_mtu);
@@ -301,7 +306,7 @@ public class LeConnector implements BaseConnector{
         synchronized (mListenerLock) {
             BesAction currentAction = BesAction.READ;//do something to classify current action
             for (BesListener listener : mListBesListener) {
-                listener.onBesReceived(besCommandType, currentAction, data);
+                listener.onBesReceived(data);
             }
         }
     }
@@ -328,8 +333,20 @@ public class LeConnector implements BaseConnector{
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            Log.i(TAG, "onServicesDiscovered " + status + "; " + status);
+            Log.i(TAG, "on service discovered " + status + "; " + status);
             mBluetoothGatt = gatt;
+            List<BluetoothGattService> gattServices= gatt.getServices();
+            for(BluetoothGattService bluetoothGattService: gattServices){
+                Log.i(TAG, "bluetoothGattService: " + bluetoothGattService.getUuid());
+                List<BluetoothGattCharacteristic> characteristicList = bluetoothGattService.getCharacteristics();
+                for( BluetoothGattCharacteristic bluetoothGattCharacteristic: characteristicList ){
+                    Log.i(TAG, "bluetoothGattCharacteristic: " + bluetoothGattCharacteristic.getUuid());
+                    List<BluetoothGattDescriptor> bluetoothGattDescriptorList = bluetoothGattCharacteristic.getDescriptors();
+                    for(BluetoothGattDescriptor bluetoothGattDescriptor: bluetoothGattDescriptorList){
+                        Log.i(TAG, "bluetoothGattDescriptor: " + bluetoothGattDescriptor.getUuid());
+                    }
+                }
+            }
             if (status != BluetoothGatt.GATT_SUCCESS) {
                 //TODO: what to do?
             } else {

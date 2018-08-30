@@ -66,7 +66,7 @@ public class ArrayUtil {
     }
 
     public static String toHexNoAppend(byte[] data) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < data.length; i++) {
             buffer.append(String.format("%02x", data[i]));
         }

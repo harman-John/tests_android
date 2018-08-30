@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,13 +20,10 @@ import android.transition.Fade;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.util.DisplayMetrics;
-import android.view.GestureDetector;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -39,38 +35,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avnera.audiomanager.AccessoryInfo;
-import com.avnera.audiomanager.Action;
-import com.avnera.audiomanager.Status;
 import com.avnera.audiomanager.audioManager;
-import com.avnera.audiomanager.responseResult;
-
-import com.avnera.smartdigitalheadset.Command;
-
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
-import com.avnera.smartdigitalheadset.LightX;
-import com.avnera.smartdigitalheadset.Utility;
+import com.harman.bluetooth.request.RequestCommands;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import jbl.stc.com.R;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
-import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.dialog.CreateEqTipsDialog;
 import jbl.stc.com.dialog.TutorialAncDialog;
 import jbl.stc.com.entity.EQModel;
-import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.EqCustomFragment;
 import jbl.stc.com.fragment.EqSettingFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.SettingsFragment;
-import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.listener.OnOtaListener;
 import jbl.stc.com.logger.Logger;
@@ -79,25 +63,22 @@ import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.EQSettingManager;
+import jbl.stc.com.manager.LeManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.EnumCommands;
+import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.AaPopupWindow;
-
-import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.BlurringView;
-import jbl.stc.com.view.CustomFontTextView;
 import jbl.stc.com.view.NotConnectedPopupWindow;
 import jbl.stc.com.view.SaPopupWindow;
 
-import static java.lang.Integer.highestOneBit;
-import static java.lang.Integer.valueOf;
 
-
-public class HomeActivity extends BaseActivity implements View.OnClickListener, ConnectListener, OnOtaListener {
+public class HomeActivity extends BaseActivity implements View.OnClickListener, OnOtaListener {
     public static final String TAG = HomeActivity.class.getSimpleName() + "aa";
     private BlurringView mBlurView;
 
@@ -113,11 +94,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private final static int MSG_AA_RIGHT = 33;
 
     private final static int MSG_UPDATE_CUSTOM_EQ = 8;
-    private final static int MSG_CHECK_MY_DEVICE = 9;
     private final static int MSG_CHECK_UPDATE = 10;
     private final static int MSG_FIRMWARE_INFO = 11;
 
-    private final long timeInterval = 30 * 1000L, pollingTime = 1000L;
+    private final long timeInterval = 30 * 1000L;
     private ProgressBar progressBarBattery;
     private TextView textViewBattery;
     private TextView textViewCurrentEQ;
@@ -131,7 +111,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private RelativeLayout relative_layout_home_eq_info;
     private String deviceName;
     private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
-    private TextView titleEqText;
     private AppImageView image_view_ota_download;
     private NotConnectedPopupWindow notConnectedPopupWindow;
     private TutorialAncDialog tutorialAncDialog;
@@ -157,6 +136,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        DeviceManager.getInstance(this).setOnRetListener(this);
         mConnectStatus = getIntent().getIntExtra(JBLConstant.KEY_CONNECT_STATUS, -1);
         Intent intent = getIntent();
         String action = intent.getAction();
@@ -185,7 +165,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         imageViewDevice = findViewById(R.id.image_view_home_device_image);
         relative_layout_home_eq_info = findViewById(R.id.relative_layout_home_eq_info);
         relative_layout_home_eq_info.setVisibility(View.VISIBLE);
-        titleEqText = (TextView) findViewById(R.id.titleEqText);
+        TextView titleEqText = findViewById(R.id.titleEqText);
         if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             setEqMenuColor(false);
             relative_layout_home_eq_info.setAlpha((float) 0.5);
@@ -193,7 +173,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             setEqMenuColor(true);
             titleEqText.setOnClickListener(this);
             findViewById(R.id.image_view_home_settings).setOnClickListener(this);
-            //relative_layout_home_eq_info.setOnClickListener(this);
             findViewById(R.id.arrowUpImage).setOnClickListener(this);
         }
         textViewCurrentEQ = findViewById(R.id.text_view_home_eq_name);
@@ -365,45 +344,31 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         Intent intent = getIntent();
         String action = intent.getAction();
         Logger.d(TAG, "onResume action =" + action);
-        if (!TextUtils.isEmpty(action)
-                && "android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action)) {
-
-        } else {
+        if (TextUtils.isEmpty(action) || !"android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action)) {
             AnalyticsManager.getInstance(this).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
             Logger.d(TAG, "onResume " + DeviceConnectionManager.getInstance().getCurrentDevice());
             doResume();
         }
     }
-
     @Override
-    public void connectDeviceStatus(boolean isConnected) {
-        super.connectDeviceStatus(isConnected);
-
+    public void onConnectStatus(Object... objects) {
+        super.onConnectStatus(objects);
+        boolean isConnected = (boolean) objects[0];
         if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
-            Logger.i(TAG, "connectDeviceStatus A2DP_HALF_CONNECTED");
+            Logger.i(TAG, "on connect status, device is a2dp half connect");
             finish();
         } else if (!isConnected && !isOTADoing && !DeviceManager.getInstance(this).isNeedOtaAgain()) {
-            Logger.i(TAG, "connectDeviceStatus not connected, not ota");
+            Logger.i(TAG, "on connect status, not connected, not ota");
             removeAllFragment();
             finish();
         } else if (isConnected && isOTADoing && !DeviceManager.getInstance(this).isNeedOtaAgain()) {
             Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
             if (fr != null && fr instanceof OTAFragment) {
-                Logger.i(TAG, "connectDeviceStatus myDevice = " + mConnectStatus);
+                Logger.i(TAG, "on connect status, connected, myDevice = " + mConnectStatus);
 //                DeviceManager.getInstance(this).startA2DPCheck();
                 ((OTAFragment) fr).otaSuccess(this);
             }
         }
-    }
-
-    @Override
-    public void checkDevices(Set<MyDevice> deviceList) {
-        super.checkDevices(deviceList);
-//        Logger.i(TAG, "MSG_CHECK_DEVICES deviceList = " + deviceList);
-//        Message msg = new Message();
-//        msg.what = MSG_CHECK_MY_DEVICE;
-//        msg.obj = deviceList;
-//        homeHandler.sendMessage(msg);
     }
 
     @Override
@@ -533,7 +498,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void doResume() {
-        DeviceManager.getInstance(this).setAppLightXDelegate(this);
+        DeviceManager.getInstance(this).setOnRetListener(this);
+        LeManager.getInstance().setOnConnectStatusListener(this);
         if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
             getDeviceInfo();
         } else if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
@@ -603,7 +569,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                                     return false;
                                 }
                             }
-                            if (isEnter && EqSettingFragment.rootView!=null) {
+                            if (isEnter && EqSettingFragment.rootView != null) {
                                 if ((yDown - yMove) > distance && Math.abs(yMove - yDown) > distance) {
                                     EqSettingFragment.rootView.setTranslationY(yMove);
                                     int height = (int) (screenHeight / 2 - UiUtils.dip2px(HomeActivity.this, 70) - (yDown - yMove) / 2);
@@ -682,9 +648,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
 
-    private void getRawSteps() {
-        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd();//get raw steps count of connected device
-    }
+//    private void getRawSteps() {
+//        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd();//get raw steps count of connected device
+//    }
 
     private void generateAAPopupWindow() {
         aaPopupWindow = new AaPopupWindow(this);
@@ -857,13 +823,21 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void run() {
 
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        RequestCommands requestCommands = new RequestCommands();
+                        requestCommands.reqDevInfo();
+                    }
+                }).start();
+
                 switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                     case NONE:
                         break;
                     case Connected_USBDevice:
                         linearLayoutBattery.setVisibility(View.VISIBLE);
                         progressBarBattery.setProgress(100);
-                        textViewBattery.setText("100%");
+                        textViewBattery.setText(getString(R.string.percent_100));
                         break;
                     case Connected_BluetoothDevice:
                         linearLayoutBattery.setVisibility(View.VISIBLE);
@@ -901,13 +875,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onButtonDone() {
-        DeviceManager.getInstance(this).setAppLightXDelegate(this);
+        DeviceManager.getInstance(this).setOnRetListener(this);
+        LeManager.getInstance().setOnConnectStatusListener(this);
         getDeviceInfo();
     }
 
     private class HomeHandler extends Handler {
 
-        public HomeHandler(Looper looper) {
+        HomeHandler(Looper looper) {
             super(looper);
         }
 
@@ -1069,7 +1044,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         PreferenceUtils.setInt(PreferenceKeys.BATTERY_VALUE, value, this);
         if (value == 255) {
             progressBarBattery.setProgress(100);
-            textViewBattery.setText("100%");
+            textViewBattery.setText(getString(R.string.percent_100));
             progressBarBattery.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_not_charge));
         } else {
             progressBarBattery.setProgress(value);
@@ -1084,11 +1059,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-    private void updateUSBBattery() {
-        progressBarBattery.setVisibility(View.INVISIBLE);
-        textViewBattery.setVisibility(View.INVISIBLE);
-        textViewBattery.setVisibility(View.INVISIBLE);
-    }
+//    private void updateUSBBattery() {
+//        progressBarBattery.setVisibility(View.INVISIBLE);
+//        textViewBattery.setVisibility(View.INVISIBLE);
+//        textViewBattery.setVisibility(View.INVISIBLE);
+//    }
 
     private void updateFirmwareVersion() {
         audioManager am = AvneraManager.getAvenraManager().getAudioManager();
@@ -1173,102 +1148,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     }
 
-    private void sendMessageTo(int command, String arg1) {
+    private void sendMessageTo(int command, int arg1) {
         Message msg = new Message();
         msg.what = command;
-        if (arg1 != null)
-            msg.arg1 = valueOf(arg1);
+        msg.arg1 = arg1;
         homeHandler.sendMessage(msg);
-    }
-
-
-    @Override
-    public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
-        super.receivedResponse(command, values, status);
-        Logger.d(TAG, "-----> receivedResponse command =" + command + ",values=" + values + ",status=" + status);
-        if (values.size() <= 0) {
-            Logger.d(TAG, "return, values size is " + values.size());
-            return;
-        }
-        switch (command) {
-            case AmCmds.CMD_ANC: {
-                Logger.d(TAG, "do get anc");
-                String value = values.iterator().next().getValue().toString();
-                String tmp = "0";
-                if (value.equalsIgnoreCase("true")
-                        || value.equalsIgnoreCase("1")) {
-                    tmp = "1";
-                }
-                sendMessageTo(MSG_ANC, tmp);
-                break;
-            }
-            case AmCmds.CMD_AmbientLeveling: {
-                Logger.d(TAG, "do get ambient leveling");
-                sendMessageTo(MSG_AMBIENT_LEVEL, values.iterator().next().getValue().toString());
-                break;
-            }
-            case AmCmds.CMD_RawSteps: {
-                Logger.d(TAG, "do get raw steps");
-                sendMessageTo(MSG_RAW_STEP, values.iterator().next().getValue().toString());
-                break;
-            }
-            case AmCmds.CMD_BatteryLevel: {
-                Logger.d(TAG, "do get battery level");
-                String bl = values.iterator().next().getValue().toString();
-                //batteryValue = valueOf(bl);
-                sendMessageTo(MSG_BATTERY, bl);
-                break;
-            }
-            case AmCmds.CMD_Geq_Current_Preset: {
-                Logger.d(TAG, "do get current preset");
-                sendMessageTo(MSG_CURRENT_PRESET, values.iterator().next().getValue().toString());
-                break;
-            }
-            case AmCmds.CMD_GrEqBandGains: {
-                Logger.d(TAG, "do eqBand gains=" + command + ",values=" + values + ",status=" + status);
-                if (values != null && values.size() > 0) {
-                   /* Logger.d(TAG,"name = "+ values.get(0).getName());
-                    byte[] v = (byte[]) (values.get(0).getValue());
-                    Logger.d(TAG,"value = "+ Arrays.toString(v));*/
-
-                    Logger.d(TAG, "name = " + values.iterator().next().getName().toString());
-                    byte[] v = (byte[]) (values.iterator().next().getValue());
-                    Logger.d(TAG, "value = " + Arrays.toString(v));
-                    int presetIndext = v[0];
-                    int numBands = v[4];
-                    int value = v[8];
-                    Logger.d(TAG, "presetIndext:" + presetIndext + "numBands:" + numBands + "value:" + value);
-                }
-                break;
-            }
-            case AmCmds.CMD_FirmwareVersion: {
-                Logger.d(TAG, "do get firmware version ");
-                sendMessageTo(MSG_FIRMWARE_VERSION, null);
-                break;
-            }
-            case AmCmds.CMD_FWInfo: {
-                Logger.d(TAG, "get 150nc current firmware.");
-                FirmwareUtil.currentFirmware = Integer.valueOf(values.get(3).getValue().toString());
-                Logger.d(TAG, "FirmwareUtil.currentFirmware =" + FirmwareUtil.currentFirmware);
-                break;
-            }
-            case AmCmds.CMD_RawLeft:
-                Logger.d(TAG, "do get raw left =" + values.iterator().next().getValue().toString());
-                sendMessageTo(MSG_AA_LEFT, values.iterator().next().getValue().toString());
-                break;
-            case AmCmds.CMD_RawRight:
-                Logger.d(TAG, "do get raw right =" + values.iterator().next().getValue().toString());
-                sendMessageTo(MSG_AA_RIGHT, values.iterator().next().getValue().toString());
-                break;
-            case AmCmds.CMD_GraphicEqPresetBandSettings: {
-                Logger.d(TAG, "do get graphic eqPreset band settings =" + command + ",values=" + values + ",status=" + status);
-                parseCustomEQ((byte[]) (values.iterator().next().getValue()));
-                homeHandler.sendEmptyMessage(MSG_FIRMWARE_INFO);
-                break;
-            }
-
-        }
-
     }
 
     private void parseCustomEQ(byte[] v) {
@@ -1291,9 +1175,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 EQModel eqModel = EQSettingManager.get().getEQModelByName(curEQName, this);
                 if (eqModel != null) {
                     if (EQSettingManager.get().isTheSameEQ(eqModel, eqArray)) {
-                        isHave = true;
                         PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, this);
-                        sendMessageTo(MSG_UPDATE_CUSTOM_EQ, null);
+                        sendMessageTo(MSG_UPDATE_CUSTOM_EQ, -1);
                         Logger.d(TAG, "Have the same EQ:" + eqModel.eqName);
                         return;
                     }
@@ -1308,7 +1191,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     if (EQSettingManager.get().isTheSameEQ(eqModel, eqArray)) {
                         isHave = true;
                         PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, this);
-                        sendMessageTo(MSG_UPDATE_CUSTOM_EQ, null);
+                        sendMessageTo(MSG_UPDATE_CUSTOM_EQ, -1);
                         Logger.d(TAG, "Have the same EQ:" + eqModel.eqName);
                         break;
                     }
@@ -1318,7 +1201,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     EQModel eqModel = EQSettingManager.get().getCustomeEQModelFromValues(eqArray, eqName);
                     EQSettingManager.get().addCustomEQ(eqModel, this);
                     PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, this);
-                    sendMessageTo(MSG_UPDATE_CUSTOM_EQ, null);
+                    sendMessageTo(MSG_UPDATE_CUSTOM_EQ, -1);
                 }
 
             } else {
@@ -1326,211 +1209,132 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 EQModel eqModel = EQSettingManager.get().getCustomeEQModelFromValues(eqArray, eqName);
                 EQSettingManager.get().addCustomEQ(eqModel, this);
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModel.eqName, this);
-                sendMessageTo(MSG_UPDATE_CUSTOM_EQ, null);
+                sendMessageTo(MSG_UPDATE_CUSTOM_EQ, -1);
             }
 
         }
     }
 
     @Override
-    public void receivedPushNotification(Action action, String command, ArrayList<responseResult> values, Status status) {
-        super.receivedPushNotification(action, command, values, status);
-        Logger.d(TAG, "-------->receive push notification command =" + command + ",values=" + values + ",status=" + status);
-        switch (command) {
-            case AmCmds.CMD_ANCNotification: {
-                Logger.d(TAG, "CMD_ANCNotification:" + ",values=" + values.iterator().next().getValue().toString());
-                PreferenceUtils.setInt(PreferenceKeys.ANC_VALUE, Integer.valueOf(values.iterator().next().getValue().toString()), this);
-                if (Integer.valueOf(values.iterator().next().getValue().toString()) == 1) {
+    public void onReceive(EnumCommands enumCommands, Object... objects) {
+        super.onReceive(enumCommands, objects);
+        if (isFinishing()) {
+            Logger.d(TAG, "do on receive error, activity is finishing");
+            return;
+        }
+        switch (enumCommands) {
+            case CMD_ANC: {
+                sendMessageTo(MSG_ANC, (Integer) objects[0]);
+                break;
+            }
+            case CMD_AMBIENT_LEVELING: {
+                int aaLevel = (int) objects[0];
+                sendMessageTo(MSG_AMBIENT_LEVEL, aaLevel);
+                break;
+            }
+            case CMD_RAW_STEPS: {
+                int rawSteps = (int) objects[0];
+                Logger.d(TAG, "do get raw steps");
+                sendMessageTo(MSG_RAW_STEP, rawSteps);
+                break;
+            }
+            case CMD_BATTERY_LEVEL: {
+                int battery = (int) objects[0];
+                Logger.d(TAG, "do get battery level, battery = "+battery);
+                sendMessageTo(MSG_BATTERY, battery);
+                break;
+            }
+            case CMD_GEQ_CURRENT_PRESET: {
+                int currentPreset = (int) objects[0];
+                Logger.d(TAG, "do get current preset");
+                sendMessageTo(MSG_CURRENT_PRESET, currentPreset);
+                break;
+            }
+            case CMD_GRAPHIC_EQ_BAND_GAINS: {
+                break;
+            }
+            case CMD_FIRMWARE_VERSION: {
+                Logger.d(TAG, "do get firmware version ");
+                if (objects[0] != null) {
+                    PreferenceUtils.setString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, (String) objects[0], this);
+                    homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
+                } else {
+                    sendMessageTo(MSG_FIRMWARE_VERSION, -1);
+                }
+                break;
+            }
+            case CMD_RAW_LEFT:
+                int rawLeft = (int) objects[0];
+                sendMessageTo(MSG_AA_LEFT, rawLeft);
+                break;
+            case CMD_RAW_RIGHT:
+                int rawRight = (int) objects[0];
+                sendMessageTo(MSG_AA_RIGHT, rawRight);
+                break;
+            case CMD_GRAPHIC_EQ_PRESET_BAND_SETTINGS: {
+                parseCustomEQ((byte[]) (objects[0]));
+                homeHandler.sendEmptyMessage(MSG_FIRMWARE_INFO);
+                break;
+            }
+            case CMD_IsInBootloader: {
+                doInBootLoaderMode((boolean) objects[0]);
+                break;
+            }
+            case CMD_ConfigProductName: {
+                PreferenceUtils.setString(PreferenceKeys.PRODUCT, (String) objects[0], this);
+                break;
+            }
+            case CMD_ConfigModelNumber: {
+                AppUtils.setModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext(), deviceName);
+                updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
+                break;
+            }
+            case CMD_AppPushANCEnable: {
+                ANCControlManager.getANCManager(this).getANCValue();
+                break;
+            }
+            case CMD_AppPushANCAwarenessPreset: {
+                ANCControlManager.getANCManager(this).getAmbientLeveling();
+                break;
+            }
+            case CMD_ANC_NOTIFICATION: {
+                int ancValue = (Integer) objects[0];
+                Logger.d(TAG, "get anc notification value =" + ancValue);
+                PreferenceUtils.setInt(PreferenceKeys.ANC_VALUE, (Integer) objects[0], this);
+                if (ancValue == 1) {
                     checkBoxNoiseCancel.setChecked(true);
-                } else if (Integer.valueOf(values.iterator().next().getValue().toString()) == 0) {
+                } else if (ancValue == 0) {
                     checkBoxNoiseCancel.setChecked(false);
                 }
                 break;
             }
-            case AmCmds.CMD_AmbientLevelingNotification: {
-
+            case CMD_AA_Notification: {
                 if (aaPopupWindow == null) {
                     Logger.i(TAG, "aaPopupWindow is null");
                     return;
                 }
-                aaPopupWindow.updateAAUI(AppUtils.levelTransfer(Integer.valueOf(values.iterator().next().getValue().toString())));//new devices
+                aaPopupWindow.updateAAUI((Integer) objects[0]);
+                break;
             }
-            break;
-            case AmCmds.CMD_FWInfo: {
-                Logger.d(TAG, "get 150nc current firmware.");
-                FirmwareUtil.currentFirmware = Integer.valueOf(values.get(3).getValue().toString());
+            case CMD_BootReadVersionFile: {
+                if ((boolean) objects[1]) {
+                    PreferenceUtils.setString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, (String) objects[0], this);
+                    homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
+                } else {
+                    homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
+                    break;
+                }
+                break;
+            }
+            case CMD_FW_INFO: {
+                FirmwareUtil.currentFirmware = (Integer) objects[0];
                 Logger.d(TAG, "FirmwareUtil.currentFirmware =" + FirmwareUtil.currentFirmware);
                 break;
             }
         }
     }
 
-    @Override
-    public void lightXAppReadResult(LightX var1, Command command, boolean success, byte[] var4) {
-        super.lightXAppReadResult(var1, command, success, var4);
-        if (success) {
-            switch (command) {
-                case App_0xB3:
-//                    if (Calibration.getCalibration() != null)
-//                        Calibration.getCalibration().setIsCalibrationComplete(Utility.getBoolean(var4, 0));
-                    break;
-                case AppANCAwarenessPreset:
-                    Logger.d(TAG, "AppANCAwarenessPreset");
-                    int intValue = Utility.getInt(var4, 0);
-//                    update(intValue);
-                    sendMessageTo(MSG_AMBIENT_LEVEL, String.valueOf(intValue));
-                    break;
-                case AppANCEnable:
-                    if (var4 != null) {
-                        boolean ancResult = Utility.getBoolean(var4, 0);
-                        updateANC(ancResult);
-                    }
-                    break;
-                case AppAwarenessRawLeft:
-//                    readAppReturn = Utility.getUnsignedInt(var4, 0);
-                    break;
-                case AppAwarenessRawRight:
-//                    readAppReturn = Utility.getUnsignedInt(var4, 0);
-                    break;
-                case AppAwarenessRawSteps:
-//                    readAppReturn = Utility.getUnsignedInt(var4, 0);
-                    int rawSteps = Utility.getInt(var4, 0) - 1;
-                    Logger.d(TAG, "received raw steps call back rawSteps = " + rawSteps);
-                    ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRawSteps(rawSteps);
-
-                    break;
-                case AppGraphicEQCurrentPreset:
-                    long currentPreset = Utility.getUnsignedInt(var4, 0);
-                    Logger.d(TAG, "lightXAppReadResult" + command + " is " + currentPreset);
-                    updateCurrentEQ((int) currentPreset);
-                    break;
-                case AppGraphicEQBandFreq:
-//                    readAppReturn = Utility.getUnsignedInt(var4, 0);
-                    break;
-                case AppBatteryLevel:
-                    long batteryValue = Utility.getUnsignedInt(var4, 0);
-                    Logger.d(TAG, command + " is " + batteryValue);
-                    updateBattery((int) batteryValue);
-                    break;
-                case AppFirmwareVersion:
-                    int major = var4[0];
-                    int minor = var4[1];
-                    int revision = var4[2];
-                    Logger.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision + ",modelNumber" + AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()));
-                    PreferenceUtils.setString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, major + "." + minor + "." + revision, this);
-                    homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
-                    break;
-
-                case AppGraphicEQPresetBandSettings: {
-                    Logger.d(TAG, "Eq band:" + Arrays.toString(var4));
-                    int preset = Utility.getInt(var4, 0);
-                    int numBands = Utility.getInt(var4, 4);
-                    parseCustomEQ(var4);
-                }
-                break;
-            }
-        } else {
-            switch (command) {
-                case AppGraphicEQCurrentPreset:
-                    updateCurrentEQ(8);
-                    break;
-                case AppANCEnable:
-                    boolean anc = Utility.getBoolean(var4, 0);
-                    updateANC(anc);
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void lightXReadBootResult(final LightX lightX, final Command command, final boolean success, final int i, final byte[] buffer) {
-        Logger.d(TAG, "lightXReadBootResult command is " + command + " result is " + success);
-        if (isFinishing()) {
-            Logger.d(TAG, "lightXReadBootResult, activity is finishing, return");
-            return;
-        }
-        if (success) {
-            switch (command) {
-                case BootReadVersionFile: {
-                    int result[] = AppUtils.parseVersionFromASCIIbuffer(buffer);
-                    int major = result[0];
-                    int minor = result[1];
-                    int revision = result[2];
-                    String rsrcSavedVersion = major + "." + minor + "." + revision;
-                    PreferenceUtils.setString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, rsrcSavedVersion, this);
-                    Logger.d(TAG, "rsrcSavedVersion=" + rsrcSavedVersion);
-                    homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
-                }
-                break;
-            }
-        } else {
-            homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
-        }
-    }
-
-    @Override
-    public void lightXAppReceivedPush(LightX var1, Command command, byte[] var4) {
-        super.lightXAppReceivedPush(var1, command, var4);
-        Logger.d(TAG, "lightXAppReceivedPush command is " + command);
-        switch (command) {
-            case AppPushANCEnable:
-                ANCControlManager.getANCManager(this).getANCValue();
-                break;
-            case AppPushANCAwarenessPreset: {
-                ANCControlManager.getANCManager(this).getAmbientLeveling();
-            }
-            break;
-        }
-    }
-
-    @Override
-    public void lightXReadConfigResult(LightX var1, Command command, boolean success, String var4) {
-        super.lightXReadConfigResult(var1, command, success, var4);
-        Logger.d(TAG, "lightXReadConfigResult command = " + command);
-        if (success) {
-            switch (command) {
-                case ConfigProductName:
-                    PreferenceUtils.setString(PreferenceKeys.PRODUCT, var4, this);
-                    break;
-                case ConfigModelNumber:
-                    deviceName = var4;
-                    Logger.d(TAG, "lightXReadConfigResult deviceName = " + deviceName);
-                    AppUtils.setModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext(), deviceName);
-                    updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void lightXAppWriteResult(LightX var1, Command var2, boolean var3) {
-        super.lightXAppWriteResult(var1, var2, var3);
-        Logger.d(TAG, "lightXAppWriteResult");
-        if (var3) {
-            switch (var2) {
-                case App_0xB3:
-//                    if (Calibration.getCalibration() != null)
-//                        Calibration.getCalibration().setIsCalibrationComplete(true);
-                    break;
-                case AppANCAwarenessPreset:
-//                    avneraGetters();
-                    break;
-            }
-        } else {
-            switch (var2) {
-                case App_0xB2:
-//                    if (Calibration.getCalibration() != null)
-//                        Calibration.getCalibration().calibrationFailed();
-                    break;
-            }
-
-        }
-    }
-
-    @Override
-    public void lightXIsInBootloader(LightX var1, boolean isInBootloaderMode) {
-        super.lightXIsInBootloader(var1, isInBootloaderMode);
-        Logger.d(TAG, "lightXIsInBootloader =" + isInBootloaderMode);
+    private void doInBootLoaderMode(boolean isInBootloaderMode) {
         if (isInBootloaderMode) {
             switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                 case NONE:
@@ -1551,5 +1355,4 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
     }
-
 }

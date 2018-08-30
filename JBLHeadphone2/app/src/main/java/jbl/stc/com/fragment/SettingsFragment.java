@@ -20,13 +20,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.avnera.audiomanager.AccessoryInfo;
-import com.avnera.audiomanager.Status;
-import com.avnera.audiomanager.responseResult;
-import com.avnera.smartdigitalheadset.Command;
-import com.avnera.smartdigitalheadset.LightX;
-import com.avnera.smartdigitalheadset.Utility;
-
-import java.util.ArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.BaseActivity;
@@ -34,7 +27,6 @@ import jbl.stc.com.activity.CalibrationActivity;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
-import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
@@ -46,26 +38,19 @@ import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.EnumCommands;
 
 public class SettingsFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = SettingsFragment.class.getSimpleName();
     private View view;
-    private RelativeLayout relativeLayoutSmartButton;
-    private RelativeLayout relativeLayoutAutoOffTimer;
-    private RelativeLayout relativeLayoutTrueNote;
-    private RelativeLayout relativeLayoutSoundXSetup;
-    private RelativeLayout relativeLayoutSmartAssitant;
-    private TextView textViewDeviceName;
-    private TextView tv_toggleautoOff;
-    private ImageView deviceImage;
+    private TextView tvToggleAutoOff;
     private Switch toggleVoicePrompt;
     private Switch toggleAutoOffTimer;
     private Handler mHandler = new Handler();
     private String deviceNameStr;
-    private TextView textViewFirmware;
     private MyDevice myDevice;
     private TextView textViewFwVersion;
-    private ImageView imageViewDownload;
+    private int reTry = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,11 +64,11 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);
-        textViewFirmware = view.findViewById(R.id.text_view_settings_firmware);
-        textViewDeviceName = view.findViewById(R.id.deviceName);
-        deviceImage = view.findViewById(R.id.deviceImage);
+        TextView textViewFirmware = view.findViewById(R.id.text_view_settings_firmware);
+        TextView textViewDeviceName = view.findViewById(R.id.deviceName);
+        ImageView deviceImage = view.findViewById(R.id.deviceImage);
         deviceImage.setOnClickListener(this);
-        tv_toggleautoOff = view.findViewById(R.id.tv_toggleautoOff);
+        tvToggleAutoOff = view.findViewById(R.id.tv_toggleautoOff);
         toggleVoicePrompt = view.findViewById(R.id.toggleVoicePrompt);
         view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
@@ -92,12 +77,12 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             view.findViewById(R.id.voice_prompt_layout).setOnClickListener(this);
             view.findViewById(R.id.relative_layout_settings_product_help).setOnClickListener(this);
             view.findViewById(R.id.text_view_settings_smart_button).setOnClickListener(this);
-        }else{
+        } else {
             view.findViewById(R.id.scroll_view_settings).setAlpha((float) 0.5);
         }
-        toggleAutoOffTimer = (Switch) view.findViewById(R.id.toggleAutoOffTimer);
+        toggleAutoOffTimer = view.findViewById(R.id.toggleAutoOffTimer);
         Logger.i(TAG, "myDevice deviceName is " + myDevice.deviceName);
-        relativeLayoutSmartButton = view.findViewById(R.id.relative_layout_settings_smart_button);
+        RelativeLayout relativeLayoutSmartButton = view.findViewById(R.id.relative_layout_settings_smart_button);
         if (DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_SMART_BUTTON)) {
             relativeLayoutSmartButton.setVisibility(View.VISIBLE);
             if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
@@ -107,17 +92,17 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             relativeLayoutSmartButton.setVisibility(View.GONE);
         }
 
-        relativeLayoutAutoOffTimer = view.findViewById(R.id.relative_layout_settings_auto_off);
+        RelativeLayout relativeLayoutAutoOffTimer = view.findViewById(R.id.relative_layout_settings_auto_off);
         if (DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_AUTO_OFF_TIMER)) {
             relativeLayoutAutoOffTimer.setVisibility(View.VISIBLE);
-            tv_toggleautoOff.setVisibility(View.VISIBLE);
+            tvToggleAutoOff.setVisibility(View.VISIBLE);
             toggleAutoOffTimer.setVisibility(View.GONE);
             if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 relativeLayoutAutoOffTimer.setOnClickListener(this);
             }
         } else if (DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_AUTO_OFF_TIMER_SWITCH)) {
             relativeLayoutAutoOffTimer.setVisibility(View.VISIBLE);
-            tv_toggleautoOff.setVisibility(View.GONE);
+            tvToggleAutoOff.setVisibility(View.GONE);
             toggleAutoOffTimer.setVisibility(View.VISIBLE);
             if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 toggleAutoOffTimer.setOnClickListener(this);
@@ -126,7 +111,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         } else {
             relativeLayoutAutoOffTimer.setVisibility(View.GONE);
         }
-        relativeLayoutTrueNote = view.findViewById(R.id.relative_layout_settings_true_note);
+        RelativeLayout relativeLayoutTrueNote = view.findViewById(R.id.relative_layout_settings_true_note);
         if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
             relativeLayoutTrueNote.setVisibility(View.GONE);
         } else {
@@ -135,7 +120,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 relativeLayoutTrueNote.setOnClickListener(this);
             }
         }
-        relativeLayoutSoundXSetup = view.findViewById(R.id.relative_layout_settings_sound_x_setup);
+        RelativeLayout relativeLayoutSoundXSetup = view.findViewById(R.id.relative_layout_settings_sound_x_setup);
         if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_SOUND_X_SETUP)) {
             relativeLayoutSoundXSetup.setVisibility(View.GONE);
         } else {
@@ -144,7 +129,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 relativeLayoutSoundXSetup.setOnClickListener(this);
             }
         }
-        relativeLayoutSmartAssitant = view.findViewById(R.id.relative_layout_settings_smart_assistant);
+        RelativeLayout relativeLayoutSmartAssitant = view.findViewById(R.id.relative_layout_settings_smart_assistant);
         if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_SMART_ASSISTANT)) {
             relativeLayoutSmartAssitant.setVisibility(View.GONE);
         } else {
@@ -165,20 +150,20 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     }
 
     public void showOta(boolean hasUpdate) {
-        imageViewDownload = view.findViewById(R.id.image_view_settings_download);
+        ImageView imageViewDownload = view.findViewById(R.id.image_view_settings_download);
         textViewFwVersion = view.findViewById(R.id.text_view_settings_firmware_version);
         if (hasUpdate) {
             imageViewDownload.setVisibility(View.VISIBLE);
             textViewFwVersion.setVisibility(View.GONE);
             textViewFwVersion.setOnClickListener(this);
             view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
-        }else{
+        } else {
             imageViewDownload.setVisibility(View.GONE);
             textViewFwVersion.setVisibility(View.VISIBLE);
-            String firmwareVersion = PreferenceUtils.getString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, getActivity(),"");
+            String firmwareVersion = PreferenceUtils.getString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, getActivity(), "");
             if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 textViewFwVersion.setText(firmwareVersion);
-            }else{
+            } else {
                 textViewFwVersion.setText("");
             }
             textViewFwVersion.setOnClickListener(null);
@@ -199,7 +184,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase()) ||
                 deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase()) ||
                 deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())) {
-            tv_toggleautoOff.setVisibility(View.GONE);
+            tvToggleAutoOff.setVisibility(View.GONE);
             toggleAutoOffTimer.setVisibility(View.VISIBLE);
             //get autooff timer
             if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
@@ -209,7 +194,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_400BT).toUpperCase()) ||
                 deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_650BTNC).toUpperCase()) ||
                 deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_FREE_GA).toUpperCase())) {
-            tv_toggleautoOff.setVisibility(View.VISIBLE);
+            tvToggleAutoOff.setVisibility(View.VISIBLE);
             toggleAutoOffTimer.setVisibility(View.GONE);
         }
     }
@@ -224,10 +209,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     public void onResume() {
         super.onResume();
         Logger.d(TAG, "onResume");
-        tv_toggleautoOff.setText(PreferenceUtils.getString(PreferenceKeys.AUTOOFFTIMER, getActivity(), getContext().getString(R.string.five_minute)));
+        tvToggleAutoOff.setText(PreferenceUtils.getString(PreferenceKeys.AUTOOFFTIMER, getActivity(), getContext().getString(R.string.five_minute)));
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            if(getActivity() instanceof BaseActivity){
-                ((BaseActivity)getActivity()).startCheckingIfUpdateIsAvailable(SettingsFragment.this);
+            if (getActivity() instanceof BaseActivity) {
+                ((BaseActivity) getActivity()).startCheckingIfUpdateIsAvailable(SettingsFragment.this);
             }
         }
     }
@@ -300,86 +285,85 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         }
     };
 
-    private int reTry = 1;
-    @Override
-    public void lightXAppReadResult(LightX var1, Command command, boolean success, byte[] buffer) {
-        super.lightXAppReadResult(var1, command, success, buffer);
-        if (success) {
-            boolean boolValue;
-            switch (command) {
-                case AppOnEarDetectionWithAutoOff:
-                    boolValue = Utility.getBoolean(buffer, 0);
-                    toggleAutoOffTimer.setChecked(boolValue);
-                    break;
-                case AppVoicePromptEnable:
-                    boolValue = Utility.getBoolean(buffer, 0);
-                    toggleVoicePrompt.setChecked(boolValue);
-                    break;
-                case AppFirmwareVersion:
-                    int major = buffer[0];
-                    int minor = buffer[1];
-                    int revision = buffer[2];
-                    Logger.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision);
-                    String version = major + "." + minor + "." + revision;
-                    textViewFwVersion.setText(version);
-                    break;
-            }
-        }else if (reTry <= 10) {
-            switch (command) {
-                case AppFirmwareVersion:
-                    textViewFwVersion.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
-                            ++reTry;
-                        }
-                    }, 150 * reTry);
-                    break;
-            }
-        }
-    }
+//    @Override
+//    public void lightXAppReadResult(LightX var1, Command command, boolean success, byte[] buffer) {
+//        super.lightXAppReadResult(var1, command, success, buffer);
+//        if (success) {
+//            boolean boolValue;
+//            switch (command) {
+//                case AppOnEarDetectionWithAutoOff:
+//                    boolValue = Utility.getBoolean(buffer, 0);
+//                    toggleAutoOffTimer.setChecked(boolValue);
+//                    break;
+//                case AppVoicePromptEnable:
+//                    boolValue = Utility.getBoolean(buffer, 0);
+//                    toggleVoicePrompt.setChecked(boolValue);
+//                    break;
+//                case AppFirmwareVersion:
+//                    int major = buffer[0];
+//                    int minor = buffer[1];
+//                    int revision = buffer[2];
+//                    Logger.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision);
+//                    String version = major + "." + minor + "." + revision;
+//                    textViewFwVersion.setText(version);
+//                    break;
+//            }
+//        }else if (reTry <= 10) {
+//            switch (command) {
+//                case AppFirmwareVersion:
+//                    textViewFwVersion.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
+//                            ++reTry;
+//                        }
+//                    }, 150 * reTry);
+//                    break;
+//            }
+//        }
+//    }
 
-    @Override
-    public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
-        Logger.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
-        if (values == null || values.size() == 0) {
-            return;
-        }
-        values.iterator().next().getValue().toString();
-        Logger.d(TAG, "value:" + values.iterator().next().getValue().toString());
-        switch (command) {
-            case AmCmds.CMD_VoicePrompt: {
-                String boolValue = "";
-                if (values != null && values.size() > 0) {
-                    boolValue = values.iterator().next().getValue().toString();
-                }
-                if (!TextUtils.isEmpty(boolValue) && boolValue.equals("true")) {
-                    toggleVoicePrompt.setChecked(true);
-                } else {
-                    toggleVoicePrompt.setChecked(false);
-                }
-                break;
-            }
-            case AmCmds.CMD_AutoOffEnable: {
-                String boolValue = "";
-                if (values != null && values.size() > 0) {
-                    boolValue = values.iterator().next().getValue().toString();
-                }
-                if (!TextUtils.isEmpty(boolValue) && boolValue.equals("true")) {
-                    toggleAutoOffTimer.setChecked(true);
-                } else {
-                    toggleAutoOffTimer.setChecked(false);
-                }
-                break;
-            }
-            case AmCmds.CMD_FirmwareVersion:{
-                AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager().getAudioManager().getAccessoryStatus();
-                String version = accessoryInfo.getFirmwareRev();
-                textViewFwVersion.setText(version);
-                break;
-            }
-        }
-    }
+//    @Override
+//    public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
+//        Logger.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
+//        if (values == null || values.size() == 0) {
+//            return;
+//        }
+//        values.iterator().next().getValue().toString();
+//        Logger.d(TAG, "value:" + values.iterator().next().getValue().toString());
+//        switch (command) {
+//            case AmCmds.CMD_VoicePrompt: {
+//                String boolValue = "";
+//                if (values != null && values.size() > 0) {
+//                    boolValue = values.iterator().next().getValue().toString();
+//                }
+//                if (!TextUtils.isEmpty(boolValue) && boolValue.equals("true")) {
+//                    toggleVoicePrompt.setChecked(true);
+//                } else {
+//                    toggleVoicePrompt.setChecked(false);
+//                }
+//                break;
+//            }
+//            case AmCmds.CMD_AutoOffEnable: {
+//                String boolValue = "";
+//                if (values != null && values.size() > 0) {
+//                    boolValue = values.iterator().next().getValue().toString();
+//                }
+//                if (!TextUtils.isEmpty(boolValue) && boolValue.equals("true")) {
+//                    toggleAutoOffTimer.setChecked(true);
+//                } else {
+//                    toggleAutoOffTimer.setChecked(false);
+//                }
+//                break;
+//            }
+//            case AmCmds.CMD_FirmwareVersion:{
+//                AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager().getAudioManager().getAccessoryStatus();
+//                String version = accessoryInfo.getFirmwareRev();
+//                textViewFwVersion.setText(version);
+//                break;
+//            }
+//        }
+//    }
 
     @Override
     public void onDestroy() {
@@ -392,23 +376,25 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     }
 
     private NetworkChangeReceiver networkChangeReceiver;
+
     private void registerConnectivity() {
         if (getActivity() == null)
             return;
         networkChangeReceiver = new NetworkChangeReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        Logger.i(TAG,"registerConnectivity");
+        Logger.i(TAG, "registerConnectivity");
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         getActivity().registerReceiver(networkChangeReceiver, intentFilter);
         mReceiverTag = true;
     }
 
     private boolean mReceiverTag = false;
+
     private void unregisterNetworkReceiverSafely() {
         try {
             if (mReceiverTag) {
                 mReceiverTag = false;
-                Logger.i(TAG,"unregisterNetworkReceiverSafely");
+                Logger.i(TAG, "unregisterNetworkReceiverSafely");
                 getActivity().unregisterReceiver(networkChangeReceiver);
             }
         } catch (Exception e) {
@@ -420,19 +406,55 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
 
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            Logger.i(TAG,"onReceive");
+            Logger.i(TAG, "onReceive");
             if (isAdded()) {
                 ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 if (cm != null) {
                     NetworkInfo netInfo = cm.getActiveNetworkInfo();
                     if (netInfo != null && netInfo.isConnected()) {
-                        if(getActivity() instanceof BaseActivity){
-                            ((BaseActivity)getActivity()).startCheckingIfUpdateIsAvailable(SettingsFragment.this);
+                        if (getActivity() instanceof BaseActivity) {
+                            ((BaseActivity) getActivity()).startCheckingIfUpdateIsAvailable(SettingsFragment.this);
                         }
-                    }else{
+                    } else {
                         showOta(false);
                     }
                 }
+            }
+        }
+    }
+
+    @Override
+    public void onReceive(EnumCommands enumCommands, Object... objects) {
+        super.onReceive(enumCommands, objects);
+        switch (enumCommands) {
+            case CMD_VoicePrompt: {
+                toggleVoicePrompt.setChecked((boolean) objects[0]);
+                break;
+            }
+            case CMD_AutoOffEnable: {
+                toggleAutoOffTimer.setChecked((boolean) objects[0]);
+                break;
+            }
+            case CMD_FIRMWARE_VERSION: {
+                String version = (String) objects[0];
+                if (version == null) {
+                    AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager().getAudioManager().getAccessoryStatus();
+                    String firmwareRev = accessoryInfo.getFirmwareRev();
+                    textViewFwVersion.setText(firmwareRev);
+                } else {
+                    if ((boolean) objects[1]) {
+                        textViewFwVersion.setText(version);
+                    } else {
+                        textViewFwVersion.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
+                                ++reTry;
+                            }
+                        }, 150 * reTry);
+                    }
+                }
+                break;
             }
         }
     }

@@ -16,7 +16,7 @@ public interface BesListener {
 
     void onMtuChanged(int status, int mtu);
 
-    void onBesReceived(BesCommandType commandType, BesAction besAction, byte[] data);
+    void onBesReceived(byte[] data);
 
     void onBesUpdateImageState(BesUpdateState state, int progress);
 

@@ -18,30 +18,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.avnera.audiomanager.Action;
-import com.avnera.audiomanager.AdminEvent;
-import com.avnera.audiomanager.Status;
-import com.avnera.audiomanager.StatusEvent;
-import com.avnera.audiomanager.responseResult;
-import com.avnera.smartdigitalheadset.Command;
-import com.avnera.smartdigitalheadset.LightX;
-
-import java.util.ArrayList;
-
 import jbl.stc.com.R;
+import jbl.stc.com.listener.OnRetListener;
 import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.activity.JBLApplication;
-import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.JBLConstant;
-import jbl.stc.com.listener.AppLightXDelegate;
 import jbl.stc.com.listener.AppUSBDelegate;
 import jbl.stc.com.listener.OnMainAppListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
-import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.EnumCommands;
 
-public class BaseFragment extends Fragment implements View.OnTouchListener, AppLightXDelegate, AppUSBDelegate {
+public class BaseFragment extends Fragment implements View.OnTouchListener, AppUSBDelegate,OnRetListener {
     protected String TAG;
     protected Context mContext = null;
     protected View rootView;
@@ -72,6 +61,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.d(TAG, "onCreate()");
+        DeviceManager.getInstance(getActivity()).setOnRetListener(this);
     }
 
     @Override
@@ -93,8 +83,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     public void onResume() {
         super.onResume();
         Logger.d(TAG, "onResume()");
-
-        DeviceManager.getInstance(getActivity()).setAppLightXDelegate(this);
+        DeviceManager.getInstance(getActivity()).setOnRetListener(this);
     }
 
     @Override
@@ -238,102 +227,6 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     }
 
     @Override
-    public void lightXAppReadResult(LightX var1, Command var2, boolean var3, byte[] var4) {
-
-    }
-
-    @Override
-    public void lightXAppReceivedPush(LightX var1, Command var2, byte[] var3) {
-
-    }
-
-    @Override
-    public void lightXAppWriteResult(LightX var1, Command var2, boolean var3) {
-
-    }
-
-    @Override
-    public void lightXError(LightX var1, Exception var2) {
-
-    }
-
-    @Override
-    public boolean lightXFirmwareReadStatus(LightX var1, LightX.FirmwareRegion var2, int var3, byte[] var4) {
-        return false;
-    }
-
-    @Override
-    public boolean lightXFirmwareWriteStatus(LightX var1, LightX.FirmwareRegion var2, LightX.FirmwareWriteOperation var3, double var4, Exception var6) {
-        return false;
-    }
-
-    @Override
-    public void lightXIsInBootloader(LightX var1, boolean var2) {
-
-    }
-
-    @Override
-    public void lightXReadConfigResult(LightX var1, Command var2, boolean var3, String var4) {
-
-    }
-
-    @Override
-    public boolean lightXWillRetransmit(LightX var1, Command var2) {
-        return false;
-    }
-
-    @Override
-    public void isLightXInitialize() {
-
-    }
-
-    @Override
-    public void headPhoneStatus(boolean isConnected) {
-
-    }
-
-    @Override
-    public void lightXReadBootResult(LightX var1, Command command, boolean success, int var4, byte[] var5) {
-
-    }
-
-    @Override
-    public void receivedAdminEvent(AdminEvent event, Object value) {
-        switch (event){
-            case AccessoryReady:{
-                PreferenceUtils.setBoolean(PreferenceKeys.RECEIVE_READY, true, mContext);
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
-
-    }
-
-    @Override
-    public void receivedStatus(StatusEvent name, Object value) {
-
-    }
-
-    @Override
-    public void receivedPushNotification(Action action, String command, ArrayList<responseResult> values, Status status) {
-        switch (command){
-            case AmCmds.CMD_ANCNotification: {
-                PreferenceUtils.setInt(PreferenceKeys.ANC_VALUE, Integer.valueOf(values.iterator().next().getValue().toString() ), getActivity());
-                break;
-            }
-            case AmCmds.CMD_AmbientLevelingNotification: {
-                int parseValue = Integer.valueOf(values.iterator().next().getValue().toString());
-                PreferenceUtils.setInt(PreferenceKeys.AWARENESS, AppUtils.levelTransfer(parseValue), getActivity());
-                PreferenceUtils.setBoolean(PreferenceKeys.RECEIVEPUSH, true, mContext);
-            }
-            break;
-        }
-    }
-
-    @Override
     public void usbAttached(UsbDevice usbDevice) {
 
     }
@@ -341,5 +234,24 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     @Override
     public void usbDetached(UsbDevice usbDevice) {
 
+    }
+
+    @Override
+    public void onReceive(EnumCommands enumCommands, Object... objects) {
+        switch (enumCommands){
+            case CMD_ANC_NOTIFICATION: {
+                PreferenceUtils.setInt(PreferenceKeys.ANC_VALUE, (Integer) objects[0], getActivity());
+                break;
+            }
+            case CMD_AA_Notification: {
+                PreferenceUtils.setInt(PreferenceKeys.AWARENESS, (Integer) objects[0], getActivity());
+                PreferenceUtils.setBoolean(PreferenceKeys.RECEIVEPUSH, true, mContext);
+                break;
+            }
+            case CMD_AccessoryReady:{
+                PreferenceUtils.setBoolean(PreferenceKeys.RECEIVE_READY, true, mContext);
+                break;
+            }
+        }
     }
 }

@@ -13,9 +13,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.avnera.smartdigitalheadset.Command;
-import com.avnera.smartdigitalheadset.LightX;
-
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
@@ -23,6 +20,7 @@ import jbl.stc.com.listener.OnHeadphoneconnectListener;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.CalibrationManager;
 import jbl.stc.com.manager.ProductListManager;
+import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.view.AppButton;
 import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.ShadowLayout;
@@ -244,17 +242,14 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
         }
     }
 
-
     @Override
-    public void lightXAppReadResult(LightX var1, Command command, boolean success, byte[] buffer) {
-        super.lightXAppReadResult(var1, command, success, buffer);
-        if (success) {
-            switch (command) {
-                case App_0xB3:
-                    if (CalibrationActivity.getCalibration() != null)
-                        CalibrationActivity.getCalibration().setIsCalibrationComplete(true);
-                    break;
-            }
+    public void onReceive(EnumCommands enumCommands, Object... objects) {
+        super.onReceive(enumCommands, objects);
+        switch (enumCommands) {
+            case CMD_App_0xB3:
+                if (CalibrationActivity.getCalibration() != null)
+                    CalibrationActivity.getCalibration().setIsCalibrationComplete(true);
+                break;
         }
     }
 }

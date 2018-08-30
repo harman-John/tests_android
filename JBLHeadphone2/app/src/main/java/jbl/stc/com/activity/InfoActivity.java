@@ -12,6 +12,7 @@ import android.widget.TextView;
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.legal.LegalApi;
+import jbl.stc.com.utils.EnumCommands;
 
 public class InfoActivity extends BaseActivity implements View.OnClickListener {
     public static final String TAG = InfoActivity.class.getSimpleName();
@@ -40,8 +41,8 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
-    public void connectDeviceStatus(boolean isConnected) {
-        super.connectDeviceStatus(isConnected);
+    public void onConnectStatus(Object... objects) {
+        super.onConnectStatus(objects);
         removeAllFragment();
         setResult(JBLConstant.REQUEST_CODE_INFO_ACTIVITY);
         finish();

@@ -7,19 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.avnera.audiomanager.Status;
-import com.avnera.audiomanager.responseResult;
-import com.avnera.smartdigitalheadset.Command;
-import com.avnera.smartdigitalheadset.LightX;
-import com.avnera.smartdigitalheadset.Utility;
-
-import java.util.ArrayList;
-
 import jbl.stc.com.R;
-import jbl.stc.com.constant.AmCmds;
-import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
+import jbl.stc.com.utils.EnumCommands;
 
 public class SmartButtonFragment extends BaseFragment implements View.OnClickListener {
 
@@ -53,47 +44,47 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
         ANCControlManager.getANCManager(getActivity()).getSmartButton();
     }
 
-    @Override
-    public void lightXAppWriteResult(LightX var1, Command command, boolean success) {
-        super.lightXAppWriteResult(var1, command, success);
-    }
+//    @Override
+//    public void lightXAppWriteResult(LightX var1, Command command, boolean success) {
+//        super.lightXAppWriteResult(var1, command, success);
+//    }
+//
+//    @Override
+//    public void lightXAppReadResult(LightX var1, Command command, boolean success, byte[] buffer) {
+//        super.lightXAppReadResult(var1, command, success, buffer);
+//        if (success) {
+//            switch (command) {
+//                case AppSmartButtonFeatureIndex:
+//                    boolean boolValue = Utility.getBoolean(buffer, 0);
+//                    if (boolValue) {
+//                        ivCheckNoiseCancelling.setVisibility(View.VISIBLE);
+//                        ivCheckNoiseCancelling.setImageResource(R.mipmap.button_selected);
+//                        iv_check_ambient.setVisibility(View.GONE);
+//                    } else {
+//                        ivCheckNoiseCancelling.setVisibility(View.GONE);
+//                        iv_check_ambient.setVisibility(View.VISIBLE);
+//                        iv_check_ambient.setImageResource(R.mipmap.button_selected);
+//                    }
+//                    break;
+//            }
+//        }
+//    }
 
-    @Override
-    public void lightXAppReadResult(LightX var1, Command command, boolean success, byte[] buffer) {
-        super.lightXAppReadResult(var1, command, success, buffer);
-        if (success) {
-            switch (command) {
-                case AppSmartButtonFeatureIndex:
-                    boolean boolValue = Utility.getBoolean(buffer, 0);
-                    if (boolValue) {
-                        ivCheckNoiseCancelling.setVisibility(View.VISIBLE);
-                        ivCheckNoiseCancelling.setImageResource(R.mipmap.button_selected);
-                        iv_check_ambient.setVisibility(View.GONE);
-                    } else {
-                        ivCheckNoiseCancelling.setVisibility(View.GONE);
-                        iv_check_ambient.setVisibility(View.VISIBLE);
-                        iv_check_ambient.setImageResource(R.mipmap.button_selected);
-                    }
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public boolean lightXFirmwareReadStatus(LightX var1, LightX.FirmwareRegion var2, int var3, byte[] var4) {
-        return super.lightXFirmwareReadStatus(var1, var2, var3, var4);
-
-    }
-
-    @Override
-    public void isLightXInitialize() {
-        super.isLightXInitialize();
-    }
-
-    @Override
-    public void lightXIsInBootloader(LightX var1, boolean var2) {
-        super.lightXIsInBootloader(var1, var2);
-    }
+//    @Override
+//    public boolean lightXFirmwareReadStatus(LightX var1, LightX.FirmwareRegion var2, int var3, byte[] var4) {
+//        return super.lightXFirmwareReadStatus(var1, var2, var3, var4);
+//
+//    }
+//
+//    @Override
+//    public void isLightXInitialize() {
+//        super.isLightXInitialize();
+//    }
+//
+//    @Override
+//    public void lightXIsInBootloader(LightX var1, boolean var2) {
+//        super.lightXIsInBootloader(var1, var2);
+//    }
 
     @Override
     public void onClick(View v) {
@@ -118,16 +109,36 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
+//    @Override
+//    public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
+//        Logger.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
+//        if (values == null || values.size() == 0) {
+//            return;
+//        }
+//        switch (command) {
+//            case AmCmds.CMD_SmartButton: {
+//                boolean boolValue = values.iterator().next().getValue().toString().equals("1");
+//                if (boolValue) {
+//                    ivCheckNoiseCancelling.setVisibility(View.VISIBLE);
+//                    ivCheckNoiseCancelling.setImageResource(R.mipmap.button_selected);
+//                    iv_check_ambient.setVisibility(View.GONE);
+//                } else {
+//                    ivCheckNoiseCancelling.setVisibility(View.GONE);
+//                    iv_check_ambient.setVisibility(View.VISIBLE);
+//                    iv_check_ambient.setImageResource(R.mipmap.button_selected);
+//                }
+//                break;
+//            }
+//        }
+//    }
+
     @Override
-    public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
-        Logger.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
-        if (values == null || values.size() == 0) {
-            return;
-        }
-        switch (command) {
-            case AmCmds.CMD_SmartButton: {
-                boolean boolValue = values.iterator().next().getValue().toString().equals("1");
-                if (boolValue) {
+    public void onReceive(EnumCommands enumCommands, Object... objects) {
+        super.onReceive(enumCommands, objects);
+        switch (enumCommands) {
+            case CMD_SMART_BUTTON: {
+                boolean smartType = (boolean) objects[0];
+                if (smartType) {
                     ivCheckNoiseCancelling.setVisibility(View.VISIBLE);
                     ivCheckNoiseCancelling.setImageResource(R.mipmap.button_selected);
                     iv_check_ambient.setVisibility(View.GONE);

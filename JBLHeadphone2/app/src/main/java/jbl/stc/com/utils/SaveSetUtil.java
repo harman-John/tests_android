@@ -28,6 +28,8 @@ public class SaveSetUtil {
         Set<MyDevice> setSaved = readSet(context);
         if (setSaved != null){
             setSaved.addAll(set);
+        }else{
+            setSaved = new HashSet<>(set);
         }
         SharedPreferences.Editor editor = context.getSharedPreferences(FILENAME, MODE_PRIVATE).edit();
         Gson gson = new Gson();
@@ -46,11 +48,12 @@ public class SaveSetUtil {
             Gson gson = new Gson();
             Type type = new TypeToken<Set<MyDevice>>(){}.getType();
             Set<MyDevice> set = gson.fromJson(json, type);
-            for(MyDevice myDevice: set)
-            {
-                Logger.d(TAG, "deviceKey = "+myDevice.deviceKey+",name = " + myDevice.deviceName + ",pid = " + myDevice.pid);
+            if (set != null) {
+                for (MyDevice myDevice : set) {
+                    Logger.d(TAG, "deviceKey = " + myDevice.deviceKey + ",name = " + myDevice.deviceName + ",pid = " + myDevice.pid);
+                }
+                return set;
             }
-            return set;
         }
         return null;
     }

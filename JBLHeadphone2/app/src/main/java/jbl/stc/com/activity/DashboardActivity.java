@@ -1,6 +1,7 @@
 package jbl.stc.com.activity;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +21,6 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import java.io.FileNotFoundException;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
@@ -37,12 +36,11 @@ import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.DiscoveryFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.fragment.UnableConnectFragment;
-import jbl.stc.com.listener.ConnectListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.ProductListManager;
-import jbl.stc.com.scan.LeScannerCompat;
+import jbl.stc.com.manager.LeManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -51,7 +49,7 @@ import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.MyDragGridView;
 
-public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnDownloadedListener, ConnectListener {
+public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnDownloadedListener{
     private static final String TAG = DashboardActivity.class.getSimpleName() + "aa";
     private static DashboardActivity dashboardActivity;
     private final static int MSG_SHOW_MY_PRODUCTS = 0;
@@ -64,36 +62,33 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     public static CopyOnWriteArrayList<FirmwareModel> mFwList = new CopyOnWriteArrayList<>();
     private MyDragGridView gridView;
     private MyGridAdapter myGridAdapter;
-    private EqArcView viewDelete;
     private ImageView imageViewWhitePlus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.d(TAG, "onCreate");
+        Logger.d(TAG, "on create");
         addActivity(this);
         DeviceManager.getInstance(this).setOnCreate();
-//        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         setContentView(R.layout.activity_dashboard);
         registerReceiver(mBtReceiver, makeFilter());
         dashboardActivity = this;
         initView();
         InsertPredefinePreset insertPredefinePreset = new InsertPredefinePreset();
         insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
-        LeScannerCompat.getInstance().addListener(this);
-//        StatusBarUtil.setColor(this, ContextCompat.getColor(this,R.color.orange_dark_FF5201));
+        LeManager.getInstance().setOnConnectStatusListener(this);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        LeScannerCompat.getInstance().onRequestPermissionsResult(requestCode, grantResults);
+        LeManager.getInstance().onRequestPermissionsResult(requestCode, grantResults);
     }
 
     private void initView() {
 
         imageViewWhitePlus = findViewById(R.id.image_view_dashboard_white_plus);
         imageViewWhitePlus.setOnClickListener(this);
-        viewDelete = findViewById(R.id.delete_view);
+        EqArcView viewDelete = findViewById(R.id.delete_view);
 
         gridView = findViewById(R.id.grid_view_dashboard);
         myGridAdapter = new MyGridAdapter();
@@ -109,7 +104,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 }
                 if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                         || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
-                    Logger.d(TAG, "onSelected Show home fragment");
+                    Logger.d(TAG, "on device selected listener,in grid view, device selected: "+myDevice.deviceKey);
                     gridView.smoothScrollToPositionFromTop(position, 0);
                     dashboardHandler.postDelayed(new Runnable() {
                         @Override
@@ -120,7 +115,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 } else {
                     Fragment fr = DashboardActivity.getDashboardActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                     if (fr instanceof UnableConnectFragment) {
-                        Logger.d(TAG, "fr is already UnableConnectFragment");
+                        Logger.d(TAG, "on device selected listener,in grid view, fragment is already UnableConnectFragment");
                         return;
                     }
                     Bundle bundle = new Bundle();
@@ -155,12 +150,12 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                     int viewTop = UiUtils.getScreenSize(mContext)[1] - UiUtils.dip2px(mContext, 20);
                     int top = viewTop - v.getHeight() / 2;
                     if (!animateFirstUp && lastLocation < location[1] && location[1] > top) {
-                        Logger.d(TAG, "plus icon fade in ");
+                        Logger.d(TAG, "on scroll, in grid view, plus icon fade in ");
                         animateFirstUp = true;
                         animateFirstDown = false;
                         startFadeAnim(imageViewWhitePlus, R.anim.fadin);
                     } else if (!animateFirstDown && lastLocation > location[1] && location[1] > top) {
-                        Logger.d(TAG, "plus icon fade out ");
+                        Logger.d(TAG, "on scroll, in grid view, plus icon fade out ");
                         animateFirstDown = true;
                         animateFirstUp = false;
                         startFadeAnim(imageViewWhitePlus, R.anim.fadeout);
@@ -199,7 +194,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void onRestart() {
-        Logger.d(TAG, "onRestart");
+        Logger.d(TAG, "on restart");
         super.onRestart();
         DeviceManager.getInstance(this).setOnRestart();
     }
@@ -214,27 +209,27 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         DeviceManager.getInstance(this).setOnResume();
-        Logger.d(TAG, "onResume isInBackground =" + isInBackground + ",isConnected =" + DeviceManager.getInstance(this).isConnected());
+        Logger.d(TAG, "on resume, is in background: " + isInBackground + ",is connected: " + DeviceManager.getInstance(this).isConnected());
         checkBluetooth();
-        LeScannerCompat.getInstance().checkPermission(this);
-        if (DeviceManager.getInstance(this).isConnected()) {
-            dashboardHandler.removeMessages(MSG_START_SCAN);
-            dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
-        }
-        if (DeviceManager.getInstance(this).isConnected()) {
-            Logger.d(TAG, "onResume isFirstUser =" + DeviceManager.getInstance(this).isFromHome());
+        if (DeviceManager.getInstance(this).isConnected() ||
+                LeManager.getInstance().isConnected()) {
+            Logger.d(TAG, "on resume, is first user: " + DeviceManager.getInstance(this).isFromHome());
             if (DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.Connected_USBDevice
                     && !DeviceManager.getInstance(this).isFromHome()) {
                 DeviceManager.getInstance(this).setIsFromHome(false);
-                Logger.d(TAG, "onResume Connected_USBDevice");
+                Logger.d(TAG, "on resume, usb device");
                 dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
             } else {
-                Logger.d(TAG, "onResume bt device");
+                Logger.d(TAG, "on resume, bt device");
                 if (isInBackground) {
                     isInBackground = false;
                     dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
                 }
             }
+        }else{
+            dashboardHandler.removeMessages(MSG_START_SCAN);
+            dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
+            LeManager.getInstance().checkPermission(this);
         }
     }
 
@@ -242,20 +237,20 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         DeviceManager.getInstance(this).setOnPause();
-        Logger.d(TAG, "onPause");
+        Logger.d(TAG, "on pause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Logger.d(TAG, "onStop");
+        Logger.d(TAG, "on stop");
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        DeviceManager.getInstance(this).setOnActivityResult(requestCode, resultCode, data);
-        Logger.d(TAG, "onActivityResult requestCode =" + requestCode);
+        DeviceManager.getInstance(this).setOnActivityResult(requestCode, resultCode);
+        Logger.d(TAG, "on activity result, request code is: " + requestCode);
         switch (requestCode) {
             case JBLConstant.REQUEST_CODE_INFO_ACTIVITY: {
                 dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
@@ -266,29 +261,29 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
-        Logger.d(TAG, "onDestroy");
+        Logger.d(TAG, "on destroy");
         unregisterReceiver(mBtReceiver);
         super.onDestroy();
         finishActivity(this);
         DeviceManager.getInstance(this).setUsbDeviceStop();
         DeviceManager.getInstance(this).setOnDestroy();
-        LeScannerCompat.getInstance().removeListener(this);
     }
 
     private boolean isInBackground = false;
 
     @Override
-    public void connectDeviceStatus(boolean isConnected) {
-
+    public void onConnectStatus(Object... objects) {
+        super.onConnectStatus(objects);
+        boolean isConnected = (boolean) objects[0];
         if (isConnected) {
-            Logger.d(TAG, " connectDeviceStatus true");
+            Logger.d(TAG, "on connect status, connected");
 
             removeAllFragment();
             if (!(currentActivity() instanceof DashboardActivity) && !DeviceManager.getInstance(this).isNeedOtaAgain()) {
                 currentActivity().finish();
             }
 
-            Logger.d(TAG, " connectDeviceStatus isForeground = " + isForeground());
+            Logger.d(TAG, "on connect status, is foreground = " + isForeground());
             if (isForeground()) {
                 dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
             } else {
@@ -296,21 +291,21 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             }
 
         } else {
-            Logger.d(TAG, "connectDeviceStatus false");
-            if (!(currentActivity() instanceof DashboardActivity)) {//&& fr instanceof HomeFragment) {
-                Logger.d(TAG, "disconnect home fragment ");
+            Logger.d(TAG, "on connect status, not connected");
+            if (!(currentActivity() instanceof DashboardActivity)) {
+                Logger.d(TAG, "on connect status, disconnect to show product list");
                 removeAllFragment();
                 currentActivity().finish();
             }
-            LeScannerCompat.getInstance().checkPermission(this);
+            LeManager.getInstance().checkPermission(this);
             myGridAdapter.setMyAdapterList(ProductListManager.getInstance().getDeviceSet());
         }
     }
 
-    public void checkDevices(Set<MyDevice> deviceList) {
-        myGridAdapter.setMyAdapterList(ProductListManager.getInstance().getDeviceSet());
-        gridView.setVisibility(View.VISIBLE);
-    }
+//    public void checkDevices(Set<MyDevice> deviceList) {
+//        myGridAdapter.setMyAdapterList(ProductListManager.getInstance().getDeviceSet());
+//        gridView.setVisibility(View.VISIBLE);
+//    }
 
     @Override
     public void onClick(View v) {
@@ -363,17 +358,17 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_SHOW_MY_PRODUCTS: {
-                    Logger.d(TAG, "msg show my product");
+                    Logger.d(TAG, "handle message, show my product");
                     showMyProducts();
                     DeviceManager.getInstance(getDashboardActivity()).startA2DPCheck();
                     dashboardHandler.removeMessages(MSG_START_SCAN);
                     dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
                     dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT, 2000);
-                    Logger.d(TAG, "msg show my product end");
+                    Logger.d(TAG, "handle message, show my product end");
                     break;
                 }
                 case MSG_SHOW_HOME_FRAGMENT: {
-                    Logger.d(TAG, "show homeFragment");
+                    Logger.d(TAG, "handle message, show homeFragment");
                     removeAllFragment();
                     if (currentActivity() instanceof InfoActivity) {
                         currentActivity().onBackPressed();
@@ -388,7 +383,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                     break;
                 }
                 case MSG_SHOW_DISCOVERY: {
-                    Logger.d(TAG, "show discovery page");
+                    Logger.d(TAG, "handle message, show discovery page");
                     Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                     if (fr == null) {
                         switchFragment(new DiscoveryFragment(), JBLConstant.FADE_IN_OUT);
@@ -422,7 +417,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     public void showHomeActivity(MyDevice myDevice) {
         if (myDevice == null) {
-            Logger.d(TAG, "myDevice is null, can't show home activity");
+            Logger.d(TAG, "show home activity, myDevice is null, return");
             return;
         }
         Logger.d(TAG, "show home activity");
@@ -435,7 +430,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 && DeviceManager.getInstance(this).isConnected()
                 && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                 && DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
-            Logger.d(TAG, "truenote");
+            Logger.d(TAG, "show home activity, show calibration activity");
             startActivity(new Intent(this, CalibrationActivity.class));
         } else {
             Intent intent = new Intent(this, HomeActivity.class);
@@ -449,7 +444,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     }
 
     @Override
-    public void onDownloadedFirmware(CopyOnWriteArrayList<FirmwareModel> fwlist) throws FileNotFoundException {
+    public void onDownloadedFirmware(CopyOnWriteArrayList<FirmwareModel> fwList) {
 
     }
 
@@ -474,7 +469,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
             if (bluetoothAdapter.isEnabled()) {
                 if (fr == null) {
-                    Logger.d(TAG, "fr is null");
+                    Logger.d(TAG, "check bluetooth, fr is null");
                     return;
                 }
                 if (fr instanceof TurnOnBtTipsFragment) {
@@ -484,7 +479,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 if (fr == null) {
                     switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 } else if (!(fr instanceof TurnOnBtTipsFragment)) {
-                    Logger.i(TAG, "checkBluetooth open TurnOnBtTipsFragment");
+                    Logger.i(TAG, "check bluetooth, open fragment turn on bt tips");
                     switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 }
             }
@@ -494,6 +489,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     private IntentFilter makeFilter() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
         return filter;
     }
 
@@ -502,17 +498,17 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent == null || intent.getAction() == null) {
-                Logger.i(TAG, "intent or its action is null");
+                Logger.i(TAG, "on receive, bluetooth state receiver, intent/action is null");
                 return;
             }
             switch (intent.getAction()) {
-                case BluetoothAdapter.ACTION_STATE_CHANGED:
+                case BluetoothAdapter.ACTION_STATE_CHANGED: {
                     int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
                     Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                     switch (blueState) {
                         case BluetoothAdapter.STATE_ON: {
                             if (fr == null) {
-                                Logger.d(TAG, "fr is null");
+                                Logger.d(TAG, "on receive, bluetooth state receiver, state is on, but fr is null");
                                 return;
                             }
                             if (fr instanceof TurnOnBtTipsFragment) {
@@ -521,11 +517,11 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                             if (ProductListManager.getInstance().getDeviceSet().size() == 0) {
                                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 2000);
                             }
-                            LeScannerCompat.getInstance().checkPermission(DashboardActivity.this);
+                            LeManager.getInstance().checkPermission(DashboardActivity.this);
                             break;
                         }
                         default: {
-                            Logger.i(TAG, "open TurnOnBtTipsFragment");
+                            Logger.i(TAG, "on receive, bluetooth state receiver, state is default, open fragment turn on bt tipss");
                             dashboardHandler.removeMessages(MSG_SHOW_DISCOVERY);
                             dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
                             dashboardHandler.removeMessages(MSG_SHOW_MY_PRODUCTS);
@@ -533,12 +529,28 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                             if (fr == null) {
                                 switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
                             } else if (!(fr instanceof TurnOnBtTipsFragment)) {
-                                Logger.i(TAG, "checkBluetooth open TurnOnBtTipsFragment");
                                 switchFragment(new TurnOnBtTipsFragment(), JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT);
                             }
                             break;
                         }
                     }
+                    break;
+                }
+                case BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED:{
+                    int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, 0);
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    switch (blueState) {
+                        case BluetoothAdapter.STATE_CONNECTED: {
+                            Logger.i(TAG, "on receive, bluetooth state receiver, state connected: "+ device.getName()+"-"+device.getAddress());
+                            break;
+                        }
+                        case BluetoothAdapter.STATE_DISCONNECTED: {
+                            Logger.i(TAG, "on receive, bluetooth state receiver, state disconnected: "+ device.getName()+"-"+device.getAddress());
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
         }
     };

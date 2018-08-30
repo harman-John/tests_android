@@ -1,4 +1,4 @@
-package jbl.stc.com.scan;
+package jbl.stc.com.manager;
 
 import android.Manifest;
 import android.app.Activity;
@@ -20,8 +20,10 @@ import com.harman.bluetooth.constants.BesCommandType;
 import com.harman.bluetooth.constants.BesUpdateState;
 import com.harman.bluetooth.engine.BesEngine;
 import com.harman.bluetooth.listeners.BesListener;
+import com.harman.bluetooth.report.ReportFormat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,32 +31,41 @@ import java.util.Set;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
-import jbl.stc.com.listener.ConnectListener;
+import jbl.stc.com.listener.OnConnectStatusListener;
+import jbl.stc.com.listener.OnRetListener;
 import jbl.stc.com.logger.Logger;
-import jbl.stc.com.manager.DeviceManager;
-import jbl.stc.com.manager.ProductListManager;
+import jbl.stc.com.scan.LeLollipopScanner;
+import jbl.stc.com.scan.ScanListener;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.ArrayUtil;
 import jbl.stc.com.utils.SaveSetUtil;
 
-public class LeScannerCompat implements ScanListener, BesListener {
+public class LeManager implements ScanListener, BesListener {
 
-    private final static String TAG = LeScannerCompat.class.getSimpleName();
+    private final static String TAG = LeManager.class.getSimpleName();
     private static final int PERMISSION_REQUEST_LOCATION = 1;
     private LeLollipopScanner leLollipopScanner;
     private Activity mContext;
     private boolean mIsConnected;
+    private LeHandler leHandler = new LeHandler();
+    private final static int MSG_CONNECTED = 0;
+    private final static int MSG_DISCONNECT = 1;
+    private final static int MSG_CONNECT_TIME_OUT = 2;
 
     private static class InstanceHolder {
-        public static final LeScannerCompat instance = new LeScannerCompat();
+        public static final LeManager instance = new LeManager();
     }
 
-    public static LeScannerCompat getInstance() {
-        return LeScannerCompat.InstanceHolder.instance;
+    public static LeManager getInstance() {
+        return LeManager.InstanceHolder.instance;
     }
 
-    private LeScannerCompat() {
-        if (listeners == null)
-            listeners = new ArrayList<>();
+    private LeManager() {
+        if (mOnRetListener == null)
+            mOnRetListener = new HashSet<>();
+        if (mOnConnectStatusListeners == null){
+            mOnConnectStatusListeners = new HashSet<>();
+        }
     }
 
     public void checkPermission(Activity context) {
@@ -131,7 +142,7 @@ public class LeScannerCompat implements ScanListener, BesListener {
             return;
         }
         devicesSet.add(myDevice);
-        SaveSetUtil.saveSet(mContext,devicesSet);
+        SaveSetUtil.saveSet(mContext, devicesSet);
         ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
         if (!DeviceManager.getInstance(mContext).isConnected()) {
             BesEngine.getInstance().addListener(this);
@@ -141,23 +152,38 @@ public class LeScannerCompat implements ScanListener, BesListener {
     }
 
     private final Object mLock = new Object();
-    private List<ConnectListener> listeners;
+    private Set<OnRetListener> mOnRetListener;
 
-    public void addListener(ConnectListener listener) {
+    public void setOnRetListener(OnRetListener listener) {
         synchronized (mLock) {
-            if (!listeners.contains(listener)) {
-                listeners.add(listener);
+            if (!mOnRetListener.contains(listener)) {
+                mOnRetListener.add(listener);
             }
         }
     }
 
-    public void removeListener(ConnectListener listener) {
+    public void removeOnRetListener(OnRetListener listener) {
         synchronized (mLock) {
-            listeners.remove(listener);
+            mOnRetListener.remove(listener);
         }
     }
 
-    public boolean isConnected(){
+    private Set<OnConnectStatusListener> mOnConnectStatusListeners;
+    public void setOnConnectStatusListener(OnConnectStatusListener onConnectStatusListener){
+        synchronized (mLock) {
+            if (!mOnConnectStatusListeners.contains(onConnectStatusListener)) {
+                mOnConnectStatusListeners.add(onConnectStatusListener);
+            }
+        }
+    }
+
+    public void removeOnConnectStatusListener(OnConnectStatusListener onConnectStatusListener) {
+        synchronized (mLock) {
+            mOnConnectStatusListeners.remove(onConnectStatusListener);
+        }
+    }
+
+    public boolean isConnected() {
         return mIsConnected;
     }
 
@@ -176,9 +202,9 @@ public class LeScannerCompat implements ScanListener, BesListener {
     public void onBesConnectStatus(BluetoothDevice bluetoothDevice, final boolean isConnected) {
         Logger.d(TAG, "on bes connect status, isConnected = " + isConnected);
         synchronized (mLock) {
-            if (DeviceManager.getInstance(mContext).isConnected()){
-                Logger.i(TAG,"bes connected, but other device is already connected");
-                leHandler.sendEmptyMessageDelayed(MSG_DISCONNECT,200);
+            if (DeviceManager.getInstance(mContext).isConnected()) {
+                Logger.i(TAG, "bes connected, but other device is already connected");
+                leHandler.sendEmptyMessageDelayed(MSG_DISCONNECT, 200);
                 return;
             }
             mIsConnected = isConnected;
@@ -202,8 +228,8 @@ public class LeScannerCompat implements ScanListener, BesListener {
             mContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    for (ConnectListener listener : listeners) {
-                        listener.connectDeviceStatus(isConnected);
+                    for (OnConnectStatusListener listener : mOnConnectStatusListeners) {
+                        listener.onConnectStatus(isConnected);
                     }
                 }
             });
@@ -216,19 +242,20 @@ public class LeScannerCompat implements ScanListener, BesListener {
     }
 
     @Override
-    public void onBesReceived(BesCommandType commandType, BesAction besAction, byte[] data) {
-        Logger.d(TAG, "on bes received");
+    public void onBesReceived(byte[] data) {
+        String dataString = Arrays.toString(data);
+        Logger.d(TAG, "on bes received, data string = " + dataString);
+//        switch (command){
+//            case ReportFormat.RET_DEV_ACK:{
+//
+//            }
+//        }
     }
 
     @Override
     public void onBesUpdateImageState(BesUpdateState state, int progress) {
         Logger.d(TAG, "on bes update image state");
     }
-
-    private LeHandler leHandler = new LeHandler();
-    private final static int MSG_CONNECTED = 0;
-    private final static int MSG_DISCONNECT = 1;
-    private final static int MSG_CONNECT_TIME_OUT = 2;
 
     private class LeHandler extends Handler {
 
@@ -243,7 +270,7 @@ public class LeScannerCompat implements ScanListener, BesListener {
                     BesEngine.getInstance().disconnect();
                     break;
                 }
-                case MSG_CONNECT_TIME_OUT:{
+                case MSG_CONNECT_TIME_OUT: {
                     break;
                 }
                 default: {
