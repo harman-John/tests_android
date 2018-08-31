@@ -33,6 +33,8 @@ import com.avnera.smartdigitalheadset.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.HomeActivity;
@@ -98,7 +100,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private float rawY = 0.0f;
     private boolean isShownFinal = false;
     private float dValue;
-    private float dLastValue;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -260,33 +262,38 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         final int distance = screenWidth / 11;
 
         equalizerLineView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
             public boolean onTouch(View v, MotionEvent event) {
                 createVelocityTracker(event);
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         mPosX = event.getX();
                         isTranslationX = false;
+                        mLastPosX = event.getX();
                         break;
                     case MotionEvent.ACTION_MOVE:
+                        mCurPosX = event.getX();
+                        dValue = mCurPosX - mPosX;
+                        if (Math.abs(dValue) > distance && dValue > 0) {
+                            dValue = distance;
+                        }
+                        if (Math.abs(dValue) > distance && dValue < 0) {
+                            dValue = (-distance);
+                        }
+                        if (Math.abs(mCurPosX-mLastPosX)>UiUtils.dip2px(getActivity(),5)){
+                            if (!isTranslationX) {
+                                Logger.d(TAG, "fresh eq");
+                                isTranslationX = true;
 
-                        int xSpeed = getScrollVelocity();
-                        Logger.d(TAG, "speed:" + xSpeed);
-                        //if (Math.abs(mCurPosX - mPosX) > UiUtils.dip2px(getActivity(), 5)) {
-                        if (!isTranslationX) {
-                            isTranslationX = true;
-                            mCurPosX = event.getX();
-                            dValue = mCurPosX - mPosX;
-                            if (Math.abs(dValue) > distance && dValue > 0) {
-                                dValue = distance;
-                            }
-                            if (Math.abs(dValue) > distance && dValue < 0) {
-                                dValue = (-distance);
-                            }
+                                //equalizerLineView.setTranslationX(dValue);
 
-                            equalizerLineView.setTranslationX(dValue);
-                            equalizerLineView.setAlpha(1 - Math.abs(dValue) / distance + 0.2f);
-                            isTranslationX = false;
+                                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) equalizerLineView.getLayoutParams();
+                                params.leftMargin = (int) dValue;
+                                params.rightMargin = (int) (-dValue);
+                                equalizerLineView.setLayoutParams(params);
+                                equalizerLineView.setAlpha(1 - Math.abs(dValue) / distance + 0.2f);
+                                mLastPosX = mCurPosX;
+                                isTranslationX = false;
+                            }
                         }
                         //}
                         break;
@@ -299,12 +306,22 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                                 EQModel eqModel = eqModels.get(currSelectedEqIndex - 1);
                                 equalizerLineView.setCurveData(eqModel.getPointX(), eqModel.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
                                 equalizerLineView.setAlpha(0.5f);
-                                equalizerLineView.setTranslationX(-distance);
+                                //equalizerLineView.setTranslationX(-distance);
+                                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) equalizerLineView.getLayoutParams();
+                                params.leftMargin = (-distance);
+                                params.rightMargin = (distance);
+                                equalizerLineView.setLayoutParams(params);
+
                                 eqNameText.setText(eqModel.eqName);
                                 eqNameText.setAlpha(0);
                                 equalizerFinalView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
                                 equalizerFinalView.setAlpha(alpha);
-                                equalizerFinalView.setTranslationX(dValue);
+                                //equalizerFinalView.setTranslationX(dValue);
+                                FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) equalizerFinalView.getLayoutParams();
+                                params1.leftMargin = (int) dValue;
+                                params1.rightMargin = (int) (-dValue);
+                                equalizerFinalView.setLayoutParams(params1);
+
                                 eqNameFinalText.setText(currSelectedEq.eqName);
                                 eqNameFinalText.setAlpha(1.0f);
                                 eqViewLocationAnimation(equalizerLineView, -distance, 0);
@@ -317,12 +334,22 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                                 EQModel eqModel = eqModels.get(currSelectedEqIndex + 1);
                                 equalizerLineView.setCurveData(eqModel.getPointX(), eqModel.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
                                 equalizerLineView.setAlpha(0.5f);
-                                equalizerLineView.setTranslationX(distance);
+                                //equalizerLineView.setTranslationX(distance);
+                                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) equalizerLineView.getLayoutParams();
+                                params.leftMargin = (int) (distance);
+                                params.rightMargin = (int) (-distance);
+                                equalizerLineView.setLayoutParams(params);
+
                                 eqNameText.setText(eqModel.eqName);
                                 eqNameText.setAlpha(0);
                                 equalizerFinalView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
                                 equalizerFinalView.setAlpha(alpha);
-                                equalizerFinalView.setTranslationX(dValue);
+                                //equalizerFinalView.setTranslationX(dValue);
+                                FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) equalizerFinalView.getLayoutParams();
+                                params1.leftMargin = (int) dValue;
+                                params1.rightMargin = (int) (-dValue);
+                                equalizerFinalView.setLayoutParams(params1);
+
                                 eqNameFinalText.setText(currSelectedEq.eqName);
                                 eqNameFinalText.setAlpha(1.0f);
                                 eqViewLocationAnimation(equalizerLineView, distance, 0);
@@ -333,7 +360,11 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                             eqNameAlphaAnimation(eqNameText, 0f, 1.0f);
                             eqNameAlphaAnimation(eqNameFinalText, 1.0f, 0f);
                         } else {
-                            equalizerLineView.setTranslationX(0);
+                            //equalizerLineView.setTranslationX(0);
+                            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) equalizerLineView.getLayoutParams();
+                            params.leftMargin = 0;
+                            params.rightMargin = 0;
+                            equalizerLineView.setLayoutParams(params);
                             equalizerLineView.setAlpha(1);
                         }
 
@@ -364,7 +395,11 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                             //scroll to left
                             eqAdapter.setSelectedIndex(currSelectedEqIndex + 1);
                         }
-                        equalizerLineView.setTranslationX(0);
+                        //equalizerLineView.setTranslationX(0);
+                        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) equalizerLineView.getLayoutParams();
+                        params.leftMargin = 0;
+                        params.rightMargin = 0;
+                        equalizerLineView.setLayoutParams(params);
                         equalizerLineView.setAlpha(1);
                         equalizerFinalView.setAlpha(0);
                     }
