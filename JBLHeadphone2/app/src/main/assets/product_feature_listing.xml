@@ -5,7 +5,7 @@
         <feature name="ENABLE_AMBIENT_AWARE"/>
     </product>
 
-    <product name="JBL EVEREST ELITE 100">
+    <product name="EVEREST ELITE 100">
         <feature name="ENABLE_NOISE_CANCEL"/>
         <feature name="ENABLE_AMBIENT_AWARE"/>
 
@@ -21,7 +21,7 @@
         <feature name="ENABLE_AUTO_OFF_TIMER_SWITCH"/>
     </product>
 
-    <product name="JBL EVEREST ELITE 300">
+    <product name="EVEREST ELITE 300">
         <feature name="ENABLE_NOISE_CANCEL"/>
         <feature name="ENABLE_AMBIENT_AWARE"/>
 
@@ -30,7 +30,7 @@
         <feature name="ENABLE_TRUE_NOTE"/>
     </product>
 
-    <product name="JBL EVEREST ELITE 700">
+    <product name="EVEREST ELITE 700">
         <feature name="ENABLE_NOISE_CANCEL"/>
         <feature name="ENABLE_AMBIENT_AWARE"/>
 
@@ -39,7 +39,7 @@
         <feature name="ENABLE_TRUE_NOTE"/>
     </product>
 
-    <product name="JBL EVEREST ELITE 750NC">
+    <product name="EVEREST ELITE 750NC">
         <feature name="ENABLE_NOISE_CANCEL"/>
         <feature name="ENABLE_AMBIENT_AWARE"/>
 

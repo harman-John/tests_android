@@ -59,58 +59,38 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
         relativeLayoutDeviceIcon.setOnClickListener(this);
         TextView textViewDeviceName = view.findViewById(R.id.text_view_unable_device_name);
         TextView textViewTipsTwo = view.findViewById(R.id.text_view_unable_advice_two);
-        TextView textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
         TextView textViewTipsFour = view.findViewById(R.id.text_view_unable_advice_four);
         TextView textViewTipsFive = view.findViewById(R.id.text_view_unable_advice_five);
         deviceModelName = getArguments().getString(JBLConstant.DEVICE_MODEL_NAME);
 
         if (deviceModelName != null) {
-            switch (deviceModelName) {
-                case JBLConstant.DEVICE_LIVE_650BTNC: {
-                    textViewDeviceName.setText(JBLConstant.DEVICE_LIVE_650BTNC);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_700_icon));
-                    break;
-                }
-                case JBLConstant.DEVICE_LIVE_400BT: {
-                    textViewDeviceName.setText(JBLConstant.DEVICE_LIVE_400BT);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_700_icon));
-                    break;
-                }
-                case JBLConstant.DEVICE_LIVE_500BT: {
-                    textViewDeviceName.setText(JBLConstant.DEVICE_LIVE_500BT);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_700_icon));
-                    break;
-                }
-                case JBLConstant.DEVICE_EVEREST_ELITE_750NC: {
-                    textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_750NC);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_750nc_icon));
-                    break;
-                }
-                case JBLConstant.DEVICE_REFLECT_AWARE: {
-                    textViewDeviceName.setText(JBLConstant.DEVICE_REFLECT_AWARE);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.reflect_aware_icon));
-                    break;
-                }
-                case JBLConstant.DEVICE_EVEREST_ELITE_150NC: {
-                    textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_150NC);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_150nc_icon));
-                    break;
-                }
-                case JBLConstant.DEVICE_EVEREST_ELITE_700: {
-                    textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_700);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_700_icon));
-                    break;
-                }
-                case JBLConstant.DEVICE_EVEREST_ELITE_100: {
-                    textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_100);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_100_icon));
-                    break;
-                }
-                case JBLConstant.DEVICE_EVEREST_ELITE_300: {
-                    textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_300);
-                    imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_300_icon));
-                    break;
-                }
+            if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_LIVE_650BTNC)) {
+                textViewDeviceName.setText(JBLConstant.DEVICE_LIVE_650BTNC);
+                imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_700_icon));
+            } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_LIVE_400BT)) {
+                textViewDeviceName.setText(JBLConstant.DEVICE_LIVE_400BT);
+                imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_700_icon));
+            } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_LIVE_500BT)) {
+                textViewDeviceName.setText(JBLConstant.DEVICE_LIVE_500BT);
+                imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_700_icon));
+            } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_750NC)) {
+                textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_750NC);
+                imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_750nc_icon));
+            } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
+                textViewDeviceName.setText(JBLConstant.DEVICE_REFLECT_AWARE);
+                imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.reflect_aware_icon));
+            } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_150NC)) {
+                textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_150NC);
+                imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_150nc_icon));
+            } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_700)) {
+                textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_700);
+                imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_700_icon));
+            } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_100)) {
+                textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_100);
+                imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_100_icon));
+            } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_300)) {
+                textViewDeviceName.setText(JBLConstant.DEVICE_EVEREST_ELITE_300);
+                imageViewDeviceIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.everest_elite_300_icon));
             }
         }
         if (textViewDeviceName.getText().equals(JBLConstant.DEVICE_REFLECT_AWARE)) {
@@ -120,7 +100,7 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
             view.findViewById(R.id.linear_layout_three_in_fuc).setVisibility(View.GONE);
         } else {
             view.findViewById(R.id.linear_layout_three_in_fuc).setVisibility(View.VISIBLE);
-            textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
+            TextView textViewTipsThree = view.findViewById(R.id.text_view_unable_advice_three);
             textViewTipsThree.getPaint().setUnderlineText(true);
             textViewTipsThree.setOnClickListener(this);
         }
@@ -173,7 +153,7 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
 
                 break;
             }
-            case R.id.text_view_unable_advice_three:{
+            case R.id.text_view_unable_advice_three: {
                 HowToPairFragment howToPairFragment = new HowToPairFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(JBLConstant.DEVICE_MODEL_NAME, deviceModelName);

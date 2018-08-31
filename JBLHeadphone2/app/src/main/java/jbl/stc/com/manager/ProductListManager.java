@@ -58,9 +58,9 @@ public class ProductListManager {
     }
 
     public MyDevice getDeviceByKey(String key){
-        Logger.i(TAG, "get device by key, according to key= " + key);
         if (myDeviceMap != null){
-            myDeviceMap.get(key);
+            Logger.i(TAG, "get device by key, according to key= " + key);
+            return myDeviceMap.get(key);
         }
         return null;
     }
@@ -81,6 +81,7 @@ public class ProductListManager {
     }
 
     public void checkHalfConnectDevice(Set<MyDevice> devicesSet) {
+        initHalfConnectStatus();
         if (devicesSet.size()<= 0){
             return;
         }
@@ -107,5 +108,15 @@ public class ProductListManager {
         myDeviceMem.connectStatus = connectStatus;
         Logger.i(TAG, "check connect status, connect status: "+connectStatus);
         mOnCheckDevicesListener.onCheckDevices();
+    }
+
+    private void initHalfConnectStatus() {
+        for(Map.Entry<String,MyDevice> entry: myDeviceMap.entrySet()){
+            MyDevice myDevice = entry.getValue();
+            if (myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
+                Logger.i(TAG, "set a2dp unconnected, deviceKey= " + myDevice.deviceKey + ",connectStatus = " + myDevice.connectStatus);
+                myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
+            }
+        }
     }
 }

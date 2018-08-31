@@ -173,7 +173,6 @@ public class BesOtaUpdate implements BesListener {
 //        mOtaConfigDialog.setOtaConfigCallback(mOtaConfigCallback);
 //    }
 
-    @SuppressLint("HandlerLeak")
     private Handler mMsgHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {

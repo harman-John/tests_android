@@ -19,6 +19,7 @@ import android.widget.TextView;
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.logger.Logger;
 
 public class HowToPairFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = HowToPairFragment.class.getSimpleName();
@@ -27,6 +28,7 @@ public class HowToPairFragment extends BaseFragment implements View.OnClickListe
     private ImageView imageView;
     private TextView textViewTips;
     private LinearLayout linearLayoutVideo;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,61 +53,47 @@ public class HowToPairFragment extends BaseFragment implements View.OnClickListe
         return view;
     }
 
-    void initImageView(){
+    void initImageView() {
         String deviceModelName = getArguments().getString(JBLConstant.DEVICE_MODEL_NAME);
-        if (deviceModelName != null) {
-            switch (deviceModelName) {
-                case JBLConstant.DEVICE_LIVE_650BTNC: {
-                    textViewTips.setText(getString(R.string.how_to_pair_650_500_400));
-                    linearLayoutVideo.setVisibility(View.GONE);
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_650));
-                    break;
-                }
-                case JBLConstant.DEVICE_LIVE_400BT: {
-                    textViewTips.setText(getString(R.string.how_to_pair_650_500_400));
-                    linearLayoutVideo.setVisibility(View.GONE);
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_live_500bt_400bt));
-                    break;
-                }
-                case JBLConstant.DEVICE_LIVE_500BT: {
-                    textViewTips.setText(getString(R.string.how_to_pair_650_500_400));
-                    linearLayoutVideo.setVisibility(View.GONE);
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_live_500bt_400bt));
-                    break;
-                }
-                case JBLConstant.DEVICE_EVEREST_ELITE_750NC: {
-                    textViewTips.setText(getString(R.string.how_to_pair_750_150));
-                    linearLayoutVideo.setVisibility(View.GONE);
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_750));
-                    break;
-                }
-                case JBLConstant.DEVICE_EVEREST_ELITE_150NC: {
-                    textViewTips.setText(getString(R.string.how_to_pair_750_150));
-                    linearLayoutVideo.setVisibility(View.GONE);
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_150nc));
-                    break;
-                }
-                case JBLConstant.DEVICE_EVEREST_ELITE_700: {
-                    textViewTips.setText(getString(R.string.how_to_pair_700_300_100));
-                    linearLayoutVideo.setVisibility(View.VISIBLE);
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_700_300));
-                    break;
-                }
-                case JBLConstant.DEVICE_EVEREST_ELITE_100: {
-                    textViewTips.setText(getString(R.string.how_to_pair_700_300_100));
-                    linearLayoutVideo.setVisibility(View.GONE);
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_100));
-                    break;
-                }
-                case JBLConstant.DEVICE_EVEREST_ELITE_300: {
-                    textViewTips.setText(getString(R.string.how_to_pair_700_300_100));
-                    linearLayoutVideo.setVisibility(View.VISIBLE);
-                    imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_700_300));
-                    break;
-                }
-            }
+        if (deviceModelName == null) {
+            Logger.d(TAG,"init image view, device mode name is null");
+            return;
+        }
+        if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_LIVE_650BTNC)) {
+            textViewTips.setText(getString(R.string.how_to_pair_650_500_400));
+            linearLayoutVideo.setVisibility(View.GONE);
+            imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_650));
+        } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_LIVE_400BT)) {
+            textViewTips.setText(getString(R.string.how_to_pair_650_500_400));
+            linearLayoutVideo.setVisibility(View.GONE);
+            imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_live_500bt_400bt));
+        } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_LIVE_500BT)) {
+            textViewTips.setText(getString(R.string.how_to_pair_650_500_400));
+            linearLayoutVideo.setVisibility(View.GONE);
+            imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_live_500bt_400bt));
+        } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_750NC)) {
+            textViewTips.setText(getString(R.string.how_to_pair_750_150));
+            linearLayoutVideo.setVisibility(View.GONE);
+            imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_750));
+        } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_150NC)) {
+            textViewTips.setText(getString(R.string.how_to_pair_750_150));
+            linearLayoutVideo.setVisibility(View.GONE);
+            imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_150nc));
+        } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_700)) {
+            textViewTips.setText(getString(R.string.how_to_pair_700_300_100));
+            linearLayoutVideo.setVisibility(View.VISIBLE);
+            imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_700_300));
+        } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_100)) {
+            textViewTips.setText(getString(R.string.how_to_pair_700_300_100));
+            linearLayoutVideo.setVisibility(View.GONE);
+            imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_100));
+        } else if (deviceModelName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_300)) {
+            textViewTips.setText(getString(R.string.how_to_pair_700_300_100));
+            linearLayoutVideo.setVisibility(View.VISIBLE);
+            imageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.outline_elite_700_300));
         }
     }
+
 
     @Override
     public void onResume() {
@@ -114,20 +102,20 @@ public class HowToPairFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.text_view_how_to_pair_next:{
-                DashboardActivity.getDashboardActivity().switchFragment(new HowToPairNextFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+        switch (v.getId()) {
+            case R.id.text_view_how_to_pair_next: {
+                DashboardActivity.getDashboardActivity().switchFragment(new HowToPairNextFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
             case R.id.image_view_how_to_pair_back:
                 getActivity().onBackPressed();
                 break;
-            case R.id.image_view_how_to_pair_close:{
+            case R.id.image_view_how_to_pair_close: {
                 removeAllFragment();
                 break;
             }
-            case R.id.text_view_how_to_pair_link:{
-                DashboardActivity.getDashboardActivity().switchFragment(new WebViewFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            case R.id.text_view_how_to_pair_link: {
+                DashboardActivity.getDashboardActivity().switchFragment(new WebViewFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
         }

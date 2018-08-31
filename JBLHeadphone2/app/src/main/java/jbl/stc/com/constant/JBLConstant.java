@@ -58,11 +58,11 @@ public class JBLConstant {
     public static final String DEVICE_MODEL_NAME = "DEVICE MODEL NAME";
 
     public static final String DEVICE_REFLECT_AWARE = "REFLECT AWARE";
-    public static final String DEVICE_EVEREST_ELITE_100 = "JBL EVEREST ELITE 100";
-    public static final String DEVICE_EVEREST_ELITE_150NC = "JBL EVEREST ELITE 150NC";
-    public static final String DEVICE_EVEREST_ELITE_300 = "JBL EVEREST ELITE 300";
-    public static final String DEVICE_EVEREST_ELITE_700 = "JBL EVEREST ELITE 700";
-    public static final String DEVICE_EVEREST_ELITE_750NC = "JBL EVEREST ELITE 750NC";
+    public static final String DEVICE_EVEREST_ELITE_100 = "EVEREST ELITE 100";
+    public static final String DEVICE_EVEREST_ELITE_150NC = "EVEREST ELITE 150NC";
+    public static final String DEVICE_EVEREST_ELITE_300 = "EVEREST ELITE 300";
+    public static final String DEVICE_EVEREST_ELITE_700 = "EVEREST ELITE 700";
+    public static final String DEVICE_EVEREST_ELITE_750NC = "EVEREST ELITE 750NC";
 
     public static final String DEVICE_LIVE_400BT_PID = "111F";
     public static final String DEVICE_LIVE_400BT = "LIVE 400BT";

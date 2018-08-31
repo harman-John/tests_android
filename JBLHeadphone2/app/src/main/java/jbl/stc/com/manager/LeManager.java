@@ -41,7 +41,7 @@ public class LeManager implements ScanListener, BesListener {
     private Activity mContext;
     private boolean mIsConnected;
     private LeHandler leHandler = new LeHandler();
-    private final static int MSG_CONNECTED = 0;
+    private final static int MSG_START_SCAN = 0;
     private final static int MSG_DISCONNECT = 1;
     private final static int MSG_CONNECT_TIME_OUT = 2;
 
@@ -73,7 +73,7 @@ public class LeManager implements ScanListener, BesListener {
             } else {
                 if (isGPSEnabled()) {
                     Logger.i(TAG, " check permission, then start ble scan");
-                    startBleScan();
+                    leHandler.sendEmptyMessage(MSG_START_SCAN);
                 } else {
                     openGpsSetting(PERMISSION_REQUEST_LOCATION);
                 }
@@ -96,7 +96,8 @@ public class LeManager implements ScanListener, BesListener {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (isGPSEnabled()) {
                         Logger.i(TAG, " on request permission result, start ble scan");
-                        startBleScan();
+                        leHandler.removeMessages(MSG_START_SCAN);
+                        leHandler.sendEmptyMessage(MSG_START_SCAN);
                     } else {
                         openGpsSetting(requestCode);
                     }
@@ -257,7 +258,12 @@ public class LeManager implements ScanListener, BesListener {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case MSG_CONNECTED: {
+                case MSG_START_SCAN: {
+                    if (!isConnected()) {
+                        startBleScan();
+                        leHandler.removeMessages(MSG_START_SCAN);
+                        leHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
+                    }
                     break;
                 }
                 case MSG_DISCONNECT: {

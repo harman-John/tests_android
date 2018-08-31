@@ -30,7 +30,7 @@ public class BesEngine implements IBesEngine {
     private BesEngine() {
         mLeConnectorMap = new HashMap<>();
         besListeners = new ArrayList<>();
-        besOtaUpdate = new BesOtaUpdate();
+//        besOtaUpdate = new BesOtaUpdate();
 
     }
 
