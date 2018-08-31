@@ -14,10 +14,10 @@ public interface BesListener {
 
     void onBesConnectStatus(BluetoothDevice bluetoothDevice, boolean isConnected);
 
-    void onMtuChanged(int status, int mtu);
+    void onMtuChanged(BluetoothDevice bluetoothDevice, int status, int mtu);
 
-    void onBesReceived(byte[] data);
+    void onBesReceived(BluetoothDevice bluetoothDevice, byte[] data);
 
-    void onBesUpdateImageState(BesUpdateState state, int progress);
+    void onBesUpdateImageState(BluetoothDevice bluetoothDevice, BesUpdateState state, int progress);
 
 }

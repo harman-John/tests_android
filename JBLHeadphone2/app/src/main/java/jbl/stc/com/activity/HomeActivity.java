@@ -827,7 +827,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     @Override
                     public void run() {
                         RequestCommands requestCommands = new RequestCommands();
-                        requestCommands.reqDevInfo();
+                        requestCommands.reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
                     }
                 }).start();
 

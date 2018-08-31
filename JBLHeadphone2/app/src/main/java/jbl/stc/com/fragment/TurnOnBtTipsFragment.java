@@ -66,7 +66,7 @@ public class TurnOnBtTipsFragment extends BaseFragment implements View.OnClickLi
                 mBlurView.invalidate();
                 mBlurView.setVisibility(View.VISIBLE);
                 mBlurView.setAlpha(0f);
-                mBlurView.animate().alpha(0.5f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+                mBlurView.animate().alpha(0.5f).setDuration(500).setBesListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);

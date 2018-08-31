@@ -4,29 +4,21 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 
 import com.harman.bluetooth.connector.LeConnector;
-import com.harman.bluetooth.constants.BesAction;
-import com.harman.bluetooth.constants.BesCommandType;
 import com.harman.bluetooth.listeners.BesListener;
 import com.harman.bluetooth.ota.BesOtaUpdate;
 import com.harman.bluetooth.utils.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-/**
- * @name AKG-Headphones-Android
- * @class name：com.harman.bluetooth.engine
- * @class describe
- * Created by Wayne on 6/8/18.
- */
+import java.util.Map;
 
 public class BesEngine implements IBesEngine {
 
     private static volatile BesEngine mBESEngine;
 
-    private LeConnector mLeConnector;
-
-    private List<BesListener> listeners;
+    private Map<String,LeConnector> mLeConnectorMap;
+    private List<BesListener> besListeners;
 
     private BesOtaUpdate besOtaUpdate;
 
@@ -36,8 +28,8 @@ public class BesEngine implements IBesEngine {
 //    private LeConnectorListener mLeConnectListener;
 
     private BesEngine() {
-        mLeConnector = new LeConnector();
-        listeners = new ArrayList<>();
+        mLeConnectorMap = new HashMap<>();
+        besListeners = new ArrayList<>();
         besOtaUpdate = new BesOtaUpdate();
 
     }
@@ -53,10 +45,14 @@ public class BesEngine implements IBesEngine {
         return mBESEngine;
     }
 
-
     @Override
     public boolean connect(Context context, BluetoothDevice bluetoothDevice) {
-        mLeConnector.setListener(listeners);
+        LeConnector mLeConnector = mLeConnectorMap.get(bluetoothDevice.getAddress());
+        if (mLeConnector == null){
+            mLeConnector = new LeConnector();
+            mLeConnectorMap.put(bluetoothDevice.getAddress(),mLeConnector);
+        }
+        mLeConnector.setBesListener(besListeners);
         boolean result = mLeConnector.connect(context, bluetoothDevice);
         if(!result){
             Logger.d(TAG,"connect failed, close le connector");
@@ -66,37 +62,36 @@ public class BesEngine implements IBesEngine {
     }
 
     @Override
-    public void disconnect() {
-        mLeConnector.close();
+    public void disconnect(String mac) {
+        LeConnector mLeConnector = mLeConnectorMap.get(mac);
+        if (mLeConnector != null){
+            Logger.d(TAG,"disconnect, mac = "+mac);
+            mLeConnector.close();
+        }
     }
 
     @Override
-    public boolean isConnected() {
-        return mLeConnector.isConnected();
-    }
-
-    private boolean discoverServices() {
-        return mLeConnector.discoverServices();
-    }
-
-    public boolean requestMtu(int mtu) {
-        return mLeConnector.requestMtu(mtu);
+    public boolean isConnected(String mac) {
+        LeConnector mLeConnector = mLeConnectorMap.get(mac);
+        return mLeConnector != null && mLeConnector.isConnected();
     }
 
     @Override
-    public boolean sendCommand(byte[] command) {
-        if (command.length <= 0){
-            Logger.e(TAG,"send command error, command is null");
+    public boolean sendCommand(String mac, byte[] command) {
+        if (command.length <= 0) {
+            Logger.e(TAG, "send command error, command is null");
             return false;
         }
-        return mLeConnector.write(command);
+        Logger.d(TAG,"send command, mac = "+mac);
+        LeConnector mLeConnector = mLeConnectorMap.get(mac);
+        return mLeConnector != null && mLeConnector.write(command);
     }
 
     @Override
     public void addListener(BesListener listener) {
         synchronized (mLock) {
-            if (!listeners.contains(listener)) {
-                listeners.add(listener);
+            if (!besListeners.contains(listener)) {
+                besListeners.add(listener);
             }
         }
     }
@@ -104,14 +99,14 @@ public class BesEngine implements IBesEngine {
     @Override
     public void removeListener(BesListener listener) {
         synchronized (mLock) {
-            listeners.remove(listener);
+            besListeners.remove(listener);
         }
     }
 
     @Override
-    public void updateImage(Context context) {
+    public void updateImage(String mac, Context context) {
         besOtaUpdate.sendFileInfo(context);
-        besOtaUpdate.setListener(listeners);
+        besOtaUpdate.setListener(besListeners);
     }
 
 }

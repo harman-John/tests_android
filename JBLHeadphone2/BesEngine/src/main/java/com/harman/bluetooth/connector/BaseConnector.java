@@ -15,15 +15,15 @@ public interface BaseConnector {
 //
 //    void removeConnectListener(ConnectorListener connectorListener);
 
-    void setListener(List<BesListener> listBesListener);
+    void setBesListener(List<BesListener> listBesListener);
 
     boolean connect(Context context, String address);
 
     boolean connect(Context context, BluetoothDevice device);
 
-    boolean discoverServices();
+//    boolean discoverServices();
 
-    boolean requestMtu(int mtu);
+//    boolean requestMtu(int mtu);
 
     boolean enableCharacteristicNotify(UUID service, UUID rxCharacteristic, UUID descriptor);
 

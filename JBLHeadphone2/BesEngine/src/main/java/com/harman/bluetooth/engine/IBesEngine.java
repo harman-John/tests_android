@@ -15,13 +15,13 @@ public interface IBesEngine {
 
     boolean connect(Context context, BluetoothDevice bluetoothDevice);
 
-    void disconnect();
+    void disconnect(String mac);
 
-    boolean isConnected();
+    boolean isConnected(String mac);
 
-    boolean sendCommand(byte[] command);
+    boolean sendCommand(String mac, byte[] command);
 
-    void updateImage(Context context);
+    void updateImage(String mac, Context context);
 
     void addListener(BesListener listener);
 
