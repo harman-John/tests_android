@@ -268,21 +268,21 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                     case MotionEvent.ACTION_DOWN:
                         mPosX = event.getX();
                         isTranslationX = false;
-                        mLastPosX = event.getX();
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        mCurPosX = event.getX();
-                        dValue = mCurPosX - mPosX;
-                        if (Math.abs(dValue) > distance && dValue > 0) {
-                            dValue = distance;
-                        }
-                        if (Math.abs(dValue) > distance && dValue < 0) {
-                            dValue = (-distance);
-                        }
-                        if (Math.abs(mCurPosX-mLastPosX)>UiUtils.dip2px(getActivity(),5)){
+
+                        //if (Math.abs(mCurPosX-mLastPosX)>UiUtils.dip2px(getActivity(),5)){
                             if (!isTranslationX) {
                                 Logger.d(TAG, "fresh eq");
                                 isTranslationX = true;
+                                mCurPosX = event.getX();
+                                dValue = mCurPosX - mPosX;
+                                if (Math.abs(dValue) > distance && dValue > 0) {
+                                    dValue = distance;
+                                }
+                                if (Math.abs(dValue) > distance && dValue < 0) {
+                                    dValue = (-distance);
+                                }
 
                                 //equalizerLineView.setTranslationX(dValue);
 
@@ -291,10 +291,18 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                                 params.rightMargin = (int) (-dValue);
                                 equalizerLineView.setLayoutParams(params);
                                 equalizerLineView.setAlpha(1 - Math.abs(dValue) / distance + 0.2f);
-                                mLastPosX = mCurPosX;
                                 isTranslationX = false;
+                                new Thread(){
+                                    public void run(){
+                                        try {
+                                            sleep(20);
+
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }.start();
                             }
-                        }
                         //}
                         break;
                     case MotionEvent.ACTION_UP:
