@@ -38,9 +38,9 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
     public int mHidePosition = -1;
     private RelativeLayout relativeLayoutSelected;
 
-    public void setMyAdapterList(Set<MyDevice> set) {
+    public void setMyAdapterList() {
         this.mList.clear();
-        this.mList.addAll(set);
+        this.mList.addAll(ProductListManager.getInstance().getMyDeviceList());
         Collections.sort(mList, new Comparator<MyDevice>() {
 
             @Override
@@ -217,7 +217,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
             if (myDevice.connectStatus == ConnectStatus.A2DP_UNCONNECTED
                     && !myDevice.deviceKey.equals(mContext.getString(R.string.plus))) {
                 mList.remove(deletePosition);
-                ProductListManager.getInstance().removeDevice(myDevice);
+                ProductListManager.getInstance().removeDevice(myDevice.mac);
                 SaveSetUtil.remove(mContext,myDevice);
                 notifyDataSetChanged();
             }

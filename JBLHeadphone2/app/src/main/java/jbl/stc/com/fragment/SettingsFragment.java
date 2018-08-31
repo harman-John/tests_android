@@ -84,7 +84,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
         screenHeight = dm.widthPixels;
-        myDevice = ProductListManager.getInstance().getConnectedDevice();
+        myDevice = ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED);
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);

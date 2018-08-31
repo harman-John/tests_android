@@ -15,17 +15,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-import com.harman.bluetooth.constants.BesAction;
-import com.harman.bluetooth.constants.BesCommandType;
 import com.harman.bluetooth.constants.BesUpdateState;
 import com.harman.bluetooth.engine.BesEngine;
 import com.harman.bluetooth.listeners.BesListener;
-import com.harman.bluetooth.report.ReportFormat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import jbl.stc.com.constant.ConnectStatus;
@@ -36,8 +31,6 @@ import jbl.stc.com.listener.OnRetListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.scan.LeLollipopScanner;
 import jbl.stc.com.scan.ScanListener;
-import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.utils.ArrayUtil;
 import jbl.stc.com.utils.SaveSetUtil;
 
 public class LeManager implements ScanListener, BesListener {
@@ -136,9 +129,10 @@ public class LeManager implements ScanListener, BesListener {
         Logger.d(TAG, "on found key = " + key);
         MyDevice myDevice = null;
         if (pid.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT_PID)) {
-            myDevice = AppUtils.getMyDevice(mContext, JBLConstant.DEVICE_LIVE_400BT, ConnectStatus.A2DP_HALF_CONNECTED, pid, device.getAddress());
+            myDevice = ProductListManager.getInstance().getDeviceByKey(device.getAddress());
         }
         if (myDevice == null) {
+            Logger.d(TAG,"on found, my device is null, firstly, connect device in bt settings.");
             return;
         }
         devicesSet.add(myDevice);
@@ -224,7 +218,7 @@ public class LeManager implements ScanListener, BesListener {
             }
 
             Logger.d(TAG, "on bes connect status, my device is " + myDevice.deviceKey);
-            ProductListManager.getInstance().checkConnectStatus(myDevice);
+            ProductListManager.getInstance().checkConnectStatus(myDevice.mac,myDevice.connectStatus);
             mContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

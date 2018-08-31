@@ -88,7 +88,6 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
     private OnConnectStatusListener mOnConnectStatusListener;
 
     private DeviceManager() {
-        ProductListManager.getInstance().initDeviceSet(mContext);
     }
 
     public static DeviceManager getInstance(Activity context) {
@@ -292,12 +291,13 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                     Logger.d(TAG, "a2dp listener, connected device, name = " + bluetoothDevice.getName()
                             + ",address = " + bluetoothDevice.getAddress()
                             + ",position =" + position);
-                    MyDevice myDevice = AppUtils.getMyDevice(mContext, bluetoothDevice.getName(), ConnectStatus.A2DP_HALF_CONNECTED, "", bluetoothDevice.getAddress());
+                    MyDevice myDevice = AppUtils.getMyDevice(bluetoothDevice.getName(), ConnectStatus.A2DP_HALF_CONNECTED, "", bluetoothDevice.getAddress());
                     if (myDevice != null) {
                         devicesSet.add(myDevice);
                         SaveSetUtil.saveSet(mContext, devicesSet);
                     }
                 }
+                ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
                 if (!isConnected && !isFound || isNeedOtaAgain) {
                     if (deviceList.size() > 0
                             && position < deviceList.size()
@@ -317,7 +317,6 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                         } else position = 0;
                     }
                 }
-                ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
             }
         }
 
@@ -549,7 +548,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         }
     }
 
-    private void connectLightX(Bluetooth bluetooth, final BluetoothDevice bluetoothDevice, BluetoothSocket bluetoothSocket) {
+    private void connectLightX(final Bluetooth bluetooth, final BluetoothDevice bluetoothDevice, BluetoothSocket bluetoothSocket) {
         if (mLightX != null && mLightX.getSocket().equals(bluetoothSocket)) {
             Logger.d(TAG, "connect lightX, lightX is not null and same");
         } else {
@@ -578,9 +577,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                     }
                     if (!FirmwareUtil.isUpdatingFirmWare.get() && !isNeedOtaAgain) {
                         Logger.d(TAG, "connect lightX, success, call listener: " + onRetListener);
-                        MyDevice myDevice = ProductListManager.getInstance().getDevice(bluetoothDevice.getName() + "-" + bluetoothDevice.getAddress());
-                        myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
-                        ProductListManager.getInstance().checkConnectStatus(myDevice);
+                        ProductListManager.getInstance().checkConnectStatus(bluetoothDevice.getAddress(),ConnectStatus.DEVICE_CONNECTED);
                         if (mOnConnectStatusListener != null) {
                             mOnConnectStatusListener.onConnectStatus(true);
                         }
@@ -624,9 +621,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
             mContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    MyDevice myDevice = ProductListManager.getInstance().getDevice(specifiedDevice.getName() + "-" + specifiedDevice.getAddress());
-                    myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
-                    ProductListManager.getInstance().checkConnectStatus(myDevice);
+                    ProductListManager.getInstance().checkConnectStatus(specifiedDevice.getAddress(),ConnectStatus.A2DP_UNCONNECTED);
                     if (mOnConnectStatusListener != null) {
                         mOnConnectStatusListener.onConnectStatus(false);
                     }
@@ -1042,9 +1037,9 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
             }
             AppUtils.setModelNumber(mContext, key);
             key = key + "-" + usbDevice.getManufacturerName();
-            MyDevice myDevice = ProductListManager.getInstance().getDevice(key);
+            MyDevice myDevice = ProductListManager.getInstance().getDeviceByKey(key);
             myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
-            ProductListManager.getInstance().checkConnectStatus(myDevice);
+            ProductListManager.getInstance().checkConnectStatus(key,ConnectStatus.A2DP_UNCONNECTED);
             SaveSetUtil.remove(mContext, myDevice);
             if (!FirmwareUtil.isUpdatingFirmWare.get()) {
                 if (mOnConnectStatusListener != null) {
@@ -1181,9 +1176,9 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                     }
                     AppUtils.setModelNumber(mContext, key);
                     key = key + "-" + usbDevice.getManufacturerName();
-                    MyDevice myDevice = ProductListManager.getInstance().getDevice(key);
+                    MyDevice myDevice = ProductListManager.getInstance().getDeviceByKey(key);
                     myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
-                    ProductListManager.getInstance().checkConnectStatus(myDevice);
+                    ProductListManager.getInstance().checkConnectStatus(key,ConnectStatus.A2DP_UNCONNECTED);
                     Set<MyDevice> set = new HashSet<>();
                     set.add(myDevice);
                     SaveSetUtil.saveSet(mContext, set);
@@ -1530,14 +1525,11 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
             mContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    MyDevice myDevice = ProductListManager.getInstance().getDevice(specifiedDevice.getName() + "-" + specifiedDevice.getAddress());
-                    myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
-                    ProductListManager.getInstance().checkConnectStatus(myDevice);
-
+                    ProductListManager.getInstance().checkConnectStatus(specifiedDevice.getAddress(),ConnectStatus.DEVICE_CONNECTED);
+                    if (mOnConnectStatusListener != null) {
+                        mOnConnectStatusListener.onConnectStatus(true);
+                    }
                     if (onRetListener != null) {
-                        if (mOnConnectStatusListener != null) {
-                            mOnConnectStatusListener.onConnectStatus(true);
-                        }
                         onRetListener.onReceive(EnumCommands.CMD_AccessoryReady, value);
                     }
                 }

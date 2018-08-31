@@ -314,7 +314,7 @@ public class AppUtils {
         PreferenceUtils.setString(PreferenceKeys.MODEL, value, context);
     }
 
-    public static MyDevice getMyDevice(Context context,String deviceName, int connectStatus,String pid,String mac){
+    public static MyDevice getMyDevice(String deviceName, int connectStatus,String pid,String mac){
         MyDevice myDevice = new MyDevice();
         myDevice.deviceKey = deviceName+ "-" + mac;
         myDevice.connectStatus = connectStatus;

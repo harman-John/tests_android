@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import jbl.stc.com.R;
+import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.listener.OnHeadphoneconnectListener;
@@ -77,7 +78,7 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
         tv_calibratingDone.setOnClickListener(this);
         shadowLayout = (ShadowLayout) findViewById(R.id.shadowLayout);
         iv_complete = (ImageView) findViewById(R.id.iv_complete);
-        myDevice = ProductListManager.getInstance().getConnectedDevice();
+        myDevice = ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED);
     }
 
 

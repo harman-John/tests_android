@@ -21,6 +21,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
@@ -36,6 +37,7 @@ import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.fragment.DiscoveryFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.fragment.UnableConnectFragment;
+import jbl.stc.com.listener.OnCheckDevicesListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.DeviceManager;
@@ -49,7 +51,7 @@ import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.MyDragGridView;
 
-public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnDownloadedListener{
+public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnDownloadedListener, OnCheckDevicesListener{
     private static final String TAG = DashboardActivity.class.getSimpleName() + "aa";
     private static DashboardActivity dashboardActivity;
     private final static int MSG_SHOW_MY_PRODUCTS = 0;
@@ -69,6 +71,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         Logger.d(TAG, "on create");
         addActivity(this);
+        ProductListManager.getInstance().initDeviceSet(this);
         DeviceManager.getInstance(this).setOnCreate();
         setContentView(R.layout.activity_dashboard);
         registerReceiver(mBtReceiver, makeFilter());
@@ -76,6 +79,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         initView();
         InsertPredefinePreset insertPredefinePreset = new InsertPredefinePreset();
         insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
+        ProductListManager.getInstance().setOnCheckDevicesListener(this);
         LeManager.getInstance().setOnConnectStatusListener(this);
     }
 
@@ -127,7 +131,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             }
         });
 
-        myGridAdapter.setMyAdapterList(ProductListManager.getInstance().getDeviceSet());
+        myGridAdapter.setMyAdapterList();
         myGridAdapter.setMenuBar((RelativeLayout) findViewById(R.id.relative_layout_dashboard_title));
         myGridAdapter.setImageViewPlus(imageViewWhitePlus);
         gridView.setDeleteView(viewDelete);
@@ -169,7 +173,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 }
             }
         });
-        if (ProductListManager.getInstance().getDeviceSet().size() == 0) {
+        if (ProductListManager.getInstance().getMyDeviceList().size() == 0) {
             dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 2000);
         }
         findViewById(R.id.image_view_dashboard_white_menu).setOnClickListener(this);
@@ -298,12 +302,12 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 currentActivity().finish();
             }
             LeManager.getInstance().checkPermission(this);
-            myGridAdapter.setMyAdapterList(ProductListManager.getInstance().getDeviceSet());
+            myGridAdapter.setMyAdapterList();
         }
     }
 
 //    public void checkDevices(Set<MyDevice> deviceList) {
-//        myGridAdapter.setMyAdapterList(ProductListManager.getInstance().getDeviceSet());
+//        myGridAdapter.setMyAdapterList(ProductListManager.getInstance().getMyDeviceList());
 //        gridView.setVisibility(View.VISIBLE);
 //    }
 
@@ -339,12 +343,18 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     private void showMyProducts() {
         removeAllFragment();
-        myGridAdapter.setMyAdapterList(ProductListManager.getInstance().getDeviceSet());
+        myGridAdapter.setMyAdapterList();
         gridView.setVisibility(View.VISIBLE);
     }
 
     public static DashboardActivity getDashboardActivity() {
         return dashboardActivity;
+    }
+
+    @Override
+    public void onCheckDevices() {
+        myGridAdapter.setMyAdapterList();
+        myGridAdapter.notifyDataSetChanged();
     }
 
     private class DashboardHandler extends Handler {
@@ -377,7 +387,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                     dashboardHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            showHomeActivity(ProductListManager.getInstance().getConnectedDevice());
+                            showHomeActivity(ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED));
                         }
                     }, 200);
                     break;
@@ -514,7 +524,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                             if (fr instanceof TurnOnBtTipsFragment) {
                                 removeAllFragment();
                             }
-                            if (ProductListManager.getInstance().getDeviceSet().size() == 0) {
+                            if (ProductListManager.getInstance().getMyDeviceList().size() == 0) {
                                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 2000);
                             }
                             LeManager.getInstance().checkPermission(DashboardActivity.this);
