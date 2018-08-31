@@ -4,11 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import jbl.stc.com.R;
+import jbl.stc.com.constant.JBLConstant;
 
 
 /**
@@ -138,6 +143,44 @@ public class UiUtils {
         int dashboardBottomEq = dip2px(context, 70);
         marginTop = (screenheight - getStatusHeight(context) - dashboardTitleBarHeight - dashboardBottomEq - deviceInfoHeight) / 2;
         return marginTop;
+    }
+
+    public static int getDeviceImageMarginTop(Context context) {
+        int marginTop = 0;
+        int deviceNameMarginTop = getDeviceNameMarginTop(context);
+        int dashboardDeviceNameHeight = dip2px(context, 25);
+        int dashboardDeviceImage_marginTop = dip2px(context, 10);
+        marginTop = deviceNameMarginTop + dashboardDeviceNameHeight + dashboardDeviceImage_marginTop;
+        return marginTop;
+    }
+
+
+    public static void setDeviceName(String deviceName, TextView textViewDeviceName) {
+        if (TextUtils.isEmpty(deviceName)) {
+            return;
+        }
+        //update device name
+        textViewDeviceName.setText(deviceName);
+    }
+
+    public static void setDeviceImage(String deviceName, ImageView imageViewDevice) {
+        if (TextUtils.isEmpty(deviceName)) {
+            return;
+        }
+        //update device image
+        if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_REFLECT_AWARE).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.reflect_aware_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_100_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_150nc_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_300_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_700_icon);
+        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())) {
+            imageViewDevice.setImageResource(R.mipmap.everest_elite_750nc_icon);
+        }
     }
 }
 

@@ -40,6 +40,7 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.UiUtils;
 
 public class BaseFragment extends Fragment implements View.OnTouchListener, AppLightXDelegate, AppUSBDelegate {
     protected String TAG;
@@ -172,14 +173,14 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
         super.onDestroy();
     }
 
-    public void switchFragment(Fragment baseFragment,int type) {
+    public void switchFragment(Fragment baseFragment, int type) {
         try {
             android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
             if (type == JBLConstant.SLIDE_FROM_DOWN_TO_TOP) {
                 ft.setCustomAnimations(R.anim.enter_from_down, R.anim.exit_to_up, R.anim.enter_from_up, R.anim.exit_to_down);
-            }else if (type == JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT){
+            } else if (type == JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT) {
                 ft.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
-            }else if (type == JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT){
+            } else if (type == JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT) {
                 ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
             }
             if (getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout) == null) {
@@ -197,7 +198,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
     public void removeAllFragment() {
         Fragment fr = getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if (fr == null) {
-            Logger.d(TAG,"fr is null");
+            Logger.d(TAG, "fr is null");
             return;
         }
         try {
@@ -210,8 +211,8 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
                 count = manager.getBackStackEntryCount();
                 Logger.d(TAG, "back stack count = " + count);
             }
-        }catch (Exception e){
-            Logger.e(TAG,"Fragment is not shown, then popBack will have exception ");
+        } catch (Exception e) {
+            Logger.e(TAG, "Fragment is not shown, then popBack will have exception ");
         }
     }
 
@@ -220,21 +221,9 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
             return;
         }
         //update device name
-        textViewDeviceName.setText(deviceName);
+        UiUtils.setDeviceName(deviceName, textViewDeviceName);
         //update device image
-        if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_REFLECT_AWARE).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.reflect_aware_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_100_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_150nc_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_300_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_700_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_750nc_icon);
-        }
+        UiUtils.setDeviceImage(deviceName, imageViewDevice);
     }
 
     @Override
@@ -299,8 +288,8 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
 
     @Override
     public void receivedAdminEvent(AdminEvent event, Object value) {
-        switch (event){
-            case AccessoryReady:{
+        switch (event) {
+            case AccessoryReady: {
                 PreferenceUtils.setBoolean(PreferenceKeys.RECEIVE_READY, true, mContext);
                 break;
             }
@@ -319,9 +308,9 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppL
 
     @Override
     public void receivedPushNotification(Action action, String command, ArrayList<responseResult> values, Status status) {
-        switch (command){
+        switch (command) {
             case AmCmds.CMD_ANCNotification: {
-                PreferenceUtils.setInt(PreferenceKeys.ANC_VALUE, Integer.valueOf(values.iterator().next().getValue().toString() ), getActivity());
+                PreferenceUtils.setInt(PreferenceKeys.ANC_VALUE, Integer.valueOf(values.iterator().next().getValue().toString()), getActivity());
                 break;
             }
             case AmCmds.CMD_AmbientLevelingNotification: {

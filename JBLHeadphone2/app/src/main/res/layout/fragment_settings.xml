@@ -39,7 +39,7 @@
     <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/deviceName"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="28dp"
         android:layout_below="@id/titleBar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
@@ -101,10 +101,10 @@
                     android:id="@+id/text_view_settings_smart_button"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_item_height"
+                    android:layout_marginEnd="@dimen/settings_item_padding_right"
+                    android:layout_marginStart="@dimen/settings_item_padding_left"
                     android:drawableEnd="@mipmap/button_right_small"
                     android:gravity="start|center_vertical"
-                    android:layout_marginStart="@dimen/settings_item_padding_left"
-                    android:layout_marginEnd="@dimen/settings_item_padding_right"
                     android:text="@string/text_smart_button"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -128,8 +128,8 @@
                     android:layout_height="@dimen/settings_item_height"
                     android:drawableEnd="@mipmap/button_right_small"
                     android:gravity="center_vertical"
-                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:paddingEnd="@dimen/settings_item_padding_right"
+                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:text="@string/sound_x_setup"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -153,12 +153,13 @@
                     android:layout_height="@dimen/settings_item_height"
                     android:drawableEnd="@mipmap/button_right_small"
                     android:gravity="center_vertical"
-                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:paddingEnd="@dimen/settings_item_padding_right"
+                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:text="@string/smart_assistant"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/relative_layout_settings_true_note"
                 android:layout_width="match_parent"
@@ -177,12 +178,13 @@
                     android:layout_height="@dimen/settings_item_height"
                     android:drawableEnd="@mipmap/button_right_small"
                     android:gravity="center_vertical"
-                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:paddingEnd="@dimen/settings_item_padding_right"
+                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:text="@string/true_note"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/relative_layout_settings_auto_off"
                 android:layout_width="match_parent"
@@ -231,8 +233,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentEnd="true"
-                        android:paddingStart="6dp"
                         android:paddingEnd="@dimen/settings_item_padding_right"
+                        android:paddingStart="6dp"
                         android:saveEnabled="true"
                         android:switchMinWidth="0dp"
                         android:text=""
@@ -279,8 +281,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.05"
                         android:gravity="center_vertical"
-                        android:paddingStart="6dp"
                         android:paddingEnd="@dimen/settings_item_padding_right"
+                        android:paddingStart="6dp"
                         android:saveEnabled="true"
                         android:switchMinWidth="0dp"
                         android:text=""
@@ -292,10 +294,10 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:visibility="gone"
                 android:id="@+id/relative_layout_settings_user_manual"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <View
                     android:layout_width="match_parent"
@@ -310,8 +312,8 @@
                     android:layout_height="@dimen/settings_item_height"
                     android:drawableEnd="@mipmap/grey_arrow_right"
                     android:gravity="center_vertical"
-                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:paddingEnd="@dimen/settings_item_padding_right"
+                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:text="@string/user_manual"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -336,8 +338,8 @@
                     android:layout_height="@dimen/settings_item_height"
                     android:drawableEnd="@mipmap/button_right_small"
                     android:gravity="center_vertical"
-                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:paddingEnd="@dimen/settings_item_padding_right"
+                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:text="@string/text_product_help"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -361,8 +363,8 @@
                     android:layout_height="@dimen/settings_item_height"
                     android:layout_marginTop="@dimen/margin5dp"
                     android:gravity="start|center_vertical"
-                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:paddingEnd="@dimen/settings_item_padding_right"
+                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:text="@string/firmware"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -371,26 +373,27 @@
                     android:id="@+id/text_view_settings_firmware_version"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/settings_item_height"
+                    android:layout_alignParentEnd="true"
                     android:layout_marginTop="@dimen/margin5dp"
                     android:gravity="end|center_vertical"
-                    android:visibility="gone"
-                    android:layout_alignParentEnd="true"
-                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:paddingEnd="@dimen/settings_item_padding_right"
+                    android:paddingStart="@dimen/settings_item_padding_left"
                     android:text="0.0.0"
+                    android:textSize="14sp"
                     android:textStyle="normal"
-                    android:textSize="14sp" />
+                    android:visibility="gone" />
+
                 <ImageView
                     android:id="@+id/image_view_settings_download"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/margin5dp"
-                    android:gravity="end|center_vertical"
-                    android:src="@mipmap/button_download"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:paddingStart="@dimen/settings_item_padding_left"
+                    android:layout_marginTop="@dimen/margin5dp"
+                    android:gravity="end|center_vertical"
                     android:paddingEnd="@dimen/settings_item_padding_right"
+                    android:paddingStart="@dimen/settings_item_padding_left"
+                    android:src="@mipmap/button_download"
                     android:textSize="14sp" />
             </RelativeLayout>
 
@@ -417,8 +420,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textStyle="normal"
-             />
+            android:textStyle="normal" />
     </LinearLayout>
 
 </RelativeLayout>
