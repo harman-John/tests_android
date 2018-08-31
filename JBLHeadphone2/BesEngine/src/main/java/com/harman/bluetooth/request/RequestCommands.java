@@ -7,49 +7,49 @@ import com.harman.bluetooth.utils.Logger;
 public class RequestCommands {
     private final static String TAG = RequestCommands.class.getSimpleName();
 
-    public void setAppAck(byte[] payload) {
+    public void setAppAck(String mac, byte[] payload) {
         Logger.d(TAG,"request device info");
         RequestFormat.combine(RequestFormat.SET_APP_ACK,payload);
-        BesEngine.getInstance().sendCommand(RequestFormat.getCommand());
+        BesEngine.getInstance().sendCommand(mac,RequestFormat.getCommand());
     }
 
-    public void setAppBye(byte[] payload) {
+    public void setAppBye(String mac,byte[] payload) {
         Logger.d(TAG,"request device info");
         RequestFormat.combine(RequestFormat.SET_APP_BYE,payload);
-        BesEngine.getInstance().sendCommand(RequestFormat.getCommand());
+        BesEngine.getInstance().sendCommand(mac,RequestFormat.getCommand());
     }
 
-    public void reqDevInfo() {
+    public void reqDevInfo(String mac) {
         Logger.d(TAG,"request device info");
         RequestFormat.combine(RequestFormat.REQ_DEV_INFO);
-        boolean isSend = BesEngine.getInstance().sendCommand(RequestFormat.getCommand());
+        boolean isSend = BesEngine.getInstance().sendCommand(mac,RequestFormat.getCommand());
         Logger.d(TAG,"request device info, isSend = "+isSend+", command: "+ ArrayUtil.bytesToHex(RequestFormat.getCommand()));
     }
 
-    public void reqDevStatus(byte[] type) {
+    public void reqDevStatus(String mac,byte[] type) {
         Logger.d(TAG,"request to set device status");
         RequestFormat.combine(RequestFormat.REQ_DEV_STATUS,type);
-        BesEngine.getInstance().sendCommand(RequestFormat.getCommand());
+        BesEngine.getInstance().sendCommand(mac,RequestFormat.getCommand());
     }
 
     /**
      * Write ANC enable status.
      * @param ancOnOff 0x00/0x01 means OFF/ON
      */
-    public void reqSetANC(byte[] ancOnOff) {
+    public void reqSetANC(String mac,byte[] ancOnOff) {
         Logger.d(TAG,"request to set ANC");
         RequestFormat.combine(RequestFormat.SET_ANC,ancOnOff);
-        BesEngine.getInstance().sendCommand(RequestFormat.getCommand());
+        BesEngine.getInstance().sendCommand(mac,RequestFormat.getCommand());
     }
 
     /**
      * Write AA Mode status.
      * @param aaMode 0x00/0x01 means Talk Thru/Ambient Aware
      */
-    public void reqSetAAMode(byte[] aaMode) {
+    public void reqSetAAMode(String mac,byte[] aaMode) {
         Logger.d(TAG,"request to set AA mode");
         RequestFormat.combine(RequestFormat.SET_AA_MODE,aaMode);
-        BesEngine.getInstance().sendCommand(RequestFormat.getCommand());
+        BesEngine.getInstance().sendCommand(mac,RequestFormat.getCommand());
     }
 
     /**
@@ -58,10 +58,10 @@ public class RequestCommands {
      *              1 bit(MSB): 0/1 means disable/enable
      *              7 bits(LSB): auto off time value /mins
      */
-    public void reqSetAutoOff(byte[] onOff) {
+    public void reqSetAutoOff(String mac,byte[] onOff) {
         Logger.d(TAG,"request to set auto off");
         RequestFormat.combine(RequestFormat.SET_AUTO_OFF,onOff);
-        BesEngine.getInstance().sendCommand(RequestFormat.getCommand());
+        BesEngine.getInstance().sendCommand(mac,RequestFormat.getCommand());
     }
 
     /**
@@ -69,10 +69,10 @@ public class RequestCommands {
      * EQ Presets has 4 types, off/jazz/vocal/bass.
      * Payload length(1 byte): 0 - off, 1 - jazz, 2 - vocal, 3 - bass
      */
-    public void reqSetEQPreset(byte[] presetIndex) {
+    public void reqSetEQPreset(String mac,byte[] presetIndex) {
         Logger.d(TAG,"request to set EQ preset");
         RequestFormat.combine(RequestFormat.SET_EQ_PRESET,presetIndex);
-        BesEngine.getInstance().sendCommand(RequestFormat.getCommand());
+        BesEngine.getInstance().sendCommand(mac,RequestFormat.getCommand());
     }
 
     /**
@@ -85,10 +85,10 @@ public class RequestCommands {
      *      Gain0(1 byte) - Left gain value
      *      Gain1(1 byte) - Right gain value
      */
-    public void reqSetEQSettings(byte[] payload) {
+    public void reqSetEQSettings(String mac,byte[] payload) {
         Logger.d(TAG,"request to set EQ settings");
         RequestFormat.combine(RequestFormat.SET_EQ_SETTINGS,payload);
-        BesEngine.getInstance().sendCommand(RequestFormat.getCommand());
+        BesEngine.getInstance().sendCommand(mac,RequestFormat.getCommand());
     }
 
     /**
@@ -99,10 +99,10 @@ public class RequestCommands {
      *      0x01/Graphic EQ
      *      0x02/Total EQ
      */
-    public void reqCurrentEQ(byte[] payLoad) {
+    public void reqCurrentEQ(String mac,byte[] payLoad) {
         Logger.d(TAG,"request current EQ");
         RequestFormat.combine(RequestFormat.REQ_CURRENT_EQ,payLoad);
-        BesEngine.getInstance().sendCommand(RequestFormat.getCommand());
+        BesEngine.getInstance().sendCommand(mac,RequestFormat.getCommand());
     }
 
 }

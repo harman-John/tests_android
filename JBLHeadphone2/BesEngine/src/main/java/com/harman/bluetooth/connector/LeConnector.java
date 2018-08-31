@@ -54,20 +54,7 @@ public class LeConnector implements BaseConnector{
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this.mBluetoothGatt.getDevice().getAddress().equals(obj.toString())){
-            return true;
-        }
-        return super.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return mBluetoothGatt.getDevice().getAddress().hashCode();
-    }
-
-    @Override
-    public void setListener(List<BesListener> listBesListener) {
+    public void setBesListener(List<BesListener> listBesListener) {
         mListBesListener = listBesListener;
     }
 
@@ -89,8 +76,7 @@ public class LeConnector implements BaseConnector{
         return mBluetoothGatt != null;
     }
 
-    @Override
-    public boolean discoverServices() {
+    private boolean discoverServices() {
         Log.i(TAG , "discoverServices");
         if (mBluetoothGatt != null) {
             return mBluetoothGatt.discoverServices();
@@ -98,8 +84,7 @@ public class LeConnector implements BaseConnector{
         return false;
     }
 
-    @Override
-    public boolean requestMtu(int mtu) {
+    private boolean requestMtu(int mtu) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (mBluetoothGatt != null) {
                 Log.i(TAG , "requestMtu");
@@ -292,7 +277,7 @@ public class LeConnector implements BaseConnector{
     private void notifyMtuChanged(int status, int mtu) {
         synchronized (mListenerLock) {
             for (BesListener listener : mListBesListener) {
-                listener.onMtuChanged(status, mtu);
+                listener.onMtuChanged(mBluetoothGatt.getDevice(),status, mtu);
             }
         }
     }
@@ -311,7 +296,7 @@ public class LeConnector implements BaseConnector{
         synchronized (mListenerLock) {
             BesAction currentAction = BesAction.READ;//do something to classify current action
             for (BesListener listener : mListBesListener) {
-                listener.onBesReceived(data);
+                listener.onBesReceived(mBluetoothGatt.getDevice(),data);
             }
         }
     }

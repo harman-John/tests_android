@@ -237,12 +237,12 @@ public class LeManager implements ScanListener, BesListener {
     }
 
     @Override
-    public void onMtuChanged(int status, int mtu) {
+    public void onMtuChanged(BluetoothDevice bluetoothDevice, int status, int mtu) {
         Logger.d(TAG, "on mtu changed");
     }
 
     @Override
-    public void onBesReceived(byte[] data) {
+    public void onBesReceived(BluetoothDevice bluetoothDevice, byte[] data) {
         String dataString = Arrays.toString(data);
         Logger.d(TAG, "on bes received, data string = " + dataString);
 //        switch (command){
@@ -253,7 +253,7 @@ public class LeManager implements ScanListener, BesListener {
     }
 
     @Override
-    public void onBesUpdateImageState(BesUpdateState state, int progress) {
+    public void onBesUpdateImageState(BluetoothDevice bluetoothDevice, BesUpdateState state, int progress) {
         Logger.d(TAG, "on bes update image state");
     }
 
@@ -267,7 +267,7 @@ public class LeManager implements ScanListener, BesListener {
                     break;
                 }
                 case MSG_DISCONNECT: {
-                    BesEngine.getInstance().disconnect();
+//                    BesEngine.getInstance().disconnect();
                     break;
                 }
                 case MSG_CONNECT_TIME_OUT: {

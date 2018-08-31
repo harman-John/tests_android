@@ -118,7 +118,7 @@ public class BesOtaUpdate implements BesListener {
     private void notifyOtaUpdate(BesUpdateState state, int progress) {
         synchronized (mOtaLock) {
             for (BesListener listener : mListeners) {
-                listener.onBesUpdateImageState(state,progress);
+                listener.onBesUpdateImageState(null,state,progress);
             }
         }
     }
@@ -508,7 +508,7 @@ public class BesOtaUpdate implements BesListener {
 //            message.arg1 = R.string.old_ota_profile;
             message.arg2 = CMD_LOAD_FILE;
             mMsgHandler.sendMessageDelayed(message, 5000);
-            sendData(new byte[]{(byte) 0x80, 0x42, 0x45, 0x53, 0x54, (byte) dataSize, (byte) (dataSize >> 8), (byte) (dataSize >> 16), (byte) (dataSize >> 24), (byte) crc32, (byte) (crc32 >> 8), (byte) (crc32 >> 16), (byte) (crc32 >> 24)});
+            sendData("",new byte[]{(byte) 0x80, 0x42, 0x45, 0x53, 0x54, (byte) dataSize, (byte) (dataSize >> 8), (byte) (dataSize >> 16), (byte) (dataSize >> 24), (byte) crc32, (byte) (crc32 >> 8), (byte) (crc32 >> 16), (byte) (crc32 >> 24)});
         }catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -901,7 +901,7 @@ public class BesOtaUpdate implements BesListener {
             if (mSupportNewOtaProfile || mWritten) {
 
                 if ((mOtaPacketItemCount < mOtaData[mOtaPacketCount].length)) {
-                    boolean sendRet = sendData(mOtaData[mOtaPacketCount][mOtaPacketItemCount]);
+                    boolean sendRet = sendData(null,mOtaData[mOtaPacketCount][mOtaPacketItemCount]);
                     if (!sendRet) {
                         Log.i(TAG, "otaNext write failed , try to resend");
                         sendCmdDelayed(CMD_OTA_NEXT, 40);
@@ -940,7 +940,7 @@ public class BesOtaUpdate implements BesListener {
             }
             Log.i(TAG, "otaConfigNext " + mOtaConfigPacketCount + "; " + mOtaConfigData.length+" mWritten = "+mWritten);
             if (true) {
-                if (!sendData(mOtaConfigData[mOtaConfigPacketCount])){
+                if (!sendData(null,mOtaConfigData[mOtaConfigPacketCount])){
                     Log.e(TAG, "otaConfigNext write failed");
                     sendCmdDelayed(CMD_OTA_CONFIG_NEXT, 10);
                 } else {
@@ -972,7 +972,7 @@ public class BesOtaUpdate implements BesListener {
 
 
     @Override
-    public void onBesReceived(byte[] data){
+    public void onBesReceived(BluetoothDevice bluetoothDevice,byte[] data){
 //    }
 //    @Override
 //    public void onReceive(byte[] data) {
@@ -1070,8 +1070,8 @@ public class BesOtaUpdate implements BesListener {
 //
 //    protected abstract void saveLastDeviceAddress(String address);
 
-    private boolean sendData(byte[] data){
-        return BesEngine.getInstance().sendCommand(data);
+    private boolean sendData(String mac,byte[] data){
+        return BesEngine.getInstance().sendCommand(mac,data);
     }
 
     private boolean isBle(){
@@ -1179,12 +1179,12 @@ public class BesOtaUpdate implements BesListener {
     }
 
     @Override
-    public void onMtuChanged(int status, int mtu) {
+    public void onMtuChanged(BluetoothDevice bluetoothDevice,int status, int mtu) {
 
     }
 
     @Override
-    public void onBesUpdateImageState(BesUpdateState state, int progress) {
+    public void onBesUpdateImageState(BluetoothDevice bluetoothDevice,BesUpdateState state, int progress) {
 
     }
 }
