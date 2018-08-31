@@ -82,7 +82,6 @@ public class ProductListManager {
 
     public void checkHalfConnectDevice(Set<MyDevice> devicesSet) {
         if (devicesSet.size()<= 0){
-            Logger.i(TAG, "check half connect devices, devicesSet size is 0, no need to check");
             return;
         }
         Logger.i(TAG, "check half connect devices, devicesSet size= " + devicesSet.size());
@@ -107,5 +106,6 @@ public class ProductListManager {
         }
         myDeviceMem.connectStatus = connectStatus;
         Logger.i(TAG, "check connect status, connect status: "+connectStatus);
+        mOnCheckDevicesListener.onCheckDevices();
     }
 }
