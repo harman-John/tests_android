@@ -33,11 +33,6 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 
-/**
- * AppUtils
- * <p>
- * Created by darren.lu on 08/06/2017.
- */
 public class AppUtils {
     private static final String TAG = AppUtils.class.getSimpleName();
     public static boolean IS_DEBUG = BuildConfig.DEBUG ? true : false;

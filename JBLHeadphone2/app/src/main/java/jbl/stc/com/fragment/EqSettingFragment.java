@@ -12,7 +12,6 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -21,8 +20,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -39,7 +36,6 @@ import java.util.List;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.HomeActivity;
-import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.adapter.EqRecyclerAdapter;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.CircleModel;
@@ -549,7 +545,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""), mContext);
         Logger.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, getResources().getString(R.string.off)));
         if (currSelectedEq != null && currSelectedEq.eqName != null) {
-            if (application.deviceInfo.eqOn) {
+            if (application.globalEqInfo.eqOn) {
                 for (int i = 0; i < eqModelList.size(); i++) {
                     if (currSelectedEq.eqName.equals(eqModelList.get(i).eqName)) {
                         eqModelList.get(i).isSelected = true;
@@ -559,7 +555,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                     }
                 }
             }
-            if (application.deviceInfo.eqOn) {
+            if (application.globalEqInfo.eqOn) {
                 eqNameText.setText(currSelectedEq.eqName);
                 eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.white));
             } else {
@@ -820,7 +816,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         currSelectedEqIndex = eqIndex;
         eqNameText.setText(currSelectedEq.eqName);
         eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-        application.deviceInfo.eqOn = true;
+        application.globalEqInfo.eqOn = true;
         for (EQModel model : eqModelList) {
             model.isSelected = false;
         }

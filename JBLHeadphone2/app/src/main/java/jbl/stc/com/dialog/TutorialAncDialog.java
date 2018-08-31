@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -281,25 +280,25 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                 break;
             }
             case 1: {
-                ((JBLApplication) DashboardActivity.getDashboardActivity().getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) DashboardActivity.getDashboardActivity().getApplication()).globalEqInfo.eqOn = true;
                 textViewEqName.setText(R.string.jazz);
                 frameLayoutEqInfo.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 2: {
-                ((JBLApplication) DashboardActivity.getDashboardActivity().getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) DashboardActivity.getDashboardActivity().getApplication()).globalEqInfo.eqOn = true;
                 textViewEqName.setText(R.string.vocal);
                 frameLayoutEqInfo.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 3: {
-                ((JBLApplication) DashboardActivity.getDashboardActivity().getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) DashboardActivity.getDashboardActivity().getApplication()).globalEqInfo.eqOn = true;
                 textViewEqName.setText(R.string.bass);
                 frameLayoutEqInfo.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 4: {
-                ((JBLApplication) DashboardActivity.getDashboardActivity().getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) DashboardActivity.getDashboardActivity().getApplication()).globalEqInfo.eqOn = true;
                 String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getContext(), null);
                 if (name != null) {
                     textViewEqName.setText(name);
@@ -447,8 +446,8 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                 setTextViewTips(R.string.tutorial_tips_six);
                 EQModel currSelectedEq = new EQModel();
                 JBLApplication application = (JBLApplication) mActivity.getApplication();
-                currSelectedEq.id = application.deviceInfo.maxEqId + 1;
-                currSelectedEq.index = application.deviceInfo.maxEqId + 1;
+                currSelectedEq.id = application.globalEqInfo.maxEqId + 1;
+                currSelectedEq.index = application.globalEqInfo.maxEqId + 1;
                 currSelectedEq.eqType = GraphicEQPreset.User.value();
                 mEqAddView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.white);
                 mTutorialEqSystemParentLayout.setVisibility(View.VISIBLE);

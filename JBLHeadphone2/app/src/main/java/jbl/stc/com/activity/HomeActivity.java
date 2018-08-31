@@ -934,7 +934,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 case MSG_UPDATE_CUSTOM_EQ: {
                     relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
-                    ((JBLApplication) getApplication()).deviceInfo.eqOn = true;
+                    ((JBLApplication) getApplication()).globalEqInfo.eqOn = true;
                     String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getApplicationContext(), null);
                     PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, name, getApplicationContext());
                     Logger.d(TAG, "turnOnEq name:" + name);
@@ -1003,7 +1003,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             case 1: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.jazz), this);
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.jazz), this);
-                ((JBLApplication) getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) getApplication()).globalEqInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.jazz));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
@@ -1011,7 +1011,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             case 2: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.vocal), this);
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.vocal), this);
-                ((JBLApplication) getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) getApplication()).globalEqInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.vocal));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
@@ -1019,7 +1019,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             case 3: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.bass), this);
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.bass), this);
-                ((JBLApplication) getApplication()).deviceInfo.eqOn = true;
+                ((JBLApplication) getApplication()).globalEqInfo.eqOn = true;
                 textViewCurrentEQ.setText(getString(R.string.bass));
                 relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;

@@ -30,7 +30,7 @@ public class BesEngine implements IBesEngine {
 
     private BesOtaUpdate besOtaUpdate;
 
-    private Object mLock = new Object();
+    private final Object mLock = new Object();
     private final static String TAG = BesEngine.class.getSimpleName();
 
 //    private LeConnectorListener mLeConnectListener;
@@ -59,6 +59,7 @@ public class BesEngine implements IBesEngine {
         mLeConnector.setListener(listeners);
         boolean result = mLeConnector.connect(context, bluetoothDevice);
         if(!result){
+            Logger.d(TAG,"connect failed, close le connector");
             mLeConnector.close();
         }
         return result;

@@ -2,9 +2,7 @@ package com.avnera.smartdigitalheadset;
 
 import android.util.Log;
 
-/**
- * Created by darren.lu on 28/3/2017.
- */
+
 public class Logger {
     public static boolean DEBUG = true;
 

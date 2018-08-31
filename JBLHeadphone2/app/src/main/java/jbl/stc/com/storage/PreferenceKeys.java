@@ -1,9 +1,6 @@
 package jbl.stc.com.storage;
 
-/**
- * PreferenceKeys
- * Created by darren.lu on 08/06/2017.
- */
+
 public class PreferenceKeys {
 
     public static final String SHOW_JBL_BRAND_FIRST_TIME = "show_jbl_brand_first_time";

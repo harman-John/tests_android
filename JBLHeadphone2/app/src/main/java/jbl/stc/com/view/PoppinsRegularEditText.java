@@ -7,11 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 
-/**
- * font face Poppins-Regular EditText
- * Created by darren.lu on 2017/8/25.
- */
-
 public class PoppinsRegularEditText extends AppCompatEditText {
 
     public PoppinsRegularEditText(Context context) {

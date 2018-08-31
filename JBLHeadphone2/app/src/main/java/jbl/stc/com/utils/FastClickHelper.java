@@ -1,9 +1,5 @@
 package jbl.stc.com.utils;
 
-/**
- * FastClickHelper
- * Created by darren.lu on 08/06/2017.
- */
 public class FastClickHelper {
 
     private static long lastClickTime;

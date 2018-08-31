@@ -1,9 +1,6 @@
 package jbl.stc.com.constant;
 
-/**
- * EqDbKey
- * Created by darren.lu on 2017/8/10.
- */
+
 public interface EqDbKey {
     /**
      * Table Column

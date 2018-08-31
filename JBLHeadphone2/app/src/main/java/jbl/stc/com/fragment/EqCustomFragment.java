@@ -3,8 +3,6 @@ package jbl.stc.com.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,11 +38,6 @@ import jbl.stc.com.utils.ToastUtil;
 import jbl.stc.com.view.EqualizerAddView;
 import jbl.stc.com.view.KeyboardLayout;
 
-
-/**
- * Custom Eq screen
- * Created by darren.lu on 08/11/2017.
- */
 public class EqCustomFragment extends BaseFragment implements View.OnClickListener {
     public static final String EXTRA_IS_ADD = "IS_ADD";
     public static final String EXTRA_EQ_MODEL = "EQ_MODEL";
@@ -138,12 +131,12 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                     Logger.d(TAG,"click back");
                     if (isAddOperate) {
                         EQSettingManager.get().deleteEQ(currSelectedEq.eqName, getActivity());
-                        if (application.deviceInfo.eqOn) {
+                        if (application.globalEqInfo.eqOn) {
                             currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(),
                                     ""), getActivity());
                             if (currSelectedEq == null) {
                                 currSelectedEq = new EQModel();
-                                application.deviceInfo.eqOn = false;
+                                application.globalEqInfo.eqOn = false;
                             }
                         }
                     }
@@ -175,15 +168,15 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         }
         firstTimeAddEqTipText.setVisibility(View.GONE);
         if (isAddOperate) {
-            if (!application.deviceInfo.hasEq) {
+            if (!application.globalEqInfo.hasEq) {
                 firstTimeAddEqTipText.setVisibility(View.VISIBLE);
                 mHandler.postDelayed(textUpRunnable, 1500);
             }
             currSelectedEq.eqName = getNewEqName();
             eqNameEdit.setText(currSelectedEq.eqName);
             if (isAddOperate) {
-                currSelectedEq.id = application.deviceInfo.maxEqId + 1;
-                currSelectedEq.index = application.deviceInfo.maxEqId + 1;
+                currSelectedEq.id = application.globalEqInfo.maxEqId + 1;
+                currSelectedEq.index = application.globalEqInfo.maxEqId + 1;
                 currSelectedEq.eqType = GraphicEQPreset.User.value();
                 EQSettingManager.get().addCustomEQ(currSelectedEq, mContext);
             }
@@ -256,12 +249,12 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                 hideSoftKeyBoard();
                 if (isAddOperate) {
                     EQSettingManager.get().deleteEQ(currSelectedEq.eqName, getActivity());
-                    if (application.deviceInfo.eqOn) {
+                    if (application.globalEqInfo.eqOn) {
                         currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getActivity(),
                                 ""), getActivity());
                         if (currSelectedEq == null) {
                             currSelectedEq = new EQModel();
-                            application.deviceInfo.eqOn = false;
+                            application.globalEqInfo.eqOn = false;
                         }
                     }
                 }
@@ -280,7 +273,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         operationStatus = EQSettingManager.get().updateCustomEQ(currSelectedEq, updateEqName, mContext);
         if (isAddOperate) {
             //ToastUtil.ToastLong(mContext, "add custom eq success!");
-            application.deviceInfo.maxEqId++;
+            application.globalEqInfo.maxEqId++;
             //AnalyticsManager.getInstance(getActivity()).reportNewEQ(eqName);
             setResultOk();
         } else if (operationStatus == EQSettingManager.OperationStatus.UPDATED) {
@@ -363,12 +356,12 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         hideSoftKeyBoard();
         PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, currSelectedEq.eqName, mContext);
         if (isAddOperate) {
-            application.deviceInfo.eqOn = true;
+            application.globalEqInfo.eqOn = true;
         }
         if (onCustomEqListener != null) {
             onCustomEqListener.onCustomEqResult(currSelectedEq, isAddOperate);
         } else {
-            application.deviceInfo.hasEq = true;
+            application.globalEqInfo.hasEq = true;
             ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
             switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
         }

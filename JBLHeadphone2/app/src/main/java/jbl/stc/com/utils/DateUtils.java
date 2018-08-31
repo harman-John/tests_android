@@ -6,10 +6,6 @@ import java.util.Date;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
-/**
- * DateUtils
- * Created by darren.lu on 8/15/2017.
- */
 public class DateUtils {
 
     public static final long ONE_SECOND = 1000;

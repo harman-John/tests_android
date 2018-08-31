@@ -11,10 +11,7 @@ import java.util.Set;
 
 import jbl.stc.com.constant.JBLConstant;
 
-/**
- * PreferenceUtils
- * Created by darren.lu on 08/06/2017.
- */
+
 public class PreferenceUtils {
     /**
      * <p> Saves string to the preference with provided key and value</p>

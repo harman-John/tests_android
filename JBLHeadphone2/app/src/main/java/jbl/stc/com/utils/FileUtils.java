@@ -10,10 +10,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-/**
- * FileUtils
- * Created by darren.lu on 8/15/2017.
- */
 public class FileUtils {
 
     public static final String DefaultCharset = "UTF-8";

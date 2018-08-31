@@ -8,11 +8,6 @@ import android.view.MotionEvent;
 
 import jbl.stc.com.logger.Logger;
 
-/**
- * AppImageView
- * Created by darren.lu on 2017/8/26.
- */
-
 public class AppImageView extends AppCompatImageView {
     private static final String TAG = AppImageView.class.getSimpleName();
 

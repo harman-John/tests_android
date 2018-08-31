@@ -14,10 +14,6 @@ import jbl.stc.com.constant.EqDbKey;
 import jbl.stc.com.logger.Logger;
 
 
-/**
- * DatabaseHelper
- * Created by darren.lu on 08/09/2017.
- */
 public class DatabaseHelper extends SQLiteOpenHelper implements EqDbKey {
     private final static String DATABASE_NAME = "AKG.db";
     private final static int version = 1;

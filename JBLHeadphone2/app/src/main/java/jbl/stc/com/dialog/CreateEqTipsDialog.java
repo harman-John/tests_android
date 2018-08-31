@@ -10,10 +10,6 @@ import android.view.WindowManager;
 import jbl.stc.com.R;
 import jbl.stc.com.listener.OnDialogListener;
 
-/**
- * CreateMyOwnEqDialog
- * Created by darren.lu on 2017/11/1.
- */
 public class CreateEqTipsDialog extends Dialog {
     private OnDialogListener onDialogListener;
 

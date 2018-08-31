@@ -1,10 +1,5 @@
 package jbl.stc.com.entity;
 
-/**
- * CircleModel
- * <p>
- * Created by darren.lu on 08/09/2017.
- */
 public class CircleModel {
     private float x, y, r;
 

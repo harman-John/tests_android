@@ -7,11 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
-/**
- * font face Poppins-Regular TextView
- * Created by darren.lu on 2017/8/25.
- */
-
 public class PoppinsRegularTextView extends AppCompatTextView {
 
     public PoppinsRegularTextView(Context context) {

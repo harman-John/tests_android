@@ -14,11 +14,6 @@ import android.widget.LinearLayout;
 
 import jbl.stc.com.R;
 
-
-/**
- * StatusBarUtil
- * Created by darren.lu on 08/06/2017.
- */
 public class StatusBarUtil {
 
     public static final int DEFAULT_STATUS_BAR_ALPHA = 0; // 0 ~ 255

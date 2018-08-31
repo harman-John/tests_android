@@ -11,10 +11,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 
-/**
- * UiUtils
- * Created by darren.lu on 08/06/2017.
- */
 public class UiUtils {
 
     public static float getTextViewLength(TextView textView, String text) {

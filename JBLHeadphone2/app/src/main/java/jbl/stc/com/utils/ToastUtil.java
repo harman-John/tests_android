@@ -3,11 +3,6 @@ package jbl.stc.com.utils;
 import android.content.Context;
 import android.widget.Toast;
 
-/**
- * ToastUtil
- * <p>
- * Created by darren.lu on 08/06/2017.
- */
 public class ToastUtil {
 
     public static Toast gToast = null;

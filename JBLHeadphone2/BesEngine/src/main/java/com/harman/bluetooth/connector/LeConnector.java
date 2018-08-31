@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 
@@ -29,8 +30,8 @@ public class LeConnector implements BaseConnector{
 
     private final String TAG = getClass().getSimpleName();
 
-    public static final int LE_SUCCESS = 0;
-    public static final int LE_ERROR = 1;
+    private static final int LE_SUCCESS = 0;
+    private static final int LE_ERROR = 1;
 
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
@@ -50,28 +51,20 @@ public class LeConnector implements BaseConnector{
     private List<BesListener> mListBesListener;
     private static final int DEFAULT_MTU = 512;
     public LeConnector() {
-//        mConnectorListeners = new ArrayList<>();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this.mBluetoothGatt.getDevice().getAddress().equals(obj.toString())){
+            return true;
+        }
+        return super.equals(obj);
+    }
 
-
-
-//
-//    @Override
-//    public void addConnectListener(ConnectorListener connectorListener) {
-//        synchronized (mListenerLock) {
-//            if (!mConnectorListeners.contains(connectorListener)) {
-//                mConnectorListeners.add(connectorListener);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void removeConnectListener(ConnectorListener connectorListener) {
-//        synchronized (mListenerLock) {
-//            mConnectorListeners.remove(connectorListener);
-//        }
-//    }
+    @Override
+    public int hashCode() {
+        return mBluetoothGatt.getDevice().getAddress().hashCode();
+    }
 
     @Override
     public void setListener(List<BesListener> listBesListener) {
@@ -127,33 +120,37 @@ public class LeConnector implements BaseConnector{
         if (mBluetoothGatt != null) {
             BluetoothGattService gattService = mBluetoothGatt.getService(service);
             if (gattService == null) {
+                Log.i(TAG,"enable characteristic notify, gatt service is null");
                 return false;
             }
             BluetoothGattCharacteristic gattCharacteristic = gattService.getCharacteristic(rxCharacteristic);
             if (gattCharacteristic == null) {
+                Log.i(TAG,"enable characteristic notify, gatt characteristic is null");
                 return false;
             }
             BluetoothGattDescriptor gattDescriptor = gattCharacteristic.getDescriptor(descriptor);
             if (gattDescriptor == null) {
+                Log.i(TAG,"enable characteristic notify, gatt descriptor is null");
                 return false;
             }
             if (!mBluetoothGatt.setCharacteristicNotification(gattCharacteristic, true)) {
-                Log.i(TAG , " enable  characteristic notify set error");
+                Log.i(TAG , "enable characteristic notify set error");
                 return false;
             }
             if (!gattDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)) {
-                Log.i(TAG , " enable  characteristic notify set value error");
+                Log.i(TAG , "enable characteristic notify set value error");
                 return false;
             }
             mDescriptor = descriptor;
             return mBluetoothGatt.writeDescriptor(gattDescriptor);
         }
+        Log.i(TAG , "enable  characteristic notify, mBluetoothGatt is null");
         return false;
     }
 
     @Override
     public void close() {
-        Log.i(TAG , "close()");
+        Log.i(TAG , "close");
         if (mBluetoothGatt != null) {
             mBluetoothGatt.disconnect();
         }
@@ -205,7 +202,15 @@ public class LeConnector implements BaseConnector{
     public boolean write(byte[] data) {
         if (mBluetoothGatt != null) {
             boolean isValueSet = mCharacteristicTx.setValue(data);
+
+            Log.i(TAG, "write, mBluetoothGatt is not null, properties = "+mCharacteristicTx.getProperties() );
             Log.i(TAG, "write, mBluetoothGatt is not null, is value set = "+isValueSet );
+            Log.i(TAG, "write, mBluetoothGatt is not null, get value = "+ ArrayUtil.bytesToHex(mCharacteristicTx.getValue()));
+            if (mCharacteristicTx.getService() == null){
+                Log.i(TAG, "write, mBluetoothGatt is not null, service is null");
+                return false;
+            }
+
             if (isValueSet) {
                 mCharacteristicTx.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
                 mBluetoothGatt.setCharacteristicNotification(mCharacteristicTx, true);
