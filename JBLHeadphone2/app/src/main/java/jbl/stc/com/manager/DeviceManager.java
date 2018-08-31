@@ -262,7 +262,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 Logger.d(TAG, "a2dp runnable, device is found, return");
                 return;
             }
-            Logger.d(TAG, "a2dp runnable ... isConnected = " + isConnected);
+//            Logger.d(TAG, "a2dp runnable ... isConnected = " + isConnected);
             startA2DPCheck();
             mHandler.postDelayed(a2dpRunnable, 2000);
         }
@@ -288,11 +288,10 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 List<BluetoothDevice> deviceList = proxy.getConnectedDevices();
                 devicesSet.clear();
                 for (BluetoothDevice bluetoothDevice : deviceList) {
-                    Logger.d(TAG, "a2dp listener, connected device, name = " + bluetoothDevice.getName()
-                            + ",address = " + bluetoothDevice.getAddress()
-                            + ",position =" + position);
                     MyDevice myDevice = AppUtils.getMyDevice(bluetoothDevice.getName(), ConnectStatus.A2DP_HALF_CONNECTED, "", bluetoothDevice.getAddress());
                     if (myDevice != null) {
+                        Logger.d(TAG, "a2dp listener, half connected device, name = " + bluetoothDevice.getName()
+                            + ",address = " + bluetoothDevice.getAddress());
                         devicesSet.add(myDevice);
                         SaveSetUtil.saveSet(mContext, devicesSet);
                     }

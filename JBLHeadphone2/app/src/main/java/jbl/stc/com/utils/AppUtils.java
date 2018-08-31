@@ -333,11 +333,11 @@ public class AppUtils {
             myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_100;
         } else if (deviceName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_300)) {
             myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_300;
-        } else if (deviceName.toUpperCase().contains(JBLConstant.DEVICE_LIVE_650BTNC)) {
+        } else if (pid != null && pid.toUpperCase().equals(JBLConstant.DEVICE_LIVE_650BTNC_PID)) {
             myDevice.deviceName = JBLConstant.DEVICE_LIVE_650BTNC;
-        } else if (deviceName.toUpperCase().contains(JBLConstant.DEVICE_LIVE_400BT)) {
+        } else if (pid != null && pid.toUpperCase().equals(JBLConstant.DEVICE_LIVE_400BT_PID)) {
             myDevice.deviceName = JBLConstant.DEVICE_LIVE_400BT;
-        } else if (deviceName.toUpperCase().contains(JBLConstant.DEVICE_LIVE_500BT)) {
+        } else if (pid != null && pid.toUpperCase().equals(JBLConstant.DEVICE_LIVE_500BT_PID)) {
             myDevice.deviceName = JBLConstant.DEVICE_LIVE_500BT;
         } else {
             return null;

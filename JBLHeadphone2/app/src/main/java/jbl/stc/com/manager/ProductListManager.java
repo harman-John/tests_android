@@ -43,6 +43,7 @@ public class ProductListManager {
             return;
         }
         for(MyDevice myDevice: devicesSet){
+            myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
             Logger.i(TAG, "init device set, stored device key: " + myDevice.deviceKey);
             myDeviceMap.put(myDevice.mac,myDevice);
         }

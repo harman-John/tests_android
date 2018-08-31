@@ -31,6 +31,7 @@ import jbl.stc.com.listener.OnRetListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.scan.LeLollipopScanner;
 import jbl.stc.com.scan.ScanListener;
+import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.SaveSetUtil;
 
 public class LeManager implements ScanListener, BesListener {
@@ -127,22 +128,27 @@ public class LeManager implements ScanListener, BesListener {
     public void onFound(BluetoothDevice device, String pid) {
         leLollipopScanner.stopScan();
         String key = pid + "-" + device.getAddress();
-        Logger.d(TAG, "on found key = " + key);
-        MyDevice myDevice = null;
+        devicesSet.clear();
         if (pid.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT_PID)) {
-            myDevice = ProductListManager.getInstance().getDeviceByKey(device.getAddress());
-        }
-        if (myDevice == null) {
-            Logger.d(TAG,"on found, my device is null, firstly, connect device in bt settings.");
-            return;
-        }
-        devicesSet.add(myDevice);
-        SaveSetUtil.saveSet(mContext, devicesSet);
-        ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
-        if (!DeviceManager.getInstance(mContext).isConnected()) {
-            BesEngine.getInstance().addListener(this);
-            boolean result = BesEngine.getInstance().connect(mContext, device);
-            Logger.d(TAG, "on found, connect result = " + result);
+            Logger.d(TAG, "on found key = " + key);
+            MyDevice myDevice = ProductListManager.getInstance().getDeviceByKey(device.getAddress());
+            if (myDevice == null) {
+                myDevice = AppUtils.getMyDevice(device.getName(), ConnectStatus.A2DP_UNCONNECTED, pid, device.getAddress());
+                devicesSet.add(myDevice);
+                SaveSetUtil.saveSet(mContext,devicesSet);
+            }
+
+            if (myDevice == null) {
+                Logger.e(TAG,"on found, my device is null");
+                return;
+            }
+            SaveSetUtil.saveSet(mContext, devicesSet);
+            ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
+            if (!DeviceManager.getInstance(mContext).isConnected()) {
+                BesEngine.getInstance().addListener(this);
+                boolean result = BesEngine.getInstance().connect(mContext, device);
+                Logger.d(TAG, "on found, connect result = " + result);
+            }
         }
     }
 
@@ -194,7 +200,7 @@ public class LeManager implements ScanListener, BesListener {
 
     //For connection callbacks
     @Override
-    public void onBesConnectStatus(BluetoothDevice bluetoothDevice, final boolean isConnected) {
+    public void onBesConnectStatus(final BluetoothDevice bluetoothDevice, final boolean isConnected) {
         Logger.d(TAG, "on bes connect status, isConnected = " + isConnected);
         synchronized (mLock) {
             if (DeviceManager.getInstance(mContext).isConnected()) {
@@ -203,13 +209,9 @@ public class LeManager implements ScanListener, BesListener {
                 return;
             }
             mIsConnected = isConnected;
-            MyDevice myDevice = null;
-            for (MyDevice tempDevice : devicesSet) {
-                if (tempDevice.mac != null && tempDevice.mac.equals(bluetoothDevice.getAddress())) {
-                    myDevice = tempDevice;
-                }
-            }
+            MyDevice myDevice = ProductListManager.getInstance().getDeviceByKey(bluetoothDevice.getAddress());
             if (myDevice == null) {
+                Logger.d(TAG, "on bes connect status, myDevice is null");
                 return;
             }
             if (isConnected) {
@@ -217,12 +219,13 @@ public class LeManager implements ScanListener, BesListener {
             } else {
                 myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
             }
-
+            final String mac = myDevice.mac;
+            final int status = myDevice.connectStatus;
             Logger.d(TAG, "on bes connect status, my device is " + myDevice.deviceKey);
-            ProductListManager.getInstance().checkConnectStatus(myDevice.mac,myDevice.connectStatus);
             mContext.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    ProductListManager.getInstance().checkConnectStatus(mac, status);
                     for (OnConnectStatusListener listener : mOnConnectStatusListeners) {
                         listener.onConnectStatus(isConnected);
                     }
