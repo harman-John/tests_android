@@ -235,6 +235,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 textViewAmbientAware.setText(R.string.smart_ambient);
             }
         }
+
         updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
         initEvent();
         setDeviceImageHeight();

@@ -98,6 +98,7 @@
                     android:id="@+id/relative_layout_tutorial_dialog_noise_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="128dp"
+                    android:layout_marginRight="30dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
@@ -126,7 +127,6 @@
                     android:id="@+id/relative_layout_tutorial_dialog_ambient_aware"
                     android:layout_width="wrap_content"
                     android:layout_height="128dp"
-                    android:layout_marginLeft="30dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     android:visibility="visible">
