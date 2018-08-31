@@ -141,12 +141,6 @@ public class EqualizerView extends View {
 //        return (int) (Math.ceil(fm.descent - fm.ascent) / 3);
 //    }
 
-
-    @Override
-    public boolean performClick() {
-        return super.performClick();
-    }
-
     private Canvas mCanvas;
 
     @Override

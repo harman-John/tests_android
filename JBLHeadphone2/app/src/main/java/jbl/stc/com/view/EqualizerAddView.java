@@ -1,5 +1,6 @@
 package jbl.stc.com.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -11,7 +12,6 @@ import android.graphics.Path;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,10 +44,7 @@ public class EqualizerAddView extends View {
     private int customHeight = 0;
     private int[] mEqFreqArray = new int[]{32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000};
     private int[] mVerticalLineArray = new int[]{32, 250, 2000, 16000};
-    private int lowTextStart = 80;
-    private int midTextStart = 600;
-    private int highTextStart = 5000;
-    private int[] mHorizontalName = new int[]{20, 10, 0, -10, -20};
+//    private int[] mHorizontalName = new int[]{20, 10, 0, -10, -20};
 
     private float[] mEqPointX, mEqPointY;
 
@@ -66,12 +63,7 @@ public class EqualizerAddView extends View {
     private float marginTop;
     private float marginBottom;
     private float textMarginBottom;
-    private float freqTextWidth;
-    private float dbTextWidth;
     private float nearPointFreqX;
-    private String freqText;
-    private String dbText;
-    private float touchLineWidth;
 
     private int maxFrequency = mEqFreqArray[mEqFreqArray.length - 1];
     private int minFrequency = mEqFreqArray[0];
@@ -151,7 +143,7 @@ public class EqualizerAddView extends View {
         //mLinePaint.setPathEffect(new DashPathEffect(new float[]{6, 6}, 0));
         mLinePaint.setStrokeWidth(1);
 
-        touchLineWidth = dp2px(45);
+        float touchLineWidth = dp2px(45);
         //touchLinePaint.setColor(ContextCompat.getColor(mContext, R.color.equalizer_view_touch_line));
         touchLinePaint.setARGB(76,255,255,255);
         touchLinePaint.setAntiAlias(true);
@@ -211,15 +203,15 @@ public class EqualizerAddView extends View {
         return mHeight - marginBottom - marginTop;
     }
 
-    private String getHoriName(int i) {
-        String temp = i + "";
-        if (temp.length() == 1) {
-            temp = "  " + temp;
-        } else if (temp.length() == 2) {
-            temp = " " + temp;
-        }
-        return temp;
-    }
+//    private String getHoriName(int i) {
+//        String temp = i + "";
+//        if (temp.length() == 1) {
+//            temp = "  " + temp;
+//        } else if (temp.length() == 2) {
+//            temp = " " + temp;
+//        }
+//        return temp;
+//    }
 
 //    public int getFontHeight(Paint paint) {
 //        Paint.FontMetrics fm = paint.getFontMetrics();
@@ -246,14 +238,14 @@ public class EqualizerAddView extends View {
         drawCurveChart(canvas);
 
         if (touchX > 0 && touchY > 0) {
-            freqText = getFreqFromX(touchX) + "Hz";
+            String freqText = getFreqFromX(touchX) + "Hz";
             int db = (int) (getDbValueFromY(touchY));
-            dbText = db + "dB";
+            String dbText = db + "dB";
             if (db > 0) {
                 dbText = "+" + dbText;
             }
-            freqTextWidth = mTextPaint.measureText(freqText);
-            dbTextWidth = mTextPaint.measureText(dbText);
+            float freqTextWidth = mTextPaint.measureText(freqText);
+            float dbTextWidth = mTextPaint.measureText(dbText);
 
             canvas.drawText(freqText, touchX - freqTextWidth / 2, dp2px(20), mTextPaint);
             if (touchX >= (mWidth / 2)) {
@@ -288,7 +280,7 @@ public class EqualizerAddView extends View {
         mLinePaint.setStyle(Paint.Style.FILL);
         mLinePaint.setPathEffect(new DashPathEffect(new float[]{dp2px(5), dp2px(5)}, 0));
         mLinePaint.setStrokeWidth(dp2px(1));
-        float startHorizontalY = getRelativelyY((maxValue + minValue) / 2);
+//        float startHorizontalY = getRelativelyY((maxValue + minValue) / 2);
         //canvas.drawLine(0, startHorizontalY- marginBottom/2, mWidth, startHorizontalY- marginBottom/2, mLinePaint);
         canvas.drawLine(marginLeft, (mHeight - marginBottom + marginTop) / 2, mWidth-marginRight, (mHeight - marginBottom + marginTop) / 2, mLinePaint);
 
@@ -302,8 +294,8 @@ public class EqualizerAddView extends View {
         mLinePaint.setAntiAlias(true);
         mLinePaint.setStyle(Paint.Style.FILL);
         mLinePaint.setStrokeWidth(1);
-        for (int i = 0; i < mVerticalLineArray.length; i++) {
-            float startVerticalX = getRelativelyX(mVerticalLineArray[i]);
+        for (int aMVerticalLineArray : mVerticalLineArray) {
+            float startVerticalX = getRelativelyX(aMVerticalLineArray);
             canvas.drawLine(startVerticalX, marginTop, startVerticalX, mHeight - marginBottom, mLinePaint);
         }
 
@@ -346,10 +338,13 @@ public class EqualizerAddView extends View {
         }else {
             mTextPaint.setColor(ContextCompat.getColor(mContext, R.color.text_white_80));
         }
+        int lowTextStart = 80;
         float lowStartX = getRelativelyX(lowTextStart);
         canvas.drawText("LOW", lowStartX, textMarginBottom, mTextPaint);
+        int midTextStart = 600;
         float midStartX = getRelativelyX(midTextStart);
         canvas.drawText("MID", midStartX, textMarginBottom, mTextPaint);
+        int highTextStart = 5000;
         float highStartX = getRelativelyX(highTextStart);
         canvas.drawText("HIGH", highStartX, textMarginBottom, mTextPaint);
     }
@@ -377,14 +372,12 @@ public class EqualizerAddView extends View {
         Logger.d(TAG, "calculate_x size" + String.valueOf(calculate_x.size()));
         float nearX;
         float lastX;
-        float lastY;
-        if (calculate_x != null && calculate_y != null && calculate_y.size() >= calculate_x.size()) {
+        if (calculate_y != null && calculate_y.size() >= calculate_x.size()) {
             curvePath.moveTo(calculate_x.get(0).evaluate(0), calculate_y.get(0).evaluate(0));
             allPointCircles.add(produceCirce(calculate_x.get(0).evaluate(0), calculate_y.get(0).evaluate(0), CIRCLE_R));
             nearX = calculate_x.get(0).evaluate(0);
             for (int i = 0; i < calculate_x.size(); i++) {
                 lastX = calculate_x.get(i).evaluate(1);
-                lastY = calculate_y.get(i).evaluate(1);
                 for (int j = 1; j <= STEP; j++) {
                     float u = j / (float) STEP;
                     float lineToX = calculate_x.get(i).evaluate(u);
@@ -552,19 +545,22 @@ public class EqualizerAddView extends View {
     private int getDefaultWidth() {
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
+        if (wm != null)
+            wm.getDefaultDisplay().getMetrics(outMetrics);
         return Math.max(outMetrics.widthPixels, outMetrics.heightPixels) - 2 * dp2px(20);
     }
 
     private int getDefaultHeight() {
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
+        if (wm != null)
+            wm.getDefaultDisplay().getMetrics(outMetrics);
         return Math.min(outMetrics.widthPixels, outMetrics.heightPixels) -
                 mContext.getResources().getDimensionPixelSize(R.dimen.equalizer_button_layout_height) - 2 * dp2px(10);
     }
 
     private OnTouchListener onTouchListener = new OnTouchListener() {
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             switch (event.getAction()) {

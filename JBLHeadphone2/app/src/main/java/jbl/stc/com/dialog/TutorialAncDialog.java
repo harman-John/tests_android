@@ -1,18 +1,13 @@
 package jbl.stc.com.dialog;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -113,12 +108,17 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                 onDialogListener.onConfirm();
             }
         });
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
         Window window = getWindow();
+        WindowManager.LayoutParams lp = null;
+        if (window!= null)
+            lp = getWindow().getAttributes();
+        if (lp != null) {
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        }
 //        window.setWindowAnimations(R.style.style_down_to_top);
-        window.setAttributes(lp);
+        if (window!= null)
+            window.setAttributes(lp);
 
         deviceName = ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).deviceName;
         RelativeLayout relativeLayoutNoiceCancel = findViewById(R.id.relative_layout_tutorial_dialog_noise_cancel);
@@ -152,7 +152,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         int height = UiUtils.getDashboardDeviceImageHeight(mActivity);
         Logger.d(TAG, "height:" + height);
         int statusHeight = UiUtils.getStatusHeight(mActivity);
-        height = (int) (height - statusHeight / 2);
+        height = height - statusHeight / 2;
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imageViewDevice.getLayoutParams();
         params.height = height;
         params.width = height;
@@ -317,70 +317,75 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         }
     }
 
-    private void showTripleArrowsAnimation() {
-        final Animation tripleArrowsAnim = AnimationUtils.loadAnimation(JBLApplication.getJBLApplicationContext(), R.anim.anim_triple_up_arrow);
-        tripleUpArrow.setAnimation(tripleArrowsAnim);
-        tripleUpArrow.setVisibility(View.VISIBLE);
+//    @SuppressLint("ClickableViewAccessibility")
+//    private void showTripleArrowsAnimation() {
+//        final Animation tripleArrowsAnim = AnimationUtils.loadAnimation(JBLApplication.getJBLApplicationContext(), R.anim.anim_triple_up_arrow);
+//        tripleUpArrow.setAnimation(tripleArrowsAnim);
+//        tripleUpArrow.setVisibility(View.VISIBLE);
+//
+//
+////        final GestureDetector gestureDetector = new GestureDetector(gestureListener);
+//        final GestureDetector gestureDetector = new GestureDetector(mActivity, gestureListener);
+//
+//        frameLayoutEqInfo.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                return gestureDetector.onTouchEvent(event);
+//            }
+//
+//        });
+//
+//    }
 
-        final GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
-            @Override
-            public boolean onDown(MotionEvent e) {
-                return false;
-            }
-
-            @Override
-            public void onShowPress(MotionEvent e) {
-
-            }
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                return false;
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                return false;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent e) {
-
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (e1.getY() - e2.getY() > 25 && Math.abs(velocityY) > 25) {
-                    tripleUpArrow.clearAnimation();
-                    tripleUpArrow.setVisibility(View.GONE);
-                    Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-                    if (fr == null) {
-                        Logger.i(TAG, "fr is null");
-                        return false;
-                    }
-                    if (fr instanceof EqSettingFragment) {
-                        Logger.i(TAG, "fr is already showed");
-                        return false;
-                    }
-                    DashboardActivity.getDashboardActivity().switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
-                    hideEqInfo();
-                    setTextViewTips(R.string.tutorial_tips_five);
-                    hideSkip();
-                    showAdd();
-                }
-                return false;
-            }
-        };
-        final GestureDetector gestureDetector = new GestureDetector(gestureListener);
-        frameLayoutEqInfo.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
-            }
-
-        });
-
-    }
+//    private GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
+//        @Override
+//        public boolean onDown(MotionEvent e) {
+//            return false;
+//        }
+//
+//        @Override
+//        public void onShowPress(MotionEvent e) {
+//
+//        }
+//
+//        @Override
+//        public boolean onSingleTapUp(MotionEvent e) {
+//            return false;
+//        }
+//
+//        @Override
+//        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+//            return false;
+//        }
+//
+//        @Override
+//        public void onLongPress(MotionEvent e) {
+//
+//        }
+//
+//        @Override
+//        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+//            if (e1.getY() - e2.getY() > 25 && Math.abs(velocityY) > 25) {
+//                tripleUpArrow.clearAnimation();
+//                tripleUpArrow.setVisibility(View.GONE);
+//                Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+//                if (fr == null) {
+//                    Logger.i(TAG, "fr is null");
+//                    return false;
+//                }
+//                if (fr instanceof EqSettingFragment) {
+//                    Logger.i(TAG, "fr is already showed");
+//                    return false;
+//                }
+//                DashboardActivity.getDashboardActivity().switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+//                hideEqInfo();
+//                setTextViewTips(R.string.tutorial_tips_five);
+//                hideSkip();
+//                showAdd();
+//            }
+//            return false;
+//        }
+//    };
 
     @Override
     public void onClick(View v) {
