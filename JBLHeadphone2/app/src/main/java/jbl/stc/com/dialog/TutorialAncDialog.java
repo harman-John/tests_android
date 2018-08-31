@@ -1,11 +1,11 @@
 package jbl.stc.com.dialog;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,15 +28,16 @@ import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.config.DeviceFeatureMap;
 import jbl.stc.com.config.Feature;
+import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.fragment.EqSettingFragment;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.listener.OnEqChangeListener;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
-import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.EqualizerAddView;
@@ -57,21 +58,13 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     private TextView textViewEqName;
     private TextView textViewSkip;
     private RelativeLayout relativeLayoutAdd;
-    private RelativeLayout relativeLayoutNoiceCancel;
     private RelativeLayout relativeLayoutAmbientAware;
-    private ImageView imageViewAbientAware;
-    private TextView textViewAmbientAware;
-    private View viewDivider;
-    private AppImageView imageViewArrowUp;
-    private TextView textViewEq;
     private TextView textViewEqGrey;
-    private String modelNumber;
     private EqualizerAddView mEqAddView;
-    private KeyboardLayout mKeyboardLayout;
     private FrameLayout tutorialEqualizerLayout;
     private RelativeLayout mTutorialEqSystemParentLayout;
     private AppImageView tripleUpArrow;
-
+    private String deviceName;
     private final static String TAG = TutorialAncDialog.class.getSimpleName();
 
     public void setOnDialogListener(OnDialogListener onDialogListener) {
@@ -81,8 +74,6 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     public TutorialAncDialog(FragmentActivity context) {
         super(context, R.style.AppDialog);
         mActivity = context;
-        modelNumber = AppUtils.getModelNumber(getContext());
-        Logger.d(TAG, "modelNumber:" + modelNumber);
         initUI();
     }
 
@@ -90,7 +81,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         setCanceledOnTouchOutside(true);
         setCancelable(true);
         setContentView(R.layout.dialog_tutorial_anc);
-        mKeyboardLayout = findViewById(R.id.tutorial_viewKeyboardLayout);
+        KeyboardLayout mKeyboardLayout = findViewById(R.id.tutorial_viewKeyboardLayout);
         mKeyboardLayout.setOnKeyboardStateChangedListener(onKeyboardStateChangedListener);
         tutorialEqualizerLayout = findViewById(R.id.tutorial_equalizerLayout);
         mTutorialEqSystemParentLayout = findViewById(R.id.tutorial_eq_system_parent_layout);
@@ -104,9 +95,6 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         textViewSkip.setOnClickListener(this);
         relativeLayoutAdd = findViewById(R.id.relative_layout_tutorial_dialog_add);
         relativeLayoutAdd.setOnClickListener(this);
-        viewDivider = findViewById(R.id.view_dialog_eq_divider);
-        imageViewArrowUp = findViewById(R.id.image_view_tutorial_dialog_arrow_up);
-        textViewEq = findViewById(R.id.text_view_tutorial_dialog_eq);
         relativeLayoutEqGrey = findViewById(R.id.relative_layout_tutorial_dialog_eq_grey);
         textViewEqGrey = findViewById(R.id.text_view_tutorial_dialog_eq_grey);
         textViewEqGrey.setOnClickListener(this);
@@ -132,8 +120,9 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
 //        window.setWindowAnimations(R.style.style_down_to_top);
         window.setAttributes(lp);
 
-        relativeLayoutNoiceCancel = findViewById(R.id.relative_layout_tutorial_dialog_noise_cancel);
-        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_NOISE_CANCEL)) {
+        deviceName = ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).deviceName;
+        RelativeLayout relativeLayoutNoiceCancel = findViewById(R.id.relative_layout_tutorial_dialog_noise_cancel);
+        if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_NOISE_CANCEL)) {
             relativeLayoutNoiceCancel.setVisibility(View.GONE);
         } else {
             relativeLayoutNoiceCancel.setVisibility(View.VISIBLE);
@@ -142,13 +131,13 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         }
 
         relativeLayoutAmbientAware = findViewById(R.id.relative_layout_tutorial_dialog_ambient_aware);
-        if (!DeviceFeatureMap.isFeatureSupported(modelNumber, Feature.ENABLE_AMBIENT_AWARE) || isShowOnlyNoiceCancelingType()) {
+        if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_AMBIENT_AWARE) || isShowOnlyNoiceCancelingType()) {
             relativeLayoutAmbientAware.setVisibility(View.GONE);
         } else {
             relativeLayoutAmbientAware.setVisibility(View.VISIBLE);
-            imageViewAbientAware = findViewById(R.id.image_view_tutorial_dialog_ambient_aware);
+            ImageView imageViewAbientAware = findViewById(R.id.image_view_tutorial_dialog_ambient_aware);
             imageViewAbientAware.setOnClickListener(this);
-            textViewAmbientAware = findViewById(R.id.text_view_tutorial_dialog_ambient_aware);
+            TextView textViewAmbientAware = findViewById(R.id.text_view_tutorial_dialog_ambient_aware);
             if (isShowOnlySmartAmbientType()) {
                 textViewAmbientAware.setText(R.string.smart_ambient);
             }
@@ -195,13 +184,13 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     };
 
     private boolean isShowOnlySmartAmbientType() {
-        return (modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
-                || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
-                || modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA));
+        return (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
+                || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
+                || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA));
     }
 
     private boolean isShowOnlyNoiceCancelingType() {
-        return (modelNumber.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC));
+        return (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC));
     }
 
     public void setChecked(boolean isChecked) {
@@ -251,7 +240,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         }
     }
 
-    public void hideEqInfo() {
+    private void hideEqInfo() {
         if (frameLayoutEqInfo != null) {
             frameLayoutEqInfo.setVisibility(View.GONE);
         }
@@ -387,7 +376,6 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return gestureDetector.onTouchEvent(event);
-
             }
 
         });

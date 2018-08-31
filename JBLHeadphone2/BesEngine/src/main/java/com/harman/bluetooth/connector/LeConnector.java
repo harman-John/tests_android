@@ -188,7 +188,6 @@ public class LeConnector implements BaseConnector{
         if (mBluetoothGatt != null) {
             boolean isValueSet = mCharacteristicTx.setValue(data);
 
-            Log.i(TAG, "write, mBluetoothGatt is not null, properties = "+mCharacteristicTx.getProperties() );
             Log.i(TAG, "write, mBluetoothGatt is not null, is value set = "+isValueSet );
             Log.i(TAG, "write, mBluetoothGatt is not null, get value = "+ ArrayUtil.bytesToHex(mCharacteristicTx.getValue()));
             if (mCharacteristicTx.getService() == null){
@@ -199,7 +198,9 @@ public class LeConnector implements BaseConnector{
             if (isValueSet) {
                 mCharacteristicTx.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
                 mBluetoothGatt.setCharacteristicNotification(mCharacteristicTx, true);
-                return mBluetoothGatt.writeCharacteristic(mCharacteristicTx);
+                boolean isWriteSuccess = mBluetoothGatt.writeCharacteristic(mCharacteristicTx);
+                Log.i(TAG, "write, mBluetoothGatt is not null, isWriteSuccess = "+isWriteSuccess );
+                return isWriteSuccess;
             }
         }
         Log.i(TAG, "write, mBluetoothGatt is null" );

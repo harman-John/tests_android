@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.SurfaceHolder;
@@ -42,8 +43,8 @@ public class SplashActivity extends FragmentActivity implements SurfaceHolder.Ca
         setContentView(R.layout.activity_splash);
 
 
-        mPreview = (SurfaceView) findViewById(R.id.videoHolder);
-        viewSwitcher = (ViewSwitcher) findViewById(R.id.viewswicther);
+        mPreview = findViewById(R.id.videoHolder);
+        viewSwitcher = findViewById(R.id.viewswicther);
         viewSwitcher.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -93,7 +94,6 @@ public class SplashActivity extends FragmentActivity implements SurfaceHolder.Ca
     private void showLegalFragment(){
         boolean legalPersist = PreferenceUtils.getBoolean(PreferenceKeys.LEGAL_PERSIST,getApplicationContext());
         if (!legalPersist){
-            Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
             LegalLandingFragment legalLandingFragment = new LegalLandingFragment();
             legalLandingFragment.setOnDismissListener(new DismissListener(){
 
@@ -139,14 +139,9 @@ public class SplashActivity extends FragmentActivity implements SurfaceHolder.Ca
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_CODE: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                }
-                return;
             }
         }
     }

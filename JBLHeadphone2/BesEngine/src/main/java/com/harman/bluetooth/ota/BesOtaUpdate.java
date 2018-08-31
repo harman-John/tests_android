@@ -1,6 +1,5 @@
 package com.harman.bluetooth.ota;
 
-import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Handler;
@@ -9,8 +8,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
-import com.harman.bluetooth.constants.BesAction;
-import com.harman.bluetooth.constants.BesCommandType;
 import com.harman.bluetooth.constants.BesUpdateState;
 import com.harman.bluetooth.constants.Constants;
 import com.harman.bluetooth.engine.BesEngine;
@@ -19,7 +16,6 @@ import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.ProfileUtils;
 import com.harman.bluetooth.utils.SPHelper;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,10 +26,10 @@ public class BesOtaUpdate implements BesListener {
     private final static String TAG = BesOtaUpdate.class.getSimpleName();
 
     protected static final String KEY_OTA_FILE = "ota_file";
-    protected static final String OTA_FILE = "ota.bin";
+    private static final String OTA_FILE = "ota.bin";
 
-    protected static final byte[] OTA_PASS_RESPONSE = new byte[]{0x11, 0x22};
-    protected static final byte[] OTA_RESEND_RESPONSE = new byte[]{0x33, 0x44};
+    private static final byte[] OTA_PASS_RESPONSE = new byte[]{0x11, 0x22};
+    private static final byte[] OTA_RESEND_RESPONSE = new byte[]{0x33, 0x44};
 
     protected static final int DEFAULT_MTU = 512;
 
@@ -47,78 +43,79 @@ public class BesOtaUpdate implements BesListener {
     private static final int MSG_UPDATE_RESULT_INFO = 0x04;
 
 
-//    protected static final int CMD_CONNECT = 0x80;
-    protected static final int CMD_DISCONNECT = 0x81;
-    protected static final int CMD_LOAD_FILE = 0x82;
-    protected static final int CMD_START_OTA = 0x83;
-    protected static final int CMD_OTA_NEXT = 0x84;
-//    protected static final int CMD_SEND_FILE_INFO = 0x85;
-    protected static final int CMD_LOAD_FILE_FOR_NEW_PROFILE = 0x86;
-    protected static final int CMD_RESEND_MSG = 0X88 ;
-    protected static final int CMD_LOAD_FILE_FOR_NEW_PROFILE_SPP = 0X89 ;
-    protected static final int CMD_LOAD_OTA_CONFIG = 0x90;
-    protected static final int CMD_START_OTA_CONFIG = 0x91;
-    protected static final int CMD_OTA_CONFIG_NEXT = 0x92;
+    //    protected static final int CMD_CONNECT = 0x80;
+    private static final int CMD_DISCONNECT = 0x81;
+    private static final int CMD_LOAD_FILE = 0x82;
+    private static final int CMD_START_OTA = 0x83;
+    private static final int CMD_OTA_NEXT = 0x84;
+    //    protected static final int CMD_SEND_FILE_INFO = 0x85;
+    private static final int CMD_LOAD_FILE_FOR_NEW_PROFILE = 0x86;
+    private static final int CMD_RESEND_MSG = 0X88;
+    private static final int CMD_LOAD_FILE_FOR_NEW_PROFILE_SPP = 0X89;
+    private static final int CMD_LOAD_OTA_CONFIG = 0x90;
+    private static final int CMD_START_OTA_CONFIG = 0x91;
+    private static final int CMD_OTA_CONFIG_NEXT = 0x92;
 
-    protected static final int STATE_IDLE = 0x00;
-    protected static final int STATE_CONNECTING = 0x01;
-    protected static final int STATE_CONNECTED = 0x02;
+    private static final int STATE_IDLE = 0x00;
+    private static final int STATE_CONNECTING = 0x01;
+    private static final int STATE_CONNECTED = 0x02;
     protected static final int STATE_DISCONNECTING = 0x03;
-    protected static final int STATE_DISCONNECTED = 0x04;
-    protected static final int STATE_OTA_ING = 0x05;
-    protected static final int STATE_OTA_FAILED = 0x06;
-    protected static final int STATE_OTA_CONFIG = 0x07;
+    private static final int STATE_DISCONNECTED = 0x04;
+    private static final int STATE_OTA_ING = 0x05;
+    private static final int STATE_OTA_FAILED = 0x06;
+    private static final int STATE_OTA_CONFIG = 0x07;
     protected static final int STATE_BUSY = 0x0F;
 
-    protected volatile int mState = STATE_IDLE;
+    private volatile int mState = STATE_IDLE;
     protected BluetoothDevice mDevice;
 
-    protected boolean mExit = false;
+    private boolean mExit = false;
 
-    protected HandlerThread mCmdThread;
-    protected CmdHandler mCmdHandler;
+    private HandlerThread mCmdThread;
+    private CmdHandler mCmdHandler;
 
-    protected byte[][][] mOtaData;
-    protected int mOtaPacketCount = 0;
-    protected int mOtaPacketItemCount = 0;
-    protected boolean mSupportNewOtaProfile = false;
+    private byte[][][] mOtaData;
+    private int mOtaPacketCount = 0;
+    private int mOtaPacketItemCount = 0;
+    private boolean mSupportNewOtaProfile = false;
 
-    protected byte[][] mOtaConfigData;
-    protected int mOtaConfigPacketCount = 0;
+    private byte[][] mOtaConfigData;
+    private int mOtaConfigPacketCount = 0;
 
-    protected int totalPacketCount = 0 ;
+    private int totalPacketCount = 0;
 
-    protected Object mOtaLock = new Object();
+    private final Object mOtaLock = new Object();
 
-    protected int mMtu;
+    private int mMtu;
 
-    protected volatile boolean mWritten = true;
+    private volatile boolean mWritten = true;
 
     private final String OTA_CONFIG_TAG = "ota_config";
 //    private OtaConfigFragment mOtaConfigDialog;
 
-    protected long castTime ;//temp data for log
-    protected long sendMsgFailCount = 0 ;//temp data for log
-    protected long otaImgSize = 0 ;
+    private long castTime;//temp data for log
+    protected long sendMsgFailCount = 0;//temp data for log
+    private long otaImgSize = 0;
 
-    protected final int RECONNECT_MAX_TIMES = 5 ; // 5 times
-    protected final int RECONNECT_SPAN = 3000 ; // 3 seconds
-    protected int reconnectTimes = 0 ;
+    protected final int RECONNECT_MAX_TIMES = 5; // 5 times
+    protected final int RECONNECT_SPAN = 3000; // 3 seconds
+    private int reconnectTimes = 0;
 
-    protected int totalCount = 0 ;
-    protected int failedCount = 0 ;
+    private int totalCount = 0;
+    private int failedCount = 0;
 
     private Context mContext;
 
     private List<BesListener> mListeners;
-    public void setListener(List<BesListener> listeners){
+
+    public void setListener(List<BesListener> listeners) {
         mListeners = listeners;
     }
 
     private void notifyOtaUpdate(BesUpdateState state, int progress) {
         synchronized (mOtaLock) {
             for (BesListener listener : mListeners) {
-                listener.onBesUpdateImageState(null,state,progress);
+                listener.onBesUpdateImageState(null, state, progress);
             }
         }
     }
@@ -173,20 +170,28 @@ public class BesOtaUpdate implements BesListener {
 //        mOtaConfigDialog.setOtaConfigCallback(mOtaConfigCallback);
 //    }
 
-    private Handler mMsgHandler = new Handler() {
+    private OtaHandler mOtaHandler = new OtaHandler(Looper.getMainLooper());
+
+
+    private class OtaHandler extends Handler {
+
+        OtaHandler(Looper looper){
+            super(looper);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_UPDATE_INFO:
 //                    mOtaInfo.setText(msg.obj.toString());
                     break;
-                case MSG_UPDATE_RESULT_INFO :
+                case MSG_UPDATE_RESULT_INFO:
 //                    if(mUpdateStatic != null){
 //                        mUpdateStatic.setText(msg.obj.toString());
 //                    }
                     break;
                 case MSG_UPDATE_PROGRESS:
-                    notifyOtaUpdate(BesUpdateState.UpdateSuccess,(Integer)msg.obj);
+                    notifyOtaUpdate(BesUpdateState.UpdateSuccess, (Integer) msg.obj);
 //                    if(mOtaProgress != null){
 //                        mOtaProgress.setProgress((Integer) msg.obj);
 //                    }else{
@@ -206,7 +211,9 @@ public class BesOtaUpdate implements BesListener {
                 default:// donot left the default , even nothing to do
             }
         }
-    };
+    }
+
+    ;
 
     private boolean isIdle() {
         return mState == STATE_IDLE || mState == STATE_OTA_FAILED || mState == STATE_DISCONNECTED;
@@ -242,16 +249,16 @@ public class BesOtaUpdate implements BesListener {
         mCmdHandler = new CmdHandler(mCmdThread.getLooper());
     }
 
-//    @Override
+    //    @Override
 //    protected void onDestroy() {
 //        super.onDestroy();
 //        Log.i(TAG , "onDestroy");
-    private void close(){
-        if(mMsgHandler != null){
-            mMsgHandler.removeMessages(MSG_SEND_INFO_TIME_OUT);
-            mMsgHandler.removeMessages(MSG_OTA_TIME_OUT);
+    private void close() {
+        if (mOtaHandler != null) {
+            mOtaHandler.removeMessages(MSG_SEND_INFO_TIME_OUT);
+            mOtaHandler.removeMessages(MSG_OTA_TIME_OUT);
         }
-        if(mCmdHandler != null){
+        if (mCmdHandler != null) {
             mCmdHandler.removeMessages(CMD_OTA_NEXT);
             mCmdHandler.removeMessages(CMD_OTA_CONFIG_NEXT);
         }
@@ -331,43 +338,43 @@ public class BesOtaUpdate implements BesListener {
 //        updateInfo(getString(info));
 //    }
 
-    protected void updateResultInfo(String info) {
-        Message message = mMsgHandler.obtainMessage(MSG_UPDATE_RESULT_INFO);
+    private void updateResultInfo(String info) {
+        Message message = mOtaHandler.obtainMessage(MSG_UPDATE_RESULT_INFO);
         message.obj = info;
-        mMsgHandler.sendMessage(message);
+        mOtaHandler.sendMessage(message);
     }
 
-    protected void updateInfo(String info) {
-        Message message = mMsgHandler.obtainMessage(MSG_UPDATE_INFO);
+    private void updateInfo(String info) {
+        Message message = mOtaHandler.obtainMessage(MSG_UPDATE_INFO);
         message.obj = info;
-        mMsgHandler.sendMessage(message);
+        mOtaHandler.sendMessage(message);
     }
 
-    protected void updateProgress(int progress) {
-        Message message = mMsgHandler.obtainMessage(MSG_UPDATE_PROGRESS);
+    private void updateProgress(int progress) {
+        Message message = mOtaHandler.obtainMessage(MSG_UPDATE_PROGRESS);
         message.obj = progress;
-        mMsgHandler.sendMessage(message);
+        mOtaHandler.sendMessage(message);
     }
 
-    protected void sendCmdDelayed(int cmd, long millis) {
+    private void sendCmdDelayed(int cmd, long millis) {
         mCmdHandler.removeMessages(cmd);
-        if(millis == 0){
+        if (millis == 0) {
             mCmdHandler.sendEmptyMessage(cmd);
-        }else{
+        } else {
             mCmdHandler.sendEmptyMessageDelayed(cmd, millis);
         }
     }
 
-    protected void sendTimeout( int cmd, long millis) {
-        Log.i(TAG, "sendTimeout cmd "+cmd +" ; millis "+millis);
-        Message message = mMsgHandler.obtainMessage(MSG_OTA_TIME_OUT);
+    private void sendTimeout(int cmd, long millis) {
+        Log.i(TAG, "sendTimeout cmd " + cmd + " ; millis " + millis);
+        Message message = mOtaHandler.obtainMessage(MSG_OTA_TIME_OUT);
         message.arg2 = cmd;
-        mMsgHandler.sendMessageDelayed(message, millis);
+        mOtaHandler.sendMessageDelayed(message, millis);
     }
 
     protected void removeTimeout() {
         Log.i(TAG, "removeTimeout");
-        mMsgHandler.removeMessages(MSG_OTA_TIME_OUT);
+        mOtaHandler.removeMessages(MSG_OTA_TIME_OUT);
     }
 
 //    private void onPickDevice(int resultCode, Intent data) {
@@ -394,7 +401,7 @@ public class BesOtaUpdate implements BesListener {
     protected void onConnecting() {
         Log.i(TAG, "onConnecting");
 //        LogUtils.writeForOTAStatic(TAG , "onConnecting ");
-        castTime = System.currentTimeMillis() ;//startTime
+        castTime = System.currentTimeMillis();//startTime
 //        updateInfo(R.string.connecting_device);
         mState = STATE_CONNECTING;
     }
@@ -405,7 +412,7 @@ public class BesOtaUpdate implements BesListener {
 //        LogUtils.writeForOTAStatic(TAG , "onConnected ");
 //        updateInfo(R.string.connected);
         mState = STATE_CONNECTED;
-        reconnectTimes = 0 ;
+        reconnectTimes = 0;
     }
 
     protected void onConnectFailed() {
@@ -418,7 +425,7 @@ public class BesOtaUpdate implements BesListener {
     protected void onLoadFileFailed() {
         Log.i(TAG, "onLoadFileFailed");
 //        updateInfo(R.string.load_file_failed);
-        notifyOtaUpdate(BesUpdateState.UpdateFail,-1);
+        notifyOtaUpdate(BesUpdateState.UpdateFail, -1);
     }
 
     protected void onLoadFileSuccessfully() {
@@ -430,7 +437,7 @@ public class BesOtaUpdate implements BesListener {
     protected void onLoadOtaConfigFailed() {
         Log.i(TAG, "onLoadOtaConfigFailed");
 //        updateInfo(R.string.load_ota_config_failed);
-        notifyOtaUpdate(BesUpdateState.UpdateFail,-1);
+        notifyOtaUpdate(BesUpdateState.UpdateFail, -1);
     }
 
     protected void onLoadOtaConfigSuccessfully() {
@@ -442,7 +449,7 @@ public class BesOtaUpdate implements BesListener {
     protected void onOtaOver() {
         Log.i(TAG, "onOtaOver");
         totalCount++;
-        String result = "升级统计结果：总升级次数 = "+totalCount+"  失败次数 = "+failedCount ;
+        String result = "升级统计结果：总升级次数 = " + totalCount + "  失败次数 = " + failedCount;
         updateResultInfo(result);
 //        int updateTime = (int)((System.currentTimeMillis() - castTime)/1000) ;
 //        String msg = "升级成功 耗时 "+updateTime+" s"+" 重发包数 "+sendMsgFailCount+" 速度 :"+otaImgSize/(updateTime == 0?otaImgSize:updateTime)+" B/s";
@@ -452,7 +459,7 @@ public class BesOtaUpdate implements BesListener {
 //        updateProgress(100);
         mOtaPacketCount = 0;
         mOtaPacketItemCount = 0;
-        mOtaConfigPacketCount = 0 ;
+        mOtaConfigPacketCount = 0;
         mState = STATE_IDLE;
     }
 
@@ -467,10 +474,10 @@ public class BesOtaUpdate implements BesListener {
 //        LogUtils.writeForOTAStatic(TAG , msg);
 //        msg = "升级失败 耗时 "+updateTime+" s"+" 速度 :"+otaImgSize/(updateTime == 0?otaImgSize:updateTime)+" B/s";
 //        updateInfo(msg);
-        reconnectTimes = 0 ;
+        reconnectTimes = 0;
         mOtaPacketCount = 0;
         mOtaPacketItemCount = 0;
-        mOtaConfigPacketCount = 0 ;
+        mOtaConfigPacketCount = 0;
         mState = STATE_OTA_FAILED;
     }
 
@@ -478,19 +485,19 @@ public class BesOtaUpdate implements BesListener {
 //        updateInfo(R.string.ota_config_failed);
         mOtaConfigData = null;
         mOtaConfigPacketCount = 0;
-        mOtaConfigPacketCount = 0 ;
+        mOtaConfigPacketCount = 0;
         mState = STATE_IDLE;
     }
 
     protected void onWritten() {
         mWritten = true;
-        Log.i(TAG , "onWritten mWritten = true");
+        Log.i(TAG, "onWritten mWritten = true");
     }
 
     public void sendFileInfo(Context context) {
         mContext = context;
         mState = STATE_CONNECTED;
-        reconnectTimes = 0 ;
+        reconnectTimes = 0;
         Log.i(TAG, "sendFileInfo MSG_SEND_INFO_TIME_OUT");
         //FileInputStream inputStream = null;
         InputStream inputStream = null;
@@ -498,17 +505,17 @@ public class BesOtaUpdate implements BesListener {
             //inputStream = new FileInputStream(getOtaFile());
             inputStream = mContext.getAssets().open(getOtaFile());
             int totalSize = inputStream.available();
-            otaImgSize = totalSize ; //TODO :TEMP ADD
+            otaImgSize = totalSize; //TODO :TEMP ADD
             int dataSize = totalSize - 4;
             byte[] data = new byte[dataSize];
             inputStream.read(data, 0, dataSize);
             long crc32 = ArrayUtil.crc32(data, 0, dataSize);
-            Message message = mMsgHandler.obtainMessage(MSG_SEND_INFO_TIME_OUT);
+            Message message = mOtaHandler.obtainMessage(MSG_SEND_INFO_TIME_OUT);
 //            message.arg1 = R.string.old_ota_profile;
             message.arg2 = CMD_LOAD_FILE;
-            mMsgHandler.sendMessageDelayed(message, 5000);
-            sendData("",new byte[]{(byte) 0x80, 0x42, 0x45, 0x53, 0x54, (byte) dataSize, (byte) (dataSize >> 8), (byte) (dataSize >> 16), (byte) (dataSize >> 24), (byte) crc32, (byte) (crc32 >> 8), (byte) (crc32 >> 16), (byte) (crc32 >> 24)});
-        }catch (Exception e) {
+            mOtaHandler.sendMessageDelayed(message, 5000);
+            sendData("", new byte[]{(byte) 0x80, 0x42, 0x45, 0x53, 0x54, (byte) dataSize, (byte) (dataSize >> 8), (byte) (dataSize >> 16), (byte) (dataSize >> 24), (byte) crc32, (byte) (crc32 >> 8), (byte) (crc32 >> 16), (byte) (crc32 >> 24)});
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
@@ -524,18 +531,18 @@ public class BesOtaUpdate implements BesListener {
     private void loadOtaConfig() {
         Log.e(TAG, "loadOtaConfig");
         //FileInputStream inputStream = null;
-        InputStream inputStream=null;
+        InputStream inputStream = null;
         try {
             //inputStream = new FileInputStream(getOtaFile());
             inputStream = mContext.getAssets().open(getOtaFile());
             int totalSize = inputStream.available();
-            int dataSize = totalSize ;
+            int dataSize = totalSize;
             byte[] data = new byte[dataSize];
             inputStream.read(data, 0, dataSize);
 
             int configLength = 92;
             byte[] config = new byte[configLength];
-            int lengthOfFollowingData = configLength - 4 ;
+            int lengthOfFollowingData = configLength - 4;
             config[0] = (byte) lengthOfFollowingData;
             config[1] = (byte) (lengthOfFollowingData >> 8);
             config[2] = (byte) (lengthOfFollowingData >> 16);
@@ -581,13 +588,13 @@ public class BesOtaUpdate implements BesListener {
             if (updateBtAddress) {
                 String btAddress = (String) SPHelper.getPreference(mContext, Constants.KEY_OTA_CONFIG_UPDATE_BT_ADDRESS_VALUE, "");
                 for (int i = 0; i < 6; i++) {
-                    config[76 + 5-i] = Integer.valueOf(btAddress.substring(i, i * 2 + 2), 16).byteValue();
+                    config[76 + 5 - i] = Integer.valueOf(btAddress.substring(i, i * 2 + 2), 16).byteValue();
                 }
             }
             if (updateBleAddress) {
                 String bleAddress = (String) SPHelper.getPreference(mContext, Constants.KEY_OTA_CONFIG_UPDATE_BLE_ADDRESS_VALUE, "");
                 for (int i = 0; i < 6; i++) {
-                    config[82 + 5-i] = Integer.valueOf(bleAddress.substring(i, i * 2 + 2), 16).byteValue();
+                    config[82 + 5 - i] = Integer.valueOf(bleAddress.substring(i, i * 2 + 2), 16).byteValue();
                 }
             }
             long crc32 = ArrayUtil.crc32(config, 0, configLength - 4);
@@ -616,9 +623,9 @@ public class BesOtaUpdate implements BesListener {
         } catch (IOException e) {
             e.printStackTrace();
             mOtaConfigData = null;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 if (inputStream != null) {
                     inputStream.close();
@@ -638,55 +645,55 @@ public class BesOtaUpdate implements BesListener {
         Log.i(TAG, "loadFileForNewProfile");
         mSupportNewOtaProfile = true;
         //FileInputStream inputStream = null;
-        InputStream inputStream=null;
+        InputStream inputStream = null;
         try {
             //inputStream = new FileInputStream(getOtaFile());
-            inputStream=mContext.getAssets().open(getOtaFile());
+            inputStream = mContext.getAssets().open(getOtaFile());
             int totalSize = inputStream.available();
             int dataSize = totalSize - 4;
             int mtu = getMtu();
-            int packetPayload = ProfileUtils.calculateBLESinglePacketLen(dataSize , mtu , isBle());
+            int packetPayload = ProfileUtils.calculateBLESinglePacketLen(dataSize, mtu, isBle());
             int totalPacketCount = (dataSize + packetPayload - 1) / packetPayload;
             int onePercentBytes = ProfileUtils.calculateBLEOnePercentBytes(dataSize);
-            int crcCount = (dataSize + onePercentBytes -1 )/onePercentBytes ;
-            this.totalPacketCount = totalPacketCount ;
-            mOtaData = new byte[crcCount+1][][];
+            int crcCount = (dataSize + onePercentBytes - 1) / onePercentBytes;
+            this.totalPacketCount = totalPacketCount;
+            mOtaData = new byte[crcCount + 1][][];
             Log.e(TAG, "new profile imgeSize: " + dataSize + "; totalPacketCount " + totalPacketCount + "; onePercentBytes " + onePercentBytes + "; crcCount " + crcCount);
             byte[] data = new byte[dataSize];
             inputStream.read(data, 0, dataSize);
-            int position = 0 ;
+            int position = 0;
             for (int i = 0; i < crcCount; i++) {
-                int crcBytes = onePercentBytes ; //要校验百分之一的数据量
-                if(packetPayload == 0){
-                    Log.e(TAG , ">>");
+                int crcBytes = onePercentBytes; //要校验百分之一的数据量
+                if (packetPayload == 0) {
+                    Log.e(TAG, ">>");
                 }
-                int length = (crcBytes + packetPayload - 1)/packetPayload; //根据MTU ，算出百分之一需要多少个包满足要求
-                if(crcCount - 1 == i){ // 最后一包取余数
-                    crcBytes = dataSize - position ;
-                    length = (crcBytes + packetPayload - 1)/packetPayload;
+                int length = (crcBytes + packetPayload - 1) / packetPayload; //根据MTU ，算出百分之一需要多少个包满足要求
+                if (crcCount - 1 == i) { // 最后一包取余数
+                    crcBytes = dataSize - position;
+                    length = (crcBytes + packetPayload - 1) / packetPayload;
                 }
-                Log.i(TAG , "CRC BYTES = "+crcBytes);
+                Log.i(TAG, "CRC BYTES = " + crcBytes);
                 mOtaData[i] = new byte[length + 1][]; //加 1 为增加最后结束整包校验命令
-                int realySinglePackLen = 0 ;
-                int crcPosition = position ;
-                int tempCount = 0 ;
+                int realySinglePackLen = 0;
+                int crcPosition = position;
+                int tempCount = 0;
                 for (int j = 0; j < length; j++) {
-                    realySinglePackLen = packetPayload ;
+                    realySinglePackLen = packetPayload;
                     if (j == length - 1) { //每百分之一的最后一包取余数
-                        realySinglePackLen = (crcBytes%packetPayload == 0)?packetPayload:crcBytes%packetPayload;
+                        realySinglePackLen = (crcBytes % packetPayload == 0) ? packetPayload : crcBytes % packetPayload;
                     }
                     mOtaData[i][j] = new byte[realySinglePackLen + 1];
                     System.arraycopy(data, position, mOtaData[i][j], 1, realySinglePackLen);
                     mOtaData[i][j][0] = (byte) 0x85;
                     position += realySinglePackLen;
-                    tempCount += realySinglePackLen ;
+                    tempCount += realySinglePackLen;
                 }
-                tempCount = 0 ;
+                tempCount = 0;
                 long crc32 = ArrayUtil.crc32(data, crcPosition, crcBytes);
                 mOtaData[i][length] = new byte[]{(byte) 0x82, 0x42, 0x45, 0x53, 0x54, (byte) crc32, (byte) (crc32 >> 8), (byte) (crc32 >> 16), (byte) (crc32 >> 24)};
             }
             mOtaData[crcCount] = new byte[1][];
-            mOtaData[crcCount][0] = new byte[]{(byte)0x88};
+            mOtaData[crcCount][0] = new byte[]{(byte) 0x88};
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             mOtaData = null;
@@ -714,17 +721,17 @@ public class BesOtaUpdate implements BesListener {
         Log.i(TAG, "loadFileForNewProfile");
         mSupportNewOtaProfile = true;
         //FileInputStream inputStream = null;
-        InputStream inputStream=null;
+        InputStream inputStream = null;
         try {
             //inputStream = new FileInputStream(getOtaFile());
-            inputStream=mContext.getAssets().open(getOtaFile());
+            inputStream = mContext.getAssets().open(getOtaFile());
             int totalSize = inputStream.available();
             int dataSize = totalSize - 4;
             int mtu = getMtu();
             int packetPayload = ProfileUtils.calculateSppSinglePacketLen(dataSize);
             int packetTotalCount = ProfileUtils.calculateSppTotalPacketCount(dataSize);
             int crcCount = ProfileUtils.calculateSppTotalCrcCount(dataSize);
-            mOtaData = new byte[crcCount+1][][];
+            mOtaData = new byte[crcCount + 1][][];
             Log.e(TAG, "new profile totalLength: " + totalSize + "; packetTotalCount " + packetTotalCount + "; packet payload " + packetPayload + "; crcCount " + crcCount);
             byte[] data = new byte[dataSize];
             inputStream.read(data, 0, dataSize);
@@ -748,16 +755,16 @@ public class BesOtaUpdate implements BesListener {
                 mOtaData[i][length] = new byte[]{(byte) 0x82, 0x42, 0x45, 0x53, 0x54, (byte) crc32, (byte) (crc32 >> 8), (byte) (crc32 >> 16), (byte) (crc32 >> 24)};
             }
             mOtaData[crcCount] = new byte[1][];
-            mOtaData[crcCount][0] = new byte[]{(byte)0x88};
+            mOtaData[crcCount][0] = new byte[]{(byte) 0x88};
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             mOtaData = null;
         } catch (IOException e) {
             e.printStackTrace();
             mOtaData = null;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 if (inputStream != null) {
                     inputStream.close();
@@ -777,10 +784,10 @@ public class BesOtaUpdate implements BesListener {
         Log.i(TAG, "loadFile");
         mSupportNewOtaProfile = false;
         //FileInputStream inputStream = null;
-        InputStream inputStream=null;
+        InputStream inputStream = null;
         try {
             //inputStream = new FileInputStream(getOtaFile());
-            inputStream=mContext.getAssets().open(getOtaFile());
+            inputStream = mContext.getAssets().open(getOtaFile());
             int totalSize = inputStream.available();
             int dataSize = totalSize - 4;
             int mtu = getMtu();
@@ -822,9 +829,9 @@ public class BesOtaUpdate implements BesListener {
         } catch (IOException e) {
             e.printStackTrace();
             mOtaData = null;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 if (inputStream != null) {
                     inputStream.close();
@@ -895,12 +902,12 @@ public class BesOtaUpdate implements BesListener {
                 Log.i(TAG, "otaNext -> mState != STATE_OTA_ING || mOtaData == null ");
                 return;
             }
-            Log.i(TAG, "otaNext totalPacketCount = "+ totalPacketCount +" ; subCount " + mOtaPacketCount + "; " + mOtaPacketItemCount + "; " + mOtaData[mOtaPacketCount].length);
+            Log.i(TAG, "otaNext totalPacketCount = " + totalPacketCount + " ; subCount " + mOtaPacketCount + "; " + mOtaPacketItemCount + "; " + mOtaData[mOtaPacketCount].length);
 
             if (mSupportNewOtaProfile || mWritten) {
 
                 if ((mOtaPacketItemCount < mOtaData[mOtaPacketCount].length)) {
-                    boolean sendRet = sendData(null,mOtaData[mOtaPacketCount][mOtaPacketItemCount]);
+                    boolean sendRet = sendData(null, mOtaData[mOtaPacketCount][mOtaPacketItemCount]);
                     if (!sendRet) {
                         Log.i(TAG, "otaNext write failed , try to resend");
                         sendCmdDelayed(CMD_OTA_NEXT, 40);
@@ -913,16 +920,16 @@ public class BesOtaUpdate implements BesListener {
                         if (mOtaPacketItemCount == mOtaData[mOtaPacketCount].length) {
                             removeTimeout();
 //                            sendTimeout(R.string.ota_time_out, CMD_DISCONNECT, 30000);   //RESEND
-                            sendTimeout(CMD_DISCONNECT,30000);
-                        }else{
+                            sendTimeout(CMD_DISCONNECT, 30000);
+                        } else {
                             removeTimeout();
 //                            sendTimeout(R.string.ota_time_out, CMD_RESEND_MSG, 10000);   //RESEND
-                            sendTimeout(CMD_RESEND_MSG,10000);
+                            sendTimeout(CMD_RESEND_MSG, 10000);
                         }
                     }
                 }
-            }else{
-                Log.i(TAG, "otaNext  -> (mSupportNewOtaProfile || mWritten) is false  "+ mSupportNewOtaProfile+" ;"+mWritten);
+            } else {
+                Log.i(TAG, "otaNext  -> (mSupportNewOtaProfile || mWritten) is false  " + mSupportNewOtaProfile + " ;" + mWritten);
             }
         }
     }
@@ -937,16 +944,16 @@ public class BesOtaUpdate implements BesListener {
                 Log.i(TAG, "otaConfigNext mOtaConfigPacketCount == mOtaConfigData.length");
                 return;
             }
-            Log.i(TAG, "otaConfigNext " + mOtaConfigPacketCount + "; " + mOtaConfigData.length+" mWritten = "+mWritten);
+            Log.i(TAG, "otaConfigNext " + mOtaConfigPacketCount + "; " + mOtaConfigData.length + " mWritten = " + mWritten);
             if (true) {
-                if (!sendData(null,mOtaConfigData[mOtaConfigPacketCount])){
+                if (!sendData(null, mOtaConfigData[mOtaConfigPacketCount])) {
                     Log.e(TAG, "otaConfigNext write failed");
                     sendCmdDelayed(CMD_OTA_CONFIG_NEXT, 10);
                 } else {
                     mOtaConfigPacketCount++;
                     if (mOtaConfigPacketCount == mOtaConfigData.length) {
 //                        sendTimeout(R.string.ota_config_time_out, CMD_DISCONNECT, 5000);
-                        sendTimeout(CMD_DISCONNECT,5000);
+                        sendTimeout(CMD_DISCONNECT, 5000);
                     }
                 }
             }
@@ -955,7 +962,7 @@ public class BesOtaUpdate implements BesListener {
 
     protected void exitOta() {
         removeTimeout();
-        mMsgHandler.removeMessages(MSG_SEND_INFO_TIME_OUT);
+        mOtaHandler.removeMessages(MSG_SEND_INFO_TIME_OUT);
         mExit = true;
     }
 
@@ -971,11 +978,11 @@ public class BesOtaUpdate implements BesListener {
 
 
     @Override
-    public void onBesReceived(BluetoothDevice bluetoothDevice,byte[] data){
+    public void onBesReceived(BluetoothDevice bluetoothDevice, byte[] data) {
 //    }
 //    @Override
 //    public void onReceive(byte[] data) {
-        Log.i(TAG , "onReceive data = "+ArrayUtil.toHex(data));
+        Log.i(TAG, "onReceive data = " + ArrayUtil.toHex(data));
         synchronized (mOtaLock) {
             Log.e(TAG, "onReceive " + ArrayUtil.toHex(data));
             if (ArrayUtil.isEqual(OTA_PASS_RESPONSE, data)) {
@@ -989,36 +996,36 @@ public class BesOtaUpdate implements BesListener {
                 mOtaPacketItemCount = 0;
                 sendCmdDelayed(CMD_OTA_NEXT, 0);
             } else if (ArrayUtil.startsWith(data, new byte[]{(byte) 0x81, 0x42, 0x45, 0x53, 0x54})) {
-                mMsgHandler.removeMessages(MSG_SEND_INFO_TIME_OUT);
+                mOtaHandler.removeMessages(MSG_SEND_INFO_TIME_OUT);
                 int softwareVersion = ((data[5] & 0xFF) | ((data[6] & 0xFF) << 8));
                 int hardwareVersion = ((data[7] & 0xFF) | ((data[8] & 0xFF) << 8));
                 Log.e(TAG, "softwareVersion " + Integer.toHexString(softwareVersion) + "; hardwareVersion " + Integer.toHexString(hardwareVersion));
                 mMtu = (data[9] & 0xFF) | ((data[10] & 0xFF) << 8);
                 sendCmdDelayed(CMD_LOAD_OTA_CONFIG, 0);
             } else if ((data[0] & 0xFF) == 0x83) {
-                if(data.length == 4 && (data[2] & 0xff) == 0x84){
+                if (data.length == 4 && (data[2] & 0xff) == 0x84) {
                     removeTimeout();
                     if ((data[3] & 0xFF) == 0x01) {
                         onOtaOver();
 //                        sendCmdDelayed(CMD_DISCONNECT, 0);
-                        notifyOtaUpdate(BesUpdateState.UpdateSuccess,-1);
-                    }else if((data[3]&0xFF) == 0X00){
+                        notifyOtaUpdate(BesUpdateState.UpdateSuccess, -1);
+                    } else if ((data[3] & 0xFF) == 0X00) {
                         onOtaFailed();
 //                        sendCmdDelayed(CMD_DISCONNECT, 0);
-                        notifyOtaUpdate(BesUpdateState.UpdateFail,-1);
+                        notifyOtaUpdate(BesUpdateState.UpdateFail, -1);
                     }
                     mOtaPacketItemCount = 0;
-                }else{
+                } else {
                     removeTimeout();
                     if ((data[1] & 0xFF) == 0x01) {
                         mOtaPacketCount++;
                         updateProgress(mOtaPacketCount * 100 / mOtaData.length);
-                    }else if((data[1]&0xFF) == 0X00){
-                        mOtaPacketCount = mOtaPacketCount ; //虽然多余，保留协议可读性
+                    } else if ((data[1] & 0xFF) == 0X00) {
+                        mOtaPacketCount = mOtaPacketCount; //虽然多余，保留协议可读性
                         updateProgress(mOtaPacketCount * 100 / mOtaData.length);
                     }
                     mOtaPacketItemCount = 0;
-                    Log.e("test" , "befor time "+System.currentTimeMillis());
+                    Log.e("test", "befor time " + System.currentTimeMillis());
                     sendCmdDelayed(CMD_OTA_NEXT, 0);
                 }
             } else if ((data[0] & 0xFF) == 0x84) {
@@ -1026,38 +1033,40 @@ public class BesOtaUpdate implements BesListener {
                 if ((data[1] & 0xFF) == 0x01) {
                     onOtaOver();
 //                    sendCmdDelayed(CMD_DISCONNECT, 0);
-                    notifyOtaUpdate(BesUpdateState.UpdateSuccess,-1);
-                }else if((data[1]&0xFF) == 0X00){
+                    notifyOtaUpdate(BesUpdateState.UpdateSuccess, -1);
+                } else if ((data[1] & 0xFF) == 0X00) {
                     onOtaFailed();
 //                    sendCmdDelayed(CMD_DISCONNECT, 0);
-                    notifyOtaUpdate(BesUpdateState.UpdateFail,-1);
+                    notifyOtaUpdate(BesUpdateState.UpdateFail, -1);
                 }
                 mOtaPacketItemCount = 0;
 
             } else if ((data[0] & 0xFF) == 0x87) {
                 removeTimeout();
                 if ((data[1] & 0xFF) == 0x01) {
-                    if(isBle()){
+                    if (isBle()) {
                         sendCmdDelayed(CMD_LOAD_FILE_FOR_NEW_PROFILE, 0);
-                    }else{
+                    } else {
                         sendCmdDelayed(CMD_LOAD_FILE_FOR_NEW_PROFILE, 0);
 //                   		 sendCmdDelayed(CMD_LOAD_FILE_FOR_NEW_PROFILE_SPP, 0);
                     }
                 } else {
                     onOtaConfigFailed();
 //                    sendCmdDelayed(CMD_DISCONNECT, 0);
-                    notifyOtaUpdate(BesUpdateState.UpdateFail,-1);
+                    notifyOtaUpdate(BesUpdateState.UpdateFail, -1);
                 }
             }
         }
     }
 
-//    protected abstract void connect();
+    //    protected abstract void connect();
 //
 //    protected abstract void disconnect();
-    protected int getMtu(){
+    protected int getMtu() {
         return mMtu;
-    };
+    }
+
+    ;
 
 //    protected abstract void pickDevice(int request);
 //
@@ -1069,15 +1078,15 @@ public class BesOtaUpdate implements BesListener {
 //
 //    protected abstract void saveLastDeviceAddress(String address);
 
-    private boolean sendData(String mac,byte[] data){
-        return BesEngine.getInstance().sendCommand(mac,data);
+    private boolean sendData(String mac, byte[] data) {
+        return BesEngine.getInstance().sendCommand(mac, data);
     }
 
-    private boolean isBle(){
+    private boolean isBle() {
         return true;
     }
 
-    private String getOtaFile(){
+    private String getOtaFile() {
         return OTA_FILE;
     }
 
@@ -1093,14 +1102,14 @@ public class BesOtaUpdate implements BesListener {
 //                    connect();
 //                    break;
                 case CMD_DISCONNECT:
-                    notifyOtaUpdate(BesUpdateState.UpdateFail,-1);
+                    notifyOtaUpdate(BesUpdateState.UpdateFail, -1);
 //                    disconnect();
                     break;
                 case CMD_LOAD_FILE:
                     loadFile();
                     break;
                 case CMD_OTA_NEXT:
-                    Log.e(TAG  , "after time "+System.currentTimeMillis());
+                    Log.e(TAG, "after time " + System.currentTimeMillis());
                     otaNext();
                     break;
                 case CMD_START_OTA:
@@ -1160,7 +1169,6 @@ public class BesOtaUpdate implements BesListener {
 //    }
 
 
-
 //    protected void Log.i(String TAG , String msg){
 //        if(msg != null && TAG != null){
 //            if(isBle()){
@@ -1178,12 +1186,12 @@ public class BesOtaUpdate implements BesListener {
     }
 
     @Override
-    public void onMtuChanged(BluetoothDevice bluetoothDevice,int status, int mtu) {
+    public void onMtuChanged(BluetoothDevice bluetoothDevice, int status, int mtu) {
 
     }
 
     @Override
-    public void onBesUpdateImageState(BluetoothDevice bluetoothDevice,BesUpdateState state, int progress) {
+    public void onBesUpdateImageState(BluetoothDevice bluetoothDevice, BesUpdateState state, int progress) {
 
     }
 }

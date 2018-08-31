@@ -242,7 +242,7 @@ public class LeManager implements ScanListener, BesListener {
     @Override
     public void onBesReceived(BluetoothDevice bluetoothDevice, byte[] data) {
         String dataString = Arrays.toString(data);
-        Logger.d(TAG, "on bes received, data string = " + dataString);
+        Logger.d(TAG, "on bes received, mac = "+bluetoothDevice.getAddress()+" , data string = " + dataString);
 //        switch (command){
 //            case ReportFormat.RET_DEV_ACK:{
 //

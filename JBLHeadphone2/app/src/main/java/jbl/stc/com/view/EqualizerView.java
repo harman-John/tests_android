@@ -142,6 +142,11 @@ public class EqualizerView extends View {
 //    }
 
 
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
     private Canvas mCanvas;
 
     @Override
