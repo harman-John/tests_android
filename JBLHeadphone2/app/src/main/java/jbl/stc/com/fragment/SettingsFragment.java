@@ -1,20 +1,30 @@
 package jbl.stc.com.fragment;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -34,11 +44,14 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.EnumCommands;
+import jbl.stc.com.utils.UiUtils;
+
 
 public class SettingsFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = SettingsFragment.class.getSimpleName();
@@ -51,6 +64,13 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     private MyDevice myDevice;
     private TextView textViewFwVersion;
     private int reTry = 1;
+    private ImageView imageViewDownload;
+    private WindowManager mWindowManager;
+    private WindowManager.LayoutParams mWindowLayoutParams;
+    private LinearLayout ll_deviceImage;
+    private ImageView deviceImageView;
+    private int screenWidth;
+    private int screenHeight;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +80,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mWindowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
+        screenWidth = dm.widthPixels;
+        screenHeight = dm.widthPixels;
         myDevice = ProductListManager.getInstance().getConnectedDevice();
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
@@ -215,6 +239,18 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 ((BaseActivity) getActivity()).startCheckingIfUpdateIsAvailable(SettingsFragment.this);
             }
         }
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    createDeviceImageView(getActivity());
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -243,7 +279,11 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
-            case R.id.deviceImage:
+            case R.id.deviceImage: {
+
+                createDeviceImageView(getActivity());
+                break;
+            }
             case R.id.image_view_settings_back: {
                 getActivity().onBackPressed();
                 break;
@@ -266,6 +306,95 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
 
     }
 
+    private void createDeviceImageView(final Context context) {
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int screenWidth = dm.widthPixels;
+        float x = (screenWidth - UiUtils.dip2px(getActivity(), 120)) / 2;
+        float y = UiUtils.dip2px(getActivity(), 105) + UiUtils.getStatusHeight(context);
+        view.findViewById(R.id.rl_deviceImage).setVisibility(View.INVISIBLE);
+        int dashboardImageHeight = UiUtils.getDashboardDeviceImageHeight(context);
+        final int height = UiUtils.dip2px(getActivity(), 120);
+        mWindowLayoutParams = new WindowManager.LayoutParams();
+        mWindowLayoutParams.format = PixelFormat.TRANSLUCENT;
+        mWindowLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;
+        mWindowLayoutParams.x = (int) x;
+        mWindowLayoutParams.y = (int) y;
+        mWindowLayoutParams.alpha = 1.0f;
+        mWindowLayoutParams.width = screenWidth;
+        mWindowLayoutParams.height = screenHeight;
+        mWindowLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        ll_deviceImage = new LinearLayout(context);
+        WindowManager.LayoutParams ll_params = new WindowManager.LayoutParams();
+        ll_params.gravity = Gravity.TOP | Gravity.LEFT;
+        ll_params.height = height;
+        ll_params.width = height;
+        ll_deviceImage.setLayoutParams(ll_params);
+        deviceImageView = new ImageView(context);
+        deviceImageView.setBackgroundResource(R.drawable.shape_dashboard_device_circle);
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        params.gravity = Gravity.TOP | Gravity.LEFT;
+        params.width = height;
+        params.height = height;
+        UiUtils.setDeviceImage(deviceNameStr, deviceImageView);
+        ll_deviceImage.addView(deviceImageView, params);
+        mWindowManager.addView(ll_deviceImage, mWindowLayoutParams);
+
+        ll_deviceImage.clearAnimation();
+        deviceImageView.clearAnimation();
+
+        final float startX = x;
+        float startY = y;
+        Logger.d(TAG, "createDeviceImageView x:" + x + "y:" + y);
+        float endX = startX;
+        float endY = startY - UiUtils.dip2px(context, 35) + ((UiUtils.getDeviceImageMarginTop(context) + UiUtils.dip2px(context, 62)) + (dashboardImageHeight - height) / 2 - (UiUtils.dip2px(context, 105) + height));
+
+        ObjectAnimator animX = ObjectAnimator.ofFloat(ll_deviceImage, "translationX",
+                startX, endX);
+        ObjectAnimator animY = ObjectAnimator.ofFloat(ll_deviceImage, "translationY",
+                startY, endY);
+        ObjectAnimator animScaleY = ObjectAnimator.ofFloat(deviceImageView, "scaleY",
+                1, (float) (dashboardImageHeight) / (float) (height));
+        ObjectAnimator animScaleX = ObjectAnimator.ofFloat(deviceImageView, "scaleX",
+                1, (float) (dashboardImageHeight) / (float) (height));
+        AnimatorSet animSetXY = new AnimatorSet();
+        animSetXY.playTogether(animX, animY, animScaleX, animScaleY);
+        animSetXY.setDuration(400);
+        animSetXY.setInterpolator(new AccelerateDecelerateInterpolator());
+        animSetXY.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                getActivity().onBackPressed();
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                view.findViewById(R.id.rl_deviceImage).setVisibility(View.VISIBLE);
+                mWindowLayoutParams.alpha = 0f;
+                mWindowManager.updateViewLayout(ll_deviceImage, mWindowLayoutParams);
+                if (ll_deviceImage != null) {
+                    mWindowManager.removeView(ll_deviceImage);
+                    ll_deviceImage = null;
+                    deviceImageView = null;
+
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animSetXY.start();
+
+
+    }
+
     private Runnable autoOffToggleRunnable = new Runnable() {
         @Override
         public void run() {
@@ -284,86 +413,6 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             Logger.d(TAG, "VoicePrompt " + toggleVoicePrompt.isChecked() + " sent");
         }
     };
-
-//    @Override
-//    public void lightXAppReadResult(LightX var1, Command command, boolean success, byte[] buffer) {
-//        super.lightXAppReadResult(var1, command, success, buffer);
-//        if (success) {
-//            boolean boolValue;
-//            switch (command) {
-//                case AppOnEarDetectionWithAutoOff:
-//                    boolValue = Utility.getBoolean(buffer, 0);
-//                    toggleAutoOffTimer.setChecked(boolValue);
-//                    break;
-//                case AppVoicePromptEnable:
-//                    boolValue = Utility.getBoolean(buffer, 0);
-//                    toggleVoicePrompt.setChecked(boolValue);
-//                    break;
-//                case AppFirmwareVersion:
-//                    int major = buffer[0];
-//                    int minor = buffer[1];
-//                    int revision = buffer[2];
-//                    Logger.d(TAG, "AppCurrVersion = " + major + "." + minor + "." + revision);
-//                    String version = major + "." + minor + "." + revision;
-//                    textViewFwVersion.setText(version);
-//                    break;
-//            }
-//        }else if (reTry <= 10) {
-//            switch (command) {
-//                case AppFirmwareVersion:
-//                    textViewFwVersion.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
-//                            ++reTry;
-//                        }
-//                    }, 150 * reTry);
-//                    break;
-//            }
-//        }
-//    }
-
-//    @Override
-//    public void receivedResponse(String command, ArrayList<responseResult> values, Status status) {
-//        Logger.d(TAG, "receivedResponse command =" + command + ",values=" + values + ",status=" + status);
-//        if (values == null || values.size() == 0) {
-//            return;
-//        }
-//        values.iterator().next().getValue().toString();
-//        Logger.d(TAG, "value:" + values.iterator().next().getValue().toString());
-//        switch (command) {
-//            case AmCmds.CMD_VoicePrompt: {
-//                String boolValue = "";
-//                if (values != null && values.size() > 0) {
-//                    boolValue = values.iterator().next().getValue().toString();
-//                }
-//                if (!TextUtils.isEmpty(boolValue) && boolValue.equals("true")) {
-//                    toggleVoicePrompt.setChecked(true);
-//                } else {
-//                    toggleVoicePrompt.setChecked(false);
-//                }
-//                break;
-//            }
-//            case AmCmds.CMD_AutoOffEnable: {
-//                String boolValue = "";
-//                if (values != null && values.size() > 0) {
-//                    boolValue = values.iterator().next().getValue().toString();
-//                }
-//                if (!TextUtils.isEmpty(boolValue) && boolValue.equals("true")) {
-//                    toggleAutoOffTimer.setChecked(true);
-//                } else {
-//                    toggleAutoOffTimer.setChecked(false);
-//                }
-//                break;
-//            }
-//            case AmCmds.CMD_FirmwareVersion:{
-//                AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager().getAudioManager().getAccessoryStatus();
-//                String version = accessoryInfo.getFirmwareRev();
-//                textViewFwVersion.setText(version);
-//                break;
-//            }
-//        }
-//    }
 
     @Override
     public void onDestroy() {

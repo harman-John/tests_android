@@ -19,16 +19,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import jbl.stc.com.R;
-import jbl.stc.com.listener.OnRetListener;
-import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.listener.AppUSBDelegate;
 import jbl.stc.com.listener.OnMainAppListener;
+import jbl.stc.com.listener.OnRetListener;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.EnumCommands;
+import jbl.stc.com.utils.UiUtils;
+
 
 public class BaseFragment extends Fragment implements View.OnTouchListener, AppUSBDelegate,OnRetListener {
     protected String TAG;
@@ -161,14 +163,14 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppU
         super.onDestroy();
     }
 
-    public void switchFragment(Fragment baseFragment,int type) {
+    public void switchFragment(Fragment baseFragment, int type) {
         try {
             android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
             if (type == JBLConstant.SLIDE_FROM_DOWN_TO_TOP) {
                 ft.setCustomAnimations(R.anim.enter_from_down, R.anim.exit_to_up, R.anim.enter_from_up, R.anim.exit_to_down);
-            }else if (type == JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT){
+            } else if (type == JBLConstant.SLIDE_FROM_LEFT_TO_RIGHT) {
                 ft.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
-            }else if (type == JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT){
+            } else if (type == JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT) {
                 ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
             }
             if (getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout) == null) {
@@ -186,7 +188,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppU
     public void removeAllFragment() {
         Fragment fr = getActivity().getSupportFragmentManager().findFragmentById(R.id.containerLayout);
         if (fr == null) {
-            Logger.d(TAG,"fr is null");
+            Logger.d(TAG, "fr is null");
             return;
         }
         try {
@@ -199,8 +201,8 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppU
                 count = manager.getBackStackEntryCount();
                 Logger.d(TAG, "back stack count = " + count);
             }
-        }catch (Exception e){
-            Logger.e(TAG,"Fragment is not shown, then popBack will have exception ");
+        } catch (Exception e) {
+            Logger.e(TAG, "Fragment is not shown, then popBack will have exception ");
         }
     }
 
@@ -208,22 +210,8 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppU
         if (TextUtils.isEmpty(deviceName)) {
             return;
         }
-        //update device name
-        textViewDeviceName.setText(deviceName);
-        //update device image
-        if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_REFLECT_AWARE).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.reflect_aware_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_100_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_150nc_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_300_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_700_icon);
-        } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())) {
-            imageViewDevice.setImageResource(R.mipmap.everest_elite_750nc_icon);
-        }
+        UiUtils.setDeviceName(deviceName, textViewDeviceName);
+        UiUtils.setDeviceImage(deviceName, imageViewDevice);
     }
 
     @Override

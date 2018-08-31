@@ -3,11 +3,14 @@ package jbl.stc.com.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -24,6 +27,8 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -78,6 +83,7 @@ import jbl.stc.com.view.NotConnectedPopupWindow;
 import jbl.stc.com.view.SaPopupWindow;
 
 
+
 public class HomeActivity extends BaseActivity implements View.OnClickListener, OnOtaListener {
     public static final String TAG = HomeActivity.class.getSimpleName() + "aa";
     private BlurringView mBlurView;
@@ -130,6 +136,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private int mConnectStatus = -1;
     private RelativeLayout rootLayout;
+    private WindowManager mWindowManager;
+    private WindowManager.LayoutParams mWindowLayoutParams;
+    private LinearLayout ll_deviceImage;
+    private ImageView deviceImageView;
 
 
     @Override
@@ -151,6 +161,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         addActivity(this);
         Logger.d(TAG, "onCreate");
         rootLayout = findViewById(R.id.relative_layout_home_activity);
+        mWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenHeight = dm.heightPixels;
         screenWidth = dm.widthPixels;
@@ -450,7 +461,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 onBackPressed();
                 break;
             }
-            case R.id.frame_layout_home_device_image:
+            case R.id.frame_layout_home_device_image: {
+
+                createDeviceImageView(HomeActivity.this);
+                break;
+            }
             case R.id.image_view_home_settings: {
                 switchFragment(new SettingsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
@@ -467,6 +482,96 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
             }
         }
+    }
+
+    private void createDeviceImageView(final Context context) {
+        final int height = UiUtils.getDashboardDeviceImageHeight(context);
+        float x = (screenWidth - height) / 2;
+        float y = UiUtils.dip2px(context, 62) + UiUtils.getDeviceImageMarginTop(context);
+        frameLayout.setVisibility(View.INVISIBLE);
+        mWindowLayoutParams = new WindowManager.LayoutParams();
+        mWindowLayoutParams.format = PixelFormat.TRANSLUCENT;
+        mWindowLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;
+        mWindowLayoutParams.x = (int) x;
+        mWindowLayoutParams.y = (int) y;
+        mWindowLayoutParams.alpha = 1.0f;
+        mWindowLayoutParams.width = screenWidth;
+        mWindowLayoutParams.height = screenHeight;
+        mWindowLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        ll_deviceImage = new LinearLayout(context);
+        WindowManager.LayoutParams ll_params = new WindowManager.LayoutParams();
+        ll_params.gravity = Gravity.TOP | Gravity.LEFT;
+        ll_params.width = height;
+        ll_params.height = height;
+        ll_deviceImage.setLayoutParams(ll_params);
+        deviceImageView = new ImageView(context);
+        deviceImageView.setBackgroundResource(R.drawable.shape_dashboard_device_circle);
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        params.gravity = Gravity.TOP | Gravity.LEFT;
+        params.width = height;
+        params.height = height;
+        UiUtils.setDeviceImage(deviceName, deviceImageView);
+        ll_deviceImage.addView(deviceImageView, params);
+        mWindowManager.addView(ll_deviceImage, mWindowLayoutParams);
+
+        int settingTitleBar = UiUtils.dip2px(context, 62);
+        int settingDeviceNameMarginTop = UiUtils.dip2px(context, 5);
+        int settingDeviceNameHeight = UiUtils.dip2px(context, 28);
+        int settingDeviceImageMarginTop = UiUtils.dip2px(context, 10);
+        final int settingDeviceImageMargin_ParentTop = settingTitleBar + settingDeviceNameMarginTop +
+                settingDeviceNameHeight + settingDeviceImageMarginTop;
+        final int settingDeviceImageHeight = UiUtils.dip2px(context, 120);
+        final int settingDeviceImageMarginLeft = (screenWidth - settingDeviceImageHeight) / 2;
+
+
+        ll_deviceImage.clearAnimation();
+        deviceImageView.clearAnimation();
+        final float startX = x;
+        float startY = y;
+        float endX = startX;
+        float endY = startY + settingDeviceImageMargin_ParentTop - (UiUtils.getDeviceImageMarginTop(context) + UiUtils.dip2px(context, 62) + (height - settingDeviceImageHeight) / 2);
+        ObjectAnimator animX = ObjectAnimator.ofFloat(ll_deviceImage, "translationX",
+                startX, endX);
+        ObjectAnimator animY = ObjectAnimator.ofFloat(ll_deviceImage, "translationY",
+                startY, endY);
+        ObjectAnimator animScaleY = ObjectAnimator.ofFloat(deviceImageView, "scaleY",
+                1, (float) (settingDeviceImageHeight) / (float) (height));
+        ObjectAnimator animScaleX = ObjectAnimator.ofFloat(deviceImageView, "scaleX",
+                1, (float) (settingDeviceImageHeight) / (float) (height));
+        AnimatorSet animSetXY = new AnimatorSet();
+        animSetXY.playTogether(animX, animY, animScaleX, animScaleY);
+        animSetXY.setDuration(400);
+        animSetXY.setInterpolator(new AccelerateDecelerateInterpolator());
+        animSetXY.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                switchFragment(new SettingsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                frameLayout.setVisibility(View.VISIBLE);
+                mWindowLayoutParams.alpha = 0f;
+                mWindowManager.updateViewLayout(ll_deviceImage, mWindowLayoutParams);
+                if (ll_deviceImage != null) {
+                    mWindowManager.removeView(ll_deviceImage);
+                    ll_deviceImage = null;
+                    deviceImageView = null;
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animSetXY.start();
     }
 
     private void showTutorial() {

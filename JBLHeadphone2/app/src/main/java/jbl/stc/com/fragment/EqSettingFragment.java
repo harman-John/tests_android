@@ -76,6 +76,8 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private LightX lightX;
     private Handler mHandler = new Handler();
     private float mPosX = 0, mCurPosX;
+    public static float mLastPosX = 0;
+    private boolean isTranslationX = false;
     private float yDown;
     private float yMove;
     private int screenHeght;
@@ -96,6 +98,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private float rawY = 0.0f;
     private boolean isShownFinal = false;
     private float dValue;
+    private float dLastValue;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -255,28 +258,37 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         });
 
         final int distance = screenWidth / 11;
+
         equalizerLineView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                createVelocityTracker(event);
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         mPosX = event.getX();
+                        isTranslationX = false;
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        mCurPosX = event.getX();
-                        dValue = mCurPosX - mPosX;
-                        if (Math.abs(dValue) > UiUtils.dip2px(getActivity(), 5)) {
 
+                        int xSpeed = getScrollVelocity();
+                        Logger.d(TAG, "speed:" + xSpeed);
+                        //if (Math.abs(mCurPosX - mPosX) > UiUtils.dip2px(getActivity(), 5)) {
+                        if (!isTranslationX) {
+                            isTranslationX = true;
+                            mCurPosX = event.getX();
+                            dValue = mCurPosX - mPosX;
                             if (Math.abs(dValue) > distance && dValue > 0) {
                                 dValue = distance;
                             }
                             if (Math.abs(dValue) > distance && dValue < 0) {
                                 dValue = (-distance);
                             }
-                            //equalizerLineView.scrollTo((int) -dValue, 0);
+
                             equalizerLineView.setTranslationX(dValue);
                             equalizerLineView.setAlpha(1 - Math.abs(dValue) / distance + 0.2f);
+                            isTranslationX = false;
                         }
+                        //}
                         break;
                     case MotionEvent.ACTION_UP:
                         float alpha = equalizerLineView.getAlpha();
@@ -325,6 +337,8 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                             equalizerLineView.setAlpha(1);
                         }
 
+                        recycleVelocityTracker();
+
                         break;
                 }
                 return true;
@@ -359,6 +373,23 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
     }
 
+    private void translationXAnimation(View view, float transStartX, float transEndX) {
+        view.clearAnimation();
+        view.setTranslationX(transStartX);
+        view.animate()
+                .translationX(transEndX)
+                .setInterpolator(new DecelerateInterpolator(0.5f))
+                .setDuration(10)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        isTranslationX = false;
+                    }
+                })
+                .start();
+
+    }
+
     private void eqNameAlphaAnimation(View view, float startAlpha, float endAlpha) {
         view.clearAnimation();
         view.setAlpha(startAlpha);
@@ -369,6 +400,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
+                        isTranslationX = false;
                     }
                 })
                 .start();
@@ -875,7 +907,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                     ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(currSelectedEq));
                     break;
             }
-            AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
+            // AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
             PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, currSelectedEq.eqName, getActivity());
             Logger.d(TAG, "select eq position is " + String.valueOf(currSelectedEqIndex));
         }
