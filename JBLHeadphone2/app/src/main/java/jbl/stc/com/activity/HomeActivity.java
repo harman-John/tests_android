@@ -192,6 +192,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         textViewBattery = findViewById(R.id.text_view_battery_level);
         image_view_ota_download = findViewById(R.id.image_view_ota_download);
         image_view_ota_download.setOnClickListener(this);
+        checkBoxNoiseCancel = findViewById(R.id.image_view_home_noise_cancel);
 
         mBlurView = findViewById(R.id.view_home_blur);
         CreateEqTipsDialog createEqTipsDialog = new CreateEqTipsDialog(this);
@@ -212,7 +213,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             linearLayoutNoiseCanceling.setVisibility(View.GONE);
         } else {
             linearLayoutNoiseCanceling.setVisibility(View.VISIBLE);
-            checkBoxNoiseCancel = findViewById(R.id.image_view_home_noise_cancel);
             if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 checkBoxNoiseCancel.setOnClickListener(this);
             } else {
@@ -231,10 +231,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
-                TextView textViewAmbientAware = findViewById(R.id.text_view_home_ambient_aware);
-                textViewAmbientAware.setText(R.string.smart_ambient);
+                //TextView textViewAmbientAware = findViewById(R.id.text_view_home_ambient_aware);
+                //textViewAmbientAware.setText(R.string.smart_ambient);
+                linearLayoutNoiseCanceling.setVisibility(View.VISIBLE);
+                TextView textViewNoiseCancelling=findViewById(R.id.text_view_home_noise_cancle);
+                textViewNoiseCancelling.setText(R.string.talkthru);
+                checkBoxNoiseCancel.setBackgroundResource(R.mipmap.tt_icon_active);
+                linearLayoutAmbientAware.setVisibility(View.VISIBLE);
             }
         }
+
 
         updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
         initEvent();
@@ -576,7 +582,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void showTutorial() {
-        if (DeviceManager.getInstance(this).isConnected() && mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
+        if ((DeviceManager.getInstance(this).isConnected()  ||
+                LeManager.getInstance().isConnected()) && mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
             boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
             if (!isShowTutorialManyTimes) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());

@@ -98,7 +98,6 @@
                     android:id="@+id/relative_layout_tutorial_dialog_noise_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="128dp"
-                    android:layout_marginRight="30dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
@@ -111,12 +110,13 @@
                         android:button="@android:color/transparent" />
 
                     <jbl.stc.com.view.CustomFontTextView
+                        android:id="@+id/tv_noise_cancle"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_below="@id/image_view_tutorial_dialog_noise_cancel"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
-                        android:gravity="center_horizontal"
+                        android:gravity="center"
                         android:lineSpacingExtra="-5dp"
                         android:text="@string/text_noise_canceling"
                         android:textStyle="normal"
@@ -127,6 +127,7 @@
                     android:id="@+id/relative_layout_tutorial_dialog_ambient_aware"
                     android:layout_width="wrap_content"
                     android:layout_height="128dp"
+                    android:layout_marginLeft="30dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     android:visibility="visible">
@@ -145,7 +146,7 @@
                         android:layout_below="@id/image_view_tutorial_dialog_ambient_aware"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
-                        android:gravity="center_horizontal"
+                        android:gravity="center"
                         android:lineSpacingExtra="-5dp"
                         android:text="@string/text_ambient_aware"
                         android:textColor="@color/white"

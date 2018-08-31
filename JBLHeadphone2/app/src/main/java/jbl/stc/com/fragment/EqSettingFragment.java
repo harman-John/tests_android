@@ -292,16 +292,6 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                                 equalizerLineView.setLayoutParams(params);
                                 equalizerLineView.setAlpha(1 - Math.abs(dValue) / distance + 0.2f);
                                 isTranslationX = false;
-                                new Thread(){
-                                    public void run(){
-                                        try {
-                                            sleep(20);
-
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }.start();
                             }
                         //}
                         break;
@@ -391,7 +381,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         view.setAlpha(0.f);
         view.animate()
                 .translationX(transEndX).alpha(1.f)
-                .setInterpolator(new DecelerateInterpolator(0.5f))
+                //.setInterpolator(new DecelerateInterpolator(0.5f))
                 .setDuration(400)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
