@@ -13,7 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import jbl.stc.com.R;
+import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.manager.DeviceManager;
+import jbl.stc.com.manager.LeManager;
 
 
 public class UiUtils {
@@ -182,6 +185,15 @@ public class UiUtils {
         } else if (deviceName.toUpperCase().contains((JBLConstant.DEVICE_LIVE_650BTNC).toUpperCase())) {
             imageViewDevice.setImageResource(R.mipmap.live_650_btnc_icon);
         }
+    }
+
+    public static boolean isConnected(int mConnectStatus, Activity mActivity) {
+        boolean isConnected = false;
+        if ((DeviceManager.getInstance(mActivity).isConnected() ||
+                LeManager.getInstance().isConnected()) && mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            isConnected = true;
+        }
+        return isConnected;
     }
 }
 

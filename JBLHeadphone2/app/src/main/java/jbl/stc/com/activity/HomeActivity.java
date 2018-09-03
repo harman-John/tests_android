@@ -30,6 +30,7 @@ import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -75,13 +76,13 @@ import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.FirmwareUtil;
+import jbl.stc.com.utils.ToastUtil;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.AaPopupWindow;
 import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.BlurringView;
 import jbl.stc.com.view.NotConnectedPopupWindow;
 import jbl.stc.com.view.SaPopupWindow;
-
 
 
 public class HomeActivity extends BaseActivity implements View.OnClickListener, OnOtaListener {
@@ -110,6 +111,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private TextView textViewDeviceName;
     private ImageView imageViewDevice;
     private CheckBox checkBoxNoiseCancel;
+    private ImageView imageViewAmbientAaware;
     private LinearLayout linearLayoutBattery;
     private AaPopupWindow aaPopupWindow;
     private SaPopupWindow saPopupwindow;
@@ -193,6 +195,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         image_view_ota_download = findViewById(R.id.image_view_ota_download);
         image_view_ota_download.setOnClickListener(this);
         checkBoxNoiseCancel = findViewById(R.id.image_view_home_noise_cancel);
+        imageViewAmbientAaware = findViewById(R.id.image_view_home_ambient_aware);
 
         mBlurView = findViewById(R.id.view_home_blur);
         CreateEqTipsDialog createEqTipsDialog = new CreateEqTipsDialog(this);
@@ -231,13 +234,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
-                //TextView textViewAmbientAware = findViewById(R.id.text_view_home_ambient_aware);
-                //textViewAmbientAware.setText(R.string.smart_ambient);
-                linearLayoutNoiseCanceling.setVisibility(View.VISIBLE);
-                TextView textViewNoiseCancelling=findViewById(R.id.text_view_home_noise_cancle);
-                textViewNoiseCancelling.setText(R.string.talkthru);
-                checkBoxNoiseCancel.setBackgroundResource(R.mipmap.tt_icon_active);
+                checkBoxNoiseCancel.setOnClickListener(this);
+                findViewById(R.id.relative_layout_home_noise_cancel).setVisibility(View.VISIBLE);
                 linearLayoutAmbientAware.setVisibility(View.VISIBLE);
+                ImageView imageViewAmbientAware = findViewById(R.id.image_view_home_ambient_aware);
+                imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+                imageViewAmbientAware.setTag("0");
+                imageViewAmbientAware.setOnClickListener(this);
+
             }
         }
 
@@ -368,6 +372,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             doResume();
         }
     }
+
     @Override
     public void onConnectStatus(Object... objects) {
         super.onConnectStatus(objects);
@@ -446,7 +451,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_home_ambient_aware: {
-                if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
+                if (UiUtils.isConnected(mConnectStatus, HomeActivity.this)) {
                     if (AppUtils.isOldDevice(deviceName)) {
                         if (!checkBoxNoiseCancel.isChecked()) {
                             checkBoxNoiseCancel.setChecked(true);
@@ -454,7 +459,17 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         setANC();
                         showAncPopupWindow(findViewById(R.id.relative_layout_home_activity));
                     } else if (AppUtils.isNewDevice(deviceName)) {
-                        showSaPopupWindow(findViewById(R.id.relative_layout_home_activity), null);
+                        //showSaPopupWindow(findViewById(R.id.relative_layout_home_activity), null);
+                        Logger.d(TAG, "tag: old device" + imageViewAmbientAaware.getTag());
+                        if (imageViewAmbientAaware.getTag().equals("1")) {
+                            imageViewAmbientAaware.setBackground(getResources().getDrawable(R.mipmap.aa_icon_non_active));
+                            imageViewAmbientAaware.setTag("0");
+                        } else if (imageViewAmbientAaware.getTag().equals("0")) {
+                            imageViewAmbientAaware.setBackground(getResources().getDrawable(R.mipmap.aa_icon_active));
+                            imageViewAmbientAaware.setTag("1");
+                            checkBoxNoiseCancel.setChecked(false);
+
+                        }
                     }
                 }
                 break;
@@ -478,7 +493,21 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             }
             case R.id.image_view_home_noise_cancel: {
-                setANC();
+                if (AppUtils.isNewDevice(deviceName)) {
+                    if (checkBoxNoiseCancel.isChecked()) {
+                        Logger.d(TAG, "noise cancle  checked");
+                        checkBoxNoiseCancel.setChecked(true);
+                        if (imageViewAmbientAaware.getTag().equals("1")) {
+                            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+                            imageViewAmbientAaware.setTag("0");
+                        }
+                    } else {
+                        Logger.d(TAG, "noise cancle unchecked");
+                        checkBoxNoiseCancel.setChecked(false);
+                    }
+                } else {
+                    setANC();
+                }
                 break;
             }
             case R.id.titleEqText: {
@@ -582,8 +611,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void showTutorial() {
-        if ((DeviceManager.getInstance(this).isConnected()  ||
-                LeManager.getInstance().isConnected()) && mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
+        if (UiUtils.isConnected(mConnectStatus, HomeActivity.this)) {
             boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
             if (!isShowTutorialManyTimes) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
@@ -1353,7 +1381,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
             case CMD_BATTERY_LEVEL: {
                 int battery = (int) objects[0];
-                Logger.d(TAG, "do get battery level, battery = "+battery);
+                Logger.d(TAG, "do get battery level, battery = " + battery);
                 sendMessageTo(MSG_BATTERY, battery);
                 break;
             }
