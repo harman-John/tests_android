@@ -108,6 +108,7 @@
                     android:text="@string/text_smart_button"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
             </RelativeLayout>
 
             <RelativeLayout
@@ -197,19 +198,20 @@
                     android:layout_marginStart="30dp"
                     android:background="@android:color/white" />
 
-                <RelativeLayout
-                    android:id="@+id/relative_layout_settings_auto_off_inner"
+                <FrameLayout
+                    android:id="@+id/frame_layout_settings_auto_off_inner"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/settings_item_height"
                     android:orientation="horizontal">
 
                     <jbl.stc.com.view.CustomFontTextView
                         android:id="@+id/text_view_settings_auto_off"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:drawableEnd="@mipmap/button_right_small"
                         android:gravity="center_vertical"
+                        android:paddingEnd="@dimen/settings_item_padding_right"
                         android:paddingStart="@dimen/settings_item_padding_left"
                         android:text="@string/text_auto_off_feature"
                         android:textSize="16sp"
@@ -219,12 +221,11 @@
                         android:id="@+id/tv_toggleautoOff"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:drawableEnd="@mipmap/grey_arrow_right"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_marginRight="50dp"
                         android:gravity="center_vertical"
-                        android:paddingEnd="@dimen/settings_item_padding_right"
                         android:text="5min"
+                        android:textSize="14sp"
                         android:textStyle="normal"
                         android:visibility="gone" />
 
@@ -232,9 +233,8 @@
                         android:id="@+id/toggleAutoOffTimer"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_alignParentEnd="true"
-                        android:paddingEnd="@dimen/settings_item_padding_right"
-                        android:paddingStart="6dp"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_marginRight="30dp"
                         android:saveEnabled="true"
                         android:switchMinWidth="0dp"
                         android:text=""
@@ -242,7 +242,7 @@
                         android:textOn=""
                         android:thumb="@drawable/toggle_switch_thumb"
                         android:track="@drawable/toggle_switch_track" />
-                </RelativeLayout>
+                </FrameLayout>
             </RelativeLayout>
 
             <RelativeLayout

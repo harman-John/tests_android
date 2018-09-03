@@ -85,6 +85,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         screenWidth = dm.widthPixels;
         screenHeight = dm.widthPixels;
         myDevice = ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED);
+        Logger.d(TAG,"deviceName:"+myDevice.deviceName);
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);
@@ -161,6 +162,12 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 relativeLayoutSmartAssitant.setOnClickListener(this);
             }
+        }
+
+        if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_VOICE_PROMPT)) {
+            view.findViewById(R.id.relative_layout_settings_voice_prompt).setVisibility(View.GONE);
+        } else {
+            view.findViewById(R.id.relative_layout_settings_voice_prompt).setVisibility(View.VISIBLE);
         }
         deviceNameStr = myDevice.deviceName;
 //        deviceNameStr=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");

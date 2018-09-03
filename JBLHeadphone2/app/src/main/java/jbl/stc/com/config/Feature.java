@@ -12,7 +12,8 @@ public enum Feature {
     ENABLE_SMART_BUTTON,
     ENABLE_TRUE_NOTE,
     ENABLE_SOUND_X_SETUP,
-    ENABLE_SMART_ASSISTANT;
+    ENABLE_SMART_ASSISTANT,
+    ENABLE_VOICE_PROMPT;
 
 
     public static Feature getEnum(String feature) {
@@ -26,6 +27,7 @@ public enum Feature {
             case "ENABLE_TRUE_NOTE": return ENABLE_TRUE_NOTE;
             case "ENABLE_SOUND_X_SETUP": return ENABLE_SOUND_X_SETUP;
             case "ENABLE_SMART_ASSISTANT": return ENABLE_SMART_ASSISTANT;
+            case "ENABLE_VOICE_PROMPT": return  ENABLE_VOICE_PROMPT;
             default: return null;
         }
 
