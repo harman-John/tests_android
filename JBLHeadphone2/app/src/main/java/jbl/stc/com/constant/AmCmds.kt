@@ -49,7 +49,7 @@ object AmCmds {
     /**
      * If "AutoOffEnable" sends with param "true", accessory will shutdown automatically when it is in idle about 5 minutes.
      * if "false", accessory will not.
-     * UI uses toggle button, "ON" means "true", "OFF" means "false"
+     * UI uses toggle button, "AMBIENT_AWARE" means "true", "TALK_THRU" means "false"
      */
     const val CMD_AutoOffEnable = "AutoOffEnable"
     /**

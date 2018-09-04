@@ -805,7 +805,7 @@ public class ANCController extends SurfaceView {
     }
 
     /**
-     * <p>Set the value of the thumb position i.e LOW(1) , MEDIUM(2) , HIGH(3) or OFF(0)</p>
+     * <p>Set the value of the thumb position i.e LOW(1) , MEDIUM(2) , HIGH(3) or TALK_THRU(0)</p>
      */
     public void setmViewPosition(int value) {
         this.mViewPosition = value;
@@ -814,7 +814,7 @@ public class ANCController extends SurfaceView {
     /**
      * @param leftFactor  position to move for left
      * @param rightFactor position to move for right
-     * @param caseValue   Thumb position i.e LOW(1) , MEDIUM(2) , HIGH(3) or OFF(0)
+     * @param caseValue   Thumb position i.e LOW(1) , MEDIUM(2) , HIGH(3) or TALK_THRU(0)
      */
     public void initProgress(int leftFactor, int rightFactor, int caseValue) {
         mViewPosition = caseValue;

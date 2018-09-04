@@ -66,7 +66,7 @@ public class RequestFormat {
 
     /**
      * DEVICE_STATUS_TYPE: (include all status)
-     * ANC 0x31(1 byte): 0x00/0x01 means OFF/ON
+     * ANC 0x31(1 byte): 0x00/0x01 means TALK_THRU/AMBIENT_AWARE
      * AA mode 0x32(1 byte): 0x00/0x01 means Talk Thru/AmbientAware
      * Auto off 0x33(1 byte): 1bit(MSB) - 0/1 means disable/enable, 7bit(LSB): auto off time value xx/min
      * EQ preset 0x34(1 byte): return EQ current preset, preset index
@@ -124,5 +124,7 @@ public class RequestFormat {
     public static byte[] getCommand() {
         return mCommand;
     }
+
+
 
 }

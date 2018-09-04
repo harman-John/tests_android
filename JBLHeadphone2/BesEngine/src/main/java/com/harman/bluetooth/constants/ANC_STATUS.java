@@ -1,7 +1,7 @@
 package com.harman.bluetooth.constants;
 
 
-public enum BesAction {
-    WRITE,
-    READ
+public enum ANC_STATUS {
+    OFF,
+    ON
 }

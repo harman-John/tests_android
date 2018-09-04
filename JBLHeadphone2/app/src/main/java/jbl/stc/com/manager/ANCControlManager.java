@@ -49,7 +49,7 @@ public class ANCControlManager {
     /**
      * Set ANC value
      *
-     * @param ancValue boolean anc value, true for ANC ON and false for ANC Off.
+     * @param ancValue boolean anc value, true for ANC AMBIENT_AWARE and false for ANC Off.
      */
     public void setANCValue(boolean ancValue) {
         if (AvneraManager.getAvenraManager().getLightX() != null) {
