@@ -4,17 +4,17 @@ import com.harman.bluetooth.constants.EQ_PRESET_INDEX;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class EQPresetPayload {
+public class CmdEqPresetSet extends BaseCmd {
 
-    private final static String TAG = EQPresetPayload.class.getSimpleName();
+    private final static String TAG = CmdEqPresetSet.class.getSimpleName();
 
-    public EQPresetPayload(EQ_PRESET_INDEX EQPreset_index){
+    public CmdEqPresetSet(EQ_PRESET_INDEX EQPreset_index){
         this.EQPreset_index = EQPreset_index;
     }
 
     private EQ_PRESET_INDEX EQPreset_index;
 
-    public byte[] getPayload(){
+    private byte[] getPayload(){
         byte[] payload = new byte[1];
         switch (EQPreset_index) {
             case OFF:
@@ -34,5 +34,11 @@ public class EQPresetPayload {
         }
         Logger.d(TAG,"get payload: "+ ArrayUtil.bytesToHex(payload));
         return payload;
+    }
+
+    @Override
+    public byte[] getCommand() {
+        combine(Header.SET_EQ_PRESET,getPayload());
+        return super.getCommand();
     }
 }

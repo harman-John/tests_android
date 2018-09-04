@@ -5,11 +5,11 @@ import com.harman.bluetooth.constants.STATUS_CODE;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class AppByePayload {
+public class CmdAppByeSet extends BaseCmd {
 
-    private final static String TAG = AppByePayload.class.getSimpleName();
+    private final static String TAG = CmdAppByeSet.class.getSimpleName();
 
-    public AppByePayload(COMMAND_ID requestCmdId, STATUS_CODE statusCode){
+    public CmdAppByeSet(COMMAND_ID requestCmdId, STATUS_CODE statusCode){
         this.requestCmdId = requestCmdId;
         this.statusCode = statusCode;
     }
@@ -17,7 +17,7 @@ public class AppByePayload {
     private COMMAND_ID requestCmdId;
     private STATUS_CODE statusCode;
 
-    public byte[] getPayload(){
+    private byte[] getPayload(){
         byte[] payload = new byte[2];
 
         switch (requestCmdId){
@@ -67,5 +67,11 @@ public class AppByePayload {
         }
         Logger.d(TAG,"get payload: "+ ArrayUtil.bytesToHex(payload));
         return payload;
+    }
+
+    @Override
+    public byte[] getCommand() {
+        combine(Header.SET_APP_BYE,getPayload());
+        return super.getCommand();
     }
 }

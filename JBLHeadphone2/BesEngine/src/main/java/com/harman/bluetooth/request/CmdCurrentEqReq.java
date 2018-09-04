@@ -4,17 +4,17 @@ import com.harman.bluetooth.constants.EQ_CATEGORY;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class EQCategoryPayload {
+public class CmdCurrentEqReq extends BaseCmd {
 
-    private final static String TAG = EQCategoryPayload.class.getSimpleName();
+    private final static String TAG = CmdCurrentEqReq.class.getSimpleName();
 
-    public EQCategoryPayload(EQ_CATEGORY eq_category){
+    public CmdCurrentEqReq(EQ_CATEGORY eq_category){
         this.eq_category = eq_category;
     }
 
     private EQ_CATEGORY eq_category;
 
-    public byte[] getPayload(){
+    private byte[] getPayload(){
         byte[] payload = new byte[1];
         switch (eq_category) {
             case DESIGN_EQ:
@@ -31,5 +31,11 @@ public class EQCategoryPayload {
         }
         Logger.d(TAG,"get payload: "+ ArrayUtil.bytesToHex(payload));
         return payload;
+    }
+
+    @Override
+    public byte[] getCommand() {
+        combine(Header.REQ_CURRENT_EQ,getPayload());
+        return super.getCommand();
     }
 }

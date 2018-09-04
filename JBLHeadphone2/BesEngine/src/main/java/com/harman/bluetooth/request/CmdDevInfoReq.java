@@ -1,21 +1,20 @@
 package com.harman.bluetooth.request;
 
 import com.harman.bluetooth.constants.DEVICE_STATUS_TYPE;
-import com.harman.bluetooth.constants.MESSAGE_CODE;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class StatusTypePayload {
+public class CmdDevInfoReq extends BaseCmd {
 
-    private final static String TAG = StatusTypePayload.class.getSimpleName();
+    private final static String TAG = CmdDevInfoReq.class.getSimpleName();
 
-    public StatusTypePayload(DEVICE_STATUS_TYPE device_status_type){
+    public CmdDevInfoReq(DEVICE_STATUS_TYPE device_status_type){
         this.device_status_type = device_status_type;
     }
 
     private DEVICE_STATUS_TYPE device_status_type;
 
-    public byte[] getPayload(){
+    private byte[] getPayload(){
         byte[] payload = new byte[1];
         switch (device_status_type) {
             case ALL_STATUS:
@@ -38,6 +37,12 @@ public class StatusTypePayload {
         }
         Logger.d(TAG,"get payload: "+ ArrayUtil.bytesToHex(payload));
         return payload;
+    }
+
+    @Override
+    public byte[] getCommand() {
+        combine(Header.REQ_DEV_STATUS,getPayload());
+        return super.getCommand();
     }
 }
 

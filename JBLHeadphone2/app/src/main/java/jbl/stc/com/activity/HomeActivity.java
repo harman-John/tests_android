@@ -30,7 +30,6 @@ import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,7 +42,7 @@ import android.widget.Toast;
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.audioManager;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
-import com.harman.bluetooth.request.RequestCommands;
+import jbl.stc.com.manager.LiveCmdManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -76,7 +75,6 @@ import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.FirmwareUtil;
-import jbl.stc.com.utils.ToastUtil;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.AaPopupWindow;
 import jbl.stc.com.view.AppImageView;
@@ -967,8 +965,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        RequestCommands requestCommands = new RequestCommands();
-                        requestCommands.reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
+                        LiveCmdManager liveCmdManager = new LiveCmdManager();
+                        liveCmdManager.reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
                     }
                 }).start();
 
