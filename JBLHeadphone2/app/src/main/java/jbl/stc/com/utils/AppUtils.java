@@ -325,6 +325,7 @@ public class AppUtils {
             myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_750NC;
         } else if (deviceName.toUpperCase().contains(JBLConstant.DEVICE_REFLECT_AWARE)) {
             myDevice.deviceName = JBLConstant.DEVICE_REFLECT_AWARE;
+            myDevice.mac = deviceName + "-" + mac;
         } else if (deviceName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_150NC)) {
             myDevice.deviceName = JBLConstant.DEVICE_EVEREST_ELITE_150NC;
         } else if (deviceName.toUpperCase().contains(JBLConstant.DEVICE_EVEREST_ELITE_700)) {

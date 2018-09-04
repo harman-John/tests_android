@@ -65,7 +65,6 @@ import jbl.stc.com.utils.SaveSetUtil;
 
 public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delegate, LightX.Delegate, USB.Delegate, audioManager.AudioDeviceDelegate {
     private static final String TAG = DeviceManager.class.getSimpleName() + "aa";
-    private static final String TAGReconnect = TAG + " reconnection";
     private static final int RESET_TIME = 10 * 1000;
     private static final int RESET_TIME_FOR_150NC = 2 * 1000;
     private int resetTime = RESET_TIME;
@@ -1167,27 +1166,29 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                     AppUtils.setJBLDeviceName(mContext, usbDevice.getDeviceName());
                     AvneraManager.getAvenraManager().setLightX(mLightX);
                     isConnected = true;
-                    Logger.d(TAGReconnect, "usb device connected");
                     isNeedShowDashboard = true;
-                    String key = usbDevice.getProductName();
-                    if (key != null && usbDevice.getProductName().contains("Bootloader")) {
-                        key = key.substring(0, usbDevice.getProductName().length() - "Bootloader".length() - 1);
+                    String productName = usbDevice.getProductName();
+                    if (productName != null && usbDevice.getProductName().contains("Bootloader")) {
+                        productName = productName.substring(0, usbDevice.getProductName().length() - "Bootloader".length() - 1);
                     }
-                    AppUtils.setModelNumber(mContext, key);
-                    key = key + "-" + usbDevice.getManufacturerName();
-                    MyDevice myDevice = ProductListManager.getInstance().getDeviceByKey(key);
-                    myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
-                    ProductListManager.getInstance().checkConnectStatus(key,ConnectStatus.A2DP_UNCONNECTED);
-                    Set<MyDevice> set = new HashSet<>();
-                    set.add(myDevice);
-                    SaveSetUtil.saveSet(mContext, set);
-                    Logger.d(TAGReconnect, "usb device connected, firmware is updating: " + FirmwareUtil.isUpdatingFirmWare.get());
+                    Logger.d(TAG, "usb device connected productName = "+productName);
+                    AppUtils.setModelNumber(mContext, productName);
+                    String key = productName+"-"+usbDevice.getManufacturerName();
+                    MyDevice myDevice = ProductListManager.getInstance().getDeviceByKey(productName+"-"+usbDevice.getManufacturerName());
+                    if (myDevice == null && productName != null){
+                        myDevice = AppUtils.getMyDevice(productName, ConnectStatus.A2DP_UNCONNECTED, "", usbDevice.getManufacturerName());
+                        devicesSet.add(myDevice);
+                        SaveSetUtil.saveSet(mContext,devicesSet);
+                    }
+                    ProductListManager.getInstance().checkConnectStatus(key,ConnectStatus.DEVICE_CONNECTED);
+                    ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
+                    Logger.d(TAG, "usb device connected, firmware is updating: " + FirmwareUtil.isUpdatingFirmWare.get());
                     if (!FirmwareUtil.isUpdatingFirmWare.get() && !isNeedOtaAgain) {
                         if (mOnConnectStatusListener != null) {
                             mOnConnectStatusListener.onConnectStatus(isConnected);
                         }
                     }
-                    Logger.d(TAGReconnect, "usb device connected, device key is: " + key);
+                    Logger.d(TAG, "usb device connected, device key is: " + key);
                     if (onRetListener != null) {
                         onRetListener.onReceive(EnumCommands.CMD_IsLightXInitialize);
                     }
