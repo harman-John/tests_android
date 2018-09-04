@@ -355,6 +355,10 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onCheckDevices() {
+        if (myGridAdapter == null){
+            Logger.d(TAG,"on check devices, my grid adapter is null");
+            return;
+        }
         myGridAdapter.setMyAdapterList();
         myGridAdapter.notifyDataSetChanged();
     }
