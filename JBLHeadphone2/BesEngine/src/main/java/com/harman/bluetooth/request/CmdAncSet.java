@@ -1,21 +1,20 @@
 package com.harman.bluetooth.request;
 
 import com.harman.bluetooth.constants.ANC_STATUS;
-import com.harman.bluetooth.constants.MESSAGE_CODE;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class ANCPayload {
+public class CmdAncSet extends BaseCmd {
 
-    private final static String TAG = ANCPayload.class.getSimpleName();
+    private final static String TAG = CmdAncSet.class.getSimpleName();
 
-    public ANCPayload(ANC_STATUS anc_status){
+    public CmdAncSet(ANC_STATUS anc_status){
         this.anc_status = anc_status;
     }
 
     private ANC_STATUS anc_status;
 
-    public byte[] getPayload(){
+    private byte[] getPayload(){
         byte[] payload = new byte[1];
         switch (anc_status) {
             case OFF:
@@ -29,5 +28,11 @@ public class ANCPayload {
         }
         Logger.d(TAG,"get payload: "+ ArrayUtil.bytesToHex(payload));
         return payload;
+    }
+
+    @Override
+    public byte[] getCommand() {
+        combine(Header.SET_ANC,getPayload());
+        return super.getCommand();
     }
 }

@@ -3,9 +3,9 @@ package com.harman.bluetooth.request;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class RequestFormat {
+public class Header {
 
-    private final static String TAG = RequestFormat.class.getSimpleName();
+    private final static String TAG = Header.class.getSimpleName();
 
     private static byte[] mCommand;
 

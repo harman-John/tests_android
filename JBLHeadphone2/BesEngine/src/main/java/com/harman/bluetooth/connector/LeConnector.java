@@ -307,6 +307,7 @@ public class LeConnector implements BaseConnector{
 
         return BesCommandType.DEVICE_INFO;
     }
+
     private BluetoothGattCallback mBluetoothGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
