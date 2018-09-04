@@ -79,6 +79,7 @@ import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.AaPopupWindow;
 import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.BlurringView;
+import jbl.stc.com.view.CustomFontTextView;
 import jbl.stc.com.view.NotConnectedPopupWindow;
 import jbl.stc.com.view.SaPopupWindow;
 
@@ -232,6 +233,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
+                CustomFontTextView textViewNoiseCancle = findViewById(R.id.text_view_home_noise_cancle);
+                textViewNoiseCancle.setText(R.string.talkthru);
                 checkBoxNoiseCancel.setOnClickListener(this);
                 findViewById(R.id.relative_layout_home_noise_cancel).setVisibility(View.VISIBLE);
                 linearLayoutAmbientAware.setVisibility(View.VISIBLE);
