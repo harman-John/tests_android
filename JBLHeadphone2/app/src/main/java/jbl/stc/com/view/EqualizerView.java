@@ -64,6 +64,7 @@ public class EqualizerView extends View {
     private int STEP = AppUtils.EQ_VIEW_DEFAULT_STEP;
 
     private boolean isDynamicDrawCurve;
+    private float dx=0;
 
     public EqualizerView(Context context) {
         this(context, null);
@@ -147,6 +148,7 @@ public class EqualizerView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         mCanvas = canvas;
+        canvas.translate(dx,0);
         //drawText(canvas);
         //drawLine(canvas);
         Logger.d(TAG, "onDraw");
@@ -231,6 +233,11 @@ public class EqualizerView extends View {
         }
         invalidate();
         this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+    }
+
+    public void setTranslateX(float dx){
+        this.dx = dx;
+        invalidate();
     }
 
     /**
