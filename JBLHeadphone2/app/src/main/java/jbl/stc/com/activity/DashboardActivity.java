@@ -21,7 +21,6 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
@@ -33,7 +32,9 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.ConnectedDeviceType;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.entity.FirmwareModel;
+import jbl.stc.com.entity.IIR_PARAM_T;
 import jbl.stc.com.entity.MyDevice;
+import jbl.stc.com.entity.designer_cfg;
 import jbl.stc.com.fragment.DiscoveryFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.fragment.UnableConnectFragment;
@@ -41,8 +42,8 @@ import jbl.stc.com.listener.OnCheckDevicesListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.DeviceManager;
-import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.manager.LeManager;
+import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -51,7 +52,7 @@ import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.MyDragGridView;
 
-public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnDownloadedListener, OnCheckDevicesListener{
+public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnDownloadedListener, OnCheckDevicesListener {
     private static final String TAG = DashboardActivity.class.getSimpleName() + "aa";
     private static DashboardActivity dashboardActivity;
     private final static int MSG_SHOW_MY_PRODUCTS = 0;
@@ -83,6 +84,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         LeManager.getInstance().setOnConnectStatusListener(this);
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         LeManager.getInstance().onRequestPermissionsResult(requestCode, grantResults);
@@ -108,7 +110,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 }
                 if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                         || myDevice.connectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
-                    Logger.d(TAG, "on device selected listener,in grid view, device selected: "+myDevice.deviceKey);
+                    Logger.d(TAG, "on device selected listener,in grid view, device selected: " + myDevice.deviceKey);
                     gridView.smoothScrollToPositionFromTop(position, 0);
                     dashboardHandler.postDelayed(new Runnable() {
                         @Override
@@ -230,7 +232,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                     dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
                 }
             }
-        }else{
+        } else {
             dashboardHandler.removeMessages(MSG_START_SCAN);
             dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
             LeManager.getInstance().checkPermission(this);
@@ -546,16 +548,16 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                     }
                     break;
                 }
-                case BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED:{
+                case BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED: {
                     int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, 0);
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     switch (blueState) {
                         case BluetoothAdapter.STATE_CONNECTED: {
-                            Logger.i(TAG, "on receive, bluetooth state receiver, state connected: "+ device.getName()+"-"+device.getAddress());
+                            Logger.i(TAG, "on receive, bluetooth state receiver, state connected: " + device.getName() + "-" + device.getAddress());
                             break;
                         }
                         case BluetoothAdapter.STATE_DISCONNECTED: {
-                            Logger.i(TAG, "on receive, bluetooth state receiver, state disconnected: "+ device.getName()+"-"+device.getAddress());
+                            Logger.i(TAG, "on receive, bluetooth state receiver, state disconnected: " + device.getName() + "-" + device.getAddress());
                             break;
                         }
                     }
@@ -564,4 +566,28 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             }
         }
     };
+
+    public float getCalib() {
+        designer_cfg designerCfg = new designer_cfg(0.21f, 0.22f, 1, 40);
+        IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[2];
+        def_iir_param_t[0] = new IIR_PARAM_T(2, 0.25f, 2, 3);
+        def_iir_param_t[1] = new IIR_PARAM_T(3, 0.26f, 3, 4);
+
+        designer_cfg userCfg = new designer_cfg(0.91f, 0.12f, 3, 20);
+        IIR_PARAM_T[] user_iir_param_t = new IIR_PARAM_T[2];
+        user_iir_param_t[0] = new IIR_PARAM_T(2, 0.15f, 2, 3);
+        user_iir_param_t[1] = new IIR_PARAM_T(4, 0.16f, 1, 2);
+        Logger.d(TAG, "calculate calibration, length = " + def_iir_param_t.length);
+        float a = calculateCalib(designerCfg, def_iir_param_t, def_iir_param_t.length, userCfg,
+                user_iir_param_t, user_iir_param_t.length);
+        Logger.d(TAG, "calculate calibration, a = " + a);
+        return a;
+    }
+
+    public native float calculateCalib(designer_cfg designerCfg, IIR_PARAM_T[] designer_iir_param_t, int def_size,
+                                       designer_cfg userCfg, IIR_PARAM_T[] user_iir_param_t, int user_size);
+
+    static {
+        System.loadLibrary("calculateCalib");
+    }
 }
