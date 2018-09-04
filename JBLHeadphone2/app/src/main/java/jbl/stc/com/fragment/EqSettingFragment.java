@@ -608,7 +608,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
         eqModelList.clear();
         eqModelList.addAll(eqModels);
-        currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, ""), mContext);
+        currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, getResources().getString(R.string.off)), mContext);
         Logger.d(TAG, "initValue() currEqName=" + PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, mContext, getResources().getString(R.string.off)));
         if (currSelectedEq != null && currSelectedEq.eqName != null) {
             if (application.globalEqInfo.eqOn) {
@@ -627,6 +627,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             } else {
                 eqNameText.setText(R.string.off);
                 eqNameText.setTextColor(ContextCompat.getColor(mContext, R.color.text_white_50));
+                eqModelList.get(0).isSelected = true;
             }
         } else {
             eqNameText.setText(R.string.off);
