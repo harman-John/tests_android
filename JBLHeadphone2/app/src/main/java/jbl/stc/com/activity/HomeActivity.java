@@ -43,6 +43,7 @@ import android.widget.Toast;
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.audioManager;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
+import com.harman.bluetooth.engine.BesEngine;
 
 import jbl.stc.com.manager.LiveCmdManager;
 
@@ -937,7 +938,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         aaPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
         aaPopupWindow.setImageViewAmbientAware((ImageView) findViewById(R.id.image_view_home_ambient_aware));
 
-        getAAValue();
+        ANCControlManager.getANCManager(this).getAmbientLeveling();
     }
 
     public void showNCPopupWindow() {
@@ -968,18 +969,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void getDeviceInfo() {
 
-        homeHandler.post(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        LiveCmdManager liveCmdManager = new LiveCmdManager();
-                        liveCmdManager.reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
-                    }
-                }).start();
-
+                if (LeManager.getInstance().isConnected()) {
+                    LiveCmdManager liveCmdManager = new LiveCmdManager();
+                    liveCmdManager.reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
+                }
                 switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                     case NONE:
                         break;
@@ -994,33 +990,41 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
                         break;
                 }
-                homeHandler.sendEmptyMessage(MSG_FIRMWARE_INFO);
+                timeInterval();
                 ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd();
                 Logger.e(TAG, "read boot image type");
+                timeInterval();
                 ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).readBootImageType();
+                timeInterval();
+                ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
+                timeInterval();
+                ANCControlManager.getANCManager(getApplicationContext()).readConfigModelNumber();
+                timeInterval();
+                ANCControlManager.getANCManager(getApplicationContext()).readConfigProductName();
+                timeInterval();
+                ANCControlManager.getANCManager(getApplicationContext()).getAmbientLeveling();
+                timeInterval();
+                ANCControlManager.getANCManager(getApplicationContext()).readBootVersionFileResource();
+                timeInterval();
+                ANCControlManager.getANCManager(getApplicationContext()).getFirmwareVersion();
+                timeInterval();
                 ANCControlManager.getANCManager(getApplicationContext()).getANCValue();
+                timeInterval();
+                ANCControlManager.getANCManager(getApplicationContext()).getFirmwareInfo();
                 if (AvneraManager.getAvenraManager().getLightX() == null) {
                     homeHandler.sendEmptyMessage(MSG_FIRMWARE_VERSION);
                 }
-                ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
-
-                ANCControlManager.getANCManager(getApplicationContext()).readConfigModelNumber();
-                ANCControlManager.getANCManager(getApplicationContext()).readConfigProductName();
-                getAAValue();
-                homeHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        ANCControlManager.getANCManager(getApplicationContext()).readBootVersionFileResource();
-                        ANCControlManager.getANCManager(getApplicationContext()).getFirmwareVersion();
-                    }
-                }, 200);
             }
-        });
+        }).start();
 
     }
 
-    private void getAAValue() {
-        ANCControlManager.getANCManager(this).getAmbientLeveling();
+    private void timeInterval() {
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -1142,7 +1146,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void updateCurrentEQ(int index) {
         Logger.d(TAG, "eqIndex:" + index);
-        //ANCControlManager.getANCManager(this).getAppGraphicEQPresetBandSettings(lightX, GraphicEQPreset.Jazz,9);
         switch (index) {
             case 0: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.off), this);
@@ -1372,7 +1375,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             Logger.d(TAG, "do on receive error, activity is finishing");
             return;
         }
-        Logger.d(TAG, "onReceive command:" + enumCommands + "value:" + objects[0]);
+//        Logger.d(TAG, "onReceive command:" + enumCommands + ",value:" + objects[0]);
         switch (enumCommands) {
             case CMD_ANC: {
                 int anc = (Integer) objects[0];
@@ -1432,8 +1435,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     byte[] eqBytes = (byte[]) (objects[0]);
                     Logger.d(TAG, "on receive, cmd eq band settings: " + ArrayUtil.toHex(eqBytes));
                     parseCustomEQ(eqBytes);
-                    homeHandler.sendEmptyMessage(MSG_FIRMWARE_INFO);
-                }else{
+//                    homeHandler.sendEmptyMessage(MSG_FIRMWARE_INFO);
+                } else {
                     //TODO: bes live update eq settings.
                 }
                 break;

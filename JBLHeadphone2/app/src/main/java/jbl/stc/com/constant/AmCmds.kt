@@ -10,7 +10,7 @@ object AmCmds {
      * Noise cancel or enable.
      * Implement as toggle button.
      */
-    const val CMD_ANC = "REQ_ANC"
+    const val CMD_ANC = "ANC"
     /**
      *  Removed by firmware, do not use it
      */
