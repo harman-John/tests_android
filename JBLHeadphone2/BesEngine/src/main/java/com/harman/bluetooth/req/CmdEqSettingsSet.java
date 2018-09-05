@@ -55,10 +55,11 @@ public class CmdEqSettingsSet extends BaseCmd {
         payload[9] = (byte) band.length;
 
         for (int i=0;i < band.length; i++) {
-            int pos = 10 + 3* i;
+            int pos = 10 + 13* i;
             payload[pos] = (byte) band[i].type;
             payload[pos +1] = (byte) band[i].gain;
-            payload[pos +2] = (byte) band[i].q;
+            payload[pos +5] = (byte) band[i].fc;
+            payload[pos +9] = (byte) band[i].q;
         }
         Logger.d(TAG,"get payload: "+ ArrayUtil.bytesToHex(payload));
         return payload;
