@@ -107,8 +107,10 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
         PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, value, JBLApplication.getJBLApplicationContext());
         int rightValue = PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, JBLApplication.getJBLApplicationContext());
         if (value == 0 && rightValue == 0) {
+            if (imageViewAmbientAware!=null)
             imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_non_active);
         } else {
+            if (imageViewAmbientAware!=null)
             imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
         }
         isRequestingLeftANC = false;
@@ -124,8 +126,10 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
         PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, value, JBLApplication.getJBLApplicationContext());
         int leftValue = PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, JBLApplication.getJBLApplicationContext());
         if (value == 0 && leftValue == 0) {
+            if (imageViewAmbientAware!=null)
             imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_non_active);
         } else {
+            if (imageViewAmbientAware!=null)
             imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
         }
         isRequestingRightANC = false;
@@ -137,7 +141,6 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
     }
 
     public void updateAAUI(int aaLevelingValue) {
-        this.imageViewAmbientAware = imageViewAmbientAware;
         boolean is150NC = AppUtils.is150NC(JBLApplication.getJBLApplicationContext());
         Logger.d(TAG, "updateAmbientLevel: " + aaLevelingValue + "," + PreferenceUtils.getInt(PreferenceKeys.AWARENESS, JBLApplication.getJBLApplicationContext()) + ",is150NC=" + is150NC);
         switch (aaLevelingValue) {
@@ -145,24 +148,28 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
                 PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, 0, JBLApplication.getJBLApplicationContext());
                 PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, 0, JBLApplication.getJBLApplicationContext());
                 lastsavedAwarenessState = ANCAwarenessPreset.None;
+                if (imageViewAmbientAware!=null)
                 imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_non_active);
                 break;
             case 1: //ANCAwarenessPreset.Low
                 PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, is150NC ? 28 : 25, JBLApplication.getJBLApplicationContext());
                 PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, is150NC ? 28 : 25, JBLApplication.getJBLApplicationContext());
                 lastsavedAwarenessState = ANCAwarenessPreset.Low;
+                if (imageViewAmbientAware!=null)
                 imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
                 break;
             case 2: //ANCAwarenessPreset.Medium
                 PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, is150NC ? 58 : 55, JBLApplication.getJBLApplicationContext());
                 PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, is150NC ? 58 : 55, JBLApplication.getJBLApplicationContext());
                 lastsavedAwarenessState = ANCAwarenessPreset.Medium;
+                if (imageViewAmbientAware!=null)
                 imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
                 break;
             case 3://ANCAwarenessPreset.High
                 PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, is150NC ? 86 : 100, JBLApplication.getJBLApplicationContext());
                 PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, is150NC ? 86 : 100, JBLApplication.getJBLApplicationContext());
                 lastsavedAwarenessState = ANCAwarenessPreset.High;
+                if (imageViewAmbientAware!=null)
                 imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
                 break;
         }
