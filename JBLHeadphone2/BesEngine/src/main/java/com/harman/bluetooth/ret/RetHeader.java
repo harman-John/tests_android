@@ -1,6 +1,6 @@
 package com.harman.bluetooth.ret;
 
-public class ReportFormat {
+public class RetHeader {
 
 
     /**

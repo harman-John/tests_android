@@ -13,9 +13,13 @@ import android.util.Log;
 
 
 import com.harman.bluetooth.constants.Band;
+import com.harman.bluetooth.constants.EnumAAStatus;
+import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.constants.EnumCmdId;
 import com.harman.bluetooth.constants.Constants;
 import com.harman.bluetooth.constants.EnumDeviceStatusType;
+import com.harman.bluetooth.constants.EnumEqCategory;
+import com.harman.bluetooth.constants.EnumEqPresetIdx;
 import com.harman.bluetooth.constants.EnumMsgCode;
 import com.harman.bluetooth.constants.EnumStatusCode;
 import com.harman.bluetooth.listeners.BesListener;
@@ -23,7 +27,7 @@ import com.harman.bluetooth.ret.DataCurrentEQ;
 import com.harman.bluetooth.ret.DataDevStatus;
 import com.harman.bluetooth.ret.DataDeviceInfo;
 import com.harman.bluetooth.ret.DevResponse;
-import com.harman.bluetooth.ret.ReportFormat;
+import com.harman.bluetooth.ret.RetHeader;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
@@ -311,7 +315,6 @@ public class LeConnector implements BaseConnector {
     }
 
     private DevResponse classifyCommand(BluetoothGattCharacteristic characteristic) {
-        //do something to classify command type based on characteristic
         byte[] bytes = characteristic.getValue();
         String bytesStr = ArrayUtil.bytesToHex(bytes);
         Logger.d(TAG, "classify command, ret bytes: " + bytesStr);
@@ -319,42 +322,23 @@ public class LeConnector implements BaseConnector {
         EnumCmdId enumCmdId = EnumCmdId.DEFAULT;
         DevResponse devResponse = new DevResponse();
         switch (cmdId) {
-            case ReportFormat.RET_DEV_ACK:
+            case RetHeader.RET_DEV_ACK:
                 enumCmdId = EnumCmdId.RET_DEV_ACK;
                 String statusCode = bytesStr.substring(4, 5);
-                EnumStatusCode enumStatusCode = null;
-                switch (statusCode) {
-                    case "00":
-                        enumStatusCode = EnumStatusCode.SUCCESS;
-                        break;
-                    case "01":
-                        enumStatusCode = EnumStatusCode.FAILED;
-                        break;
-                }
-                devResponse.object = enumStatusCode;
+                devResponse.object = parseStatusCode(statusCode);
                 break;
-            case ReportFormat.RET_DEV_BYE:
+            case RetHeader.RET_DEV_BYE:
                 enumCmdId = EnumCmdId.RET_DEV_BYE;
-
-                EnumMsgCode enumMsgCode = null;
                 String msgCode = bytesStr.substring(4, 5);
-                switch (msgCode) {
-                    case "00":
-                        enumMsgCode = EnumMsgCode.UNKNOWN;
-                        break;
-                    case "01":
-                        enumMsgCode = EnumMsgCode.DEVICE_POWER_OFF;
-                        break;
-                }
-                devResponse.object = enumMsgCode;
+                devResponse.object = parseMsgCode(msgCode);
                 break;
 
-            case ReportFormat.RET_DEV_FIN_ACK:
+            case RetHeader.RET_DEV_FIN_ACK:
                 enumCmdId = EnumCmdId.RET_DEV_FIN_ACK;
 
                 devResponse.object = null;
                 break;
-            case ReportFormat.RET_DEV_INFO:
+            case RetHeader.RET_DEV_INFO:
                 enumCmdId = EnumCmdId.RET_DEV_INFO;
                 DataDeviceInfo dataDeviceInfo = new DataDeviceInfo();
                 dataDeviceInfo.deviceName = bytesStr.substring(4, 20);
@@ -366,45 +350,61 @@ public class LeConnector implements BaseConnector {
 
                 devResponse.object = dataDeviceInfo;
                 break;
-            case ReportFormat.RET_DEV_STATUS:
+            case RetHeader.RET_DEV_STATUS:
                 enumCmdId = EnumCmdId.RET_DEV_STATUS;
                 String StatusType = bytesStr.substring(4, 5);
                 DataDevStatus dataDevStatus = new DataDevStatus();
                 EnumDeviceStatusType enumDeviceStatusType = null;
                 switch (StatusType) {
-                    case ReportFormat.ALL_STATUS_TYPE:
+                    case RetHeader.ALL_STATUS_TYPE: {
                         enumDeviceStatusType = EnumDeviceStatusType.ALL_STATUS;
-                        dataDevStatus.anc = bytesStr.substring(6, 7);
-                        dataDevStatus.ambientAware = bytesStr.substring(8, 9);
-                        dataDevStatus.autoOff = bytesStr.substring(10, 11);
-                        dataDevStatus.eqPreset = bytesStr.substring(11, 12);
+                        String anc = bytesStr.substring(6, 7);
+                        dataDevStatus.enumAncStatus = parseANC(anc);
 
+                        String ambientAware = bytesStr.substring(8, 9);
+                        dataDevStatus.enumAAStatus = parseAmbientAware(ambientAware);
+
+                        dataDevStatus.autoOff = bytesStr.substring(10, 11);
+                        String eqPresetIdx = bytesStr.substring(12, 13);
+                        dataDevStatus.enumEqPresetIdx = parsePresetIdx(eqPresetIdx);
                         break;
-                    case ReportFormat.ANC_TYPE:
+                    }
+                    case RetHeader.ANC_TYPE: {
                         enumDeviceStatusType = EnumDeviceStatusType.ANC;
-                        dataDevStatus.anc = bytesStr.substring(6, 7);
+                        String anc = bytesStr.substring(6, 7);
+                        dataDevStatus.enumAncStatus = parseANC(anc);
                         break;
-                    case ReportFormat.AA_MODE_TYPE:
+                    }
+                    case RetHeader.AA_MODE_TYPE: {
                         enumDeviceStatusType = EnumDeviceStatusType.AMBIENT_AWARE_MODE;
-                        dataDevStatus.ambientAware = bytesStr.substring(8, 9);
+                        String ambientAware = bytesStr.substring(8, 9);
+                        dataDevStatus.enumAAStatus = parseAmbientAware(ambientAware);
                         break;
-                    case ReportFormat.AUTO_OFF_TYPE:
+                    }
+                    case RetHeader.AUTO_OFF_TYPE: {
                         enumDeviceStatusType = EnumDeviceStatusType.AUTO_OFF;
                         dataDevStatus.autoOff = bytesStr.substring(10, 11);
                         break;
-                    case ReportFormat.EQ_PRESET_TYPE:
+                    }
+                    case RetHeader.EQ_PRESET_TYPE: {
                         enumDeviceStatusType = EnumDeviceStatusType.EQ_PRESET;
-                        dataDevStatus.eqPreset = bytesStr.substring(11, 12);
+                        String eqPresetIdx = bytesStr.substring(12, 13);
+                        dataDevStatus.enumEqPresetIdx = parsePresetIdx(eqPresetIdx);
                         break;
+                    }
                 }
                 dataDevStatus.enumDeviceStatusType = enumDeviceStatusType;
                 devResponse.object = dataDevStatus;
                 break;
-            case ReportFormat.RET_CURRENT_EQ:
+            case RetHeader.RET_CURRENT_EQ:
                 enumCmdId = EnumCmdId.RET_DEV_ACK;
                 DataCurrentEQ dataCurrentEQ = new DataCurrentEQ();
-                dataCurrentEQ.presetIdx = bytesStr.substring(4, 5);
-                dataCurrentEQ.eqCategory = bytesStr.substring(6, 7);
+                String presetIdx = bytesStr.substring(4, 5);
+                dataCurrentEQ.enumEqPresetIdx = parsePresetIdx(presetIdx);
+
+                String eqCategory = bytesStr.substring(6, 7);
+                dataCurrentEQ.enumEqCategory = parseEqCategory(eqCategory);
+
                 dataCurrentEQ.sampleRate = bytesStr.substring(8, 9);
                 dataCurrentEQ.gain0 = bytesStr.substring(10, 11);
                 dataCurrentEQ.gain1 = bytesStr.substring(12, 13);
@@ -427,6 +427,92 @@ public class LeConnector implements BaseConnector {
         return devResponse;
     }
 
+    private EnumStatusCode parseStatusCode(String statusCode){
+        EnumStatusCode enumStatusCode = null;
+        switch (statusCode) {
+            case "00":
+                enumStatusCode = EnumStatusCode.SUCCESS;
+                break;
+            case "01":
+                enumStatusCode = EnumStatusCode.FAILED;
+                break;
+        }
+        return enumStatusCode;
+    }
+
+    private EnumMsgCode parseMsgCode(String msgCode){
+        EnumMsgCode enumMsgCode = null;
+        switch (msgCode) {
+            case "00":
+                enumMsgCode = EnumMsgCode.UNKNOWN;
+                break;
+            case "01":
+                enumMsgCode = EnumMsgCode.DEVICE_POWER_OFF;
+                break;
+        }
+        return enumMsgCode;
+    }
+
+    private EnumAncStatus parseANC(String anc){
+        EnumAncStatus enumAncStatus = null;
+        switch (anc){
+            case "00":
+                enumAncStatus = EnumAncStatus.OFF;
+                break;
+            case "01":
+                enumAncStatus = EnumAncStatus.ON;
+                break;
+        }
+        return enumAncStatus;
+    }
+
+    private EnumAAStatus parseAmbientAware(String ambientAware){
+        EnumAAStatus enumAAStatus = null;
+        switch (ambientAware) {
+            case "00":
+                enumAAStatus = EnumAAStatus.TALK_THRU;
+                break;
+            case "01":
+                enumAAStatus = EnumAAStatus.AMBIENT_AWARE;
+                break;
+        }
+        return enumAAStatus;
+    }
+
+    private EnumEqPresetIdx parsePresetIdx(String eqPresetIdx){
+        EnumEqPresetIdx enumEqPresetIdx = null;
+        switch (eqPresetIdx) {
+            case "00":
+                enumEqPresetIdx = EnumEqPresetIdx.OFF;
+                break;
+            case "01":
+                enumEqPresetIdx = EnumEqPresetIdx.JAZZ;
+                break;
+            case "02":
+                enumEqPresetIdx = EnumEqPresetIdx.VOCAL;
+                break;
+            case "03":
+                enumEqPresetIdx = EnumEqPresetIdx.BASS;
+                break;
+        }
+        return enumEqPresetIdx;
+    }
+
+    private EnumEqCategory parseEqCategory(String eqCategory){
+        EnumEqCategory enumEqCategory = null;
+        switch (eqCategory){
+            case "00":
+                enumEqCategory = EnumEqCategory.DESIGN_EQ;
+                break;
+            case "01":
+                enumEqCategory = EnumEqCategory.GRAPHIC_EQ;
+                break;
+            case "02":
+                enumEqCategory = EnumEqCategory.TOTAL_EQ;
+                break;
+        }
+        return enumEqCategory;
+    }
 
     private BluetoothGattCallback mBluetoothGattCallback = new BluetoothGattCallback() {
         @Override

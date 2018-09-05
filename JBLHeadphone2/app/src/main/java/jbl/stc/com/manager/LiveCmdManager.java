@@ -9,7 +9,7 @@ import com.harman.bluetooth.req.CmdCurrentEqReq;
 import com.harman.bluetooth.req.CmdDevInfoReq;
 import com.harman.bluetooth.req.CmdEqPresetSet;
 import com.harman.bluetooth.req.CmdEqSettingsSet;
-import com.harman.bluetooth.req.Header;
+import com.harman.bluetooth.req.ReqHeader;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
@@ -54,9 +54,9 @@ public class LiveCmdManager {
      */
     public void reqDevInfo(String mac) {
         Logger.d(TAG,"request device info");
-        Header.combine(Header.REQ_DEV_INFO);
-        boolean isSend = BesEngine.getInstance().sendCommand(mac, Header.getCommand());
-        Logger.d(TAG,"request device info, isSend = "+isSend+", command: "+ ArrayUtil.bytesToHex(Header.getCommand()));
+        ReqHeader.combine(ReqHeader.REQ_DEV_INFO);
+        boolean isSend = BesEngine.getInstance().sendCommand(mac, ReqHeader.getCommand());
+        Logger.d(TAG,"request device info, isSend = "+isSend+", command: "+ ArrayUtil.bytesToHex(ReqHeader.getCommand()));
     }
 
     /**
@@ -95,8 +95,8 @@ public class LiveCmdManager {
      */
     public void reqSetAutoOff(String mac,byte[] onOff) {
         Logger.d(TAG,"request to set auto off");
-        Header.combine(Header.SET_AUTO_OFF,onOff);
-        BesEngine.getInstance().sendCommand(mac, Header.getCommand());
+        ReqHeader.combine(ReqHeader.SET_AUTO_OFF,onOff);
+        BesEngine.getInstance().sendCommand(mac, ReqHeader.getCommand());
     }
 
     /**

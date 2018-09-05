@@ -32,7 +32,7 @@ public class CmdAASet extends BaseCmd {
 
     @Override
     public byte[] getCommand() {
-        combine(Header.SET_AA_MODE,getPayload());
+        combine(ReqHeader.SET_AA_MODE,getPayload());
         return super.getCommand();
     }
 }

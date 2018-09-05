@@ -2,10 +2,12 @@ package com.harman.bluetooth.ret;
 
 
 import com.harman.bluetooth.constants.Band;
+import com.harman.bluetooth.constants.EnumEqCategory;
+import com.harman.bluetooth.constants.EnumEqPresetIdx;
 
 public class DataCurrentEQ {
-    public String presetIdx;
-    public String eqCategory;
+    public EnumEqPresetIdx enumEqPresetIdx;
+    public EnumEqCategory enumEqCategory;
     public String sampleRate;
     public String gain0;
     public String gain1;
