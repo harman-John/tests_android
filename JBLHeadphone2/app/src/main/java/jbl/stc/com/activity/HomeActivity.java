@@ -73,6 +73,7 @@ import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.ArrayUtil;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.utils.UiUtils;
@@ -420,11 +421,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
 
         if ((fr != null) && fr instanceof EqSettingFragment) {
-            doResume();
+            DeviceManager.getInstance(this).setOnRetListener(this);
+            LeManager.getInstance().setOnConnectStatusListener(this);
+            ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
         }
-
-        if (fr == null) {
-            doResume();
+        if (fr == null){
+            DeviceManager.getInstance(this).setOnRetListener(this);
+            LeManager.getInstance().setOnConnectStatusListener(this);
         }
     }
 
@@ -1366,29 +1369,32 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
         switch (enumCommands) {
             case CMD_ANC: {
-                sendMessageTo(MSG_ANC, (Integer) objects[0]);
+                int anc = (Integer) objects[0];
+                Logger.d(TAG, "on receive, cmd anc: "+ anc);
+                sendMessageTo(MSG_ANC, anc);
                 break;
             }
             case CMD_AMBIENT_LEVELING: {
                 int aaLevel = (int) objects[0];
+                Logger.d(TAG, "on receive, cmd ambient: "+ aaLevel);
                 sendMessageTo(MSG_AMBIENT_LEVEL, aaLevel);
                 break;
             }
             case CMD_RAW_STEPS: {
                 int rawSteps = (int) objects[0];
-                Logger.d(TAG, "do get raw steps");
+                Logger.d(TAG, "on receive, cmd raw steps: "+ rawSteps);
                 sendMessageTo(MSG_RAW_STEP, rawSteps);
                 break;
             }
             case CMD_BATTERY_LEVEL: {
                 int battery = (int) objects[0];
-                Logger.d(TAG, "do get battery level, battery = " + battery);
+                Logger.d(TAG, "on receive, cmd battery level: " + battery);
                 sendMessageTo(MSG_BATTERY, battery);
                 break;
             }
             case CMD_GEQ_CURRENT_PRESET: {
                 int currentPreset = (int) objects[0];
-                Logger.d(TAG, "do get current preset");
+                Logger.d(TAG, "on receive, cmd eq current preset: " + currentPreset);
                 sendMessageTo(MSG_CURRENT_PRESET, currentPreset);
                 break;
             }
@@ -1396,7 +1402,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             }
             case CMD_FIRMWARE_VERSION: {
-                Logger.d(TAG, "do get firmware version ");
+                Logger.d(TAG, "on receive, cmd firmware version");
                 if (objects[0] != null) {
                     PreferenceUtils.setString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, (String) objects[0], this);
                     homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
@@ -1407,41 +1413,52 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
             case CMD_RAW_LEFT:
                 int rawLeft = (int) objects[0];
+                Logger.d(TAG, "on receive, cmd raw left: " + rawLeft);
                 sendMessageTo(MSG_AA_LEFT, rawLeft);
                 break;
             case CMD_RAW_RIGHT:
                 int rawRight = (int) objects[0];
+                Logger.d(TAG, "on receive, cmd raw right: " + rawRight);
                 sendMessageTo(MSG_AA_RIGHT, rawRight);
                 break;
             case CMD_GRAPHIC_EQ_PRESET_BAND_SETTINGS: {
-                parseCustomEQ((byte[]) (objects[0]));
+                byte[] eqBytes = (byte[]) (objects[0]);
+                Logger.d(TAG, "on receive, cmd eq band settings: " + ArrayUtil.toHex(eqBytes));
+                parseCustomEQ(eqBytes);
                 homeHandler.sendEmptyMessage(MSG_FIRMWARE_INFO);
                 break;
             }
             case CMD_IsInBootloader: {
-                doInBootLoaderMode((boolean) objects[0]);
+                boolean isInBootloader = (boolean) objects[0];
+                Logger.d(TAG, "on receive, cmd is in boot loader: " + isInBootloader);
+                doInBootLoaderMode(isInBootloader);
                 break;
             }
             case CMD_ConfigProductName: {
-                PreferenceUtils.setString(PreferenceKeys.PRODUCT, (String) objects[0], this);
+                String productName = (String) objects[0];
+                Logger.d(TAG, "on receive, cmd config product name: " + productName);
+                PreferenceUtils.setString(PreferenceKeys.PRODUCT, productName, this);
                 break;
             }
             case CMD_ConfigModelNumber: {
+                Logger.d(TAG, "on receive, cmd config model number");
                 AppUtils.setModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext(), deviceName);
                 updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
                 break;
             }
             case CMD_AppPushANCEnable: {
+                Logger.d(TAG, "on receive, cmd app push anc enable");
                 ANCControlManager.getANCManager(this).getANCValue();
                 break;
             }
             case CMD_AppPushANCAwarenessPreset: {
+                Logger.d(TAG, "on receive, cmd app push ambient level");
                 ANCControlManager.getANCManager(this).getAmbientLeveling();
                 break;
             }
             case CMD_ANC_NOTIFICATION: {
                 int ancValue = (Integer) objects[0];
-                Logger.d(TAG, "get anc notification value =" + ancValue);
+                Logger.d(TAG, "on receive, cmd anc notification: " + ancValue);
                 PreferenceUtils.setInt(PreferenceKeys.ANC_VALUE, (Integer) objects[0], this);
                 if (ancValue == 1) {
                     checkBoxNoiseCancel.setChecked(true);
@@ -1455,22 +1472,23 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     Logger.i(TAG, "aaPopupWindow is null");
                     return;
                 }
-                aaPopupWindow.updateAAUI((Integer) objects[0]);
+
+                int amVal = (Integer) objects[0];
+                Logger.d(TAG, "on receive, cmd ambient notification: " + amVal);
+                aaPopupWindow.updateAAUI(amVal);
                 break;
             }
             case CMD_BootReadVersionFile: {
+                Logger.d(TAG, "on receive, cmd boot read version file");
                 if ((boolean) objects[1]) {
                     PreferenceUtils.setString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, (String) objects[0], this);
-                    homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
-                } else {
-                    homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
-                    break;
                 }
+                homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
                 break;
             }
             case CMD_FW_INFO: {
                 FirmwareUtil.currentFirmware = (Integer) objects[0];
-                Logger.d(TAG, "FirmwareUtil.currentFirmware =" + FirmwareUtil.currentFirmware);
+                Logger.d(TAG, "on receive, cmd fw info:" + FirmwareUtil.currentFirmware);
                 break;
             }
         }

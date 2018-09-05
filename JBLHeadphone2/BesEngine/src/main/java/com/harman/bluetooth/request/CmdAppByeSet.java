@@ -1,7 +1,7 @@
 package com.harman.bluetooth.request;
 
-import com.harman.bluetooth.constants.COMMAND_ID;
-import com.harman.bluetooth.constants.STATUS_CODE;
+import com.harman.bluetooth.constants.EnumCmdId;
+import com.harman.bluetooth.constants.EnumStatusCode;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
@@ -9,25 +9,25 @@ public class CmdAppByeSet extends BaseCmd {
 
     private final static String TAG = CmdAppByeSet.class.getSimpleName();
 
-    public CmdAppByeSet(COMMAND_ID requestCmdId, STATUS_CODE statusCode){
+    public CmdAppByeSet(EnumCmdId requestCmdId, EnumStatusCode statusCode){
         this.requestCmdId = requestCmdId;
         this.statusCode = statusCode;
     }
 
-    private COMMAND_ID requestCmdId;
-    private STATUS_CODE statusCode;
+    private EnumCmdId requestCmdId;
+    private EnumStatusCode statusCode;
 
     private byte[] getPayload(){
         byte[] payload = new byte[2];
 
         switch (requestCmdId){
-            case SET_APP_ACK:
+            case REQ_APP_ACK:
                 payload[0] = (byte) 0x01;
                 break;
-            case SET_APP_BYE:
+            case REQ_APP_BYE:
                 payload[0] = (byte) 0x03;
                 break;
-            case SET_APP_FIN_ACK:
+            case REQ_APP_FIN_ACK:
                 payload[0] = (byte) 0x05;
                 break;
             case REQ_DEV_INFO:
@@ -36,19 +36,19 @@ public class CmdAppByeSet extends BaseCmd {
             case REQ_DEV_STATUS:
                 payload[0] = (byte) 0x21;
                 break;
-            case SET_ANC:
+            case REQ_ANC:
                 payload[0] = (byte) 0x31;
                 break;
-            case SET_AA_MODE:
+            case REQ_AA_MODE:
                 payload[0] = (byte) 0x32;
                 break;
-            case SET_AUTO_OFF:
+            case REQ_AUTO_OFF:
                 payload[0] = (byte) 0x33;
                 break;
-            case SET_EQ_PRESET:
+            case REQ_EQ_PRESET:
                 payload[0] = (byte) 0x40;
                 break;
-            case SET_EQ_SETTINGS:
+            case REQ_EQ_SETTINGS:
                 payload[0] = (byte) 0x41;
                 break;
             case REQ_CURRENT_EQ:

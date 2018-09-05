@@ -1,6 +1,6 @@
 package com.harman.bluetooth.request;
 
-import com.harman.bluetooth.constants.EQ_CATEGORY;
+import com.harman.bluetooth.constants.EnumEqCategory;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
@@ -8,15 +8,15 @@ public class CmdCurrentEqReq extends BaseCmd {
 
     private final static String TAG = CmdCurrentEqReq.class.getSimpleName();
 
-    public CmdCurrentEqReq(EQ_CATEGORY eq_category){
-        this.eq_category = eq_category;
+    public CmdCurrentEqReq(EnumEqCategory enumEqCategory){
+        this.enumEqCategory = enumEqCategory;
     }
 
-    private EQ_CATEGORY eq_category;
+    private EnumEqCategory enumEqCategory;
 
     private byte[] getPayload(){
         byte[] payload = new byte[1];
-        switch (eq_category) {
+        switch (enumEqCategory) {
             case DESIGN_EQ:
                 payload[0] = (byte) 0x00;
                 break;

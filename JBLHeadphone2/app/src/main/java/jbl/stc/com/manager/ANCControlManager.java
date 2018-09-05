@@ -49,7 +49,7 @@ public class ANCControlManager {
     /**
      * Set ANC value
      *
-     * @param ancValue boolean anc value, true for ANC AMBIENT_AWARE and false for ANC Off.
+     * @param ancValue boolean anc value, true for REQ_ANC AMBIENT_AWARE and false for REQ_ANC Off.
      */
     public void setANCValue(boolean ancValue) {
         if (AvneraManager.getAvenraManager().getLightX() != null) {
@@ -96,7 +96,7 @@ public class ANCControlManager {
     }
 
     /**
-     * Convert ANC (0-100 ) range to ANC steps (0-9).
+     * Convert REQ_ANC (0-100 ) range to REQ_ANC steps (0-9).
      *
      * @param ancValue int ANC awareness seek bar value.
      * @return ANC steps

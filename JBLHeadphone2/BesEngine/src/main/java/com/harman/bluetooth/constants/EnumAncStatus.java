@@ -1,7 +1,7 @@
 package com.harman.bluetooth.constants;
 
 
-public enum ANC_STATUS {
+public enum EnumAncStatus {
     OFF,
     ON
 }

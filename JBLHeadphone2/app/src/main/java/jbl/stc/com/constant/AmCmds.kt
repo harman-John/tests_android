@@ -6,11 +6,11 @@ package jbl.stc.com.constant
  */
 object AmCmds {
     /**
-     * ANC
+     * REQ_ANC
      * Noise cancel or enable.
      * Implement as toggle button.
      */
-    const val CMD_ANC = "ANC"
+    const val CMD_ANC = "REQ_ANC"
     /**
      *  Removed by firmware, do not use it
      */

@@ -266,6 +266,8 @@ public class LeManager implements ScanListener, BesListener {
                         startBleScan();
                         leHandler.removeMessages(MSG_START_SCAN);
                         leHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
+                    }else{
+                        leLollipopScanner.stopScan();
                     }
                     break;
                 }

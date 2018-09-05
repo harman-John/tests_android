@@ -18,9 +18,18 @@ import com.harman.bluetooth.utils.Logger;
 public class LiveCmdManager {
     private final static String TAG = LiveCmdManager.class.getSimpleName();
 
+    private static class InstanceHolder {
+        public static final LiveCmdManager instance = new LiveCmdManager();
+    }
+
+    public static LiveCmdManager getInstance() {
+        return LiveCmdManager.InstanceHolder.instance;
+    }
+
+
     /**
      * In App, there provides AppACK to acknowledge device; it depends on the features requirement.
-     * @param mac
+     * @param mac mac address
      * @param cmdAppackset {@link CmdAppAckSet}
      */
     public void setAppAck(String mac, CmdAppAckSet cmdAppackset) {
@@ -61,11 +70,11 @@ public class LiveCmdManager {
     }
 
     /**
-     * Write ANC enable status.
+     * Write REQ_ANC enable status.
      * @param commandAncset {@link CmdAncSet}
      */
     public void reqSetANC(String mac,CmdAncSet commandAncset) {
-        Logger.d(TAG,"request to set ANC");
+        Logger.d(TAG,"request to set REQ_ANC");
         BesEngine.getInstance().sendCommand(mac, commandAncset.getCommand());
     }
 

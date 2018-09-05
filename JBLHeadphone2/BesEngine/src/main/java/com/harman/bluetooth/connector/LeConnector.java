@@ -7,17 +7,17 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 
 import com.harman.bluetooth.constants.BesAction;
 import com.harman.bluetooth.constants.BesCommandType;
+import com.harman.bluetooth.constants.EnumCmdId;
 import com.harman.bluetooth.constants.Constants;
 import com.harman.bluetooth.listeners.BesListener;
+import com.harman.bluetooth.report.ReportFormat;
 import com.harman.bluetooth.utils.ArrayUtil;
 
 import java.lang.reflect.InvocationTargetException;
@@ -304,6 +304,25 @@ public class LeConnector implements BaseConnector{
 
     private BesCommandType classifyCommand(BluetoothGattCharacteristic characteristic){
         //do something to classify command type based on characteristic
+        byte[] bytes = characteristic.getValue();
+        String bytesStr = ArrayUtil.bytesToHex(bytes);
+        String cmdId = bytesStr.substring(0,3);
+        switch (cmdId){
+            case ReportFormat.RET_DEV_ACK:
+                break;
+            case ReportFormat.RET_DEV_BYE:
+                break;
+            case ReportFormat.RET_DEV_FIN_ACK:
+                break;
+            case ReportFormat.RET_DEV_INFO:
+                break;
+            case ReportFormat.RET_DEV_STATUS:
+                break;
+            case ReportFormat.RET_CURRENT_EQ:
+                break;
+
+
+        }
 
         return BesCommandType.DEVICE_INFO;
     }
