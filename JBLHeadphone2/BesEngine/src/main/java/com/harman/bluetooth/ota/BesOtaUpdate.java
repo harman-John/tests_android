@@ -12,6 +12,7 @@ import com.harman.bluetooth.constants.BesUpdateState;
 import com.harman.bluetooth.constants.Constants;
 import com.harman.bluetooth.engine.BesEngine;
 import com.harman.bluetooth.listeners.BesListener;
+import com.harman.bluetooth.ret.DevResponse;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.ProfileUtils;
 import com.harman.bluetooth.utils.SPHelper;
@@ -978,10 +979,8 @@ public class BesOtaUpdate implements BesListener {
 
 
     @Override
-    public void onBesReceived(BluetoothDevice bluetoothDevice, byte[] data) {
-//    }
-//    @Override
-//    public void onReceive(byte[] data) {
+    public void onBesReceived(BluetoothDevice bluetoothDevice, DevResponse devResponse) {
+        byte[] data = (byte[]) devResponse.object;
         Log.i(TAG, "onReceive data = " + ArrayUtil.toHex(data));
         synchronized (mOtaLock) {
             Log.e(TAG, "onReceive " + ArrayUtil.toHex(data));

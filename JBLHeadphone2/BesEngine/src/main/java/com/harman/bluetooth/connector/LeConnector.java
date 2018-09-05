@@ -409,7 +409,7 @@ public class LeConnector implements BaseConnector {
                 dataDevStatus.enumDeviceStatusType = enumDeviceStatusType;
                 devResponse.object = dataDevStatus;
                 break;
-            case RetHeader.RET_CURRENT_EQ:
+            case RetHeader.RET_CURRENT_EQ: {
                 enumCmdId = EnumCmdId.RET_CURRENT_EQ;
                 DataCurrentEQ dataCurrentEQ = new DataCurrentEQ();
                 String presetIdx = bytesStr.substring(4, 5);
@@ -434,7 +434,9 @@ public class LeConnector implements BaseConnector {
                 dataCurrentEQ.bands = bands;
                 devResponse.object = dataCurrentEQ;
                 break;
-
+            }
+            default:
+                devResponse.object = bytes;
         }
         devResponse.enumCmdId = enumCmdId;
         return devResponse;
