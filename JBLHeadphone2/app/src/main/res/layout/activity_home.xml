@@ -68,18 +68,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:transitionName="@string/share_element"
-                    android:layout_marginTop="@dimen/margin_top_10dp">
+                    android:layout_marginTop="@dimen/margin_top_10dp"
+                    android:transitionName="@string/share_element">
 
                     <ImageView
                         android:id="@+id/image_view_home_device_image"
                         android:layout_width="242dp"
                         android:layout_height="242dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
                         android:background="@drawable/shape_dashboard_device_circle"
                         android:clickable="false"
-                        android:scaleType="fitCenter"/>
+                        android:scaleType="fitCenter" />
 
                     <jbl.stc.com.view.AppImageView
                         android:id="@+id/image_view_ota_download"
@@ -153,7 +152,7 @@
                             android:layout_width="80dp"
                             android:layout_height="80dp"
                             android:layout_centerHorizontal="true"
-                            android:background="@drawable/checkbox_ambient_selector" />
+                            android:background="@mipmap/aa_icon_non_active" />
 
                         <jbl.stc.com.view.CustomFontTextView
                             android:id="@+id/text_view_home_ambient_aware"

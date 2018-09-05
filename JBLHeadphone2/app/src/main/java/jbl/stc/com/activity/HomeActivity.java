@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -725,6 +726,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                                     int x = (int) (fullWidth - yMove / (screenHeight + UiUtils.getStatusHeight(HomeActivity.this) - UiUtils.dip2px(HomeActivity.this, 70)) * fullWidth);
                                     int y = (int) (yMove - dragEqHeight / 2 + UiUtils.getStatusHeight(HomeActivity.this));
                                     EqSettingFragment.updateEqTitleLocation(x, y);
+                                    EqSettingFragment.changeBottomEqAlpha(yMove / (screenHeight - distance));
 
                                 } else {
                                     EqSettingFragment.startDragEqGoneAnimation();
@@ -1001,6 +1003,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
                 ANCControlManager.getANCManager(getApplicationContext()).readConfigModelNumber();
                 ANCControlManager.getANCManager(getApplicationContext()).readConfigProductName();
+                getAAValue();
                 homeHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -1057,7 +1060,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 case MSG_AMBIENT_LEVEL: {
                     //for old devices
-                    aaPopupWindow.updateAAUI(msg.arg1);//AppUtils.levelTransfer(msg.arg1)<---method for new device
+                    aaPopupWindow.updateAAUI(msg.arg1, (ImageView) findViewById(R.id.image_view_home_ambient_aware));//AppUtils.levelTransfer(msg.arg1)<---method for new device
                     break;
                 }
                 case MSG_AA_LEFT:
@@ -1366,6 +1369,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             Logger.d(TAG, "do on receive error, activity is finishing");
             return;
         }
+        Logger.d(TAG, "onReceive command:" + enumCommands + "value:" + objects[0]);
         switch (enumCommands) {
             case CMD_ANC: {
                 sendMessageTo(MSG_ANC, (Integer) objects[0]);
@@ -1457,7 +1461,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     Logger.i(TAG, "aaPopupWindow is null");
                     return;
                 }
-                aaPopupWindow.updateAAUI((Integer) objects[0]);
+                aaPopupWindow.updateAAUI((Integer) objects[0], (ImageView) findViewById(R.id.image_view_home_ambient_aware));
                 break;
             }
             case CMD_BootReadVersionFile: {
