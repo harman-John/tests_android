@@ -41,126 +41,40 @@ import jbl.stc.com.logger.Logger;
 
 public class MyDragGridView extends GridView {
     public static final String TAG = MyDragGridView.class.getSimpleName();
-    /**
-     * DragGridView的item长按响应的时间， 默认是1000毫秒，也可以自行设置
-     */
     private long dragResponseMS = 1000;
-
-    /**
-     * 是否可以拖拽，默认不可以
-     */
     private boolean isDrag = false;
-
     private int mDownX;
     private int mDownY;
     private int moveX;
     private int moveY;
-    /**
-     * 正在拖拽的position
-     */
     private int mDragPosition;
-
-    /**
-     * 刚开始拖拽的item对应的View
-     */
     private View mStartDragItemView = null;
-
     private View mGridViewItem = null;
-
-    /**
-     * 用于拖拽的镜像，这里直接用一个ImageView
-     */
     private ImageView mDragImageView;
-
-    /**
-     * 用于拖拽的镜像，这里直接放入拖动的 Image
-     */
     private FrameLayout mDragLayout;
-
-    /**
-     * 震动器
-     */
     private Vibrator mVibrator;
-
     private WindowManager mWindowManager;
-    /**
-     * item镜像的布局参数
-     */
     private WindowManager.LayoutParams mWindowLayoutParams;
-
-    /**
-     * 我们拖拽的item对应的Bitmap
-     */
     private Bitmap mDragBitmap;
-
-    /**
-     * 按下的点到所在item的上边缘的距离
-     */
     private int mPoint2ItemTop;
-
-    /**
-     * 按下的点到所在item的左边缘的距离
-     */
     private int mPoint2ItemLeft;
-
-    /**
-     * DragGridView距离屏幕顶部的偏移量
-     */
     private int mOffset2Top;
-
-    /**
-     * DragGridView距离屏幕左边的偏移量
-     */
     private int mOffset2Left;
-
-    /**
-     * 状态栏的高度
-     */
     private int mStatusHeight;
-
-    /**
-     * DragGridView自动向下滚动的边界值
-     */
     private int mDownScrollBorder;
-
-    /**
-     * DragGridView自动向上滚动的边界值
-     */
     private int mUpScrollBorder;
-
-    /**
-     * DragGridView自动滚动的速度
-     */
     private static final int speed = 20;
-
     private boolean mAnimationEnd = true;
-
     private DragGridBaseAdapter mDragAdapter;
     private int mNumColumns;
     private int mColumnWidth;
     private boolean mNumColumnsSet;
     private int mHorizontalSpacing;
-
     private int mViewHeight;
-    /**
-     * 拖动时景象放大倍数
-     */
     private float mDragScale = 1.2f;
-    /**
-     * 大小变化时间单位毫秒
-     */
     private int mScaleMill = 200;
-    /**
-     * 最后一个 position是否能够移动
-     */
     private boolean mDragLastPosition = false;
-    /**
-     * position 位置的可以开始拖动
-     */
     private int mDragStartPosition = 7;
-    /**
-     * 是否正在执行缩放动画
-     */
     private boolean mIsScaleAnima = false;
 
     private boolean mIsVibrator = false;
@@ -197,21 +111,24 @@ public class MyDragGridView extends GridView {
     }
 
     private View mDeleteView;
-    public void setDeleteView(View deleteView){
+
+    public void setDeleteView(View deleteView) {
         mDeleteView = deleteView;
     }
 
     private RelativeLayout relativeLayoutMenu;
-    public void setMenuBar(RelativeLayout relativeLayout){
+
+    public void setMenuBar(RelativeLayout relativeLayout) {
         relativeLayoutMenu = relativeLayout;
     }
-    private void showDeleteView(){
+
+    private void showDeleteView() {
         mDeleteView.setVisibility(View.VISIBLE);
         Animation scaleOn = AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_on);
         mDeleteView.setAnimation(scaleOn);
     }
 
-    private void hideDeleteView(){
+    private void hideDeleteView() {
         Animation scaleOff = AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_off);
         mDeleteView.setAnimation(scaleOff);
         mDeleteView.setVisibility(View.GONE);
@@ -219,18 +136,15 @@ public class MyDragGridView extends GridView {
 
     private Handler mHandler = new Handler();
 
-    // 用来处理是否为长按的Runnable
     private Runnable mLongClickRunnable = new Runnable() {
 
         @Override
         public void run() {
-            isDrag = true; // 设置可以拖拽
-            if (mIsVibrator) mVibrator.vibrate(50); // 震动一下
+            isDrag = true;
+            if (mIsVibrator) mVibrator.vibrate(50);
             showDeleteView();
-
             mDragAdapter.setHideItem(mDragPosition);
-            mStartDragItemView.setVisibility(View.INVISIBLE);// 隐藏该item
-            // 根据我们按下的点显示item镜像
+            mStartDragItemView.setVisibility(View.INVISIBLE);
             createDragImage(mDragBitmap, mDownX, mDownY);
         }
     };
@@ -272,9 +186,6 @@ public class MyDragGridView extends GridView {
         this.mHorizontalSpacing = horizontalSpacing;
     }
 
-    /**
-     * 若设置为AUTO_FIT，计算有多少列
-     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (mNumColumns == AUTO_FIT) {
@@ -310,11 +221,6 @@ public class MyDragGridView extends GridView {
         mViewHeight = b - t;
     }
 
-    /**
-     * 设置响应拖拽的毫秒数，默认是1000毫秒
-     *
-     * @param dragResponseMS
-     */
     public void setDragResponseMS(long dragResponseMS) {
         this.dragResponseMS = dragResponseMS;
     }
@@ -326,13 +232,10 @@ public class MyDragGridView extends GridView {
                 mDownX = (int) ev.getX();
                 mDownY = (int) ev.getY();
 
-                // 根据按下的X,Y坐标获取所点击item的position
                 mDragPosition = pointToPosition(mDownX, mDownY);
-                //如果是前mDragStartPosition不执行长按
                 if (mDragPosition < mDragStartPosition) {
                     return super.dispatchTouchEvent(ev);
                 }
-                //如果是最后一位不交换
                 if (null != getAdapter() && mDragPosition == (getAdapter().getCount() - 1) && !mDragLastPosition) {
                     return super.dispatchTouchEvent(ev);
                 }
@@ -341,51 +244,45 @@ public class MyDragGridView extends GridView {
                     return super.dispatchTouchEvent(ev);
                 }
 
-                // 使用Handler延迟dragResponseMS执行mLongClickRunnable
+                if (mDragPosition == getLastVisiblePosition()) {
+                    return super.dispatchTouchEvent(ev);
+                }
                 mHandler.postDelayed(mLongClickRunnable, dragResponseMS);
 
                 mGridViewItem = getChildAt(mDragPosition - getFirstVisiblePosition());
 
-                // 根据position获取该item所对应的View
                 mStartDragItemView = mGridViewItem.findViewById(R.id.relative_layout_item_connected_before_breathing_icon);
 
-                // 下面这几个距离大家可以参考我的博客上面的图来理解下
                 int[] location = new int[2];
                 mStartDragItemView.getLocationOnScreen(location);
                 int left = location[0];
-                int top = location[1]- relativeLayoutMenu.getMeasuredHeight()- dip2px(getContext(),20);
+                int top = location[1] - relativeLayoutMenu.getMeasuredHeight() - dip2px(getContext(), 20);
                 int right = left + mGridViewItem.getMeasuredWidth();
                 int bottom = top + mGridViewItem.getMeasuredHeight();
 
-                mPoint2ItemTop = mDownY - top ;
+                mPoint2ItemTop = mDownY - top;
                 mPoint2ItemLeft = mDownX - left;
 
                 mOffset2Top = (int) (ev.getRawY() - mDownY);
                 mOffset2Left = (int) (ev.getRawX() - mDownX);
 
-                // 获取DragGridView自动向上滚动的偏移量，小于这个值，DragGridView向下滚动
                 mDownScrollBorder = getHeight() / 5;
-                // 获取DragGridView自动向下滚动的偏移量，大于这个值，DragGridView向上滚动
                 mUpScrollBorder = getHeight() * 4 / 5;
 
-                // 开启mDragItemView绘图缓存
+
 //                mStartDragItemView.setDrawingCacheEnabled(true);
                 mStartDragItemView.setDrawingCacheEnabled(true);
                 Bitmap drawingCache = mStartDragItemView.getDrawingCache();
-                // 获取mDragItemView在缓存中的Bitmap对象
 //                Bitmap drawingCache = mStartDragItemView.getDrawingCache();
                 // mDragBitmap = Bitmap.createBitmap(drawingCache);
                 mDragBitmap = Bitmap.createScaledBitmap(drawingCache, (int) (drawingCache.getWidth() * mDragScale), (int) (drawingCache.getHeight() * mDragScale), true);
                 mStartDragItemView.destroyDrawingCache();
-                // 这一步很关键，释放绘图缓存，避免出现重复的镜像
 //                mStartDragItemView.destroyDrawingCache();
 
                 break;
             case MotionEvent.ACTION_MOVE:
                 int moveX = (int) ev.getX();
                 int moveY = (int) ev.getY();
-
-                // 如果我们在按下的item上面移动，只要不超过item的边界我们就不移除mRunnable
                 if (!isInViewArea(mStartDragItemView, moveX, moveY)) {
                     mHandler.removeCallbacks(mLongClickRunnable);
                 }
@@ -398,21 +295,14 @@ public class MyDragGridView extends GridView {
         return super.dispatchTouchEvent(ev);
     }
 
-    public static int dip2px(Context context,float dpValue) {
+    public static int dip2px(Context context, float dpValue) {
 
         final float scale = context.getResources().getDisplayMetrics().density;
 
-        return (int) (dpValue * scale +0.5f);
+        return (int) (dpValue * scale + 0.5f);
 
     }
 
-    /**
-     * 是否点击在GridView的item上面
-     *
-     * @param x
-     * @param y
-     * @return
-     */
     private boolean isTouchInItem(View dragView, int x, int y) {
         if (dragView == null) {
             return false;
@@ -438,7 +328,7 @@ public class MyDragGridView extends GridView {
                     moveX = (int) ev.getX();
                     moveY = (int) ev.getY();
 
-                    // 拖动item
+                    // move item
                     onDragItem(moveX, moveY);
                     break;
                 case MotionEvent.ACTION_UP:
@@ -451,13 +341,6 @@ public class MyDragGridView extends GridView {
         return super.onTouchEvent(ev);
     }
 
-    /**
-     * 创建拖动的镜像
-     *
-     * @param bitmap
-     * @param downX  按下的点相对父控件的X坐标
-     * @param downY  按下的点相对父控件的X坐标
-     */
     private synchronized void createDragImage(Bitmap bitmap, int downX, int downY) {
         removeDragImage();
         mWindowLayoutParams = new WindowManager.LayoutParams();
@@ -483,9 +366,6 @@ public class MyDragGridView extends GridView {
         mWindowManager.addView(mDragLayout, mWindowLayoutParams);
     }
 
-    /**
-     * 从界面上面移动拖动镜像
-     */
     private void removeDragImage() {
         if (mDragImageView != null) {
             mWindowManager.removeView(mDragLayout);
@@ -495,9 +375,6 @@ public class MyDragGridView extends GridView {
         }
     }
 
-    /**
-     * 拖动item，在里面实现了item镜像的位置更新，item的相互交换以及GridView的自行滚动
-     */
     private void onDragItem(int moveX, int moveY) {
         mWindowLayoutParams.x = moveX - mPoint2ItemLeft + mOffset2Left;
         mWindowLayoutParams.y = moveY - mPoint2ItemTop + mOffset2Top - mStatusHeight;
@@ -507,12 +384,11 @@ public class MyDragGridView extends GridView {
         mDragAdapter.setHideItem(mDragPosition);
 //        onSwapItem(moveX, moveY);
 
-        // GridView自动滚动
         mHandler.post(mScrollRunnable);
 
 
         //drag to this area and loose, then delete
-        if (isInViewArea(mDeleteView,moveX,moveY)) {
+        if (isInViewArea(mDeleteView, moveX, moveY)) {
 //            if (mIsVibrator) mVibrator.vibrate(50);
             //shrink
             if (!mIsScaleAnima) {
@@ -539,17 +415,17 @@ public class MyDragGridView extends GridView {
 
 
     private boolean isInViewArea(View view, float x, float y) {
-        Logger.i(TAG,"moveX = "+x +",moveY = "+y+",mMenuHeight = "+relativeLayoutMenu.getMeasuredHeight());
+        Logger.i(TAG, "moveX = " + x + ",moveY = " + y + ",mMenuHeight = " + relativeLayoutMenu.getMeasuredHeight());
         if (view == null) {
             return false;
         }
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         int left = location[0];
-        int top = location[1] -relativeLayoutMenu.getMeasuredHeight()- dip2px(getContext(),20);
+        int top = location[1] - relativeLayoutMenu.getMeasuredHeight() - dip2px(getContext(), 20);
         int right = left + view.getMeasuredWidth();
         int bottom = top + view.getMeasuredHeight();
-        Logger.i(TAG,"left = "+left +",top = "+top+"right = "+right +",bottom = "+bottom);
+        Logger.i(TAG, "left = " + left + ",top = " + top + "right = " + right + ",bottom = " + bottom);
         if (y >= top && y <= bottom && x >= left
                 && x <= right) {
             return true;
@@ -557,10 +433,6 @@ public class MyDragGridView extends GridView {
         return false;
     }
 
-    /**
-     * 当moveY的值大于向上滚动的边界值，触发GridView自动向上滚动 当moveY的值小于向下滚动的边界值，触发GridView自动向下滚动
-     * 否则不进行滚动
-     */
     private Runnable mScrollRunnable = new Runnable() {
 
         @Override
@@ -585,27 +457,17 @@ public class MyDragGridView extends GridView {
         }
     };
 
-    /**
-     * 交换item,并且控制item之间的显示与隐藏效果
-     *
-     * @param moveX
-     * @param moveY
-     */
     private void onSwapItem(int moveX, int moveY) {
-        // 获取我们手指移动到的那个item的position
         final int tempPosition = pointToPosition(moveX, moveY);
 
-        //如果是前mDragStartPosition位不交换
         if (tempPosition < mDragStartPosition) {
             return;
         }
 
-        //如果是最后一位不交换
         if (null != getAdapter() && tempPosition == (getAdapter().getCount() - 1) && !mDragLastPosition) {
             return;
         }
 
-        // 假如tempPosition 改变了并且tempPosition不等于-1,则进行交换
         if (tempPosition != mDragPosition
                 && tempPosition != AdapterView.INVALID_POSITION
                 && mAnimationEnd
@@ -629,16 +491,6 @@ public class MyDragGridView extends GridView {
         }
     }
 
-    /**
-     * 创建移动动画
-     *
-     * @param view
-     * @param startX
-     * @param endX
-     * @param startY
-     * @param endY
-     * @return
-     */
     private AnimatorSet createTranslationAnimations(View view, float startX, float endX, float startY, float endY) {
         ObjectAnimator animX = ObjectAnimator.ofFloat(view, "translationX",
                 startX, endX);
@@ -649,12 +501,6 @@ public class MyDragGridView extends GridView {
         return animSetXY;
     }
 
-    /**
-     * item的交换动画效果
-     *
-     * @param oldPosition
-     * @param newPosition
-     */
     private void animateReorder(final int oldPosition, final int newPosition) {
         boolean isForward = newPosition > oldPosition;
         List<Animator> resultList = new LinkedList<Animator>();
@@ -708,9 +554,6 @@ public class MyDragGridView extends GridView {
         resultSet.start();
     }
 
-    /**
-     * 停止拖拽我们将之前隐藏的item显示出来，并将镜像移除
-     */
     private void onStopDrag(int moveX, int moveY) {
         View view = getChildAt(mDragPosition - getFirstVisiblePosition());
         if (view != null) {
@@ -721,18 +564,12 @@ public class MyDragGridView extends GridView {
         mDragAdapter.setHideItem(-1);
         removeDragImage();
 
-        if (isInViewArea(mDeleteView,moveX,moveY)) {
+        if (isInViewArea(mDeleteView, moveX, moveY)) {
             mIsScaleAnima = false;
             mDragAdapter.deleteItem(mDragPosition);
         }
     }
 
-    /**
-     * 获取状态栏的高度
-     *
-     * @param context
-     * @return
-     */
     private static int getStatusHeight(Context context) {
         int statusHeight = 0;
         Rect localRect = new Rect();
@@ -758,8 +595,6 @@ public class MyDragGridView extends GridView {
     public interface DragGridBaseAdapter {
 
         /**
-         * 重新排列数据
-         *
          * @param oldPosition
          * @param newPosition
          */
@@ -767,16 +602,12 @@ public class MyDragGridView extends GridView {
 
 
         /**
-         * 设置某个item隐藏
-         *
          * @param hidePosition
          */
         void setHideItem(int hidePosition);
 
 
         /**
-         * 删除某个 item
-         *
          * @param deletePosition
          */
         void deleteItem(int deletePosition);

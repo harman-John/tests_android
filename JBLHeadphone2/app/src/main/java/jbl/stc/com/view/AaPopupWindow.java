@@ -3,11 +3,13 @@ package jbl.stc.com.view;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -114,7 +116,7 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
 //        ancController.initProgress(PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, getActivity()), value, value);
     }
 
-    public void updateAAUI(int aaLevelingValue) {
+    public void updateAAUI(int aaLevelingValue, ImageView imageViewAmbientAware) {
         boolean is150NC = AppUtils.is150NC(JBLApplication.getJBLApplicationContext());
         Logger.d(TAG, "updateAmbientLevel: " + aaLevelingValue + "," + PreferenceUtils.getInt(PreferenceKeys.AWARENESS, JBLApplication.getJBLApplicationContext()) + ",is150NC=" + is150NC);
         switch (aaLevelingValue) {
@@ -122,21 +124,25 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
                 PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, 0, JBLApplication.getJBLApplicationContext());
                 PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, 0, JBLApplication.getJBLApplicationContext());
                 lastsavedAwarenessState = ANCAwarenessPreset.None;
+                imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_non_active);
                 break;
             case 1: //ANCAwarenessPreset.Low
                 PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, is150NC ? 28 : 25, JBLApplication.getJBLApplicationContext());
                 PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, is150NC ? 28 : 25, JBLApplication.getJBLApplicationContext());
                 lastsavedAwarenessState = ANCAwarenessPreset.Low;
+                imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
                 break;
             case 2: //ANCAwarenessPreset.Medium
                 PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, is150NC ? 58 : 55, JBLApplication.getJBLApplicationContext());
                 PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, is150NC ? 58 : 55, JBLApplication.getJBLApplicationContext());
                 lastsavedAwarenessState = ANCAwarenessPreset.Medium;
+                imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
                 break;
             case 3://ANCAwarenessPreset.High
                 PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, is150NC ? 86 : 100, JBLApplication.getJBLApplicationContext());
                 PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, is150NC ? 86 : 100, JBLApplication.getJBLApplicationContext());
                 lastsavedAwarenessState = ANCAwarenessPreset.High;
+                imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
                 break;
         }
         ancController.initProgress(PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, JBLApplication.getJBLApplicationContext()),
