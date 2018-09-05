@@ -40,10 +40,11 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
     private ANCController ancController;
     private CircularInsideLayout circularInsideLayout;
     private View closeBtn;
-    //    private View offBtn;
+    private View offBtn;
     private ANCAwarenessPreset lastsavedAwarenessState;
     private boolean isRequestingLeftANC, isRequestingRightANC;
     private Activity mActivity;
+    private ImageView imageViewAmbientAware;
 
     public AaPopupWindow(Activity activity) {
         super(activity);
@@ -64,24 +65,27 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
         setAnimationStyle(R.style.style_down_to_top);
         ancController = popupWindow_view.findViewById(R.id.circularSeekBar);
         circularInsideLayout = popupWindow_view.findViewById(R.id.imageContainer);
-//        offBtn = popupWindow_view.findViewById(R.id.noiseText);
+        offBtn = popupWindow_view.findViewById(R.id.noiseText);
         closeBtn = popupWindow_view.findViewById(R.id.aa_popup_close_arrow);
 
         circularInsideLayout.setonAwarenesChangeListener(this);
         ancController.setCircularInsideLayout(circularInsideLayout);
         ancController.setOffButton((TextView) popupWindow_view.findViewById(R.id.noiseText_off_button));
         ancController.setOnSeekArcChangeListener(this);
-//        offBtn.setOnClickListener(this);
+        offBtn.setOnClickListener(this);
         closeBtn.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-//            case R.id.noiseText:
-//                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(lightX, ANCAwarenessPreset.None);
-//                ancController.setSwitchOff(false);
-//                break;
+            case R.id.noiseText:
+                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(ANCAwarenessPreset.None);
+                ancController.setSwitchOff(false);
+                if (imageViewAmbientAware != null) {
+                    imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+                }
+                break;
             case R.id.aa_popup_close_arrow:
                 if (isShowing()) {
                     dismiss();
@@ -95,8 +99,18 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
         ancController.setSwitchOff(false);
     }
 
+    public void setImageViewAmbientAware(ImageView imageViewAmbientAware) {
+        this.imageViewAmbientAware = imageViewAmbientAware;
+    }
+
     public void updateAALeft(int value) {
         PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, value, JBLApplication.getJBLApplicationContext());
+        int rightValue = PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, JBLApplication.getJBLApplicationContext());
+        if (value == 0 && rightValue == 0) {
+            imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+        } else {
+            imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
+        }
         isRequestingLeftANC = false;
         if (!isRequestingLeftANC && !isRequestingRightANC) {
 //            ancController.initProgress();
@@ -108,6 +122,12 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
 
     public void updateAARight(int value) {
         PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, value, JBLApplication.getJBLApplicationContext());
+        int leftValue = PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, JBLApplication.getJBLApplicationContext());
+        if (value == 0 && leftValue == 0) {
+            imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+        } else {
+            imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
+        }
         isRequestingRightANC = false;
         if (!isRequestingLeftANC && !isRequestingRightANC) {
 
@@ -116,7 +136,8 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
 //        ancController.initProgress(PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, getActivity()), value, value);
     }
 
-    public void updateAAUI(int aaLevelingValue, ImageView imageViewAmbientAware) {
+    public void updateAAUI(int aaLevelingValue) {
+        this.imageViewAmbientAware = imageViewAmbientAware;
         boolean is150NC = AppUtils.is150NC(JBLApplication.getJBLApplicationContext());
         Logger.d(TAG, "updateAmbientLevel: " + aaLevelingValue + "," + PreferenceUtils.getInt(PreferenceKeys.AWARENESS, JBLApplication.getJBLApplicationContext()) + ",is150NC=" + is150NC);
         switch (aaLevelingValue) {
@@ -159,18 +180,27 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
     public void onMedium() {
         //on AA medium checked
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(ANCAwarenessPreset.Medium);
+        if (imageViewAmbientAware != null) {
+            imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
+        }
     }
 
     @Override
     public void onLow() {
         //on AA low checked
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(ANCAwarenessPreset.Low);
+        if (imageViewAmbientAware != null) {
+            imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
+        }
     }
 
     @Override
     public void onHigh() {
         //on AA high checked
         ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setAmbientLeveling(ANCAwarenessPreset.High);
+        if (imageViewAmbientAware != null) {
+            imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
+        }
     }
 
     @Override
@@ -195,6 +225,14 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
             }
             if (rightProgress != savedRight) {
                 ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).setRightAwarenessPresetValue(rightProgress);
+            }
+
+            if (leftProgress == 0 && rightProgress == 0) {
+                if (imageViewAmbientAware != null)
+                    imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+            } else {
+                if (imageViewAmbientAware != null)
+                    imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_active);
             }
         }
     }

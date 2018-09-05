@@ -43,6 +43,7 @@ import android.widget.Toast;
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.audioManager;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
+
 import jbl.stc.com.manager.LiveCmdManager;
 
 import java.util.Arrays;
@@ -426,7 +427,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             LeManager.getInstance().setOnConnectStatusListener(this);
             ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
         }
-        if (fr == null){
+        if (fr == null) {
             DeviceManager.getInstance(this).setOnRetListener(this);
             LeManager.getInstance().setOnConnectStatusListener(this);
         }
@@ -934,6 +935,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
         aaPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
+        aaPopupWindow.setImageViewAmbientAware((ImageView) findViewById(R.id.image_view_home_ambient_aware));
 
         getAAValue();
     }
@@ -1061,7 +1063,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 case MSG_AMBIENT_LEVEL: {
                     //for old devices
-                    aaPopupWindow.updateAAUI(msg.arg1, (ImageView) findViewById(R.id.image_view_home_ambient_aware));//AppUtils.levelTransfer(msg.arg1)<---method for new device
+                    aaPopupWindow.updateAAUI(msg.arg1);//AppUtils.levelTransfer(msg.arg1)<---method for new device
                     break;
                 }
                 case MSG_AA_LEFT:
@@ -1374,19 +1376,19 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         switch (enumCommands) {
             case CMD_ANC: {
                 int anc = (Integer) objects[0];
-                Logger.d(TAG, "on receive, cmd anc: "+ anc);
+                Logger.d(TAG, "on receive, cmd anc: " + anc);
                 sendMessageTo(MSG_ANC, anc);
                 break;
             }
             case CMD_AMBIENT_LEVELING: {
                 int aaLevel = (int) objects[0];
-                Logger.d(TAG, "on receive, cmd ambient: "+ aaLevel);
+                Logger.d(TAG, "on receive, cmd ambient: " + aaLevel);
                 sendMessageTo(MSG_AMBIENT_LEVEL, aaLevel);
                 break;
             }
             case CMD_RAW_STEPS: {
                 int rawSteps = (int) objects[0];
-                Logger.d(TAG, "on receive, cmd raw steps: "+ rawSteps);
+                Logger.d(TAG, "on receive, cmd raw steps: " + rawSteps);
                 sendMessageTo(MSG_RAW_STEP, rawSteps);
                 break;
             }
@@ -1478,7 +1480,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 int amVal = (Integer) objects[0];
                 Logger.d(TAG, "on receive, cmd ambient notification: " + amVal);
-                aaPopupWindow.updateAAUI(amVal, (ImageView) findViewById(R.id.image_view_home_ambient_aware));
+                aaPopupWindow.updateAAUI(amVal);
                 break;
             }
             case CMD_BootReadVersionFile: {
