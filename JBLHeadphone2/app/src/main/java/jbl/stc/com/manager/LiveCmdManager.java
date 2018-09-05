@@ -1,15 +1,15 @@
 package jbl.stc.com.manager;
 
 import com.harman.bluetooth.engine.BesEngine;
-import com.harman.bluetooth.request.CmdAASet;
-import com.harman.bluetooth.request.CmdAncSet;
-import com.harman.bluetooth.request.CmdAppAckSet;
-import com.harman.bluetooth.request.CmdAppByeSet;
-import com.harman.bluetooth.request.CmdCurrentEqReq;
-import com.harman.bluetooth.request.CmdDevInfoReq;
-import com.harman.bluetooth.request.CmdEqPresetSet;
-import com.harman.bluetooth.request.CmdEqSettingsSet;
-import com.harman.bluetooth.request.Header;
+import com.harman.bluetooth.req.CmdAASet;
+import com.harman.bluetooth.req.CmdAncSet;
+import com.harman.bluetooth.req.CmdAppAckSet;
+import com.harman.bluetooth.req.CmdAppByeSet;
+import com.harman.bluetooth.req.CmdCurrentEqReq;
+import com.harman.bluetooth.req.CmdDevInfoReq;
+import com.harman.bluetooth.req.CmdEqPresetSet;
+import com.harman.bluetooth.req.CmdEqSettingsSet;
+import com.harman.bluetooth.req.Header;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 

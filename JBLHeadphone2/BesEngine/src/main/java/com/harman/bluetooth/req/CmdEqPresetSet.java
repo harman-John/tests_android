@@ -1,4 +1,4 @@
-package com.harman.bluetooth.request;
+package com.harman.bluetooth.req;
 
 import com.harman.bluetooth.constants.EnumEqPresetIdx;
 import com.harman.bluetooth.utils.ArrayUtil;

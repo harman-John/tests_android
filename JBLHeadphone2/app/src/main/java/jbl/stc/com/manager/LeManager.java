@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -18,8 +19,8 @@ import android.support.v4.content.ContextCompat;
 import com.harman.bluetooth.constants.BesUpdateState;
 import com.harman.bluetooth.engine.BesEngine;
 import com.harman.bluetooth.listeners.BesListener;
+import com.harman.bluetooth.ret.DevResponse;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,7 +42,7 @@ public class LeManager implements ScanListener, BesListener {
     private LeLollipopScanner leLollipopScanner;
     private Activity mContext;
     private boolean mIsConnected;
-    private LeHandler leHandler = new LeHandler();
+    private LeHandler leHandler = new LeHandler(Looper.getMainLooper());
     private final static int MSG_START_SCAN = 0;
     private final static int MSG_DISCONNECT = 1;
     private final static int MSG_CONNECT_TIME_OUT = 2;
@@ -240,9 +241,8 @@ public class LeManager implements ScanListener, BesListener {
     }
 
     @Override
-    public void onBesReceived(BluetoothDevice bluetoothDevice, byte[] data) {
-        String dataString = Arrays.toString(data);
-        Logger.d(TAG, "on bes received, mac = "+bluetoothDevice.getAddress()+" , data string = " + dataString);
+    public void onBesReceived(BluetoothDevice bluetoothDevice, DevResponse devResponse) {
+        Logger.d(TAG, "on bes received, mac = "+bluetoothDevice.getAddress()+" , cmdId = " + devResponse.enumCmdId);
 //        switch (command){
 //            case ReportFormat.RET_DEV_ACK:{
 //
@@ -256,6 +256,10 @@ public class LeManager implements ScanListener, BesListener {
     }
 
     private class LeHandler extends Handler {
+
+        LeHandler(Looper looper){
+            super(looper);
+        }
 
         @Override
         public void handleMessage(Message msg) {

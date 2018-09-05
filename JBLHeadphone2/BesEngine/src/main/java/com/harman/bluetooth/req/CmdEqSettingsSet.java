@@ -1,4 +1,4 @@
-package com.harman.bluetooth.request;
+package com.harman.bluetooth.req;
 
 import com.harman.bluetooth.constants.Band;
 import com.harman.bluetooth.constants.EnumEqCategory;

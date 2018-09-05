@@ -21,4 +21,5 @@ public enum EnumCmdId {
     RET_DEV_STATUS,
     RET_EQ_SETTINGS,
     RET_CURRENT_EQ,
+    DEFAULT
 }

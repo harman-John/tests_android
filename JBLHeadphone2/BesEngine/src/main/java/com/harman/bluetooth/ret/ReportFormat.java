@@ -1,4 +1,4 @@
-package com.harman.bluetooth.report;
+package com.harman.bluetooth.ret;
 
 public class ReportFormat {
 
@@ -63,7 +63,11 @@ public class ReportFormat {
 
 
     /**
-     * Device status type
+     * Device status typeALL_STATUS
      */
-    public static final String[] DEVICE_STATUS_TYPE = {"30","31","32","33","34"};
+    public static final String ALL_STATUS_TYPE = "30";
+    public static final String ANC_TYPE ="31";
+    public static final String AA_MODE_TYPE = "32";
+    public static final String AUTO_OFF_TYPE = "33";
+    public static final String EQ_PRESET_TYPE = "34";
 }
