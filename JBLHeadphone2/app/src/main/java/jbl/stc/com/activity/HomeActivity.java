@@ -463,8 +463,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         if (!checkBoxNoiseCancel.isChecked()) {
                             checkBoxNoiseCancel.setChecked(true);
                         }
-                        setANC();
                         showAncPopupWindow(findViewById(R.id.relative_layout_home_activity));
+                        timeInterval();
+                        if (!checkBoxNoiseCancel.isChecked()) {
+                            ANCControlManager.getANCManager(this).setANCValue(true);
+                        }
+                        ANCControlManager.getANCManager(getApplicationContext()).getAmbientLeveling();
                     } else if (AppUtils.isNewDevice(deviceName)) {
                         //showSaPopupWindow(findViewById(R.id.relative_layout_home_activity), null);
                         Logger.d(TAG, "tag: old device" + imageViewAmbientAaware.getTag());
@@ -937,8 +941,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         });
         aaPopupWindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
         aaPopupWindow.setImageViewAmbientAware((ImageView) findViewById(R.id.image_view_home_ambient_aware));
-
-        ANCControlManager.getANCManager(this).getAmbientLeveling();
     }
 
     public void showNCPopupWindow() {
@@ -1008,9 +1010,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 timeInterval();
                 ANCControlManager.getANCManager(getApplicationContext()).getFirmwareVersion();
                 timeInterval();
-                ANCControlManager.getANCManager(getApplicationContext()).getANCValue();
-                timeInterval();
                 ANCControlManager.getANCManager(getApplicationContext()).getFirmwareInfo();
+                timeInterval();
+                ANCControlManager.getANCManager(getApplicationContext()).getANCValue();
                 if (AvneraManager.getAvenraManager().getLightX() == null) {
                     homeHandler.sendEmptyMessage(MSG_FIRMWARE_VERSION);
                 }

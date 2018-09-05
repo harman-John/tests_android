@@ -1346,7 +1346,9 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                             break;
                         }
                         case AmCmds.CMD_AmbientLeveling: {
-                            onRetListener.onReceive(EnumCommands.CMD_AMBIENT_LEVELING, Integer.valueOf(values.iterator().next().getValue().toString()));
+                            String ambient = values.iterator().next().getValue().toString();
+                            Logger.d(TAG,"receive response, command ambient leveling: "+ambient);
+                            onRetListener.onReceive(EnumCommands.CMD_AMBIENT_LEVELING, getUIAmbient(Integer.valueOf(ambient)));
                             break;
                         }
                         case AmCmds.CMD_FirmwareVersion: {
@@ -1394,6 +1396,27 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         });
     }
 
+    public int getUIAmbient(int ambient){
+        int ambientLeveling = 0;
+        switch (ambient) {
+            case 0:
+                ambientLeveling = 0;
+                break;
+            case 2:
+                ambientLeveling = 1;
+                break;
+            case 4:
+                ambientLeveling = 2;
+                break;
+            case 6:
+                ambientLeveling = 3;
+                break;
+            default:
+                ambientLeveling = 0;
+                break;
+        }
+        return ambientLeveling;
+    }
 
     @Override
     public void receivedStatus(@NotNull final StatusEvent name, @NotNull final Object value) {

@@ -67,7 +67,7 @@ public class ANCControlManager {
      */
     public void setLeftAwarenessPresetValue(int leftANCvalue) {
         int rawSteps = ancValueConverter(leftANCvalue);
-        Logger.d(TAG, "Send left rawstep = " + rawSteps);
+        Logger.d(TAG, "set left AA raw steps = " + rawSteps);
         if ( AvneraManager.getAvenraManager().getLightX() != null) {
              AvneraManager.getAvenraManager().getLightX().writeAppWithUInt32Argument(Command.AppAwarenessRawLeft, (long) rawSteps);
             PreferenceUtils.setInt(LEFTANC, leftANCvalue, context);
@@ -84,7 +84,7 @@ public class ANCControlManager {
      */
     public void setRightAwarenessPresetValue(int rightANCvalue) {
         int rawSteps = ancValueConverter(rightANCvalue);
-        Logger.d(TAG, "Send right rawstep = " + rawSteps);
+        Logger.d(TAG, "set right AA raw steps = " + rawSteps);
         if ( AvneraManager.getAvenraManager().getLightX() != null) {
              AvneraManager.getAvenraManager().getLightX().writeAppWithUInt32Argument(Command.AppAwarenessRawRight, (long) rawSteps);
             PreferenceUtils.setInt(RIGHTANC, rightANCvalue, context);
@@ -176,7 +176,7 @@ public class ANCControlManager {
         if ( AvneraManager.getAvenraManager().getLightX() != null) {
              AvneraManager.getAvenraManager().getLightX().writeAppANCAwarenessPreset(value);
         } else {
-            int ambientLeveling = 0;
+            int ambientLeveling;
             switch (value) {
                 case None:
                     ambientLeveling = 0;
