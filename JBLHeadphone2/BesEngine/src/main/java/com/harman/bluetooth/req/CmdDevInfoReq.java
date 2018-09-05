@@ -41,7 +41,7 @@ public class CmdDevInfoReq extends BaseCmd {
 
     @Override
     public byte[] getCommand() {
-        combine(Header.REQ_DEV_STATUS,getPayload());
+        combine(ReqHeader.REQ_DEV_STATUS,getPayload());
         return super.getCommand();
     }
 }

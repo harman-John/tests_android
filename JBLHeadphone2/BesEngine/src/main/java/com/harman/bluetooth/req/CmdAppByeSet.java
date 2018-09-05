@@ -71,7 +71,7 @@ public class CmdAppByeSet extends BaseCmd {
 
     @Override
     public byte[] getCommand() {
-        combine(Header.SET_APP_BYE,getPayload());
+        combine(ReqHeader.SET_APP_BYE,getPayload());
         return super.getCommand();
     }
 }

@@ -32,7 +32,7 @@ public class CmdAppAckSet extends BaseCmd {
 
     @Override
     public byte[] getCommand() {
-        combine(Header.SET_APP_ACK,getPayload());
+        combine(ReqHeader.SET_APP_ACK,getPayload());
         return super.getCommand();
     }
 }

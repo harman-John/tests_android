@@ -32,7 +32,7 @@ public class CmdAncSet extends BaseCmd {
 
     @Override
     public byte[] getCommand() {
-        combine(Header.SET_ANC,getPayload());
+        combine(ReqHeader.SET_ANC,getPayload());
         return super.getCommand();
     }
 }

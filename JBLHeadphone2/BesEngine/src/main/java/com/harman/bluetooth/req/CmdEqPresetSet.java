@@ -38,7 +38,7 @@ public class CmdEqPresetSet extends BaseCmd {
 
     @Override
     public byte[] getCommand() {
-        combine(Header.SET_EQ_PRESET,getPayload());
+        combine(ReqHeader.SET_EQ_PRESET,getPayload());
         return super.getCommand();
     }
 }

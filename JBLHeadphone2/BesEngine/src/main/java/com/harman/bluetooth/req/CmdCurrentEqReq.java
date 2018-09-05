@@ -35,7 +35,7 @@ public class CmdCurrentEqReq extends BaseCmd {
 
     @Override
     public byte[] getCommand() {
-        combine(Header.REQ_CURRENT_EQ,getPayload());
+        combine(ReqHeader.REQ_CURRENT_EQ,getPayload());
         return super.getCommand();
     }
 }
