@@ -1305,7 +1305,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
 
     @Override
     public void receivedResponse(@NotNull final String command, @NotNull final ArrayList<responseResult> values, @NotNull final Status status) {
-        Logger.d(TAG, "receive response, command = " + command);
+        Logger.d(TAG, "receive response, command = " + command+",value size = "+values.size() +",onRetListener = "+onRetListener);
         if (values.size() <= 0) {
             return;
         }

@@ -105,7 +105,7 @@ public class AnalyticsManager {
     }
 
     public void reportANCToggle(boolean isOn) {
-        createEvent("User Action",  "ANC",  isOn ? "On" : "Off", null);
+        createEvent("User Action",  "REQ_ANC",  isOn ? "On" : "Off", null);
     }
 
     public void reportAwarenessLevelChanged(int value, boolean isLeft) {

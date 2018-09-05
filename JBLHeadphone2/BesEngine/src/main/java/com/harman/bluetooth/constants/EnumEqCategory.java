@@ -1,7 +1,7 @@
 package com.harman.bluetooth.constants;
 
 
-public enum EQ_CATEGORY {
+public enum EnumEqCategory {
     DESIGN_EQ,
     GRAPHIC_EQ,
     TOTAL_EQ

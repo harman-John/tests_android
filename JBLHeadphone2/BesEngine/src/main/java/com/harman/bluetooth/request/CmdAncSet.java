@@ -1,6 +1,6 @@
 package com.harman.bluetooth.request;
 
-import com.harman.bluetooth.constants.ANC_STATUS;
+import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
@@ -8,15 +8,15 @@ public class CmdAncSet extends BaseCmd {
 
     private final static String TAG = CmdAncSet.class.getSimpleName();
 
-    public CmdAncSet(ANC_STATUS anc_status){
-        this.anc_status = anc_status;
+    public CmdAncSet(EnumAncStatus enumAncStatus){
+        this.enumAncStatus = enumAncStatus;
     }
 
-    private ANC_STATUS anc_status;
+    private EnumAncStatus enumAncStatus;
 
     private byte[] getPayload(){
         byte[] payload = new byte[1];
-        switch (anc_status) {
+        switch (enumAncStatus) {
             case OFF:
                 payload[0] = (byte) 0x00;
                 break;

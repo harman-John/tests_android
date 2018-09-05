@@ -1,6 +1,7 @@
 package jbl.stc.com.scan;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.utils.ArrayUtil;
 
 
@@ -22,9 +24,11 @@ import jbl.stc.com.utils.ArrayUtil;
 public class LeLollipopScanner extends BaseScanner {
 
     private BluetoothLeScanner mLeScanner;
+    private Context context;
 
     public LeLollipopScanner(Context context) {
         super(context);
+        this.context = context;
         mLeScanner = getBluetoothAdapter().getBluetoothLeScanner();
     }
 
@@ -70,6 +74,10 @@ public class LeLollipopScanner extends BaseScanner {
 
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
+            if (DeviceManager.getInstance((Activity) context).isConnected()){
+                stopScan();
+                return;
+            }
             String deviceName = result.getDevice().getName();
             if (deviceName!= null && result.getScanRecord()!= null) {
                 if (deviceName.contains("samsung")){

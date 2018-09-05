@@ -2,7 +2,7 @@ package com.harman.bluetooth.constants;
 
 
 
-public enum STATUS_CODE {
+public enum EnumStatusCode {
     SUCCESS,
     FAILED
 }

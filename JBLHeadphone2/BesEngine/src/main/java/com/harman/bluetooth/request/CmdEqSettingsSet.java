@@ -1,7 +1,7 @@
 package com.harman.bluetooth.request;
 
 import com.harman.bluetooth.constants.Band;
-import com.harman.bluetooth.constants.EQ_CATEGORY;
+import com.harman.bluetooth.constants.EnumEqCategory;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
@@ -9,7 +9,7 @@ public class CmdEqSettingsSet extends BaseCmd {
 
     private final static String TAG = CmdEqSettingsSet.class.getSimpleName();
 
-    public CmdEqSettingsSet(int presetIndex, EQ_CATEGORY eqCATEGORY, float calib, int sampleRate, float gain0, float gain1, Band[] band){
+    public CmdEqSettingsSet(int presetIndex, EnumEqCategory eqCATEGORY, float calib, int sampleRate, float gain0, float gain1, Band[] band){
         this.presetIndex = presetIndex;
         this.eqCATEGORY = eqCATEGORY;
         this.calib = calib;
@@ -21,7 +21,7 @@ public class CmdEqSettingsSet extends BaseCmd {
 
     private int presetIndex; //always 4
 
-    private EQ_CATEGORY eqCATEGORY;
+    private EnumEqCategory eqCATEGORY;
 
     private float calib;
 

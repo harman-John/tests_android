@@ -1,6 +1,6 @@
 package com.harman.bluetooth.request;
 
-import com.harman.bluetooth.constants.DEVICE_STATUS_TYPE;
+import com.harman.bluetooth.constants.EnumDeviceStatusType;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
@@ -8,15 +8,15 @@ public class CmdDevInfoReq extends BaseCmd {
 
     private final static String TAG = CmdDevInfoReq.class.getSimpleName();
 
-    public CmdDevInfoReq(DEVICE_STATUS_TYPE device_status_type){
-        this.device_status_type = device_status_type;
+    public CmdDevInfoReq(EnumDeviceStatusType enumDeviceStatusType){
+        this.enumDeviceStatusType = enumDeviceStatusType;
     }
 
-    private DEVICE_STATUS_TYPE device_status_type;
+    private EnumDeviceStatusType enumDeviceStatusType;
 
     private byte[] getPayload(){
         byte[] payload = new byte[1];
-        switch (device_status_type) {
+        switch (enumDeviceStatusType) {
             case ALL_STATUS:
                 payload[0] = (byte) 0x00;
                 break;

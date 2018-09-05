@@ -1,6 +1,6 @@
 package com.harman.bluetooth.request;
 
-import com.harman.bluetooth.constants.AA_MODE_STATUS;
+import com.harman.bluetooth.constants.EnumAAStatus;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
@@ -8,15 +8,15 @@ public class CmdAASet extends BaseCmd {
 
     private final static String TAG = CmdAASet.class.getSimpleName();
 
-    public CmdAASet(AA_MODE_STATUS aa_mode_status){
-        this.aa_mode_status = aa_mode_status;
+    public CmdAASet(EnumAAStatus enumAa_status){
+        this.enumAa_status = enumAa_status;
     }
 
-    private AA_MODE_STATUS aa_mode_status;
+    private EnumAAStatus enumAa_status;
 
     private byte[] getPayload(){
         byte[] payload = new byte[1];
-        switch (aa_mode_status) {
+        switch (enumAa_status) {
             case TALK_THRU:
                 payload[0] = (byte) 0x00;
                 break;
