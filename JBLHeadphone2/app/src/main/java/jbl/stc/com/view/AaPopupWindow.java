@@ -103,7 +103,7 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
         this.imageViewAmbientAware = imageViewAmbientAware;
     }
 
-    public void updateAALeft(int value) {
+    public void updateAALeft(int value, ImageView imageViewAmbientAware) {
         PreferenceUtils.setInt(PreferenceKeys.LEFT_PERSIST, value, JBLApplication.getJBLApplicationContext());
         int rightValue = PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, JBLApplication.getJBLApplicationContext());
         if (value == 0 && rightValue == 0) {
@@ -122,7 +122,7 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
 //        ancController.initProgress(value, PreferenceUtils.getInt(PreferenceKeys.RIGHT_PERSIST, getActivity()), value);
     }
 
-    public void updateAARight(int value) {
+    public void updateAARight(int value , ImageView imageViewAmbientAware) {
         PreferenceUtils.setInt(PreferenceKeys.RIGHT_PERSIST, value, JBLApplication.getJBLApplicationContext());
         int leftValue = PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, JBLApplication.getJBLApplicationContext());
         if (value == 0 && leftValue == 0) {
@@ -140,7 +140,7 @@ public class AaPopupWindow extends PopupWindow implements View.OnClickListener, 
 //        ancController.initProgress(PreferenceUtils.getInt(PreferenceKeys.LEFT_PERSIST, getActivity()), value, value);
     }
 
-    public void updateAAUI(int aaLevelingValue) {
+    public void updateAAUI(int aaLevelingValue, ImageView imageViewAmbientAware) {
         boolean is150NC = AppUtils.is150NC(JBLApplication.getJBLApplicationContext());
         Logger.d(TAG, "updateAmbientLevel: " + aaLevelingValue + "," + PreferenceUtils.getInt(PreferenceKeys.AWARENESS, JBLApplication.getJBLApplicationContext()) + ",is150NC=" + is150NC);
         switch (aaLevelingValue) {

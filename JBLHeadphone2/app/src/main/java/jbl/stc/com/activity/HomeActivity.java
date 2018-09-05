@@ -1063,14 +1063,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 case MSG_AMBIENT_LEVEL: {
                     //for old devices
-                    aaPopupWindow.updateAAUI(msg.arg1);//AppUtils.levelTransfer(msg.arg1)<---method for new device
+                    aaPopupWindow.updateAAUI(msg.arg1,(ImageView)findViewById(R.id.image_view_home_ambient_aware));//AppUtils.levelTransfer(msg.arg1)<---method for new device
                     break;
                 }
                 case MSG_AA_LEFT:
-                    aaPopupWindow.updateAALeft(msg.arg1);
+                    aaPopupWindow.updateAALeft(msg.arg1,(ImageView)findViewById(R.id.image_view_home_ambient_aware));
                     break;
                 case MSG_AA_RIGHT:
-                    aaPopupWindow.updateAARight(msg.arg1);
+                    aaPopupWindow.updateAARight(msg.arg1,(ImageView)findViewById(R.id.image_view_home_ambient_aware));
                     break;
                 case MSG_CURRENT_PRESET: {
                     updateCurrentEQ(msg.arg1);
@@ -1484,7 +1484,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 int amVal = (Integer) objects[0];
                 Logger.d(TAG, "on receive, cmd ambient notification: " + amVal);
-                aaPopupWindow.updateAAUI(amVal);
+                aaPopupWindow.updateAAUI(amVal,(ImageView)findViewById(R.id.image_view_home_ambient_aware));
                 break;
             }
             case CMD_BootReadVersionFile: {
