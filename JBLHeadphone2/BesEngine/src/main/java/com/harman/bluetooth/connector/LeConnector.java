@@ -425,11 +425,11 @@ public class LeConnector implements BaseConnector {
                 Band[] bands = new Band[dataCurrentEQ.bandCount];
                 for (int i = 0; i < dataCurrentEQ.bandCount; i++) {
                     int pos = 13 * i;
-                    Band band = new Band();
-                    band.type = Integer.valueOf(bytesStr.substring(16 + pos, 17 + pos));
-                    band.gain = Float.valueOf(bytesStr.substring(18 + pos, 22 + pos));
-                    band.fc = Float.valueOf(bytesStr.substring(23 + pos, 27 + pos));
-                    band.q = Integer.valueOf(bytesStr.substring(28 + pos, 32 + pos));
+                    int type = Integer.valueOf(bytesStr.substring(16 + pos, 17 + pos));
+                    float gain = Float.valueOf(bytesStr.substring(18 + pos, 22 + pos));
+                    int fc = Integer.valueOf(bytesStr.substring(23 + pos, 27 + pos));
+                    float q = Float.valueOf(bytesStr.substring(28 + pos, 32 + pos));
+                    bands[i] = new Band(type,gain,fc,q);
                 }
                 dataCurrentEQ.bands = bands;
                 devResponse.object = dataCurrentEQ;
