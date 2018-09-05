@@ -314,6 +314,20 @@ public class LeConnector implements BaseConnector {
         }
     }
 
+    private String parseHexStringToString(String hexString) {
+        if (hexString == null || hexString.isEmpty())
+            return null;
+
+        int len = hexString.length();
+        byte[] data = new byte[len/2];
+
+        for(int i = 0; i < len; i+=2){
+            data[i/2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
+                    + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return new String(data);
+    }
+
     private DevResponse classifyCommand(BluetoothGattCharacteristic characteristic) {
         byte[] bytes = characteristic.getValue();
         String bytesStr = ArrayUtil.bytesToHex(bytes);
@@ -335,16 +349,15 @@ public class LeConnector implements BaseConnector {
 
             case RetHeader.RET_DEV_FIN_ACK:
                 enumCmdId = EnumCmdId.RET_DEV_FIN_ACK;
-
                 devResponse.object = null;
                 break;
             case RetHeader.RET_DEV_INFO:
                 enumCmdId = EnumCmdId.RET_DEV_INFO;
                 DataDeviceInfo dataDeviceInfo = new DataDeviceInfo();
-                dataDeviceInfo.deviceName = bytesStr.substring(4, 20);
+                dataDeviceInfo.deviceName = parseHexStringToString(bytesStr.substring(4, 20));
                 dataDeviceInfo.productId = bytesStr.substring(21, 23);
                 dataDeviceInfo.modeId = bytesStr.substring(24, 25);
-                dataDeviceInfo.batteryStatus = bytesStr.substring(26, 27);
+                dataDeviceInfo.batteryStatus = Integer.valueOf(bytesStr.substring(26, 27));
                 dataDeviceInfo.macAddress = bytesStr.substring(28, 34);
                 dataDeviceInfo.firmwareVersion = bytesStr.substring(35, 38);
 
@@ -352,10 +365,10 @@ public class LeConnector implements BaseConnector {
                 break;
             case RetHeader.RET_DEV_STATUS:
                 enumCmdId = EnumCmdId.RET_DEV_STATUS;
-                String StatusType = bytesStr.substring(4, 5);
+                String statusType = bytesStr.substring(4, 5);
                 DataDevStatus dataDevStatus = new DataDevStatus();
                 EnumDeviceStatusType enumDeviceStatusType = null;
-                switch (StatusType) {
+                switch (statusType) {
                     case RetHeader.ALL_STATUS_TYPE: {
                         enumDeviceStatusType = EnumDeviceStatusType.ALL_STATUS;
                         String anc = bytesStr.substring(6, 7);
@@ -397,7 +410,7 @@ public class LeConnector implements BaseConnector {
                 devResponse.object = dataDevStatus;
                 break;
             case RetHeader.RET_CURRENT_EQ:
-                enumCmdId = EnumCmdId.RET_DEV_ACK;
+                enumCmdId = EnumCmdId.RET_CURRENT_EQ;
                 DataCurrentEQ dataCurrentEQ = new DataCurrentEQ();
                 String presetIdx = bytesStr.substring(4, 5);
                 dataCurrentEQ.enumEqPresetIdx = parsePresetIdx(presetIdx);

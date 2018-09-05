@@ -1428,10 +1428,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 sendMessageTo(MSG_AA_RIGHT, rawRight);
                 break;
             case CMD_GRAPHIC_EQ_PRESET_BAND_SETTINGS: {
-                byte[] eqBytes = (byte[]) (objects[0]);
-                Logger.d(TAG, "on receive, cmd eq band settings: " + ArrayUtil.toHex(eqBytes));
-                parseCustomEQ(eqBytes);
-                homeHandler.sendEmptyMessage(MSG_FIRMWARE_INFO);
+                if (objects[0] != null) {
+                    byte[] eqBytes = (byte[]) (objects[0]);
+                    Logger.d(TAG, "on receive, cmd eq band settings: " + ArrayUtil.toHex(eqBytes));
+                    parseCustomEQ(eqBytes);
+                    homeHandler.sendEmptyMessage(MSG_FIRMWARE_INFO);
+                }else{
+                    //TODO: bes live update eq settings.
+                }
                 break;
             }
             case CMD_IsInBootloader: {

@@ -16,10 +16,17 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+import com.harman.bluetooth.constants.Band;
 import com.harman.bluetooth.constants.BesUpdateState;
+import com.harman.bluetooth.constants.EnumCmdId;
+import com.harman.bluetooth.constants.EnumDeviceStatusType;
 import com.harman.bluetooth.engine.BesEngine;
 import com.harman.bluetooth.listeners.BesListener;
+import com.harman.bluetooth.ret.DataCurrentEQ;
+import com.harman.bluetooth.ret.DataDevStatus;
+import com.harman.bluetooth.ret.DataDeviceInfo;
 import com.harman.bluetooth.ret.DevResponse;
+import com.harman.bluetooth.ret.RetHeader;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +40,7 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.scan.LeLollipopScanner;
 import jbl.stc.com.scan.ScanListener;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.SaveSetUtil;
 
 public class LeManager implements ScanListener, BesListener {
@@ -58,7 +66,7 @@ public class LeManager implements ScanListener, BesListener {
     private LeManager() {
         if (mOnRetListener == null)
             mOnRetListener = new HashSet<>();
-        if (mOnConnectStatusListeners == null){
+        if (mOnConnectStatusListeners == null) {
             mOnConnectStatusListeners = new HashSet<>();
         }
     }
@@ -136,11 +144,11 @@ public class LeManager implements ScanListener, BesListener {
             if (myDevice == null) {
                 myDevice = AppUtils.getMyDevice(device.getName(), ConnectStatus.A2DP_UNCONNECTED, pid, device.getAddress());
                 devicesSet.add(myDevice);
-                SaveSetUtil.saveSet(mContext,devicesSet);
+                SaveSetUtil.saveSet(mContext, devicesSet);
             }
 
             if (myDevice == null) {
-                Logger.e(TAG,"on found, my device is null");
+                Logger.e(TAG, "on found, my device is null");
                 return;
             }
             SaveSetUtil.saveSet(mContext, devicesSet);
@@ -171,7 +179,8 @@ public class LeManager implements ScanListener, BesListener {
     }
 
     private Set<OnConnectStatusListener> mOnConnectStatusListeners;
-    public void setOnConnectStatusListener(OnConnectStatusListener onConnectStatusListener){
+
+    public void setOnConnectStatusListener(OnConnectStatusListener onConnectStatusListener) {
         synchronized (mLock) {
             if (!mOnConnectStatusListeners.contains(onConnectStatusListener)) {
                 mOnConnectStatusListeners.add(onConnectStatusListener);
@@ -242,12 +251,66 @@ public class LeManager implements ScanListener, BesListener {
 
     @Override
     public void onBesReceived(BluetoothDevice bluetoothDevice, DevResponse devResponse) {
-        Logger.d(TAG, "on bes received, mac = "+bluetoothDevice.getAddress()+" , cmdId = " + devResponse.enumCmdId);
-//        switch (command){
-//            case ReportFormat.RET_DEV_ACK:{
-//
-//            }
-//        }
+        Logger.d(TAG, "on bes received, mac = " + bluetoothDevice.getAddress() + " , cmdId = " + devResponse.enumCmdId);
+        switch (devResponse.enumCmdId) {
+            case RET_DEV_ACK:
+            case RET_DEV_BYE:
+            case RET_DEV_FIN_ACK:
+                break;
+            case RET_DEV_INFO:
+                DataDeviceInfo dataDeviceInfo = (DataDeviceInfo) devResponse.object;
+                notifyUiUpdate(EnumCommands.CMD_ConfigProductName, dataDeviceInfo.deviceName);
+                notifyUiUpdate(EnumCommands.CMD_FIRMWARE_VERSION, dataDeviceInfo.firmwareVersion);
+                notifyUiUpdate(EnumCommands.CMD_BATTERY_LEVEL, dataDeviceInfo.batteryStatus);
+                break;
+            case RET_DEV_STATUS:
+                DataDevStatus dataDevStatus = (DataDevStatus) devResponse.object;
+                switch (dataDevStatus.enumDeviceStatusType) {
+                    case ALL_STATUS: {
+                        notifyUiUpdate(EnumCommands.CMD_ANC, dataDevStatus.enumAncStatus);
+                        notifyUiUpdate(EnumCommands.CMD_ANC, dataDevStatus.enumAncStatus);
+                        notifyUiUpdate(EnumCommands.CMD_AMBIENT_LEVELING, dataDevStatus.enumAAStatus);
+                        notifyUiUpdate(EnumCommands.CMD_AutoOffEnable, dataDevStatus.autoOff);
+                        notifyUiUpdate(EnumCommands.CMD_GEQ_CURRENT_PRESET, dataDevStatus.enumEqPresetIdx);
+                        break;
+                    }
+                    case ANC: {
+                        notifyUiUpdate(EnumCommands.CMD_ANC, dataDevStatus.enumAncStatus);
+                        break;
+                    }
+                    case AMBIENT_AWARE_MODE: {
+                        notifyUiUpdate(EnumCommands.CMD_AMBIENT_LEVELING, dataDevStatus.enumAAStatus);
+                        break;
+                    }
+                    case AUTO_OFF: {
+                        notifyUiUpdate(EnumCommands.CMD_AutoOffEnable, dataDevStatus.autoOff);
+                        break;
+                    }
+                    case EQ_PRESET: {
+                        notifyUiUpdate(EnumCommands.CMD_GEQ_CURRENT_PRESET, dataDevStatus.enumEqPresetIdx);
+                        break;
+                    }
+                }
+                break;
+            case RET_CURRENT_EQ: {
+                DataCurrentEQ dataCurrentEQ =  (DataCurrentEQ) devResponse.object;
+                notifyUiUpdate(EnumCommands.CMD_GRAPHIC_EQ_PRESET_BAND_SETTINGS, null, dataCurrentEQ);
+                break;
+            }
+
+        }
+
+    }
+
+    private void notifyUiUpdate(final EnumCommands enumCommands, final Object... objects) {
+        mContext.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (OnRetListener onRetListener : mOnRetListener) {
+                    onRetListener.onReceive(enumCommands, objects);
+                }
+            }
+        });
     }
 
     @Override
@@ -257,7 +320,7 @@ public class LeManager implements ScanListener, BesListener {
 
     private class LeHandler extends Handler {
 
-        LeHandler(Looper looper){
+        LeHandler(Looper looper) {
             super(looper);
         }
 
@@ -270,7 +333,7 @@ public class LeManager implements ScanListener, BesListener {
                         startBleScan();
                         leHandler.removeMessages(MSG_START_SCAN);
                         leHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
-                    }else{
+                    } else {
                         leLollipopScanner.stopScan();
                     }
                     break;
