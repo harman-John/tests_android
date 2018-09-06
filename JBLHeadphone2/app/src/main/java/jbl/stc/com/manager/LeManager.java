@@ -16,17 +16,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-import com.harman.bluetooth.constants.Band;
-import com.harman.bluetooth.constants.BesUpdateState;
-import com.harman.bluetooth.constants.EnumCmdId;
-import com.harman.bluetooth.constants.EnumDeviceStatusType;
+import com.harman.bluetooth.constants.EnumOtaState;
 import com.harman.bluetooth.engine.BesEngine;
-import com.harman.bluetooth.listeners.BesListener;
-import com.harman.bluetooth.ret.DataCurrentEQ;
-import com.harman.bluetooth.ret.DataDevStatus;
-import com.harman.bluetooth.ret.DataDeviceInfo;
-import com.harman.bluetooth.ret.DevResponse;
-import com.harman.bluetooth.ret.RetHeader;
+import com.harman.bluetooth.listeners.BleListener;
+import com.harman.bluetooth.ret.RetCurrentEQ;
+import com.harman.bluetooth.ret.RetDevStatus;
+import com.harman.bluetooth.ret.RetDeviceInfo;
+import com.harman.bluetooth.ret.RetResponse;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -43,7 +39,7 @@ import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.SaveSetUtil;
 
-public class LeManager implements ScanListener, BesListener {
+public class LeManager implements ScanListener, BleListener {
 
     private final static String TAG = LeManager.class.getSimpleName();
     private static final int PERMISSION_REQUEST_LOCATION = 1;
@@ -146,7 +142,6 @@ public class LeManager implements ScanListener, BesListener {
                 devicesSet.add(myDevice);
                 SaveSetUtil.saveSet(mContext, devicesSet);
             }
-
             if (myDevice == null) {
                 Logger.e(TAG, "on found, my device is null");
                 return;
@@ -155,8 +150,10 @@ public class LeManager implements ScanListener, BesListener {
             ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
             if (!DeviceManager.getInstance(mContext).isConnected()) {
                 BesEngine.getInstance().addListener(this);
-                boolean result = BesEngine.getInstance().connect(mContext, device);
-                Logger.d(TAG, "on found, connect result = " + result);
+                if (device.getAddress().equals("12:35:56:C2:9A:CA")) {
+                    boolean result = BesEngine.getInstance().connect(mContext, device);
+                    Logger.d(TAG, "on found, connect result = " + result);
+                }
             }
         }
     }
@@ -210,7 +207,7 @@ public class LeManager implements ScanListener, BesListener {
 
     //For connection callbacks
     @Override
-    public void onBesConnectStatus(final BluetoothDevice bluetoothDevice, final boolean isConnected) {
+    public void onLeConnectStatus(final BluetoothDevice bluetoothDevice, final boolean isConnected) {
         Logger.d(TAG, "on bes connect status, isConnected = " + isConnected);
         synchronized (mLock) {
             if (DeviceManager.getInstance(mContext).isConnected()) {
@@ -250,50 +247,50 @@ public class LeManager implements ScanListener, BesListener {
     }
 
     @Override
-    public void onBesReceived(BluetoothDevice bluetoothDevice, DevResponse devResponse) {
-        Logger.d(TAG, "on bes received, mac = " + bluetoothDevice.getAddress() + " , cmdId = " + devResponse.enumCmdId);
-        switch (devResponse.enumCmdId) {
+    public void onRetReceived(BluetoothDevice bluetoothDevice, RetResponse retResponse) {
+        Logger.d(TAG, "on bes received, mac = " + bluetoothDevice.getAddress() + " , cmdId = " + retResponse.enumCmdId);
+        switch (retResponse.enumCmdId) {
             case RET_DEV_ACK:
             case RET_DEV_BYE:
             case RET_DEV_FIN_ACK:
                 break;
             case RET_DEV_INFO:
-                DataDeviceInfo dataDeviceInfo = (DataDeviceInfo) devResponse.object;
-                notifyUiUpdate(EnumCommands.CMD_ConfigProductName, dataDeviceInfo.deviceName);
-                notifyUiUpdate(EnumCommands.CMD_FIRMWARE_VERSION, dataDeviceInfo.firmwareVersion);
-                notifyUiUpdate(EnumCommands.CMD_BATTERY_LEVEL, dataDeviceInfo.batteryStatus);
+                RetDeviceInfo retDeviceInfo = (RetDeviceInfo) retResponse.object;
+                notifyUiUpdate(EnumCommands.CMD_ConfigProductName, retDeviceInfo.deviceName);
+                notifyUiUpdate(EnumCommands.CMD_FIRMWARE_VERSION, retDeviceInfo.firmwareVersion);
+                notifyUiUpdate(EnumCommands.CMD_BATTERY_LEVEL, retDeviceInfo.batteryStatus);
                 break;
             case RET_DEV_STATUS:
-                DataDevStatus dataDevStatus = (DataDevStatus) devResponse.object;
-                switch (dataDevStatus.enumDeviceStatusType) {
+                RetDevStatus retDevStatus = (RetDevStatus) retResponse.object;
+                switch (retDevStatus.enumDeviceStatusType) {
                     case ALL_STATUS: {
-                        notifyUiUpdate(EnumCommands.CMD_ANC, dataDevStatus.enumAncStatus);
-                        notifyUiUpdate(EnumCommands.CMD_ANC, dataDevStatus.enumAncStatus);
-                        notifyUiUpdate(EnumCommands.CMD_AMBIENT_LEVELING, dataDevStatus.enumAAStatus);
-                        notifyUiUpdate(EnumCommands.CMD_AutoOffEnable, dataDevStatus.autoOff);
-                        notifyUiUpdate(EnumCommands.CMD_GEQ_CURRENT_PRESET, dataDevStatus.enumEqPresetIdx);
+                        notifyUiUpdate(EnumCommands.CMD_ANC, retDevStatus.enumAncStatus);
+                        notifyUiUpdate(EnumCommands.CMD_ANC, retDevStatus.enumAncStatus);
+                        notifyUiUpdate(EnumCommands.CMD_AMBIENT_LEVELING, retDevStatus.enumAAStatus);
+                        notifyUiUpdate(EnumCommands.CMD_AutoOffEnable, retDevStatus.retAutoOff);
+                        notifyUiUpdate(EnumCommands.CMD_GEQ_CURRENT_PRESET, retDevStatus.enumEqPresetIdx);
                         break;
                     }
                     case ANC: {
-                        notifyUiUpdate(EnumCommands.CMD_ANC, dataDevStatus.enumAncStatus);
+                        notifyUiUpdate(EnumCommands.CMD_ANC, retDevStatus.enumAncStatus);
                         break;
                     }
                     case AMBIENT_AWARE_MODE: {
-                        notifyUiUpdate(EnumCommands.CMD_AMBIENT_LEVELING, dataDevStatus.enumAAStatus);
+                        notifyUiUpdate(EnumCommands.CMD_AMBIENT_LEVELING, retDevStatus.enumAAStatus);
                         break;
                     }
                     case AUTO_OFF: {
-                        notifyUiUpdate(EnumCommands.CMD_AutoOffEnable, dataDevStatus.autoOff);
+                        notifyUiUpdate(EnumCommands.CMD_AutoOffEnable, retDevStatus.retAutoOff.isOnOff, retDevStatus.retAutoOff.time);
                         break;
                     }
                     case EQ_PRESET: {
-                        notifyUiUpdate(EnumCommands.CMD_GEQ_CURRENT_PRESET, dataDevStatus.enumEqPresetIdx);
+                        notifyUiUpdate(EnumCommands.CMD_GEQ_CURRENT_PRESET, retDevStatus.enumEqPresetIdx);
                         break;
                     }
                 }
                 break;
             case RET_CURRENT_EQ: {
-                DataCurrentEQ dataCurrentEQ =  (DataCurrentEQ) devResponse.object;
+                RetCurrentEQ dataCurrentEQ =  (RetCurrentEQ) retResponse.object;
                 notifyUiUpdate(EnumCommands.CMD_GRAPHIC_EQ_PRESET_BAND_SETTINGS, null, dataCurrentEQ);
                 break;
             }
@@ -314,7 +311,7 @@ public class LeManager implements ScanListener, BesListener {
     }
 
     @Override
-    public void onBesUpdateImageState(BluetoothDevice bluetoothDevice, BesUpdateState state, int progress) {
+    public void onLeOta(BluetoothDevice bluetoothDevice, EnumOtaState state, int progress) {
         Logger.d(TAG, "on bes update image state");
     }
 

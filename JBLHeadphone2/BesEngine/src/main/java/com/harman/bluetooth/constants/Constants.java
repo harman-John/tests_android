@@ -3,10 +3,13 @@ package com.harman.bluetooth.constants;
 import java.util.UUID;
 
 public class Constants {
-    public static final UUID BES_SERVICE_UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0000");
-    public static final UUID BES_CHARACTERISTIC_TX_UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0002");
-    public static final UUID BES_CHARACTERISTIC_RX_UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0001");
-    public static final UUID BES_DESCRIPTOR_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+
+    public static final UUID GATT_SERVICE_UUID = UUID.fromString("00001801-0000-1000-8000-00805f9b34fb");
+
+    public static final UUID BLE_RX_TX_SERVICE_UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0000");
+    public static final UUID RX_CHAR_UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0001");
+    public static final UUID TX_CHAR_UUID = UUID.fromString("65786365-6c70-6f69-6e74-2e636f6d0002");
+//    public static final UUID BES_DESCRIPTOR_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     public static final UUID OTA_SERVICE_NORMAL_UUID = UUID.fromString("01000100-0000-1000-8000-009078563412");
     public static final UUID OTA_CHARACTERISTIC_NORMAL_UUID = UUID.fromString("03000300-0000-1000-8000-009278563412");

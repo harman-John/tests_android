@@ -5,7 +5,7 @@ import com.harman.bluetooth.constants.Band;
 import com.harman.bluetooth.constants.EnumEqCategory;
 import com.harman.bluetooth.constants.EnumEqPresetIdx;
 
-public class DataCurrentEQ {
+public class RetCurrentEQ {
     public EnumEqPresetIdx enumEqPresetIdx;
     public EnumEqCategory enumEqCategory;
     public String sampleRate;

@@ -247,7 +247,7 @@ public class ANCControlManager {
              AvneraManager.getAvenraManager().getLightX().writeAppOnEarDetectionWithAutoOff(autoOff);
         } else {
             Cmd150Manager.getInstance().setAutoOff(AvneraManager.getAvenraManager().getAudioManager(), autoOff);
-            Logger.d(TAG, "SendCommand setAutoOffFeature autoOff =" + autoOff);
+            Logger.d(TAG, "SendCommand setAutoOffFeature autoOffData =" + autoOff);
         }
     }
 

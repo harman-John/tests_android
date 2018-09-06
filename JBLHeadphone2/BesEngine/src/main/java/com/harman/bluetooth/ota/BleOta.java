@@ -8,11 +8,11 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
-import com.harman.bluetooth.constants.BesUpdateState;
 import com.harman.bluetooth.constants.Constants;
+import com.harman.bluetooth.constants.EnumOtaState;
 import com.harman.bluetooth.engine.BesEngine;
-import com.harman.bluetooth.listeners.BesListener;
-import com.harman.bluetooth.ret.DevResponse;
+import com.harman.bluetooth.listeners.BleListener;
+import com.harman.bluetooth.ret.RetResponse;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.ProfileUtils;
 import com.harman.bluetooth.utils.SPHelper;
@@ -23,8 +23,8 @@ import java.io.InputStream;
 import java.util.List;
 
 
-public class BesOtaUpdate implements BesListener {
-    private final static String TAG = BesOtaUpdate.class.getSimpleName();
+public class BleOta implements BleListener {
+    private final static String TAG = BleOta.class.getSimpleName();
 
     protected static final String KEY_OTA_FILE = "ota_file";
     private static final String OTA_FILE = "ota.bin";
@@ -107,16 +107,16 @@ public class BesOtaUpdate implements BesListener {
 
     private Context mContext;
 
-    private List<BesListener> mListeners;
+    private List<BleListener> mListeners;
 
-    public void setListener(List<BesListener> listeners) {
+    public void setListener(List<BleListener> listeners) {
         mListeners = listeners;
     }
 
-    private void notifyOtaUpdate(BesUpdateState state, int progress) {
+    private void notifyOtaUpdate(EnumOtaState state, int progress) {
         synchronized (mOtaLock) {
-            for (BesListener listener : mListeners) {
-                listener.onBesUpdateImageState(null, state, progress);
+            for (BleListener listener : mListeners) {
+                listener.onLeOta(null, state, progress);
             }
         }
     }
@@ -192,7 +192,7 @@ public class BesOtaUpdate implements BesListener {
 //                    }
                     break;
                 case MSG_UPDATE_PROGRESS:
-                    notifyOtaUpdate(BesUpdateState.UpdateSuccess, (Integer) msg.obj);
+                    notifyOtaUpdate(EnumOtaState.Success, (Integer) msg.obj);
 //                    if(mOtaProgress != null){
 //                        mOtaProgress.setProgress((Integer) msg.obj);
 //                    }else{
@@ -426,7 +426,7 @@ public class BesOtaUpdate implements BesListener {
     protected void onLoadFileFailed() {
         Log.i(TAG, "onLoadFileFailed");
 //        updateInfo(R.string.load_file_failed);
-        notifyOtaUpdate(BesUpdateState.UpdateFail, -1);
+        notifyOtaUpdate(EnumOtaState.Fail, -1);
     }
 
     protected void onLoadFileSuccessfully() {
@@ -438,7 +438,7 @@ public class BesOtaUpdate implements BesListener {
     protected void onLoadOtaConfigFailed() {
         Log.i(TAG, "onLoadOtaConfigFailed");
 //        updateInfo(R.string.load_ota_config_failed);
-        notifyOtaUpdate(BesUpdateState.UpdateFail, -1);
+        notifyOtaUpdate(EnumOtaState.Fail, -1);
     }
 
     protected void onLoadOtaConfigSuccessfully() {
@@ -979,8 +979,8 @@ public class BesOtaUpdate implements BesListener {
 
 
     @Override
-    public void onBesReceived(BluetoothDevice bluetoothDevice, DevResponse devResponse) {
-        byte[] data = (byte[]) devResponse.object;
+    public void onRetReceived(BluetoothDevice bluetoothDevice, RetResponse retResponse) {
+        byte[] data = (byte[]) retResponse.object;
         Log.i(TAG, "onReceive data = " + ArrayUtil.toHex(data));
         synchronized (mOtaLock) {
             Log.e(TAG, "onReceive " + ArrayUtil.toHex(data));
@@ -1007,11 +1007,11 @@ public class BesOtaUpdate implements BesListener {
                     if ((data[3] & 0xFF) == 0x01) {
                         onOtaOver();
 //                        sendCmdDelayed(CMD_DISCONNECT, 0);
-                        notifyOtaUpdate(BesUpdateState.UpdateSuccess, -1);
+                        notifyOtaUpdate(EnumOtaState.Success, -1);
                     } else if ((data[3] & 0xFF) == 0X00) {
                         onOtaFailed();
 //                        sendCmdDelayed(CMD_DISCONNECT, 0);
-                        notifyOtaUpdate(BesUpdateState.UpdateFail, -1);
+                        notifyOtaUpdate(EnumOtaState.Fail, -1);
                     }
                     mOtaPacketItemCount = 0;
                 } else {
@@ -1032,11 +1032,11 @@ public class BesOtaUpdate implements BesListener {
                 if ((data[1] & 0xFF) == 0x01) {
                     onOtaOver();
 //                    sendCmdDelayed(CMD_DISCONNECT, 0);
-                    notifyOtaUpdate(BesUpdateState.UpdateSuccess, -1);
+                    notifyOtaUpdate(EnumOtaState.Success, -1);
                 } else if ((data[1] & 0xFF) == 0X00) {
                     onOtaFailed();
 //                    sendCmdDelayed(CMD_DISCONNECT, 0);
-                    notifyOtaUpdate(BesUpdateState.UpdateFail, -1);
+                    notifyOtaUpdate(EnumOtaState.Fail, -1);
                 }
                 mOtaPacketItemCount = 0;
 
@@ -1052,7 +1052,7 @@ public class BesOtaUpdate implements BesListener {
                 } else {
                     onOtaConfigFailed();
 //                    sendCmdDelayed(CMD_DISCONNECT, 0);
-                    notifyOtaUpdate(BesUpdateState.UpdateFail, -1);
+                    notifyOtaUpdate(EnumOtaState.Fail, -1);
                 }
             }
         }
@@ -1101,7 +1101,7 @@ public class BesOtaUpdate implements BesListener {
 //                    connect();
 //                    break;
                 case CMD_DISCONNECT:
-                    notifyOtaUpdate(BesUpdateState.UpdateFail, -1);
+                    notifyOtaUpdate(EnumOtaState.Fail, -1);
 //                    disconnect();
                     break;
                 case CMD_LOAD_FILE:
@@ -1180,7 +1180,7 @@ public class BesOtaUpdate implements BesListener {
 
 
     @Override
-    public void onBesConnectStatus(BluetoothDevice bluetoothDevice, boolean isConnected) {
+    public void onLeConnectStatus(BluetoothDevice bluetoothDevice, boolean isConnected) {
 
     }
 
@@ -1190,7 +1190,7 @@ public class BesOtaUpdate implements BesListener {
     }
 
     @Override
-    public void onBesUpdateImageState(BluetoothDevice bluetoothDevice, BesUpdateState state, int progress) {
+    public void onLeOta(BluetoothDevice bluetoothDevice, EnumOtaState state, int progress) {
 
     }
 }

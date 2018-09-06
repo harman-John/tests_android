@@ -1,6 +1,6 @@
 package com.harman.bluetooth.ret;
 
-public class DataDeviceInfo {
+public class RetDeviceInfo {
     public String deviceName;
     public String productId;
     public String modeId;

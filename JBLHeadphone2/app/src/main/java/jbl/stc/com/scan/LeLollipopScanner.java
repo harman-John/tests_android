@@ -54,6 +54,7 @@ public class LeLollipopScanner extends BaseScanner {
     public void stopScan() {
         if (!isScanning())
             return;
+        Logger.d(TAG,"stop scan");
         mLeScanner.stopScan(mCallback);
         onScanFinish();
     }

@@ -5,10 +5,10 @@ import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.constants.EnumDeviceStatusType;
 import com.harman.bluetooth.constants.EnumEqPresetIdx;
 
-public class DataDevStatus {
+public class RetDevStatus {
     public EnumDeviceStatusType enumDeviceStatusType;
     public EnumAncStatus enumAncStatus;
     public EnumAAStatus enumAAStatus;
-    public String autoOff;
+    public RetAutoOff retAutoOff;
     public EnumEqPresetIdx enumEqPresetIdx;
 }

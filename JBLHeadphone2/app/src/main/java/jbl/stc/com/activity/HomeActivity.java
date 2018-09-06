@@ -43,7 +43,9 @@ import android.widget.Toast;
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.audioManager;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
+import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.engine.BesEngine;
+import com.harman.bluetooth.req.CmdAncSet;
 
 import jbl.stc.com.manager.LiveCmdManager;
 
@@ -504,6 +506,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             }
             case R.id.image_view_home_noise_cancel: {
+                if (LeManager.getInstance().isConnected()) {
+
+                    CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked()? EnumAncStatus.ON: EnumAncStatus.OFF);
+                    LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
+                }
+
                 if (AppUtils.isNewDevice(deviceName)) {
                     if (checkBoxNoiseCancel.isChecked()) {
                         Logger.d(TAG, "noise cancle  checked");
@@ -518,6 +526,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     }
                 } else {
                     setANC();
+
                 }
                 break;
             }
@@ -975,8 +984,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void run() {
                 if (LeManager.getInstance().isConnected()) {
-                    LiveCmdManager liveCmdManager = new LiveCmdManager();
-                    liveCmdManager.reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
+                    LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
                 }
                 switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                     case NONE:
