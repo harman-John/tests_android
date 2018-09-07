@@ -858,7 +858,7 @@ public final class Bluetooth implements BluetoothProfile.ServiceListener {
 						}
 						if ( ! deviceSupportsProfile( mDevice, kBluetoothServiceSPP ) ) {
 							Log.e( mDeviceName + " Connect thread - device does not support serial port profile, launching SDP" );
-							mDevice.fetchUuidsWithSdp();
+							mDevice.fetchUuidsWithSdp();   //then receive the boardcast BluetoothDevice.ACTION_UUID
 							break;
 						}
 						if ( mA2DPProxy != null ) {

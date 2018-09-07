@@ -303,7 +303,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                         mHandler.removeCallbacks(a2dpRunnable);
                         specifiedDevice = deviceList.get(position);
                         initAudioManager();
-                        mBluetooth.start();
+                        mBluetooth.start();   //start discovery
                         isFound = true;
                         position = 0;
                         Logger.d(TAG, "a2dp listener, use first device to connect, name = " + specifiedDevice.getName()
