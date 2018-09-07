@@ -45,8 +45,10 @@ import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.harman.bluetooth.constants.EnumAAStatus;
 import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.constants.EnumDeviceStatusType;
+import com.harman.bluetooth.constants.EnumEqCategory;
 import com.harman.bluetooth.req.CmdAASet;
 import com.harman.bluetooth.req.CmdAncSet;
+import com.harman.bluetooth.req.CmdCurrEq;
 import com.harman.bluetooth.req.CmdDevStatus;
 
 import jbl.stc.com.manager.LiveCmdManager;
@@ -998,6 +1000,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     timeInterval();
                     CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
                     LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
+                    timeInterval();
+                    CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
+                    LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
                 }else {
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                         case NONE:

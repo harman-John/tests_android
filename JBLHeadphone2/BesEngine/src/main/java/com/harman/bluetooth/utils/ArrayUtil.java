@@ -80,6 +80,20 @@ public class ArrayUtil {
         return new String(hexChars);
     }
 
+    public static byte[] hexStr2Bytes(String src)
+    {
+        int m,n;
+        int l=src.length()/2;
+        byte[] ret = new byte[l];
+        for (int i = 0; i < l; i++)
+        {
+            m=i*2+1;
+            n=m+1;
+            ret[i] = Byte.decode("0x" + src.substring(i*2, m) + src.substring(m,n));
+        }
+        return ret;
+    }
+
     public static boolean startsWith(byte[] data, byte[] param) {
         if (data == null) {
             return param == null;

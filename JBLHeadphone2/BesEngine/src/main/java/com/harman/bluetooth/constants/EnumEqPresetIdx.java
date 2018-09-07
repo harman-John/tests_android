@@ -8,5 +8,6 @@ public enum EnumEqPresetIdx {
     OFF,
     JAZZ,
     VOCAL,
-    BASS
+    BASS,
+    USER
 }

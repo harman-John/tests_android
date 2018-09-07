@@ -250,6 +250,9 @@ public class LeManager implements ScanListener, BleListener {
 
     @Override
     public void onRetReceived(BluetoothDevice bluetoothDevice, RetResponse retResponse) {
+        if (retResponse == null){
+            return;
+        }
         Logger.d(TAG, "on bes received, mac = " + bluetoothDevice.getAddress() + " , cmdId = " + retResponse.enumCmdId+"");
         switch (retResponse.enumCmdId) {
             case RET_DEV_ACK:
