@@ -4,11 +4,11 @@ import com.harman.bluetooth.constants.EnumDeviceStatusType;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class CmdDevInfoReq extends BaseCmd {
+public class ReqDevInfo extends BaseReq {
 
-    private final static String TAG = CmdDevInfoReq.class.getSimpleName();
+    private final static String TAG = ReqDevInfo.class.getSimpleName();
 
-    public CmdDevInfoReq(EnumDeviceStatusType enumDeviceStatusType){
+    public ReqDevInfo(EnumDeviceStatusType enumDeviceStatusType){
         this.enumDeviceStatusType = enumDeviceStatusType;
     }
 
@@ -18,19 +18,19 @@ public class CmdDevInfoReq extends BaseCmd {
         byte[] payload = new byte[1];
         switch (enumDeviceStatusType) {
             case ALL_STATUS:
-                payload[0] = (byte) 0x00;
+                payload[0] = (byte) 0x30;
                 break;
             case ANC:
-                payload[0] = (byte) 0x01;
+                payload[0] = (byte) 0x31;
                 break;
             case AMBIENT_AWARE_MODE:
-                payload[0] = (byte) 0x02;
+                payload[0] = (byte) 0x32;
                 break;
             case AUTO_OFF:
-                payload[0] = (byte) 0x03;
+                payload[0] = (byte) 0x33;
                 break;
             case EQ_PRESET:
-                payload[0] = (byte) 0x04;
+                payload[0] = (byte) 0x34;
                 break;
             default:
                 Logger.e(TAG,"get pay load, no this type");

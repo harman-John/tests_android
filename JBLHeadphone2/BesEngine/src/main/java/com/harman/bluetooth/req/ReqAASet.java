@@ -4,11 +4,11 @@ import com.harman.bluetooth.constants.EnumAAStatus;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class CmdAASet extends BaseCmd {
+public class ReqAASet extends BaseReq {
 
-    private final static String TAG = CmdAASet.class.getSimpleName();
+    private final static String TAG = ReqAASet.class.getSimpleName();
 
-    public CmdAASet(EnumAAStatus enumAa_status){
+    public ReqAASet(EnumAAStatus enumAa_status){
         this.enumAa_status = enumAa_status;
     }
 

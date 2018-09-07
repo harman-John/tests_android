@@ -55,6 +55,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate, Vi
         super.onCreate(savedInstanceState);
         mContext = this;
         LeManager.getInstance().setOnConnectStatusListener(this);
+        LeManager.getInstance().setOnRetListener(this);
         LightX.sEnablePacketDumps = false;
     }
 
@@ -74,6 +75,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate, Vi
     protected void onResume() {
         super.onResume();
         DeviceManager.getInstance(this).setOnConnectStatusListener(this);
+        LeManager.getInstance().setOnRetListener(this);
     }
 
     @Override

@@ -3,8 +3,8 @@ package com.harman.bluetooth.req;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class BaseCmd {
-    private final static String TAG = BaseCmd.class.getSimpleName();
+public class BaseReq {
+    private final static String TAG = BaseReq.class.getSimpleName();
 
     private byte[] mCommand;
 

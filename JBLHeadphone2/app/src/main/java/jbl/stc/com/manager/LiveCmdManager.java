@@ -1,14 +1,14 @@
 package jbl.stc.com.manager;
 
 import com.harman.bluetooth.engine.BesEngine;
-import com.harman.bluetooth.req.CmdAASet;
-import com.harman.bluetooth.req.CmdAncSet;
-import com.harman.bluetooth.req.CmdAppAckSet;
-import com.harman.bluetooth.req.CmdAppByeSet;
-import com.harman.bluetooth.req.CmdCurrentEqReq;
-import com.harman.bluetooth.req.CmdDevInfoReq;
-import com.harman.bluetooth.req.CmdEqPresetSet;
-import com.harman.bluetooth.req.CmdEqSettingsSet;
+import com.harman.bluetooth.req.ReqAASet;
+import com.harman.bluetooth.req.ReqAncSet;
+import com.harman.bluetooth.req.ReqAppAckSet;
+import com.harman.bluetooth.req.ReqAppByeSet;
+import com.harman.bluetooth.req.ReqCurrEq;
+import com.harman.bluetooth.req.ReqDevInfo;
+import com.harman.bluetooth.req.ReqEqPresetSet;
+import com.harman.bluetooth.req.ReqEqSettingsSet;
 import com.harman.bluetooth.req.ReqHeader;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
@@ -30,9 +30,9 @@ public class LiveCmdManager {
     /**
      * In App, there provides AppACK to acknowledge device; it depends on the features requirement.
      * @param mac mac address
-     * @param cmdAppackset {@link CmdAppAckSet}
+     * @param cmdAppackset {@link ReqAppAckSet}
      */
-    public void setAppAck(String mac, CmdAppAckSet cmdAppackset) {
+    public void setAppAck(String mac, ReqAppAckSet cmdAppackset) {
         Logger.d(TAG,"request device info");
         BesEngine.getInstance().sendCommand(mac, cmdAppackset.getCommand());
     }
@@ -41,9 +41,9 @@ public class LiveCmdManager {
      * Device and App may need to disconnect with each other. Before establish on disconnection, a “ByeBye” command
      * can be used on this purpose. Once ACK was received, then the formal disconnection will be announced.
      * @param mac
-     * @param cmdappbye {@link CmdAppByeSet}
+     * @param cmdappbye {@link ReqAppByeSet}
      */
-    public void setAppBye(String mac, CmdAppByeSet cmdappbye) {
+    public void setAppBye(String mac, ReqAppByeSet cmdappbye) {
         Logger.d(TAG,"request device info");
         BesEngine.getInstance().sendCommand(mac, cmdappbye.getCommand());
     }
@@ -62,18 +62,18 @@ public class LiveCmdManager {
     /**
      * Two scenarios were involved here: - 1) Device Status request via command, 2)Auto feedback from device.
      * @param mac
-     * @param cmdDevInfoReq {@link CmdDevInfoReq}
+     * @param cmdDevInfoReq {@link ReqDevInfo}
      */
-    public void reqDevStatus(String mac,CmdDevInfoReq cmdDevInfoReq) {
+    public void reqDevStatus(String mac,ReqDevInfo cmdDevInfoReq) {
         Logger.d(TAG,"request to set device status");
         BesEngine.getInstance().sendCommand(mac, cmdDevInfoReq.getCommand());
     }
 
     /**
      * Write REQ_ANC enable status.
-     * @param commandAncset {@link CmdAncSet}
+     * @param commandAncset {@link ReqAncSet}
      */
-    public void reqSetANC(String mac,CmdAncSet commandAncset) {
+    public void reqSetANC(String mac,ReqAncSet commandAncset) {
         Logger.d(TAG,"request to set REQ_ANC");
         BesEngine.getInstance().sendCommand(mac, commandAncset.getCommand());
     }
@@ -82,7 +82,7 @@ public class LiveCmdManager {
      * Write AA Mode status.
      * @param cmdAaSet 0x00/0x01 means Talk Thru/Ambient Aware
      */
-    public void reqSetAAMode(String mac, CmdAASet cmdAaSet) {
+    public void reqSetAAMode(String mac, ReqAASet cmdAaSet) {
         Logger.d(TAG,"request to set AA mode");
         BesEngine.getInstance().sendCommand(mac, cmdAaSet.getCommand());
     }
@@ -104,11 +104,11 @@ public class LiveCmdManager {
      * EQ Presets has 4 types, off/jazz/vocal/bass.
      * Payload length(1 byte): 0 - off, 1 - jazz, 2 - vocal, 3 - bass
      * @param mac
-     * @param cmdeqpresetset {@link CmdEqPresetSet}
+     * @param reqEqPresetSet {@link ReqEqPresetSet}
      */
-    public void reqSetEQPreset(String mac, CmdEqPresetSet cmdeqpresetset) {
+    public void reqSetEQPreset(String mac, ReqEqPresetSet reqEqPresetSet) {
         Logger.d(TAG,"request to set EQ preset");
-        BesEngine.getInstance().sendCommand(mac, cmdeqpresetset.getCommand());
+        BesEngine.getInstance().sendCommand(mac, reqEqPresetSet.getCommand());
     }
 
     /**
@@ -121,11 +121,11 @@ public class LiveCmdManager {
      *      Gain0(1 byte) - Left gain value
      *      Gain1(1 byte) - Right gain value
      * @param mac
-     * @param cmdeqsettingsset {@link CmdEqSettingsSet}
+     * @param reqEqSettingsSet {@link ReqEqSettingsSet}
      */
-    public void reqSetEQSettings(String mac,CmdEqSettingsSet cmdeqsettingsset) {
+    public void reqSetEQSettings(String mac,ReqEqSettingsSet reqEqSettingsSet) {
         Logger.d(TAG,"request to set EQ settings");
-        BesEngine.getInstance().sendCommand(mac, cmdeqsettingsset.getCommand());
+        BesEngine.getInstance().sendCommand(mac, reqEqSettingsSet.getCommand());
     }
 
     /**
@@ -136,11 +136,11 @@ public class LiveCmdManager {
      *      0x01/Graphic EQ
      *      0x02/Total EQ
      * @param mac
-     * @param cmdcurrenteqreq {@link CmdCurrentEqReq}
+     * @param reqCurrEq {@link ReqCurrEq}
      */
-    public void reqCurrentEQ(String mac,CmdCurrentEqReq cmdcurrenteqreq) {
+    public void reqCurrentEQ(String mac,ReqCurrEq reqCurrEq) {
         Logger.d(TAG,"request current EQ");
-        BesEngine.getInstance().sendCommand(mac, cmdcurrenteqreq.getCommand());
+        BesEngine.getInstance().sendCommand(mac, reqCurrEq.getCommand());
     }
 
 }

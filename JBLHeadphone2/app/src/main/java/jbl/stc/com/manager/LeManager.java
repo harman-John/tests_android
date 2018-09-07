@@ -16,6 +16,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+import com.harman.bluetooth.constants.EnumAAStatus;
+import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.constants.EnumOtaState;
 import com.harman.bluetooth.engine.BesEngine;
 import com.harman.bluetooth.listeners.BleListener;
@@ -150,7 +152,7 @@ public class LeManager implements ScanListener, BleListener {
             ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
             if (!DeviceManager.getInstance(mContext).isConnected()) {
                 BesEngine.getInstance().addListener(this);
-                if (device.getAddress().equals("12:35:56:C2:9A:CA")) {
+                if (device.getAddress().equals("12:34:56:09:23:56")) {
                     boolean result = BesEngine.getInstance().connect(mContext, device);
                     Logger.d(TAG, "on found, connect result = " + result);
                 }
@@ -248,7 +250,7 @@ public class LeManager implements ScanListener, BleListener {
 
     @Override
     public void onRetReceived(BluetoothDevice bluetoothDevice, RetResponse retResponse) {
-        Logger.d(TAG, "on bes received, mac = " + bluetoothDevice.getAddress() + " , cmdId = " + retResponse.enumCmdId);
+        Logger.d(TAG, "on bes received, mac = " + bluetoothDevice.getAddress() + " , cmdId = " + retResponse.enumCmdId+"");
         switch (retResponse.enumCmdId) {
             case RET_DEV_ACK:
             case RET_DEV_BYE:
@@ -258,25 +260,24 @@ public class LeManager implements ScanListener, BleListener {
                 RetDeviceInfo retDeviceInfo = (RetDeviceInfo) retResponse.object;
                 notifyUiUpdate(EnumCommands.CMD_ConfigProductName, retDeviceInfo.deviceName);
                 notifyUiUpdate(EnumCommands.CMD_FIRMWARE_VERSION, retDeviceInfo.firmwareVersion);
-                notifyUiUpdate(EnumCommands.CMD_BATTERY_LEVEL, retDeviceInfo.batteryStatus);
+                notifyUiUpdate(EnumCommands.CMD_BATTERY_LEVEL, retDeviceInfo.retBatteryStatus.percent,retDeviceInfo.retBatteryStatus.charging);
                 break;
             case RET_DEV_STATUS:
                 RetDevStatus retDevStatus = (RetDevStatus) retResponse.object;
                 switch (retDevStatus.enumDeviceStatusType) {
                     case ALL_STATUS: {
-                        notifyUiUpdate(EnumCommands.CMD_ANC, retDevStatus.enumAncStatus);
-                        notifyUiUpdate(EnumCommands.CMD_ANC, retDevStatus.enumAncStatus);
-                        notifyUiUpdate(EnumCommands.CMD_AMBIENT_LEVELING, retDevStatus.enumAAStatus);
-                        notifyUiUpdate(EnumCommands.CMD_AutoOffEnable, retDevStatus.retAutoOff);
-                        notifyUiUpdate(EnumCommands.CMD_GEQ_CURRENT_PRESET, retDevStatus.enumEqPresetIdx);
+                        notifyUiUpdate(EnumCommands.CMD_ANC, retDevStatus.enumAncStatus.ordinal());
+                        notifyUiUpdate(EnumCommands.CMD_AMBIENT_LEVELING, retDevStatus.enumAAStatus.ordinal());
+                        notifyUiUpdate(EnumCommands.CMD_AutoOffEnable, retDevStatus.retAutoOff.isOnOff,retDevStatus.retAutoOff.time);
+                        notifyUiUpdate(EnumCommands.CMD_GEQ_CURRENT_PRESET, retDevStatus.enumEqPresetIdx.ordinal());
                         break;
                     }
                     case ANC: {
-                        notifyUiUpdate(EnumCommands.CMD_ANC, retDevStatus.enumAncStatus);
+                        notifyUiUpdate(EnumCommands.CMD_ANC, retDevStatus.enumAncStatus.ordinal());
                         break;
                     }
                     case AMBIENT_AWARE_MODE: {
-                        notifyUiUpdate(EnumCommands.CMD_AMBIENT_LEVELING, retDevStatus.enumAAStatus);
+                        notifyUiUpdate(EnumCommands.CMD_AMBIENT_LEVELING, retDevStatus.enumAAStatus.ordinal());
                         break;
                     }
                     case AUTO_OFF: {
@@ -284,7 +285,7 @@ public class LeManager implements ScanListener, BleListener {
                         break;
                     }
                     case EQ_PRESET: {
-                        notifyUiUpdate(EnumCommands.CMD_GEQ_CURRENT_PRESET, retDevStatus.enumEqPresetIdx);
+                        notifyUiUpdate(EnumCommands.CMD_GEQ_CURRENT_PRESET, retDevStatus.enumEqPresetIdx.ordinal());
                         break;
                     }
                 }
@@ -304,6 +305,7 @@ public class LeManager implements ScanListener, BleListener {
             @Override
             public void run() {
                 for (OnRetListener onRetListener : mOnRetListener) {
+                    Logger.d(TAG, "notify ui update, on ret listener:"+onRetListener);
                     onRetListener.onReceive(enumCommands, objects);
                 }
             }
