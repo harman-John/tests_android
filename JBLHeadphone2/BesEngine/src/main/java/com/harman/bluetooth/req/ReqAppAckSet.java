@@ -4,11 +4,11 @@ import com.harman.bluetooth.constants.EnumMsgCode;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class CmdAppAckSet extends BaseCmd {
+public class ReqAppAckSet extends BaseReq {
 
-    private final static String TAG = CmdAppAckSet.class.getSimpleName();
+    private final static String TAG = ReqAppAckSet.class.getSimpleName();
 
-    public CmdAppAckSet(EnumMsgCode enumMsgCode){
+    public ReqAppAckSet(EnumMsgCode enumMsgCode){
         this.enumMsgCode = enumMsgCode;
     }
 

@@ -4,11 +4,11 @@ import com.harman.bluetooth.constants.EnumEqPresetIdx;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class CmdEqPresetSet extends BaseCmd {
+public class ReqEqPresetSet extends BaseReq {
 
-    private final static String TAG = CmdEqPresetSet.class.getSimpleName();
+    private final static String TAG = ReqEqPresetSet.class.getSimpleName();
 
-    public CmdEqPresetSet(EnumEqPresetIdx EQPreset_index){
+    public ReqEqPresetSet(EnumEqPresetIdx EQPreset_index){
         this.EQPreset_index = EQPreset_index;
     }
 

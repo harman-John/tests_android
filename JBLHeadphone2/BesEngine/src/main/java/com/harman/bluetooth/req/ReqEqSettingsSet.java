@@ -5,11 +5,11 @@ import com.harman.bluetooth.constants.EnumEqCategory;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class CmdEqSettingsSet extends BaseCmd {
+public class ReqEqSettingsSet extends BaseReq {
 
-    private final static String TAG = CmdEqSettingsSet.class.getSimpleName();
+    private final static String TAG = ReqEqSettingsSet.class.getSimpleName();
 
-    public CmdEqSettingsSet(int presetIndex, EnumEqCategory eqCATEGORY, float calib, int sampleRate, float gain0, float gain1, Band[] band){
+    public ReqEqSettingsSet(int presetIndex, EnumEqCategory eqCATEGORY, float calib, int sampleRate, float gain0, float gain1, Band[] band){
         this.presetIndex = presetIndex;
         this.eqCATEGORY = eqCATEGORY;
         this.calib = calib;

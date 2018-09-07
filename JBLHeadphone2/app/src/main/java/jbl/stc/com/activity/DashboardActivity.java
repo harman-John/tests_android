@@ -82,6 +82,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
         ProductListManager.getInstance().setOnCheckDevicesListener(this);
         LeManager.getInstance().setOnConnectStatusListener(this);
+        LeManager.getInstance().setOnRetListener(this);
     }
 
 

@@ -4,11 +4,11 @@ import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class CmdAncSet extends BaseCmd {
+public class ReqAncSet extends BaseReq {
 
-    private final static String TAG = CmdAncSet.class.getSimpleName();
+    private final static String TAG = ReqAncSet.class.getSimpleName();
 
-    public CmdAncSet(EnumAncStatus enumAncStatus){
+    public ReqAncSet(EnumAncStatus enumAncStatus){
         this.enumAncStatus = enumAncStatus;
     }
 

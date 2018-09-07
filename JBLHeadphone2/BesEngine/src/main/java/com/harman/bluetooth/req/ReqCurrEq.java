@@ -4,11 +4,11 @@ import com.harman.bluetooth.constants.EnumEqCategory;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class CmdCurrentEqReq extends BaseCmd {
+public class ReqCurrEq extends BaseReq {
 
-    private final static String TAG = CmdCurrentEqReq.class.getSimpleName();
+    private final static String TAG = ReqCurrEq.class.getSimpleName();
 
-    public CmdCurrentEqReq(EnumEqCategory enumEqCategory){
+    public ReqCurrEq(EnumEqCategory enumEqCategory){
         this.enumEqCategory = enumEqCategory;
     }
 

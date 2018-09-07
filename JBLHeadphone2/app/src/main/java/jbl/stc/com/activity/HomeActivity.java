@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -44,8 +43,9 @@ import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.audioManager;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.harman.bluetooth.constants.EnumAncStatus;
-import com.harman.bluetooth.engine.BesEngine;
-import com.harman.bluetooth.req.CmdAncSet;
+import com.harman.bluetooth.constants.EnumDeviceStatusType;
+import com.harman.bluetooth.req.ReqAncSet;
+import com.harman.bluetooth.req.ReqDevInfo;
 
 import jbl.stc.com.manager.LiveCmdManager;
 
@@ -428,11 +428,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         if ((fr != null) && fr instanceof EqSettingFragment) {
             DeviceManager.getInstance(this).setOnRetListener(this);
             LeManager.getInstance().setOnConnectStatusListener(this);
+            LeManager.getInstance().setOnRetListener(this);
             ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
         }
         if (fr == null) {
             DeviceManager.getInstance(this).setOnRetListener(this);
             LeManager.getInstance().setOnConnectStatusListener(this);
+            LeManager.getInstance().setOnRetListener(this);
         }
     }
 
@@ -508,7 +510,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.image_view_home_noise_cancel: {
                 if (LeManager.getInstance().isConnected()) {
 
-                    CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked()? EnumAncStatus.ON: EnumAncStatus.OFF);
+                    ReqAncSet cmdAncSet = new ReqAncSet(checkBoxNoiseCancel.isChecked()? EnumAncStatus.ON: EnumAncStatus.OFF);
                     LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
                 }
 
@@ -661,6 +663,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private void doResume() {
         DeviceManager.getInstance(this).setOnRetListener(this);
         LeManager.getInstance().setOnConnectStatusListener(this);
+        LeManager.getInstance().setOnRetListener(this);
         if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
             getDeviceInfo();
         } else if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
@@ -985,44 +988,48 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             public void run() {
                 if (LeManager.getInstance().isConnected()) {
                     LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
-                }
-                switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
-                    case NONE:
-                        break;
-                    case Connected_USBDevice:
-                        linearLayoutBattery.setVisibility(View.VISIBLE);
-                        progressBarBattery.setProgress(100);
-                        textViewBattery.setText(getString(R.string.percent_100));
-                        break;
-                    case Connected_BluetoothDevice:
-                        linearLayoutBattery.setVisibility(View.VISIBLE);
-                        ANCControlManager.getANCManager(getApplicationContext()).getBatterLeverl();
-                        homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
-                        break;
-                }
-                timeInterval();
-                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd();
-                Logger.e(TAG, "read boot image type");
-                timeInterval();
-                ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).readBootImageType();
-                timeInterval();
-                ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
-                timeInterval();
-                ANCControlManager.getANCManager(getApplicationContext()).readConfigModelNumber();
-                timeInterval();
-                ANCControlManager.getANCManager(getApplicationContext()).readConfigProductName();
-                timeInterval();
-                ANCControlManager.getANCManager(getApplicationContext()).getAmbientLeveling();
-                timeInterval();
-                ANCControlManager.getANCManager(getApplicationContext()).readBootVersionFileResource();
-                timeInterval();
-                ANCControlManager.getANCManager(getApplicationContext()).getFirmwareVersion();
-                timeInterval();
-                ANCControlManager.getANCManager(getApplicationContext()).getFirmwareInfo();
-                timeInterval();
-                ANCControlManager.getANCManager(getApplicationContext()).getANCValue();
-                if (AvneraManager.getAvenraManager().getLightX() == null) {
-                    homeHandler.sendEmptyMessage(MSG_FIRMWARE_VERSION);
+                    timeInterval();
+                    ReqDevInfo reqDevInfo = new ReqDevInfo(EnumDeviceStatusType.ALL_STATUS);
+                    LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevInfo);
+                }else {
+                    switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
+                        case NONE:
+                            break;
+                        case Connected_USBDevice:
+                            linearLayoutBattery.setVisibility(View.VISIBLE);
+                            progressBarBattery.setProgress(100);
+                            textViewBattery.setText(getString(R.string.percent_100));
+                            break;
+                        case Connected_BluetoothDevice:
+                            linearLayoutBattery.setVisibility(View.VISIBLE);
+                            ANCControlManager.getANCManager(getApplicationContext()).getBatterLeverl();
+                            homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
+                            break;
+                    }
+                    timeInterval();
+                    ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd();
+                    Logger.e(TAG, "read boot image type");
+                    timeInterval();
+                    ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).readBootImageType();
+                    timeInterval();
+                    ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
+                    timeInterval();
+                    ANCControlManager.getANCManager(getApplicationContext()).readConfigModelNumber();
+                    timeInterval();
+                    ANCControlManager.getANCManager(getApplicationContext()).readConfigProductName();
+                    timeInterval();
+                    ANCControlManager.getANCManager(getApplicationContext()).getAmbientLeveling();
+                    timeInterval();
+                    ANCControlManager.getANCManager(getApplicationContext()).readBootVersionFileResource();
+                    timeInterval();
+                    ANCControlManager.getANCManager(getApplicationContext()).getFirmwareVersion();
+                    timeInterval();
+                    ANCControlManager.getANCManager(getApplicationContext()).getFirmwareInfo();
+                    timeInterval();
+                    ANCControlManager.getANCManager(getApplicationContext()).getANCValue();
+                    if (AvneraManager.getAvenraManager().getLightX() == null) {
+                        homeHandler.sendEmptyMessage(MSG_FIRMWARE_VERSION);
+                    }
                 }
             }
         }).start();

@@ -23,6 +23,7 @@ import com.harman.bluetooth.constants.EnumEqPresetIdx;
 import com.harman.bluetooth.constants.EnumMsgCode;
 import com.harman.bluetooth.constants.EnumStatusCode;
 import com.harman.bluetooth.listeners.BleListener;
+import com.harman.bluetooth.ret.RetBatteryStatus;
 import com.harman.bluetooth.ret.RetCurrentEQ;
 import com.harman.bluetooth.ret.RetDevStatus;
 import com.harman.bluetooth.ret.RetDeviceInfo;
@@ -34,6 +35,8 @@ import com.harman.bluetooth.utils.Logger;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+
+import static java.lang.Integer.valueOf;
 
 
 public class LeDevice {
@@ -141,10 +144,11 @@ public class LeDevice {
             Logger.e(TAG, "set write characteristic, cant't get write characteristic");
             return false;
         }
-        if (!mBluetoothGatt.setCharacteristicNotification(mCharacteristicTx, true)) {
-            Logger.e(TAG, "set write characteristic, set write characteristic notification error");
-            return false;
-        }
+//        if (!mBluetoothGatt.setCharacteristicNotification(mCharacteristicTx, true)) {
+//            Logger.e(TAG, "set write characteristic, set write characteristic notification error");
+//            return false;
+//        }
+
         Logger.i(TAG, "set write characteristic success");
         mCharacteristicTx.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
         return true;
@@ -165,11 +169,28 @@ public class LeDevice {
             Logger.e(TAG, "set read characteristic, gatt read characteristic is null");
             return false;
         }
+
         if (!mBluetoothGatt.setCharacteristicNotification(readCharacteristic, true)) {
-            Logger.e(TAG, "set read characteristic, set read characteristic notification error");
+            Logger.e(TAG, "set read characteristic, notify failed");
+            return false;
+        }
+
+        BluetoothGattDescriptor gattDescriptor = readCharacteristic.getDescriptor(Constants.BES_DESCRIPTOR_UUID);
+        if (gattDescriptor == null) {
+            Logger.e(TAG, "set read characteristic, gattDescriptor is null");
+            return false;
+        }
+
+        if (!gattDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)) {
+            Logger.e(TAG, "set read characteristic, enable notify failed");
             return false;
         }
         Logger.i(TAG, "set read characteristic, success");
+        if (!mBluetoothGatt.writeDescriptor(gattDescriptor)) {
+            Logger.e(TAG, "set read characteristic, write descriptor failed");
+            return false;
+        }
+
         return true;
     }
 
@@ -232,16 +253,7 @@ public class LeDevice {
                 return;
             }
             if (requestMtu(DEFAULT_MTU)) {
-                Logger.i(TAG, "set characteristic, request mtu ok");
-                if (!setReadCharacteristic()) {
-                    Logger.i(TAG, "set characteristic, notification false ");
-                    notifyConnectionStateChanged(false);
-                    refresh();
-                    close();
-                    return;
-                }
-                notifyConnectionStateChanged(true);
-                Logger.i(TAG, "set characteristic, done success");
+
             } else {
                 Logger.i(TAG, "set characteristic,requestMtu failed");
             }
@@ -300,9 +312,12 @@ public class LeDevice {
 
     private RetResponse classifyCommand(BluetoothGattCharacteristic characteristic) {
         byte[] bytes = characteristic.getValue();
-        String bytesStr = ArrayUtil.bytesToHex(bytes);
+        String bytesStr = ArrayUtil.bytesToHex(bytes).toLowerCase();
         Logger.d(TAG, "classify command, ret bytes: " + bytesStr);
-        String cmdId = bytesStr.substring(0, 3);
+        String cmdId = bytesStr.substring(0, 4);
+        Logger.d(TAG, "classify command, cmdId: " + cmdId);
+        String payloadLen = bytesStr.substring(4, 6);
+        Logger.d(TAG, "classify command, payloadLen: " + payloadLen);
         EnumCmdId enumCmdId = EnumCmdId.DEFAULT;
         RetResponse retResponse = new RetResponse();
         switch (cmdId) {
@@ -323,36 +338,65 @@ public class LeDevice {
                 break;
             case RetHeader.RET_DEV_INFO:
                 enumCmdId = EnumCmdId.RET_DEV_INFO;
+
                 RetDeviceInfo retDeviceInfo = new RetDeviceInfo();
-                retDeviceInfo.deviceName = parseHexStringToString(bytesStr.substring(4, 20));
-                retDeviceInfo.productId = bytesStr.substring(21, 23);
-                retDeviceInfo.modeId = bytesStr.substring(24, 25);
-                retDeviceInfo.batteryStatus = Integer.valueOf(bytesStr.substring(26, 27));
-                retDeviceInfo.macAddress = bytesStr.substring(28, 34);
-                retDeviceInfo.firmwareVersion = bytesStr.substring(35, 38);
+                retDeviceInfo.deviceName = parseHexStringToString(bytesStr.substring(6, 38));
+
+                Logger.d(TAG, "classify command, ret dev info, device name: " + retDeviceInfo.deviceName);
+                retDeviceInfo.productId = bytesStr.substring(38, 42);
+
+                Logger.d(TAG, "classify command, ret dev info, product id: " + retDeviceInfo.productId);
+                retDeviceInfo.modeId = bytesStr.substring(42, 44);
+
+                Logger.d(TAG, "classify command, ret dev info, mode id: " + retDeviceInfo.modeId);
+                String batteryStatus = String.valueOf(bytesStr.substring(44, 46));
+                int batteryStatusInt = (Integer.valueOf(batteryStatus,16) & 0x00000080) >> 7;
+                boolean charging = batteryStatusInt == 1;
+                int percent = Integer.valueOf(batteryStatus,16) & 0x0000007F;
+                retDeviceInfo.retBatteryStatus = new RetBatteryStatus(charging, percent);
+
+                Logger.d(TAG, "classify command, ret dev info, battery charging: " + retDeviceInfo.retBatteryStatus.charging);
+                Logger.d(TAG, "classify command, ret dev info, battery percent: " + retDeviceInfo.retBatteryStatus.percent);
+                retDeviceInfo.macAddress = bytesStr.substring(46, 58);
+
+                Logger.d(TAG, "classify command, ret dev info, mac: " + retDeviceInfo.macAddress);
+                String firmwareVersion = bytesStr.substring(58, 64);
+                int major = Integer.valueOf(firmwareVersion.substring(0,2),16);
+                int minor = Integer.valueOf(firmwareVersion.substring(2,4),16);
+                int revision =Integer.valueOf(firmwareVersion.substring(4,6),16);
+                retDeviceInfo.firmwareVersion = major + "." + minor + "." + revision;
+
+                Logger.d(TAG, "classify command, ret dev info, firmware version: " + retDeviceInfo.firmwareVersion);
 
                 retResponse.object = retDeviceInfo;
                 break;
             case RetHeader.RET_DEV_STATUS:
                 enumCmdId = EnumCmdId.RET_DEV_STATUS;
-                String statusType = bytesStr.substring(4, 5);
+                String statusType = bytesStr.substring(6, 8);
+                Logger.d(TAG, "classify command, ret dev status, type: " + statusType);
                 RetDevStatus retDevStatus = new RetDevStatus();
                 EnumDeviceStatusType enumDeviceStatusType = null;
                 switch (statusType) {
                     case RetHeader.ALL_STATUS_TYPE: {
                         enumDeviceStatusType = EnumDeviceStatusType.ALL_STATUS;
-                        String anc = bytesStr.substring(6, 7);
+                        String anc = bytesStr.substring(8, 10);
                         retDevStatus.enumAncStatus = parseANC(anc);
 
-                        String ambientAware = bytesStr.substring(8, 9);
+                        Logger.d(TAG, "classify command, ret dev status, anc: " + retDevStatus.enumAncStatus);
+                        String ambientAware = bytesStr.substring(10, 12);
                         retDevStatus.enumAAStatus = parseAmbientAware(ambientAware);
 
-                        byte autoOffByte = bytes[10];
-                        boolean onOff = Boolean.valueOf(String.valueOf(autoOffByte >> 7 & 0x1));
-                        int time = autoOffByte & 0x7F;
+                        Logger.d(TAG, "classify command, ret dev status, aa: " + retDevStatus.enumAAStatus);
+                        String autoOff = String.valueOf(bytesStr.substring(12, 14));
+                        int autoOffInt = (Integer.valueOf(autoOff,16) & 0x00000080) >> 7;
+                        boolean onOff = autoOffInt == 1;
+                        int time = Integer.valueOf(autoOff,16) & 0x0000007F;
+                        Logger.d(TAG, "classify command, ret dev status, onOff: " + onOff + ",time: " + time);
+
                         retDevStatus.retAutoOff = new RetAutoOff(onOff, time);
-                        String eqPresetIdx = bytesStr.substring(12, 13);
+                        String eqPresetIdx = bytesStr.substring(14, 16);
                         retDevStatus.enumEqPresetIdx = parsePresetIdx(eqPresetIdx);
+                        Logger.d(TAG, "classify command, ret dev status, preset index: " + retDevStatus.enumEqPresetIdx);
                         break;
                     }
                     case RetHeader.ANC_TYPE: {
@@ -397,13 +441,13 @@ public class LeDevice {
                 dataCurrentEQ.sampleRate = bytesStr.substring(8, 9);
                 dataCurrentEQ.gain0 = bytesStr.substring(10, 11);
                 dataCurrentEQ.gain1 = bytesStr.substring(12, 13);
-                dataCurrentEQ.bandCount = Integer.valueOf(bytesStr.substring(14, 15));
+                dataCurrentEQ.bandCount = valueOf(bytesStr.substring(14, 15));
                 Band[] bands = new Band[dataCurrentEQ.bandCount];
                 for (int i = 0; i < dataCurrentEQ.bandCount; i++) {
                     int pos = 13 * i;
-                    int type = Integer.valueOf(bytesStr.substring(16 + pos, 17 + pos));
+                    int type = valueOf(bytesStr.substring(16 + pos, 17 + pos));
                     float gain = Float.valueOf(bytesStr.substring(18 + pos, 22 + pos));
-                    int fc = Integer.valueOf(bytesStr.substring(23 + pos, 27 + pos));
+                    int fc = valueOf(bytesStr.substring(23 + pos, 27 + pos));
                     float q = Float.valueOf(bytesStr.substring(28 + pos, 32 + pos));
                     bands[i] = new Band(type, gain, fc, q);
                 }
@@ -528,22 +572,22 @@ public class LeDevice {
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             Logger.i(TAG, "on service discovered, status: " + status);
             mBluetoothGatt = gatt;
-            List<BluetoothGattService> gattServices = gatt.getServices();
-            for (BluetoothGattService bluetoothGattService : gattServices) {
-                Logger.i(TAG, "on service discovered, service uuid: " + bluetoothGattService.getUuid());
-                List<BluetoothGattCharacteristic> characteristicList = bluetoothGattService.getCharacteristics();
-                for (BluetoothGattCharacteristic bluetoothGattCharacteristic : characteristicList) {
-                    Logger.i(TAG, "on service discovered, characteristic uuid: " + bluetoothGattCharacteristic.getUuid());
-                    List<BluetoothGattDescriptor> bluetoothGattDescriptorList = bluetoothGattCharacteristic.getDescriptors();
-                    for (BluetoothGattDescriptor bluetoothGattDescriptor : bluetoothGattDescriptorList) {
-                        Logger.i(TAG, "on service discovered, descriptor uuid: " + bluetoothGattDescriptor.getUuid());
-                    }
-                }
-            }
-            if (status != BluetoothGatt.GATT_SUCCESS) {
-                //TODO: what to do?
-            } else {
+//            List<BluetoothGattService> gattServices = gatt.getServices();
+//            for (BluetoothGattService bluetoothGattService : gattServices) {
+//                Logger.i(TAG, "on service discovered, service uuid: " + bluetoothGattService.getUuid());
+//                List<BluetoothGattCharacteristic> characteristicList = bluetoothGattService.getCharacteristics();
+//                for (BluetoothGattCharacteristic bluetoothGattCharacteristic : characteristicList) {
+//                    Logger.i(TAG, "on service discovered, characteristic uuid: " + bluetoothGattCharacteristic.getUuid());
+//                    List<BluetoothGattDescriptor> bluetoothGattDescriptorList = bluetoothGattCharacteristic.getDescriptors();
+//                    for (BluetoothGattDescriptor bluetoothGattDescriptor : bluetoothGattDescriptorList) {
+//                        Logger.i(TAG, "on service discovered, descriptor uuid: " + bluetoothGattDescriptor.getUuid());
+//                    }
+//                }
+//            }
+            if (status == BluetoothGatt.GATT_SUCCESS) {
                 setCharacteristics();
+            } else {
+                Logger.e(TAG, "on service discovered, failed, status: " + status);
             }
         }
 
@@ -571,6 +615,8 @@ public class LeDevice {
             }
         }
 
+        boolean isFreeToWrite = false;
+
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             if (characteristic == null) {
@@ -579,6 +625,7 @@ public class LeDevice {
             }
             Logger.i(TAG, "on characteristic changed, read bytes: " + ArrayUtil.toHex(characteristic.getValue()));
             notifyReceive(classifyCommand(characteristic));
+            isFreeToWrite = true;
         }
 
         @Override
@@ -598,6 +645,16 @@ public class LeDevice {
             Logger.i(TAG, "on mtu changed, mtu: " + mtu + ",status: " + status);
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 notifyMtuChanged(LE_SUCCESS, mtu);
+                Logger.i(TAG, "set characteristic, request mtu ok");
+                if (!setReadCharacteristic()) {
+                    Logger.i(TAG, "set characteristic, notification false ");
+                    notifyConnectionStateChanged(false);
+                    refresh();
+                    close();
+                    return;
+                }
+                notifyConnectionStateChanged(true);
+                Logger.i(TAG, "set characteristic, done success");
             } else {
                 notifyMtuChanged(LE_ERROR, mtu);
             }
