@@ -1,30 +1,30 @@
 package com.harman.bluetooth.req;
 
-import com.harman.bluetooth.constants.EnumAAStatus;
+import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class ReqAASet extends BaseReq {
+public class CmdAncSet extends BaseCmd {
 
-    private final static String TAG = ReqAASet.class.getSimpleName();
+    private final static String TAG = CmdAncSet.class.getSimpleName();
 
-    public ReqAASet(EnumAAStatus enumAa_status){
-        this.enumAa_status = enumAa_status;
+    public CmdAncSet(EnumAncStatus enumAncStatus){
+        this.enumAncStatus = enumAncStatus;
     }
 
-    private EnumAAStatus enumAa_status;
+    private EnumAncStatus enumAncStatus;
 
     private byte[] getPayload(){
         byte[] payload = new byte[1];
-        switch (enumAa_status) {
-            case TALK_THRU:
+        switch (enumAncStatus) {
+            case OFF:
                 payload[0] = (byte) 0x00;
                 break;
-            case AMBIENT_AWARE:
+            case ON:
                 payload[0] = (byte) 0x01;
                 break;
             default:
-                Logger.e(TAG,"get pay load, no such aa mode status");
+                Logger.e(TAG,"get pay load, no such anc status");
         }
         Logger.d(TAG,"get payload: "+ ArrayUtil.bytesToHex(payload));
         return payload;
@@ -32,7 +32,7 @@ public class ReqAASet extends BaseReq {
 
     @Override
     public byte[] getCommand() {
-        combine(ReqHeader.SET_AA_MODE,getPayload());
+        combine(CmdHeader.SET_ANC,getPayload());
         return super.getCommand();
     }
 }

@@ -4,11 +4,11 @@ import com.harman.bluetooth.constants.EnumEqCategory;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class ReqCurrEq extends BaseReq {
+public class CmdCurrEq extends BaseCmd {
 
-    private final static String TAG = ReqCurrEq.class.getSimpleName();
+    private final static String TAG = CmdCurrEq.class.getSimpleName();
 
-    public ReqCurrEq(EnumEqCategory enumEqCategory){
+    public CmdCurrEq(EnumEqCategory enumEqCategory){
         this.enumEqCategory = enumEqCategory;
     }
 
@@ -35,7 +35,7 @@ public class ReqCurrEq extends BaseReq {
 
     @Override
     public byte[] getCommand() {
-        combine(ReqHeader.REQ_CURRENT_EQ,getPayload());
+        combine(CmdHeader.REQ_CURRENT_EQ,getPayload());
         return super.getCommand();
     }
 }

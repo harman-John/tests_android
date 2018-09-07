@@ -5,11 +5,11 @@ import com.harman.bluetooth.constants.EnumStatusCode;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class ReqAppByeSet extends BaseReq {
+public class CmdAppByeSet extends BaseCmd {
 
-    private final static String TAG = ReqAppByeSet.class.getSimpleName();
+    private final static String TAG = CmdAppByeSet.class.getSimpleName();
 
-    public ReqAppByeSet(EnumCmdId requestCmdId, EnumStatusCode statusCode){
+    public CmdAppByeSet(EnumCmdId requestCmdId, EnumStatusCode statusCode){
         this.requestCmdId = requestCmdId;
         this.statusCode = statusCode;
     }
@@ -71,7 +71,7 @@ public class ReqAppByeSet extends BaseReq {
 
     @Override
     public byte[] getCommand() {
-        combine(ReqHeader.SET_APP_BYE,getPayload());
+        combine(CmdHeader.SET_APP_BYE,getPayload());
         return super.getCommand();
     }
 }

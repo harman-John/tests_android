@@ -44,8 +44,8 @@ import com.avnera.audiomanager.audioManager;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.constants.EnumDeviceStatusType;
-import com.harman.bluetooth.req.ReqAncSet;
-import com.harman.bluetooth.req.ReqDevInfo;
+import com.harman.bluetooth.req.CmdAncSet;
+import com.harman.bluetooth.req.CmdDevStatus;
 
 import jbl.stc.com.manager.LiveCmdManager;
 
@@ -510,7 +510,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.image_view_home_noise_cancel: {
                 if (LeManager.getInstance().isConnected()) {
 
-                    ReqAncSet cmdAncSet = new ReqAncSet(checkBoxNoiseCancel.isChecked()? EnumAncStatus.ON: EnumAncStatus.OFF);
+                    CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked()? EnumAncStatus.ON: EnumAncStatus.OFF);
                     LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
                 }
 
@@ -989,8 +989,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 if (LeManager.getInstance().isConnected()) {
                     LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
                     timeInterval();
-                    ReqDevInfo reqDevInfo = new ReqDevInfo(EnumDeviceStatusType.ALL_STATUS);
-                    LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevInfo);
+                    CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
+                    LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
                 }else {
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                         case NONE:

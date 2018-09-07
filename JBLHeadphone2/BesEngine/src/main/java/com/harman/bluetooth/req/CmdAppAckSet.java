@@ -1,30 +1,30 @@
 package com.harman.bluetooth.req;
 
-import com.harman.bluetooth.constants.EnumAncStatus;
+import com.harman.bluetooth.constants.EnumMsgCode;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class ReqAncSet extends BaseReq {
+public class CmdAppAckSet extends BaseCmd {
 
-    private final static String TAG = ReqAncSet.class.getSimpleName();
+    private final static String TAG = CmdAppAckSet.class.getSimpleName();
 
-    public ReqAncSet(EnumAncStatus enumAncStatus){
-        this.enumAncStatus = enumAncStatus;
+    public CmdAppAckSet(EnumMsgCode enumMsgCode){
+        this.enumMsgCode = enumMsgCode;
     }
 
-    private EnumAncStatus enumAncStatus;
+    private EnumMsgCode enumMsgCode;
 
     private byte[] getPayload(){
         byte[] payload = new byte[1];
-        switch (enumAncStatus) {
-            case OFF:
+        switch (enumMsgCode) {
+            case UNKNOWN:
                 payload[0] = (byte) 0x00;
                 break;
-            case ON:
+            case DEVICE_POWER_OFF:
                 payload[0] = (byte) 0x01;
                 break;
             default:
-                Logger.e(TAG,"get pay load, no such anc status");
+                payload[0] = (byte) 0x00;
         }
         Logger.d(TAG,"get payload: "+ ArrayUtil.bytesToHex(payload));
         return payload;
@@ -32,7 +32,7 @@ public class ReqAncSet extends BaseReq {
 
     @Override
     public byte[] getCommand() {
-        combine(ReqHeader.SET_ANC,getPayload());
+        combine(CmdHeader.SET_APP_ACK,getPayload());
         return super.getCommand();
     }
 }

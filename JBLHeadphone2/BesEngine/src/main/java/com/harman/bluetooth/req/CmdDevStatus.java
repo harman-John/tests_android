@@ -4,11 +4,11 @@ import com.harman.bluetooth.constants.EnumDeviceStatusType;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class ReqDevInfo extends BaseReq {
+public class CmdDevStatus extends BaseCmd {
 
-    private final static String TAG = ReqDevInfo.class.getSimpleName();
+    private final static String TAG = CmdDevStatus.class.getSimpleName();
 
-    public ReqDevInfo(EnumDeviceStatusType enumDeviceStatusType){
+    public CmdDevStatus(EnumDeviceStatusType enumDeviceStatusType){
         this.enumDeviceStatusType = enumDeviceStatusType;
     }
 
@@ -41,7 +41,7 @@ public class ReqDevInfo extends BaseReq {
 
     @Override
     public byte[] getCommand() {
-        combine(ReqHeader.REQ_DEV_STATUS,getPayload());
+        combine(CmdHeader.REQ_DEV_STATUS,getPayload());
         return super.getCommand();
     }
 }

@@ -3,11 +3,11 @@ package com.harman.bluetooth.req;
 import com.harman.bluetooth.utils.ArrayUtil;
 import com.harman.bluetooth.utils.Logger;
 
-public class ReqAutoOff extends BaseReq {
+public class CmdAutoOff extends BaseCmd {
 
-    private final static String TAG = ReqAutoOff.class.getSimpleName();
+    private final static String TAG = CmdAutoOff.class.getSimpleName();
 
-    public ReqAutoOff(boolean isOnOff, int time){
+    public CmdAutoOff(boolean isOnOff, int time){
         this.isOnOff = isOnOff? 1: 0;
         this.time = time;
     }
@@ -24,7 +24,7 @@ public class ReqAutoOff extends BaseReq {
 
     @Override
     public byte[] getCommand() {
-        combine(ReqHeader.SET_ANC,getPayload());
+        combine(CmdHeader.SET_ANC,getPayload());
         return super.getCommand();
     }
 }
