@@ -66,8 +66,9 @@ public class ArrayUtil {
     }
 
     private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
+
     public static String bytesToHex(byte[] bytes) {
-        if(bytes == null){
+        if (bytes == null) {
             return null;
         }
         char[] hexChars = new char[bytes.length * 2];
@@ -96,4 +97,12 @@ public class ArrayUtil {
         }
         return true;
     }
+
+    public static int bytesToInt(byte[] src) {
+        return (src[0] & 0xFF)
+                | ((src[1] & 0xFF) << 8)
+                | ((src[2] & 0xFF) << 16)
+                | ((src[3] & 0xFF) << 24);
+    }
+
 }

@@ -129,7 +129,7 @@ public class LeDevice {
         return false;
     }
 
-    public boolean setWriteCharacteristic() {
+    public boolean getWriteCharacteristic() {
         if (mBluetoothGatt == null) {
             Logger.e(TAG, "set write characteristic, bluetooth gatt is null");
             return false;
@@ -154,7 +154,7 @@ public class LeDevice {
         return true;
     }
 
-    public boolean setReadCharacteristic() {
+    public boolean getReadCharacteristic() {
         if (mBluetoothGatt == null) {
             Logger.e(TAG, "set read characteristic, bluetooth is null");
             return false;
@@ -245,9 +245,9 @@ public class LeDevice {
         }
     }
 
-    private void setCharacteristics() {
+    private void getCharacteristics() {
         synchronized (mListenerLock) {
-            if (!setWriteCharacteristic()) {
+            if (!getWriteCharacteristic()) {
                 Logger.i(TAG, "set characteristic, set write characteristic failed");
                 notifyConnectionStateChanged(false);
                 return;
@@ -323,12 +323,12 @@ public class LeDevice {
         switch (cmdId) {
             case RetHeader.RET_DEV_ACK:
                 enumCmdId = EnumCmdId.RET_DEV_ACK;
-                String statusCode = bytesStr.substring(4, 5);
+                String statusCode = bytesStr.substring(6, 8);
                 retResponse.object = parseStatusCode(statusCode);
                 break;
             case RetHeader.RET_DEV_BYE:
                 enumCmdId = EnumCmdId.RET_DEV_BYE;
-                String msgCode = bytesStr.substring(4, 5);
+                String msgCode = bytesStr.substring(6, 8);
                 retResponse.object = parseMsgCode(msgCode);
                 break;
 
@@ -401,27 +401,28 @@ public class LeDevice {
                     }
                     case RetHeader.ANC_TYPE: {
                         enumDeviceStatusType = EnumDeviceStatusType.ANC;
-                        String anc = bytesStr.substring(6, 7);
+                        String anc = bytesStr.substring(8, 10);
                         retDevStatus.enumAncStatus = parseANC(anc);
                         break;
                     }
                     case RetHeader.AA_MODE_TYPE: {
                         enumDeviceStatusType = EnumDeviceStatusType.AMBIENT_AWARE_MODE;
-                        String ambientAware = bytesStr.substring(8, 9);
+                        String ambientAware = bytesStr.substring(8, 10);
                         retDevStatus.enumAAStatus = parseAmbientAware(ambientAware);
                         break;
                     }
                     case RetHeader.AUTO_OFF_TYPE: {
                         enumDeviceStatusType = EnumDeviceStatusType.AUTO_OFF;
-                        byte autoOffByte = bytes[10];
-                        boolean onOff = Boolean.valueOf(String.valueOf(autoOffByte >> 7 & 0x1));
-                        int time = autoOffByte & 0x7F;
+                        String autoOff = String.valueOf(bytesStr.substring(8, 10));
+                        int autoOffInt = (Integer.valueOf(autoOff,16) & 0x00000080) >> 7;
+                        boolean onOff = autoOffInt == 1;
+                        int time = Integer.valueOf(autoOff,16) & 0x0000007F;
                         retDevStatus.retAutoOff = new RetAutoOff(onOff, time);
                         break;
                     }
                     case RetHeader.EQ_PRESET_TYPE: {
                         enumDeviceStatusType = EnumDeviceStatusType.EQ_PRESET;
-                        String eqPresetIdx = bytesStr.substring(12, 13);
+                        String eqPresetIdx = bytesStr.substring(8, 10);
                         retDevStatus.enumEqPresetIdx = parsePresetIdx(eqPresetIdx);
                         break;
                     }
@@ -430,25 +431,33 @@ public class LeDevice {
                 retResponse.object = retDevStatus;
                 break;
             case RetHeader.RET_CURRENT_EQ: {
+                String packageCount = bytesStr.substring(6, 8);
+                Logger.d(TAG, "classify command, ret dev status, package count: " + packageCount);
+                String packageIdx = bytesStr.substring(8, 10);
+                Logger.d(TAG, "classify command, ret dev status, package index: " + packageIdx);
                 enumCmdId = EnumCmdId.RET_CURRENT_EQ;
                 RetCurrentEQ dataCurrentEQ = new RetCurrentEQ();
-                String presetIdx = bytesStr.substring(4, 5);
+                String presetIdx = bytesStr.substring(10, 12);
                 dataCurrentEQ.enumEqPresetIdx = parsePresetIdx(presetIdx);
 
-                String eqCategory = bytesStr.substring(6, 7);
+                Logger.d(TAG, "classify command, ret dev status, preset index: " + dataCurrentEQ.enumEqPresetIdx);
+                String eqCategory = bytesStr.substring(12, 14);
                 dataCurrentEQ.enumEqCategory = parseEqCategory(eqCategory);
+                int calib = Integer.valueOf(bytesStr.substring(14, 18),16);
 
-                dataCurrentEQ.sampleRate = bytesStr.substring(8, 9);
-                dataCurrentEQ.gain0 = bytesStr.substring(10, 11);
-                dataCurrentEQ.gain1 = bytesStr.substring(12, 13);
-                dataCurrentEQ.bandCount = valueOf(bytesStr.substring(14, 15));
+                Logger.d(TAG, "classify command, ret dev status, calib: " + calib);
+                dataCurrentEQ.calib = calib;
+                dataCurrentEQ.sampleRate = bytesStr.substring(18, 20);
+                dataCurrentEQ.gain0 = bytesStr.substring(20, 24);
+                dataCurrentEQ.gain1 = bytesStr.substring(24, 28);
+                dataCurrentEQ.bandCount = valueOf(bytesStr.substring(28, 32));
                 Band[] bands = new Band[dataCurrentEQ.bandCount];
                 for (int i = 0; i < dataCurrentEQ.bandCount; i++) {
-                    int pos = 13 * i;
-                    int type = valueOf(bytesStr.substring(16 + pos, 17 + pos));
-                    float gain = Float.valueOf(bytesStr.substring(18 + pos, 22 + pos));
-                    int fc = valueOf(bytesStr.substring(23 + pos, 27 + pos));
-                    float q = Float.valueOf(bytesStr.substring(28 + pos, 32 + pos));
+                    int pos = 16 * i;
+                    int type = valueOf(bytesStr.substring(32 + pos, 36 + pos));
+                    float gain = Float.valueOf(bytesStr.substring(36 + pos, 40 + pos));
+                    int fc = valueOf(bytesStr.substring(44 + pos, 48 + pos));
+                    float q = Float.valueOf(bytesStr.substring(48 + pos, 52 + pos));
                     bands[i] = new Band(type, gain, fc, q);
                 }
                 dataCurrentEQ.bands = bands;
@@ -585,7 +594,7 @@ public class LeDevice {
 //                }
 //            }
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                setCharacteristics();
+                getCharacteristics();
             } else {
                 Logger.e(TAG, "on service discovered, failed, status: " + status);
             }
@@ -646,7 +655,7 @@ public class LeDevice {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 notifyMtuChanged(LE_SUCCESS, mtu);
                 Logger.i(TAG, "set characteristic, request mtu ok");
-                if (!setReadCharacteristic()) {
+                if (!getReadCharacteristic()) {
                     Logger.i(TAG, "set characteristic, notification false ");
                     notifyConnectionStateChanged(false);
                     refresh();

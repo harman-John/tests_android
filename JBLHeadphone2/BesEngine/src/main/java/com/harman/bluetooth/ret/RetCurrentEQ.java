@@ -8,6 +8,7 @@ import com.harman.bluetooth.constants.EnumEqPresetIdx;
 public class RetCurrentEQ {
     public EnumEqPresetIdx enumEqPresetIdx;
     public EnumEqCategory enumEqCategory;
+    public int calib;
     public String sampleRate;
     public String gain0;
     public String gain1;
