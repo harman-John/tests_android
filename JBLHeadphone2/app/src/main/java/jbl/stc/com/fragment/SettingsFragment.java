@@ -30,6 +30,15 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.avnera.audiomanager.AccessoryInfo;
+import com.harman.bluetooth.constants.EnumAAStatus;
+import com.harman.bluetooth.constants.EnumAncStatus;
+import com.harman.bluetooth.constants.EnumDeviceStatusType;
+import com.harman.bluetooth.req.CmdAASet;
+import com.harman.bluetooth.req.CmdAncSet;
+import com.harman.bluetooth.req.CmdAutoOff;
+import com.harman.bluetooth.req.CmdDevStatus;
+
+import java.util.Arrays;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.BaseActivity;
@@ -45,6 +54,8 @@ import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.DeviceManager;
+import jbl.stc.com.manager.LeManager;
+import jbl.stc.com.manager.LiveCmdManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -85,7 +96,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         screenWidth = dm.widthPixels;
         screenHeight = dm.widthPixels;
         myDevice = ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED);
-        Logger.d(TAG,"deviceName:"+myDevice.deviceName);
+        Logger.d(TAG, "deviceName:" + myDevice.deviceName);
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);
@@ -240,6 +251,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     public void onResume() {
         super.onResume();
         Logger.d(TAG, "onResume");
+        if (LeManager.getInstance().isConnected()) {
+            CmdDevStatus cmdDevStatus = new CmdDevStatus(EnumDeviceStatusType.AUTO_OFF);
+            LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(myDevice.connectStatus).mac, cmdDevStatus);
+        }
         tvToggleAutoOff.setText(PreferenceUtils.getString(PreferenceKeys.AUTOOFFTIMER, getActivity(), getContext().getString(R.string.five_minute)));
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             if (getActivity() instanceof BaseActivity) {
@@ -482,6 +497,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onReceive(EnumCommands enumCommands, Object... objects) {
         super.onReceive(enumCommands, objects);
+        Logger.i(TAG, "on receive cmd: " + enumCommands + ",object: " + Arrays.toString(objects));
         switch (enumCommands) {
             case CMD_VoicePrompt: {
                 toggleVoicePrompt.setChecked((boolean) objects[0]);
@@ -489,6 +505,9 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             }
             case CMD_AutoOffEnable: {
                 toggleAutoOffTimer.setChecked((boolean) objects[0]);
+                if (objects[1] != null) {
+                    tvToggleAutoOff.setText(String.valueOf(objects[1])+"min");
+                }
                 break;
             }
             case CMD_FIRMWARE_VERSION: {

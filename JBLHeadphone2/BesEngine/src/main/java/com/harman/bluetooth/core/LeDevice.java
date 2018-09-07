@@ -402,6 +402,7 @@ public class LeDevice {
                     case RetHeader.ANC_TYPE: {
                         enumDeviceStatusType = EnumDeviceStatusType.ANC;
                         String anc = bytesStr.substring(8, 10);
+                        Logger.d(TAG, "classify command, ret dev status,type anc: " + anc);
                         retDevStatus.enumAncStatus = parseANC(anc);
                         break;
                     }
@@ -409,6 +410,7 @@ public class LeDevice {
                         enumDeviceStatusType = EnumDeviceStatusType.AMBIENT_AWARE_MODE;
                         String ambientAware = bytesStr.substring(8, 10);
                         retDevStatus.enumAAStatus = parseAmbientAware(ambientAware);
+                        Logger.d(TAG, "classify command, ret dev status, type aa: " + retDevStatus.enumAAStatus);
                         break;
                     }
                     case RetHeader.AUTO_OFF_TYPE: {
@@ -417,6 +419,7 @@ public class LeDevice {
                         int autoOffInt = (Integer.valueOf(autoOff,16) & 0x00000080) >> 7;
                         boolean onOff = autoOffInt == 1;
                         int time = Integer.valueOf(autoOff,16) & 0x0000007F;
+                        Logger.d(TAG, "classify command, ret dev status, type auto off, onOff: " + onOff + ",time: " + time);
                         retDevStatus.retAutoOff = new RetAutoOff(onOff, time);
                         break;
                     }
@@ -424,6 +427,7 @@ public class LeDevice {
                         enumDeviceStatusType = EnumDeviceStatusType.EQ_PRESET;
                         String eqPresetIdx = bytesStr.substring(8, 10);
                         retDevStatus.enumEqPresetIdx = parsePresetIdx(eqPresetIdx);
+                        Logger.d(TAG, "classify command, ret dev status, type preset index: " + retDevStatus.enumEqPresetIdx);
                         break;
                     }
                 }

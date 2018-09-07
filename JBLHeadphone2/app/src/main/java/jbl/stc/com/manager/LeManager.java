@@ -259,11 +259,12 @@ public class LeManager implements ScanListener, BleListener {
             case RET_DEV_INFO:
                 RetDeviceInfo retDeviceInfo = (RetDeviceInfo) retResponse.object;
                 notifyUiUpdate(EnumCommands.CMD_ConfigProductName, retDeviceInfo.deviceName);
-                notifyUiUpdate(EnumCommands.CMD_FIRMWARE_VERSION, retDeviceInfo.firmwareVersion);
+                notifyUiUpdate(EnumCommands.CMD_FIRMWARE_VERSION, retDeviceInfo.firmwareVersion,true);
                 notifyUiUpdate(EnumCommands.CMD_BATTERY_LEVEL, retDeviceInfo.retBatteryStatus.percent,retDeviceInfo.retBatteryStatus.charging);
                 break;
             case RET_DEV_STATUS:
                 RetDevStatus retDevStatus = (RetDevStatus) retResponse.object;
+                Logger.d(TAG, "on bes received, status type = "+ retDevStatus.enumDeviceStatusType);
                 switch (retDevStatus.enumDeviceStatusType) {
                     case ALL_STATUS: {
                         notifyUiUpdate(EnumCommands.CMD_ANC, retDevStatus.enumAncStatus.ordinal());

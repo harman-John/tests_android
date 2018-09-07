@@ -42,8 +42,10 @@ import android.widget.Toast;
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.audioManager;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
+import com.harman.bluetooth.constants.EnumAAStatus;
 import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.constants.EnumDeviceStatusType;
+import com.harman.bluetooth.req.CmdAASet;
 import com.harman.bluetooth.req.CmdAncSet;
 import com.harman.bluetooth.req.CmdDevStatus;
 
@@ -468,7 +470,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                             checkBoxNoiseCancel.setChecked(true);
                         }
                         showAncPopupWindow(findViewById(R.id.relative_layout_home_activity));
-                        timeInterval();
+
                         if (!checkBoxNoiseCancel.isChecked()) {
                             ANCControlManager.getANCManager(this).setANCValue(true);
                         }
@@ -484,6 +486,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                             imageViewAmbientAaware.setTag("1");
                             checkBoxNoiseCancel.setChecked(false);
 
+                        }
+                        if (LeManager.getInstance().isConnected()) {
+                            CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked()? EnumAncStatus.ON: EnumAncStatus.OFF);
+                            LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
+                            CmdAASet cmdAASet = new CmdAASet(checkBoxNoiseCancel.isChecked()? EnumAAStatus.TALK_THRU: EnumAAStatus.AMBIENT_AWARE);
+                            LiveCmdManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
                         }
                     }
                 }
@@ -508,23 +516,22 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             }
             case R.id.image_view_home_noise_cancel: {
-                if (LeManager.getInstance().isConnected()) {
-
-                    CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked()? EnumAncStatus.ON: EnumAncStatus.OFF);
-                    LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
-                }
-
+                Logger.d(TAG, "on click, noise cancel, device name: "+deviceName);
                 if (AppUtils.isNewDevice(deviceName)) {
                     if (checkBoxNoiseCancel.isChecked()) {
-                        Logger.d(TAG, "noise cancle  checked");
+                        Logger.d(TAG, "noise cancel  checked");
                         checkBoxNoiseCancel.setChecked(true);
                         if (imageViewAmbientAaware.getTag().equals("1")) {
                             imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
                             imageViewAmbientAaware.setTag("0");
                         }
                     } else {
-                        Logger.d(TAG, "noise cancle unchecked");
+                        Logger.d(TAG, "noise cancel unchecked");
                         checkBoxNoiseCancel.setChecked(false);
+                    }
+                    if (LeManager.getInstance().isConnected()) {
+                        CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked()? EnumAncStatus.ON: EnumAncStatus.OFF);
+                        LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
                     }
                 } else {
                     setANC();
