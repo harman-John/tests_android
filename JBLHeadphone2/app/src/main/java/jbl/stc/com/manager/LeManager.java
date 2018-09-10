@@ -152,10 +152,10 @@ public class LeManager implements ScanListener, BleListener {
             ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
             if (!DeviceManager.getInstance(mContext).isConnected()) {
                 BesEngine.getInstance().addListener(this);
-                if (device.getAddress().equals("12:34:56:09:23:56")) {
+                //if (device.getAddress().equals("12:34:56:09:23:56")) {
                     boolean result = BesEngine.getInstance().connect(mContext, device);
                     Logger.d(TAG, "on found, connect result = " + result);
-                }
+               // }
             }
         }
     }

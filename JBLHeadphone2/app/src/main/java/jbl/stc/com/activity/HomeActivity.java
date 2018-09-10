@@ -1478,6 +1478,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 } else {
                     //TODO: bes live update eq settings.
                     RetCurrentEQ retCurrentEQ = (RetCurrentEQ) objects[1];
+                    if(retCurrentEQ.enumEqCategory == EnumEqCategory.DESIGN_EQ){
+                        //save the designEq
+
+                    }
                 }
                 break;
             }

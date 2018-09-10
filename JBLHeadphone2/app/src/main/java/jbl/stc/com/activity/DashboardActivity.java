@@ -236,7 +236,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         } else {
             dashboardHandler.removeMessages(MSG_START_SCAN);
             dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
-            LeManager.getInstance().checkPermission(this);
+            LeManager.getInstance().checkPermission(this);   //start ble scan
         }
     }
 
