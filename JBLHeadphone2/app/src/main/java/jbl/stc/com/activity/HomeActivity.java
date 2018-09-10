@@ -1058,7 +1058,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void getBleDeviceInfo() {
         Logger.i(TAG,"get ble device info");
-
+        LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
         CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
         LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
         LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
@@ -1169,6 +1169,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     ANCControlManager.getANCManager(getApplicationContext()).getFirmwareInfo();
                     break;
                 }
+                case MSG_GET_DESIGN_EQ:{
+                    CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
+                    LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+                    break;
+                }
             }
         }
     }
@@ -1225,15 +1230,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             }
             case 4: {
-                if (LeManager.getInstance().isConnected()) {
-                    CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
-                    LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
-                    //timeInterval();
-                    //CmdCurrEq cmdCurrEq1 = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
-                    //LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq1);
-                } else {
-                    ANCControlManager.getANCManager(this).getAppGraphicEQPresetBandSettings(GraphicEQPreset.User, 10);
-                }
+                ANCControlManager.getANCManager(this).getAppGraphicEQPresetBandSettings(GraphicEQPreset.User, 10);
                 break;
             }
             default:
@@ -1496,13 +1493,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                             //save the designEq
                             List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this, SharePreferenceUtil.BLE_DESIGN_EQ);
                             if (retCurrentEQList!=null&&retCurrentEQList.size()>0)
-                            Logger.d(TAG, "retCurrentEQ bledesign eq band count:" + retCurrentEQList.get(0).bandCount);
+                            Logger.d(TAG, "ret CurrentEQ ble design eq band count:" + retCurrentEQList.get(0).bandCount);
                             List<RetCurrentEQ> retCurrentEQS = new ArrayList<>();
                             retCurrentEQS.add(retCurrentEQ);
                             SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this, retCurrentEQS, SharePreferenceUtil.BLE_DESIGN_EQ);
                         } else if (retCurrentEQ.enumEqCategory == EnumEqCategory.GRAPHIC_EQ) {
                             //parse the graficEq
-                            parseBleCustomeEq(retCurrentEQ);
+                            parseBleCustomEq(retCurrentEQ);
                         }
                     }
                 }
@@ -1573,7 +1570,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-    private void parseBleCustomeEq(RetCurrentEQ retCurrentEQ) {
+    private void parseBleCustomEq(RetCurrentEQ retCurrentEQ) {
 
         List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this,SharePreferenceUtil.BLE_GRAPHIC_EQ);
         boolean isExist = false;
@@ -1606,9 +1603,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             retCurrentEQList.add(retCurrentEQ);
         }
         SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this,retCurrentEQList,SharePreferenceUtil.BLE_GRAPHIC_EQ);
-
+        homeHandler.sendEmptyMessageDelayed(MSG_GET_DESIGN_EQ, 500);
     }
 
+    private final static int MSG_GET_DESIGN_EQ = 7;
     private void doInBootLoaderMode(boolean isInBootloaderMode) {
         if (isInBootloaderMode) {
             switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
