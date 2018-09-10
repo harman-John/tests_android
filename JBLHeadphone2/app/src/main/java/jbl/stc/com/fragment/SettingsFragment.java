@@ -30,12 +30,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.avnera.audiomanager.AccessoryInfo;
-import com.harman.bluetooth.constants.EnumAAStatus;
-import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.constants.EnumDeviceStatusType;
-import com.harman.bluetooth.req.CmdAASet;
-import com.harman.bluetooth.req.CmdAncSet;
-import com.harman.bluetooth.req.CmdAutoOff;
 import com.harman.bluetooth.req.CmdDevStatus;
 
 import java.util.Arrays;
@@ -53,7 +48,6 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
-import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.LeManager;
 import jbl.stc.com.manager.LiveCmdManager;
 import jbl.stc.com.manager.ProductListManager;

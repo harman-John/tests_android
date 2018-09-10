@@ -1,7 +1,7 @@
 package com.harman.bluetooth.constants;
 
 public class Band{
-    public Band(int type,float gain, int fc, float q){
+    public Band(int type,float gain, float fc, float q){
         this.type = type;
         this.gain = gain;
         this.fc = fc;
@@ -9,6 +9,6 @@ public class Band{
     }
     public int type;
     public float gain;
-    public int fc;
+    public float fc;
     public float q;
 }

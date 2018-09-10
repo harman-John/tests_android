@@ -231,7 +231,7 @@ public class LeDevice {
                         lock.wait(200);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                        Logger.e(TAG,"write command but have no respond.");
+                        Logger.e(TAG, "write command but have no respond.");
                     }
                 }
             }
@@ -341,7 +341,7 @@ public class LeDevice {
         Logger.d(TAG, "classify command, ret bytes: " + bytesStr);
         if (eqData != null && eqData.isEqReceived && eqData.count > 0) {
             eqData.count--;
-            eqData.curEqData += bytesStr;
+            eqData.curEqData += bytesStr.substring(2,bytesStr.length());
             Message msg = new Message();
             msg.what = MSG_APP_ACK;
             msg.obj = RetHeader.RET_CURRENT_EQ;
@@ -369,7 +369,7 @@ public class LeDevice {
             case RetHeader.RET_DEV_FIN_ACK:
                 retResponse.enumCmdId = EnumCmdId.RET_DEV_FIN_ACK;
                 retResponse.object = null;
-                if (eqData == null){
+                if (eqData == null) {
                     Logger.d(TAG, "classify command, ret dev fin ack");
                     break;
                 }
@@ -377,25 +377,23 @@ public class LeDevice {
                 Logger.d(TAG, "classify command, current eq, command id: " + cmdIdAck);
                 Logger.d(TAG, "classify command, current eq, eq data: " + eqData.curEqData);
                 if (cmdIdAck.equals("43")) {
-                    String packageIdx = eqData.curEqData.substring(0, 2);
-                    Logger.d(TAG, "classify command, ret dev fin ack, package index: " + packageIdx);
                     retResponse.enumCmdId = EnumCmdId.RET_CURRENT_EQ;
                     RetCurrentEQ dataCurrentEQ = new RetCurrentEQ();
-                    String presetIdx = eqData.curEqData.substring(2, 4);
+                    String presetIdx = eqData.curEqData.substring(0, 2);
                     dataCurrentEQ.enumEqPresetIdx = parsePresetIdx(presetIdx);
 
                     Logger.d(TAG, "classify command, ret dev fin ack, preset index: " + dataCurrentEQ.enumEqPresetIdx);
-                    String eqCategory = eqData.curEqData.substring(4, 6);
+                    String eqCategory = eqData.curEqData.substring(2, 4);
                     dataCurrentEQ.enumEqCategory = parseEqCategory(eqCategory);
 
                     Logger.d(TAG, "classify command, ret dev fin ack, eq category: " + dataCurrentEQ.enumEqCategory);
-                    dataCurrentEQ.sampleRate = Integer.valueOf(eqData.curEqData.substring(6, 8), 16);
+                    dataCurrentEQ.sampleRate = Integer.valueOf(eqData.curEqData.substring(4, 6), 16);
                     Logger.d(TAG, "classify command, ret dev fin ack, sample rate: " + dataCurrentEQ.sampleRate);
-                    dataCurrentEQ.gain0 = ArrayUtil.hexStrToInt(eqData.curEqData.substring(8, 16));
+                    dataCurrentEQ.gain0 = ArrayUtil.hexStrToFloat(eqData.curEqData.substring(6, 14));
                     Logger.d(TAG, "classify command, ret dev fin ack, gain0: " + dataCurrentEQ.gain0);
-                    dataCurrentEQ.gain1 = ArrayUtil.hexStrToInt(eqData.curEqData.substring(16, 24));
+                    dataCurrentEQ.gain1 = ArrayUtil.hexStrToFloat(eqData.curEqData.substring(14, 22));
                     Logger.d(TAG, "classify command, ret dev fin ack, gain1: " + dataCurrentEQ.gain1);
-                    String bc = eqData.curEqData.substring(24, 32);
+                    String bc = eqData.curEqData.substring(22, 30);
                     int j = ArrayUtil.hexStrToInt(bc);
                     Logger.d(TAG, "classify command, ret dev fin ack, bc: " + j);
                     dataCurrentEQ.bandCount = j; //Integer.valueOf(eqData.curEqData.substring(24, 32),16);
@@ -403,14 +401,14 @@ public class LeDevice {
                     Band[] bands = new Band[dataCurrentEQ.bandCount];
                     for (int i = 0; i < dataCurrentEQ.bandCount; i++) {
                         int pos = 32 * i;
-                        int type = ArrayUtil.hexStrToInt(eqData.curEqData.substring(32 + pos, 40 + pos));
-                        float gain = ArrayUtil.hexStrToInt(eqData.curEqData.substring(40 + pos, 48 + pos));
-                        int fc = ArrayUtil.hexStrToInt(eqData.curEqData.substring(48 + pos, 56 + pos));
-                        float q = ArrayUtil.hexStrToInt(eqData.curEqData.substring(56 + pos, 64 + pos));
+                        int type = ArrayUtil.hexStrToInt(eqData.curEqData.substring(30 + pos, 38 + pos));
+                        float gain = ArrayUtil.hexStrToFloat(eqData.curEqData.substring(38 + pos, 46 + pos));
+                        float fc = ArrayUtil.hexStrToFloat(eqData.curEqData.substring(46 + pos, 54 + pos));
+                        float q = ArrayUtil.hexStrToFloat(eqData.curEqData.substring(54 + pos, 62 + pos));
                         Logger.i(TAG, "classify command, ret dev fin ack, band type: " + type
                                 + ", gain: " + gain
-                                + "fc: " + fc
-                                + " q: " + q);
+                                + ", fc: " + fc
+                                + ", q: " + q);
                         bands[i] = new Band(type, gain, fc, q);
                     }
                     dataCurrentEQ.bands = bands;
@@ -420,36 +418,41 @@ public class LeDevice {
                 break;
             case RetHeader.RET_DEV_INFO:
                 retResponse.enumCmdId = EnumCmdId.RET_DEV_INFO;
-
                 RetDeviceInfo retDeviceInfo = new RetDeviceInfo();
-                retDeviceInfo.deviceName = parseHexStringToString(bytesStr.substring(6, 38));
+                if (bytesStr.length() >= 38) {
+                    retDeviceInfo.deviceName = parseHexStringToString(bytesStr.substring(6, 38));
+                    Logger.d(TAG, "classify command, ret dev info, device name: " + retDeviceInfo.deviceName);
+                }
+                if (bytesStr.length() >= 42) {
+                    retDeviceInfo.productId = bytesStr.substring(38, 42);
+                    Logger.d(TAG, "classify command, ret dev info, product id: " + retDeviceInfo.productId);
+                }
+                if (bytesStr.length() >= 44) {
+                    retDeviceInfo.modeId = bytesStr.substring(42, 44);
+                    Logger.d(TAG, "classify command, ret dev info, mode id: " + retDeviceInfo.modeId);
+                }
+                if (bytesStr.length() >= 46) {
+                    String batteryStatus = String.valueOf(bytesStr.substring(44, 46));
+                    int batteryStatusInt = (Integer.valueOf(batteryStatus, 16) & 0x00000080) >> 7;
+                    boolean charging = batteryStatusInt == 1;
+                    int percent = Integer.valueOf(batteryStatus, 16) & 0x0000007F;
+                    retDeviceInfo.retBatteryStatus = new RetBatteryStatus(charging, percent);
+                    Logger.d(TAG, "classify command, ret dev info, battery charging: " + retDeviceInfo.retBatteryStatus.charging
+                            + ", battery percent: " + retDeviceInfo.retBatteryStatus.percent);
+                }
+                if (bytesStr.length() >= 58) {
+                    retDeviceInfo.macAddress = bytesStr.substring(46, 58);
+                    Logger.d(TAG, "classify command, ret dev info, mac: " + retDeviceInfo.macAddress);
+                }
+                if (bytesStr.length() >= 64) {
+                    String firmwareVersion = bytesStr.substring(58, 64);
+                    int major = Integer.valueOf(firmwareVersion.substring(0, 2), 16);
+                    int minor = Integer.valueOf(firmwareVersion.substring(2, 4), 16);
+                    int revision = Integer.valueOf(firmwareVersion.substring(4, 6), 16);
+                    retDeviceInfo.firmwareVersion = major + "." + minor + "." + revision;
 
-                Logger.d(TAG, "classify command, ret dev info, device name: " + retDeviceInfo.deviceName);
-                retDeviceInfo.productId = bytesStr.substring(38, 42);
-
-                Logger.d(TAG, "classify command, ret dev info, product id: " + retDeviceInfo.productId);
-                retDeviceInfo.modeId = bytesStr.substring(42, 44);
-
-                Logger.d(TAG, "classify command, ret dev info, mode id: " + retDeviceInfo.modeId);
-                String batteryStatus = String.valueOf(bytesStr.substring(44, 46));
-                int batteryStatusInt = (Integer.valueOf(batteryStatus, 16) & 0x00000080) >> 7;
-                boolean charging = batteryStatusInt == 1;
-                int percent = Integer.valueOf(batteryStatus, 16) & 0x0000007F;
-                retDeviceInfo.retBatteryStatus = new RetBatteryStatus(charging, percent);
-
-                Logger.d(TAG, "classify command, ret dev info, battery charging: " + retDeviceInfo.retBatteryStatus.charging);
-                Logger.d(TAG, "classify command, ret dev info, battery percent: " + retDeviceInfo.retBatteryStatus.percent);
-                retDeviceInfo.macAddress = bytesStr.substring(46, 58);
-
-                Logger.d(TAG, "classify command, ret dev info, mac: " + retDeviceInfo.macAddress);
-                String firmwareVersion = bytesStr.substring(58, 64);
-                int major = Integer.valueOf(firmwareVersion.substring(0, 2), 16);
-                int minor = Integer.valueOf(firmwareVersion.substring(2, 4), 16);
-                int revision = Integer.valueOf(firmwareVersion.substring(4, 6), 16);
-                retDeviceInfo.firmwareVersion = major + "." + minor + "." + revision;
-
-                Logger.d(TAG, "classify command, ret dev info, firmware version: " + retDeviceInfo.firmwareVersion);
-
+                    Logger.d(TAG, "classify command, ret dev info, firmware version: " + retDeviceInfo.firmwareVersion);
+                }
                 retResponse.object = retDeviceInfo;
                 break;
             case RetHeader.RET_DEV_STATUS:
@@ -638,7 +641,7 @@ public class LeDevice {
                     Logger.e(TAG, "on connectionState change, discover services failed");
                     close();
                 }
-            } else if (status == BluetoothGatt.GATT_FAILURE || newState == BluetoothGatt.STATE_DISCONNECTED){
+            } else if (status == BluetoothGatt.GATT_FAILURE || newState == BluetoothGatt.STATE_DISCONNECTED) {
                 notifyConnectionStateChanged(false);
             }
         }
@@ -761,7 +764,7 @@ public class LeDevice {
                 }
                 case MSG_APP_ACK: {
                     CmdAppAckSet cmdAppAckSet = new CmdAppAckSet((String) msg.obj, EnumStatusCode.SUCCESS);
-                    write(cmdAppAckSet.getCommand(),false);
+                    write(cmdAppAckSet.getCommand(), false);
                     break;
                 }
                 case MSG_ON_CHAR_CHANGE: {

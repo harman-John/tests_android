@@ -1,5 +1,7 @@
 package com.harman.bluetooth.utils;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.zip.CRC32;
 
 
@@ -156,5 +158,10 @@ public class ArrayUtil {
                 | ((src[1] & 0xFF) << 8)
                 | ((src[2] & 0xFF) << 16)
                 | ((src[3] & 0xFF) << 24);
+    }
+
+    public static float hexStrToFloat(String bc){
+        byte[] bytes = hexStr2Bytes(bc);
+        return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
 }

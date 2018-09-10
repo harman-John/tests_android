@@ -29,6 +29,7 @@ import java.util.Set;
 
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.constant.LeStatus;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.listener.OnConnectStatusListener;
 import jbl.stc.com.listener.OnRetListener;
@@ -49,6 +50,7 @@ public class LeManager implements ScanListener, BleListener {
     private final static int MSG_START_SCAN = 0;
     private final static int MSG_DISCONNECT = 1;
     private final static int MSG_CONNECT_TIME_OUT = 2;
+    private LeStatus leStatus = LeStatus.START_SCAN;
 
     private static class InstanceHolder {
         public static final LeManager instance = new LeManager();
@@ -121,6 +123,7 @@ public class LeManager implements ScanListener, BleListener {
         if (leLollipopScanner == null) {
             leLollipopScanner = new LeLollipopScanner(mContext);
         }
+        leStatus = LeStatus.START_SCAN;
         leLollipopScanner.startScan(this);
     }
 
@@ -130,6 +133,7 @@ public class LeManager implements ScanListener, BleListener {
     //For scan callbacks
     @Override
     public void onFound(BluetoothDevice device, String pid) {
+        leStatus = LeStatus.SCANNING;
         leLollipopScanner.stopScan();
         String key = pid + "-" + device.getAddress();
         devicesSet.clear();
@@ -137,7 +141,7 @@ public class LeManager implements ScanListener, BleListener {
             Logger.d(TAG, "on found key = " + key);
             MyDevice myDevice = ProductListManager.getInstance().getDeviceByKey(device.getAddress());
             if (myDevice == null) {
-                myDevice = AppUtils.getMyDevice(device.getName(), ConnectStatus.A2DP_UNCONNECTED, pid, device.getAddress());
+                myDevice = AppUtils.getMyDevice(device.getName(), ConnectStatus.A2DP_HALF_CONNECTED, pid, device.getAddress());
                 devicesSet.add(myDevice);
                 SharePreferenceUtil.saveSet(mContext, SharePreferenceUtil.PRODUCT_DEVICE_LIST_PER_KEY,devicesSet);
             }
@@ -150,6 +154,7 @@ public class LeManager implements ScanListener, BleListener {
             if (!DeviceManager.getInstance(mContext).isConnected()) {
                 BesEngine.getInstance().addListener(this);
                 //if (device.getAddress().equals("12:34:56:09:23:56")) {
+                leStatus = LeStatus.CONNECTING;
                     boolean result = BesEngine.getInstance().connect(mContext, device);
                     Logger.d(TAG, "on found, connect result = " + result);
                // }
@@ -190,7 +195,11 @@ public class LeManager implements ScanListener, BleListener {
         }
     }
 
-    public boolean isConnected() {
+    private boolean isConnecting() {
+        return leStatus == LeStatus.CONNECTING || leStatus == LeStatus.CONNECTED;
+    }
+
+    public boolean isConnected(){
         return BesEngine.getInstance().isConnected();
     }
 
@@ -207,7 +216,7 @@ public class LeManager implements ScanListener, BleListener {
     //For connection callbacks
     @Override
     public void onLeConnectStatus(final BluetoothDevice bluetoothDevice, final boolean isConnected) {
-        Logger.d(TAG, "on bes connect status, isConnected = " + isConnected);
+        Logger.d(TAG, "on bes connect status, isConnecting = " + isConnected);
         synchronized (mLock) {
             if (DeviceManager.getInstance(mContext).isConnected()) {
                 Logger.i(TAG, "bes connected, but other device is already connected");
@@ -220,8 +229,10 @@ public class LeManager implements ScanListener, BleListener {
                 return;
             }
             if (isConnected) {
+                leStatus = LeStatus.CONNECTED;
                 myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
             } else {
+                leStatus = LeStatus.DISCONNECTED;
                 myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
             }
             final String mac = myDevice.mac;
@@ -328,7 +339,7 @@ public class LeManager implements ScanListener, BleListener {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_START_SCAN: {
-                    if (!isConnected()) {
+                    if (!isConnecting()) {
                         startBleScan();
                         leHandler.removeMessages(MSG_START_SCAN);
                         leHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);

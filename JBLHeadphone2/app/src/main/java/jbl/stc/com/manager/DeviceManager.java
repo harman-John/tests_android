@@ -261,7 +261,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 Logger.d(TAG, "a2dp runnable, device is found, return");
                 return;
             }
-//            Logger.d(TAG, "a2dp runnable ... isConnected = " + isConnected);
+//            Logger.d(TAG, "a2dp runnable ... isConnecting = " + isConnecting);
             startA2DPCheck();
             mHandler.postDelayed(a2dpRunnable, 2000);
         }
@@ -1561,7 +1561,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                     }
                 }
             });
-            Logger.d(TAG, "connected to device, isConnected = " + isConnected);
+            Logger.d(TAG, "connected to device, isConnecting = " + isConnected);
             isNeedShowDashboard = true;
             resetTime = RESET_TIME_FOR_150NC;
         }
