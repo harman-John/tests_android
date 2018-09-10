@@ -30,6 +30,8 @@ import android.widget.TextView;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Logger;
+import com.harman.bluetooth.constants.EnumEqPresetIdx;
+import com.harman.bluetooth.req.CmdEqPresetSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,9 @@ import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.listener.OnCustomEqListener;
 import jbl.stc.com.listener.OnEqItemSelectedListener;
+import jbl.stc.com.manager.LeManager;
+import jbl.stc.com.manager.LiveCmdManager;
+import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.UiUtils;
@@ -100,6 +105,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private float rawY = 0.0f;
     private boolean isShownFinal = false;
     private float dValue;
+    private int mConnectStatus;
 
 
     @Override
@@ -114,6 +120,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         Bundle bundle = getArguments();
         if (bundle != null) {
             rawY = bundle.getFloat("rawY");
+            mConnectStatus = bundle.getInt(JBLConstant.KEY_CONNECT_STATUS);
             Logger.d(TAG, "OnCreateView:" + String.valueOf(rawY));
             rootView.setTranslationY(rawY);
             bundle.remove("rawY");
@@ -271,28 +278,28 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                     case MotionEvent.ACTION_MOVE:
 
                         //if (Math.abs(mCurPosX-mLastPosX)>UiUtils.dip2px(getActivity(),5)){
-                            if (!isTranslationX) {
-                                Logger.d(TAG, "fresh eq");
-                                isTranslationX = true;
-                                mCurPosX = event.getX();
-                                dValue = mCurPosX - mPosX;
-                                if (Math.abs(dValue) > distance && dValue > 0) {
-                                    dValue = distance;
-                                }
-                                if (Math.abs(dValue) > distance && dValue < 0) {
-                                    dValue = (-distance);
-                                }
+                        if (!isTranslationX) {
+                            Logger.d(TAG, "fresh eq");
+                            isTranslationX = true;
+                            mCurPosX = event.getX();
+                            dValue = mCurPosX - mPosX;
+                            if (Math.abs(dValue) > distance && dValue > 0) {
+                                dValue = distance;
+                            }
+                            if (Math.abs(dValue) > distance && dValue < 0) {
+                                dValue = (-distance);
+                            }
 
-                                //equalizerLineView.setTranslationX(dValue);
-                                equalizerLineView.setTranslateX(dValue);
+                            //equalizerLineView.setTranslationX(dValue);
+                            equalizerLineView.setTranslateX(dValue);
 
                                 /*FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) equalizerLineView.getLayoutParams();
                                 params.leftMargin = (int) dValue;
                                 params.rightMargin = (int) (-dValue);
                                 equalizerLineView.setLayoutParams(params);*/
-                                equalizerLineView.setAlpha(1 - Math.abs(dValue) / distance + 0.2f);
-                                isTranslationX = false;
-                            }
+                            equalizerLineView.setAlpha(1 - Math.abs(dValue) / distance + 0.2f);
+                            isTranslationX = false;
+                        }
                         //}
                         break;
                     case MotionEvent.ACTION_UP:
@@ -927,19 +934,39 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         public void run() {
             switch (currSelectedEqIndex) {
                 case 0:
-                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Off);
+                    if (LeManager.getInstance().isConnected()) {
+                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
+                    }else{
+                        ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Off);
+                    }
                     break;
                 case 1:
-                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz);
+                    if (LeManager.getInstance().isConnected()) {
+                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
+                    }else{
+                        ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz);
+                    }
                     break;
                 case 2:
-                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Vocal);
+                    if (LeManager.getInstance().isConnected()) {
+                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.VOCAL));
+                    }else{
+                        ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Vocal);
+                    }
                     break;
                 case 3:
-                    ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Bass);
+                    if (LeManager.getInstance().isConnected()) {
+                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.BASS));
+                    }else{
+                        ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Bass);
+                    }
                     break;
                 default:
-                    ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(currSelectedEq));
+                    if (LeManager.getInstance().isConnected()) {
+                        //add the ble user Eq code
+                    } else {
+                        ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(currSelectedEq));
+                    }
                     break;
             }
             // AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);

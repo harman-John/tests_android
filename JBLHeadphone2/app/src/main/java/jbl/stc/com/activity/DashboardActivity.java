@@ -577,7 +577,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     };
 
     public float getCalib() {
-        /*List<RetCurrentEQ> bleDesignEqs = SharePreferenceUtil.readCurrentEqSet(DashboardActivity.this,SharePreferenceUtil.BLE_DESIGN_EQ);
+        List<RetCurrentEQ> bleDesignEqs = SharePreferenceUtil.readCurrentEqSet(DashboardActivity.this,SharePreferenceUtil.BLE_DESIGN_EQ);
         designer_cfg designerCfg = null;
         IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[0];
         designer_cfg userCfg = null;
@@ -599,15 +599,15 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             for (int i=0;i<bleGraphicEq.bandCount;i++){
                 user_iir_param_t[i] = new IIR_PARAM_T(bleGraphicEq.bands[i].type, bleGraphicEq.bands[i].gain, bleGraphicEq.bands[i].fc, bleGraphicEq.bands[i].q);
             }
-        }*/
-        designer_cfg designerCfg = new designer_cfg(0.21f, 0.22f, 1, 40);
+        }
+        /*designer_cfg designerCfg = new designer_cfg(0.21f, 0.22f, 1, 40);
         IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[2];
         def_iir_param_t[0] = new IIR_PARAM_T(2, 0.25f, 2, 3);
         def_iir_param_t[1] = new IIR_PARAM_T(3, 0.26f, 3, 4);
         designer_cfg userCfg = new designer_cfg(0.91f, 0.12f, 3, 20);
         IIR_PARAM_T[] user_iir_param_t = new IIR_PARAM_T[2];
         user_iir_param_t[0] = new IIR_PARAM_T(2, 0.15f, 2, 3);
-        user_iir_param_t[1] = new IIR_PARAM_T(4, 0.16f, 1, 2);
+        user_iir_param_t[1] = new IIR_PARAM_T(4, 0.16f, 1, 2);*/
 
         Logger.d(TAG, "calculate calibration, length = " + def_iir_param_t.length);
         float a = calculateCalib(designerCfg, def_iir_param_t, def_iir_param_t.length, userCfg,

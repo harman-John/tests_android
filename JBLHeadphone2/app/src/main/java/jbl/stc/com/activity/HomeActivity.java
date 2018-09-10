@@ -42,14 +42,17 @@ import android.widget.Toast;
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.audioManager;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
+import com.google.android.gms.common.util.SharedPreferencesUtils;
 import com.harman.bluetooth.constants.EnumAAStatus;
 import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.constants.EnumDeviceStatusType;
 import com.harman.bluetooth.constants.EnumEqCategory;
+import com.harman.bluetooth.constants.EnumEqPresetIdx;
 import com.harman.bluetooth.req.CmdAASet;
 import com.harman.bluetooth.req.CmdAncSet;
 import com.harman.bluetooth.req.CmdCurrEq;
 import com.harman.bluetooth.req.CmdDevStatus;
+import com.harman.bluetooth.req.CmdEqPresetSet;
 import com.harman.bluetooth.ret.RetCurrentEQ;
 
 import jbl.stc.com.manager.LiveCmdManager;
@@ -162,6 +165,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         setContentView(R.layout.activity_home);
         DeviceManager.getInstance(this).setOnRetListener(this);
         mConnectStatus = getIntent().getIntExtra(JBLConstant.KEY_CONNECT_STATUS, -1);
+        PreferenceUtils.setInt(JBLConstant.KEY_CONNECT_STATUS,mConnectStatus,HomeActivity.this);
         Intent intent = getIntent();
         String action = intent.getAction();
         Logger.d(TAG, "onResume action =" + action + ",mConnectStatus =" + mConnectStatus);
@@ -508,7 +512,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             }
             case R.id.arrowUpImage: {
-                switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                EqSettingFragment fragment = new EqSettingFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt(JBLConstant.KEY_CONNECT_STATUS,mConnectStatus);
+                fragment.setArguments(bundle);
+                switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 break;
             }
             case R.id.image_view_home_back: {
@@ -749,6 +757,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                                     Logger.d(TAG, String.valueOf(yMove));
                                     EqSettingFragment fragment = new EqSettingFragment();
                                     Bundle bundle = new Bundle();
+                                    bundle.putInt(JBLConstant.KEY_CONNECT_STATUS,mConnectStatus);
                                     bundle.putFloat("rawY", screenHeight - bottomHeight);
                                     fragment.setArguments(bundle);
                                     switchFragment(fragment, 4);
@@ -785,7 +794,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                                     //single click
                                     Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
                                     if (((fr != null) && !(fr instanceof EqSettingFragment)) || (fr == null)) {
-                                        switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                                        EqSettingFragment fragment = new EqSettingFragment();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt(JBLConstant.KEY_CONNECT_STATUS,mConnectStatus);
+                                        fragment.setArguments(bundle);
+                                        switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                                     }
                                 } else {
                                     if (yMove > screenHeight / 2) {
@@ -860,7 +873,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     Runnable applyRunnable = new Runnable() {
         @Override
         public void run() {
-            ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
+            if (LeManager.getInstance().isConnected()) {
+                CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
+                LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
+            }else{
+                ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
+            }
         }
     };
 
@@ -874,27 +892,55 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(this);
                 Logger.d(TAG, "eqSize:" + eqModels.size());
                 if (eqModels.size() < 5) {
-                    ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz);
+                    if (LeManager.getInstance().isConnected()) {
+                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
+                    }else{
+                        ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz);
+                    }
                 } else {
-                    ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModels.get(4)));
+                    if (LeManager.getInstance().isConnected()) {
+                        // add the ble user eq code
+                    }else{
+                        ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModels.get(4)));
+                    }
                 }
             } else {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, curEqNameExclusiveOff, this);
                 if (curEqNameExclusiveOff.equals(getString(R.string.jazz))) {
-                    ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz);
+                    if (LeManager.getInstance().isConnected()) {
+                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
+                    }else{
+                        ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz);
+                    }
                 } else if (curEqNameExclusiveOff.equals(getString(R.string.vocal))) {
-                    ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Vocal);
+                    if (LeManager.getInstance().isConnected()) {
+                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.VOCAL));
+                    }else{
+                        ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Vocal);
+                    }
                 } else if (curEqNameExclusiveOff.equals(getString(R.string.bass))) {
-                    ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Bass);
+                    if (LeManager.getInstance().isConnected()) {
+                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.BASS));
+                    }else{
+                        ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Bass);
+                    }
                 } else {
                     EQModel eqModel = EQSettingManager.get().getEQModelByName(curEqNameExclusiveOff, this);
-                    ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModel));
+                    if (LeManager.getInstance().isConnected()) {
+                        // add the ble user eq code
+                    }else{
+                        ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModel));
+                    }
                 }
             }
         } else {
             //turn off the eq
             Logger.d(TAG, "turn off the eq");
-            ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Off);
+            if (LeManager.getInstance().isConnected()) {
+                LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
+            }else{
+                ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Off);
+            }
         }
         homeHandler.removeCallbacks(applyRunnable);
         homeHandler.postDelayed(applyRunnable, 800);
@@ -1493,13 +1539,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                             //save the designEq
                             List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this, SharePreferenceUtil.BLE_DESIGN_EQ);
                             if (retCurrentEQList!=null&&retCurrentEQList.size()>0)
-                            Logger.d(TAG, "ret CurrentEQ ble design eq band count:" + retCurrentEQList.get(0).bandCount);
+                            Logger.d(TAG, "retCurrentEQ ble design eq band count:" + retCurrentEQList.get(0).bandCount);
                             List<RetCurrentEQ> retCurrentEQS = new ArrayList<>();
                             retCurrentEQS.add(retCurrentEQ);
                             SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this, retCurrentEQS, SharePreferenceUtil.BLE_DESIGN_EQ);
                         } else if (retCurrentEQ.enumEqCategory == EnumEqCategory.GRAPHIC_EQ) {
                             //parse the graficEq
                             parseBleCustomEq(retCurrentEQ);
+
+
                         }
                     }
                 }
@@ -1571,6 +1619,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void parseBleCustomEq(RetCurrentEQ retCurrentEQ) {
+        for (int i=0;i<retCurrentEQ.bandCount;i++){
+            Logger.d(TAG,"reCurrentEQ GraphicEq fc:"+i+retCurrentEQ.bands[i].fc);
+        }
         List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this,SharePreferenceUtil.BLE_EQS);
         boolean isExist = false;
         if (retCurrentEQList!=null && retCurrentEQList.size()>0){

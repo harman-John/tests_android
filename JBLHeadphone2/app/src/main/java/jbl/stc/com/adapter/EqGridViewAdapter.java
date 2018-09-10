@@ -10,15 +10,21 @@ import android.widget.TextView;
 
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.avnera.smartdigitalheadset.LightX;
+import com.harman.bluetooth.constants.EnumEqPresetIdx;
+import com.harman.bluetooth.req.CmdEqPresetSet;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import jbl.stc.com.R;
+import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.EQSettingManager;
+import jbl.stc.com.manager.LeManager;
+import jbl.stc.com.manager.LiveCmdManager;
+import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.view.EqGridView;
@@ -112,6 +118,7 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
     public void deleteItem(int deletePosition) {
         String deleteEqName=eqModels.get(deletePosition).eqName;
         String curEqName= PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, context, "");
+        int mConnectStatus = PreferenceUtils.getInt(JBLConstant.KEY_CONNECT_STATUS,context);
           if (null != eqModels &&eqModels.size()>0&& deletePosition < eqModels.size()) {
                 EQSettingManager.OperationStatus operationStatus = EQSettingManager.get().deleteEQ(eqModels.get(deletePosition).eqName,context);
                 eqModels.remove(deletePosition);
@@ -123,12 +130,20 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
                           if (eqModels!=null&&eqModels.size()>0){
                               if (curEqName.equals(deleteEqName)){
                               int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(eqModels.get(0));
-                              ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
+                              if (LeManager.getInstance().isConnected()) {
+                                  //add the ble user Eq code
+                              }else{
+                                  ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
+                              }
                               PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModels.get(0).eqName,context);
                               PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, eqModels.get(0).eqName, context);
                              }
                           }else{
-                              ANCControlManager.getANCManager(context).applyPresetWithoutBand(GraphicEQPreset.Off);
+                              if (LeManager.getInstance().isConnected()) {
+                                  LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
+                              }else{
+                                  ANCControlManager.getANCManager(context).applyPresetWithoutBand(GraphicEQPreset.Off);
+                              }
                               PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,context.getResources().getString(R.string.off),context);
                               PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,context.getResources().getString(R.string.jazz),context);
 

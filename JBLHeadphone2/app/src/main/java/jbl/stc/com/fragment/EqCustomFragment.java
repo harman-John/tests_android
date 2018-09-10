@@ -32,6 +32,7 @@ import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.listener.OnCustomEqListener;
 import jbl.stc.com.listener.OnEqChangeListener;
+import jbl.stc.com.manager.LeManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.ToastUtil;
@@ -113,7 +114,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                 Logger.d(TAG, "onEqDragFinished pointX=" + Arrays.toString(pointX) + ",pointY=" + Arrays.toString(pointY));
                 currSelectedEq.setPointX(pointX);
                 currSelectedEq.setPointY(pointY);
-                ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
+                //ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
             }
         });
 
@@ -362,7 +363,12 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             onCustomEqListener.onCustomEqResult(currSelectedEq, isAddOperate);
         } else {
             application.globalEqInfo.hasEq = true;
-            ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
+            int mConnectStatus = PreferenceUtils.getInt(JBLConstant.KEY_CONNECT_STATUS,getActivity());
+            if (LeManager.getInstance().isConnected()) {
+                //add the ble user Eq code
+            }else{
+                ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
+            }
             switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
         }
         getActivity().getSupportFragmentManager().popBackStack();
