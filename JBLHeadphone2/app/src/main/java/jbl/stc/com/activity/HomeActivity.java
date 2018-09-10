@@ -50,6 +50,7 @@ import com.harman.bluetooth.req.CmdAASet;
 import com.harman.bluetooth.req.CmdAncSet;
 import com.harman.bluetooth.req.CmdCurrEq;
 import com.harman.bluetooth.req.CmdDevStatus;
+import com.harman.bluetooth.ret.RetResponse;
 
 import jbl.stc.com.manager.LiveCmdManager;
 
@@ -1003,6 +1004,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     timeInterval();
                     CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
                     LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+                    timeInterval();
+                    CmdCurrEq cmdCurrEq1 = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
+                    LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq1);
                 }else {
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                         case NONE:
@@ -1467,6 +1471,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //                    homeHandler.sendEmptyMessage(MSG_FIRMWARE_INFO);
                 } else {
                     //TODO: bes live update eq settings.
+                    RetResponse retResponse = (RetResponse) objects[1];
                 }
                 break;
             }

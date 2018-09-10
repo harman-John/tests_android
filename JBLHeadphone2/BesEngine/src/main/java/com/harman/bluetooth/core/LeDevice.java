@@ -336,22 +336,22 @@ public class LeDevice {
         Logger.d(TAG, "classify command, cmdId: " + cmdId);
         String payloadLen = bytesStr.substring(4, 6);
         Logger.d(TAG, "classify command, payloadLen: " + payloadLen);
-        EnumCmdId enumCmdId = EnumCmdId.DEFAULT;
         RetResponse retResponse = new RetResponse();
+        retResponse.enumCmdId =  EnumCmdId.DEFAULT;
         switch (cmdId) {
             case RetHeader.RET_DEV_ACK:
-                enumCmdId = EnumCmdId.RET_DEV_ACK;
+                retResponse.enumCmdId = EnumCmdId.RET_DEV_ACK;
                 String statusCode = bytesStr.substring(6, 8);
                 retResponse.object = parseStatusCode(statusCode);
                 break;
             case RetHeader.RET_DEV_BYE:
-                enumCmdId = EnumCmdId.RET_DEV_BYE;
+                retResponse.enumCmdId = EnumCmdId.RET_DEV_BYE;
                 String msgCode = bytesStr.substring(6, 8);
                 retResponse.object = parseMsgCode(msgCode);
                 break;
 
             case RetHeader.RET_DEV_FIN_ACK:
-                enumCmdId = EnumCmdId.RET_DEV_FIN_ACK;
+                retResponse.enumCmdId = EnumCmdId.RET_DEV_FIN_ACK;
                 retResponse.object = null;
                 String cmdIdAck = bytesStr.substring(4, 6);
                 Logger.d(TAG, "classify command, ret dev fin ack, command id: " + cmdIdAck);
@@ -359,7 +359,7 @@ public class LeDevice {
                 if (cmdIdAck.equals("43")) {
                     String packageIdx = eqData.curEqData.substring(0, 2);
                     Logger.d(TAG, "classify command, ret dev fin ack, package index: " + packageIdx);
-                    enumCmdId = EnumCmdId.RET_CURRENT_EQ;
+                    retResponse.enumCmdId = EnumCmdId.RET_CURRENT_EQ;
                     RetCurrentEQ dataCurrentEQ = new RetCurrentEQ();
                     String presetIdx = eqData.curEqData.substring(2, 4);
                     dataCurrentEQ.enumEqPresetIdx = parsePresetIdx(presetIdx);
@@ -369,24 +369,24 @@ public class LeDevice {
                     dataCurrentEQ.enumEqCategory = parseEqCategory(eqCategory);
 
                     Logger.d(TAG, "classify command, ret dev fin ack, eq category: " + dataCurrentEQ.enumEqCategory);
-                    dataCurrentEQ.sampleRate = Integer.valueOf(eqData.curEqData.substring(6, 8),16);
+                    dataCurrentEQ.sampleRate = ArrayUtil.hexStrToInt(eqData.curEqData.substring(6, 8));
                     Logger.d(TAG, "classify command, ret dev fin ack, sample rate: " + dataCurrentEQ.sampleRate);
-                    dataCurrentEQ.gain0 = Integer.valueOf(eqData.curEqData.substring(8, 16),16);
+                    dataCurrentEQ.gain0 =  ArrayUtil.hexStrToInt(eqData.curEqData.substring(8, 16));
                     Logger.d(TAG, "classify command, ret dev fin ack, gain0: " + dataCurrentEQ.gain0);
-                    dataCurrentEQ.gain1 = Integer.valueOf(eqData.curEqData.substring(16, 24),16);
+                    dataCurrentEQ.gain1 = ArrayUtil.hexStrToInt(eqData.curEqData.substring(16, 24));
                     Logger.d(TAG, "classify command, ret dev fin ack, gain1: " + dataCurrentEQ.gain1);
                     String bc = eqData.curEqData.substring(24, 32);
-                    int j = ArrayUtil.bytesToInt(ArrayUtil.hexStr2Bytes(bc));
+                    int j = ArrayUtil.hexStrToInt(bc);
                     Logger.d(TAG, "classify command, ret dev fin ack, bc: " + j);
                     dataCurrentEQ.bandCount = j; //Integer.valueOf(eqData.curEqData.substring(24, 32),16);
                     Logger.d(TAG, "classify command, ret dev fin ack, bound count: " + dataCurrentEQ.bandCount);
                     Band[] bands = new Band[dataCurrentEQ.bandCount];
                     for (int i = 0; i < dataCurrentEQ.bandCount; i++) {
                         int pos = 32 * i;
-                        int type = Integer.valueOf(eqData.curEqData.substring(32 + pos, 40 + pos),16);
-                        float gain = Integer.valueOf(eqData.curEqData.substring(40 + pos, 48 + pos),16);
-                        int fc = Integer.valueOf(eqData.curEqData.substring(48 + pos, 56 + pos),16);
-                        float q = Integer.valueOf(eqData.curEqData.substring(56 + pos, 64 + pos),16);
+                        int type = ArrayUtil.hexStrToInt(eqData.curEqData.substring(32 + pos, 40 + pos));
+                        float gain = ArrayUtil.hexStrToInt(eqData.curEqData.substring(40 + pos, 48 + pos));
+                        int fc = ArrayUtil.hexStrToInt(eqData.curEqData.substring(48 + pos, 56 + pos));
+                        float q = ArrayUtil.hexStrToInt(eqData.curEqData.substring(56 + pos, 64 + pos));
                         Logger.d(TAG, "classify command, ret dev fin ack, band type: " + type+",gain: "+gain+",fc: "+fc+",q: "+q);
                         bands[i] = new Band(type, gain, fc, q);
                     }
@@ -396,7 +396,7 @@ public class LeDevice {
                 }
                 break;
             case RetHeader.RET_DEV_INFO:
-                enumCmdId = EnumCmdId.RET_DEV_INFO;
+                retResponse.enumCmdId = EnumCmdId.RET_DEV_INFO;
 
                 RetDeviceInfo retDeviceInfo = new RetDeviceInfo();
                 retDeviceInfo.deviceName = parseHexStringToString(bytesStr.substring(6, 38));
@@ -430,7 +430,7 @@ public class LeDevice {
                 retResponse.object = retDeviceInfo;
                 break;
             case RetHeader.RET_DEV_STATUS:
-                enumCmdId = EnumCmdId.RET_DEV_STATUS;
+                retResponse.enumCmdId = EnumCmdId.RET_DEV_STATUS;
                 String statusType = bytesStr.substring(6, 8);
                 Logger.d(TAG, "classify command, ret dev status, type: " + statusType);
                 RetDevStatus retDevStatus = new RetDevStatus();
@@ -508,7 +508,6 @@ public class LeDevice {
             default:
                 retResponse.object = bytes;
         }
-        retResponse.enumCmdId = enumCmdId;
         return retResponse;
     }
 
