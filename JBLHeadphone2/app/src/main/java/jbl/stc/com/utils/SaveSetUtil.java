@@ -23,7 +23,8 @@ public class SaveSetUtil {
     private final static String FILENAME = "product_device_data";
 
     private final static String KEY = "my_device";
-    private final static String CURRENTEQ_KEY = "current_eq_key";
+    public final static String BLEDESIGN_EQ = "bledesign_eq_key";
+    public final static String BLEGRAPHIC_EQ = "blegrafic_eq_key";
     private static String TAG = SaveSetUtil.class.getSimpleName();
 
     public static void saveSet(Context context, Set<MyDevice> set){
@@ -60,37 +61,27 @@ public class SaveSetUtil {
         return null;
     }
 
-    public static void saveCurrentEqSet(Context context, Set<RetCurrentEQ> set){
-        Set<RetCurrentEQ> setSaved = readCurrentEqSet(context);
-        if (setSaved != null){
-            setSaved.clear();
-        }else{
-            setSaved = new HashSet<>(set);
-        }
+    public static void saveCurrentEqSet(Context context, List<RetCurrentEQ> datalist ,String key){
         SharedPreferences.Editor editor = context.getSharedPreferences(FILENAME, MODE_PRIVATE).edit();
+        editor.putString(key,"").apply();
         Gson gson = new Gson();
-        String json = gson.toJson(setSaved);
+        String json = gson.toJson(datalist);
         Logger.d(TAG, "json = "+json);
-        editor.putString(CURRENTEQ_KEY, json);
-        editor.apply();
+        editor.putString(key, json).apply();
     }
 
-    public static Set<RetCurrentEQ> readCurrentEqSet(Context context){
+    public static List<RetCurrentEQ> readCurrentEqSet(Context context , String key){
+        List<RetCurrentEQ> datalist=new ArrayList<>();
         SharedPreferences preferences = context.getSharedPreferences(FILENAME, MODE_PRIVATE);
-        String json = preferences.getString(CURRENTEQ_KEY, null);
-        if (json != null)
+        String json = preferences.getString(key, null);
+        if (json == null)
         {
-            Gson gson = new Gson();
-            Type type = new TypeToken<Set<RetCurrentEQ>>(){}.getType();
-            Set<RetCurrentEQ> set = gson.fromJson(json, type);
-            if (set != null) {
-                for (RetCurrentEQ retCurrentEQ: set) {
-                    Logger.d(TAG, "retCurrentEQ = " + retCurrentEQ.enumEqCategory );
-                }
-                return set;
-            }
+            return  datalist;
+
         }
-        return null;
+        Gson gson = new Gson();
+        datalist = gson.fromJson(json,new TypeToken<List<RetCurrentEQ>>(){}.getType());
+        return  datalist;
     }
 
     public static void remove(Context context, MyDevice myDevice){
