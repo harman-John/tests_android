@@ -16,8 +16,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-import com.harman.bluetooth.constants.EnumAAStatus;
-import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.constants.EnumOtaState;
 import com.harman.bluetooth.engine.BesEngine;
 import com.harman.bluetooth.listeners.BleListener;
@@ -39,7 +37,7 @@ import jbl.stc.com.scan.LeLollipopScanner;
 import jbl.stc.com.scan.ScanListener;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.EnumCommands;
-import jbl.stc.com.utils.SaveSetUtil;
+import jbl.stc.com.utils.SharePreferenceUtil;
 
 public class LeManager implements ScanListener, BleListener {
 
@@ -47,7 +45,6 @@ public class LeManager implements ScanListener, BleListener {
     private static final int PERMISSION_REQUEST_LOCATION = 1;
     private LeLollipopScanner leLollipopScanner;
     private Activity mContext;
-    private boolean mIsConnected;
     private LeHandler leHandler = new LeHandler(Looper.getMainLooper());
     private final static int MSG_START_SCAN = 0;
     private final static int MSG_DISCONNECT = 1;
@@ -142,13 +139,13 @@ public class LeManager implements ScanListener, BleListener {
             if (myDevice == null) {
                 myDevice = AppUtils.getMyDevice(device.getName(), ConnectStatus.A2DP_UNCONNECTED, pid, device.getAddress());
                 devicesSet.add(myDevice);
-                SaveSetUtil.saveSet(mContext, devicesSet);
+                SharePreferenceUtil.saveSet(mContext, SharePreferenceUtil.PRODUCT_DEVICE_LIST_PER_KEY,devicesSet);
             }
             if (myDevice == null) {
                 Logger.e(TAG, "on found, my device is null");
                 return;
             }
-            SaveSetUtil.saveSet(mContext, devicesSet);
+            SharePreferenceUtil.saveSet(mContext, SharePreferenceUtil.PRODUCT_DEVICE_LIST_PER_KEY, devicesSet);
             ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
             if (!DeviceManager.getInstance(mContext).isConnected()) {
                 BesEngine.getInstance().addListener(this);
@@ -194,7 +191,7 @@ public class LeManager implements ScanListener, BleListener {
     }
 
     public boolean isConnected() {
-        return mIsConnected;
+        return BesEngine.getInstance().isConnected();
     }
 
     @Override
@@ -217,7 +214,6 @@ public class LeManager implements ScanListener, BleListener {
                 leHandler.sendEmptyMessageDelayed(MSG_DISCONNECT, 200);
                 return;
             }
-            mIsConnected = isConnected;
             MyDevice myDevice = ProductListManager.getInstance().getDeviceByKey(bluetoothDevice.getAddress());
             if (myDevice == null) {
                 Logger.d(TAG, "on bes connect status, myDevice is null");

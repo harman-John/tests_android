@@ -14,12 +14,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import jbl.stc.com.R;
-import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
@@ -27,7 +24,7 @@ import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.utils.AppUtils;
-import jbl.stc.com.utils.SaveSetUtil;
+import jbl.stc.com.utils.SharePreferenceUtil;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.MyDragGridView;
 
@@ -218,7 +215,7 @@ public class MyGridAdapter extends BaseAdapter implements MyDragGridView.DragGri
                     && !myDevice.deviceKey.equals(mContext.getString(R.string.plus))) {
                 mList.remove(deletePosition);
                 ProductListManager.getInstance().removeDevice(myDevice.mac);
-                SaveSetUtil.remove(mContext,myDevice);
+                SharePreferenceUtil.remove(mContext,myDevice);
                 notifyDataSetChanged();
             }
         }

@@ -51,15 +51,12 @@ import com.harman.bluetooth.req.CmdAncSet;
 import com.harman.bluetooth.req.CmdCurrEq;
 import com.harman.bluetooth.req.CmdDevStatus;
 import com.harman.bluetooth.ret.RetCurrentEQ;
-import com.harman.bluetooth.ret.RetResponse;
 
 import jbl.stc.com.manager.LiveCmdManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import jbl.stc.com.R;
 import jbl.stc.com.config.DeviceFeatureMap;
@@ -90,7 +87,7 @@ import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.ArrayUtil;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.FirmwareUtil;
-import jbl.stc.com.utils.SaveSetUtil;
+import jbl.stc.com.utils.SharePreferenceUtil;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.AaPopupWindow;
 import jbl.stc.com.view.AppImageView;
@@ -496,10 +493,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
                         }
                         if (LeManager.getInstance().isConnected()) {
-                            CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked() ? EnumAncStatus.ON : EnumAncStatus.OFF);
-                            LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
-                            CmdAASet cmdAASet = new CmdAASet(checkBoxNoiseCancel.isChecked() ? EnumAAStatus.TALK_THRU : EnumAAStatus.AMBIENT_AWARE);
-                            LiveCmdManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked() ? EnumAncStatus.ON : EnumAncStatus.OFF);
+                                    LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
+                                    CmdAASet cmdAASet = new CmdAASet(checkBoxNoiseCancel.isChecked() ? EnumAAStatus.TALK_THRU : EnumAAStatus.AMBIENT_AWARE);
+                                    LiveCmdManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
+                                }
+                            }).start();
                         }
                     }
                 }
@@ -538,8 +540,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         checkBoxNoiseCancel.setChecked(false);
                     }
                     if (LeManager.getInstance().isConnected()) {
-                        CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked() ? EnumAncStatus.ON : EnumAncStatus.OFF);
-                        LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked() ? EnumAncStatus.ON : EnumAncStatus.OFF);
+                                LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
+                            }
+                        }).start();
                     }
                 } else {
                     setANC();
@@ -1050,13 +1057,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void getBleDeviceInfo() {
-        LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
-        timeInterval();
+        Logger.i(TAG,"get ble device info");
+
         CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
         LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
-        //timeInterval();
-        //CmdCurrEq cmdCurrEq1 = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
-        //LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq1);
+        LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
+        CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
+        LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
     }
 
     private void timeInterval() {
@@ -1418,10 +1425,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onReceive(EnumCommands enumCommands, Object... objects) {
         super.onReceive(enumCommands, objects);
-        if (isFinishing()) {
-            Logger.d(TAG, "do on receive error, activity is finishing");
-            return;
-        }
+
 //        Logger.d(TAG, "onReceive command:" + enumCommands + ",value:" + objects[0]);
         switch (enumCommands) {
             case CMD_ANC: {
@@ -1490,12 +1494,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         Logger.d(TAG, "retCurrentEQ:" + retCurrentEQ.enumEqCategory);
                         if (retCurrentEQ.enumEqCategory == EnumEqCategory.DESIGN_EQ) {
                             //save the designEq
-                            List<RetCurrentEQ> retCurrentEQList = SaveSetUtil.readCurrentEqSet(HomeActivity.this, SaveSetUtil.BLEDESIGN_EQ);
+                            List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this, SharePreferenceUtil.BLE_DESIGN_EQ);
                             if (retCurrentEQList!=null&&retCurrentEQList.size()>0)
                             Logger.d(TAG, "retCurrentEQ bledesign eq band count:" + retCurrentEQList.get(0).bandCount);
                             List<RetCurrentEQ> retCurrentEQS = new ArrayList<>();
                             retCurrentEQS.add(retCurrentEQ);
-                            SaveSetUtil.saveCurrentEqSet(HomeActivity.this, retCurrentEQS, SaveSetUtil.BLEDESIGN_EQ);
+                            SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this, retCurrentEQS, SharePreferenceUtil.BLE_DESIGN_EQ);
                         } else if (retCurrentEQ.enumEqCategory == EnumEqCategory.GRAPHIC_EQ) {
                             //parse the graficEq
                             parseBleCustomeEq(retCurrentEQ);
@@ -1571,7 +1575,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void parseBleCustomeEq(RetCurrentEQ retCurrentEQ) {
 
-        List<RetCurrentEQ> retCurrentEQList = SaveSetUtil.readCurrentEqSet(HomeActivity.this,SaveSetUtil.BLEGRAPHIC_EQ);
+        List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this,SharePreferenceUtil.BLE_GRAPHIC_EQ);
         boolean isExist = false;
         if (retCurrentEQList!=null && retCurrentEQList.size()>0){
             Logger.d(TAG,"retCurrentEQList size is "+retCurrentEQList.size());
@@ -1601,7 +1605,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             Logger.d(TAG,"retCurrentEQList size is 0 ,add it");
             retCurrentEQList.add(retCurrentEQ);
         }
-        SaveSetUtil.saveCurrentEqSet(HomeActivity.this,retCurrentEQList,SaveSetUtil.BLEGRAPHIC_EQ);
+        SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this,retCurrentEQList,SharePreferenceUtil.BLE_GRAPHIC_EQ);
 
     }
 

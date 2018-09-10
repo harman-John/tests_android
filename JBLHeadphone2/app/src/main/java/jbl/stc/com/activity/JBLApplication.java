@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.crashlytics.android.Crashlytics;
+import com.harman.bluetooth.ret.RetCurrentEQ;
 
 import io.fabric.sdk.android.Fabric;
 import jbl.stc.com.BuildConfig;

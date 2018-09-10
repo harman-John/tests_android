@@ -68,9 +68,13 @@ public class BesEngine {
         }
     }
 
-    public boolean isConnected(String mac) {
-        LeDevice mLeDevice = mLeConnectorMap.get(mac);
-        return mLeDevice != null && mLeDevice.isConnected();
+    public boolean isConnected() {
+        for (Map.Entry<String, LeDevice> entry : mLeConnectorMap.entrySet()) {
+            if (entry.getValue().isConnected()){
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean sendCommand(String mac, byte[] command) {
@@ -80,7 +84,7 @@ public class BesEngine {
         }
         Logger.d(TAG,"send command, mac = "+mac);
         LeDevice mLeDevice = mLeConnectorMap.get(mac);
-        return mLeDevice != null && mLeDevice.write(command);
+        return mLeDevice != null && mLeDevice.write(command,true);
     }
 
     public void addListener(BleListener listener) {

@@ -60,7 +60,7 @@ import jbl.stc.com.utils.AmToolUtil;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.FirmwareUtil;
-import jbl.stc.com.utils.SaveSetUtil;
+import jbl.stc.com.utils.SharePreferenceUtil;
 
 
 public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delegate, LightX.Delegate, USB.Delegate, audioManager.AudioDeviceDelegate {
@@ -292,7 +292,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                         Logger.d(TAG, "a2dp listener, half connected device, name = " + bluetoothDevice.getName()
                                 + ",address = " + bluetoothDevice.getAddress());
                         devicesSet.add(myDevice);
-                        SaveSetUtil.saveSet(mContext, devicesSet);
+                        SharePreferenceUtil.saveSet(mContext, SharePreferenceUtil.PRODUCT_DEVICE_LIST_PER_KEY, devicesSet);
                     }
                 }
                 ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
@@ -1038,7 +1038,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 MyDevice myDevice = ProductListManager.getInstance().getDeviceByKey(key);
                 myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
                 ProductListManager.getInstance().checkConnectStatus(key, ConnectStatus.A2DP_UNCONNECTED);
-                SaveSetUtil.remove(mContext, myDevice);
+                SharePreferenceUtil.remove(mContext, myDevice);
             }
             if (!FirmwareUtil.isUpdatingFirmWare.get()) {
                 if (mOnConnectStatusListener != null) {
@@ -1183,7 +1183,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 if (myDevice == null && productName != null) {
                     myDevice = AppUtils.getMyDevice(productName, ConnectStatus.A2DP_UNCONNECTED, "", usbDevice.getManufacturerName());
                     devicesSet.add(myDevice);
-                    SaveSetUtil.saveSet(mContext, devicesSet);
+                    SharePreferenceUtil.saveSet(mContext, SharePreferenceUtil.PRODUCT_DEVICE_LIST_PER_KEY,devicesSet);
                 }
                 ProductListManager.getInstance().checkConnectStatus(key, ConnectStatus.DEVICE_CONNECTED);
                 ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);

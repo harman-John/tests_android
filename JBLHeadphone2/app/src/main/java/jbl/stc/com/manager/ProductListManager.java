@@ -4,7 +4,6 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +12,7 @@ import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.listener.OnCheckDevicesListener;
 import jbl.stc.com.logger.Logger;
-import jbl.stc.com.utils.SaveSetUtil;
+import jbl.stc.com.utils.SharePreferenceUtil;
 
 public class ProductListManager {
 
@@ -38,7 +37,7 @@ public class ProductListManager {
             myDeviceMap = new HashMap<>();
         }
         myDeviceMap.clear();
-        Set<MyDevice> devicesSet = SaveSetUtil.readSet(context);
+        Set<MyDevice> devicesSet = SharePreferenceUtil.readSet(context,SharePreferenceUtil.PRODUCT_DEVICE_LIST_PER_KEY);
         if (devicesSet == null){
             return;
         }

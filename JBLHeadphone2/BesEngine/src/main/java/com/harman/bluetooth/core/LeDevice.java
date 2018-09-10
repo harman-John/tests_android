@@ -39,9 +39,10 @@ import com.harman.bluetooth.utils.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static java.lang.Integer.valueOf;
 
@@ -68,6 +69,7 @@ public class LeDevice {
 
     private List<BleListener> mListBleListener;
     private static final int DEFAULT_MTU = 512;
+    private Object lock = new Object();
 
     public LeDevice() {
         mConnectState = STATE_DISCONNECTED;
@@ -85,8 +87,8 @@ public class LeDevice {
     public boolean connect(Context context, BluetoothDevice device) {
         Logger.i(TAG, "connect " + device + ", connect state: " + mConnectState);
         synchronized (mStateLock) {
-            if (mConnectState != STATE_DISCONNECTED) {
-                Logger.d(TAG, "connect, device state is not disconnected");
+            if (mConnectState != STATE_DISCONNECTED || isConnected()) {
+                Logger.d(TAG, "connect state is connected, so no need to connect again.");
                 return true;
             }
             mConnectState = STATE_CONNECTING;
@@ -203,7 +205,7 @@ public class LeDevice {
         return true;
     }
 
-    public boolean write(byte[] data) {
+    public boolean write(byte[] data, boolean isFromUser) {
         if (mBluetoothGatt == null) {
             Logger.e(TAG, "write, bluetooth gatt is null");
             return false;
@@ -216,11 +218,23 @@ public class LeDevice {
 
 
         if (mCharacteristicTx.setValue(data)) {
-            Logger.i(TAG, "write, get value = " + ArrayUtil.bytesToHex(mCharacteristicTx.getValue()) + ",write uuid = " + mCharacteristicTx.getUuid());
             mCharacteristicTx.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
             mBluetoothGatt.setCharacteristicNotification(mCharacteristicTx, true);
             boolean isWriteSuccess = mBluetoothGatt.writeCharacteristic(mCharacteristicTx);
-            Logger.i(TAG, "write characteristic status  = " + isWriteSuccess + ",mac = " + mBluetoothGatt.getDevice().getAddress() + ",name = " + mBluetoothGatt.getDevice().getName());
+            Logger.i(TAG, "write characteristic values = " + ArrayUtil.bytesToHex(mCharacteristicTx.getValue())
+                    + ",mac = " + mBluetoothGatt.getDevice().getAddress()
+                    + ", lock = " + lock
+                    + ",status  = " + isWriteSuccess);
+            if (isFromUser) {
+                synchronized (lock) {
+                    try {
+                        lock.wait(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        Logger.e(TAG,"write command but have no respond.");
+                    }
+                }
+            }
             return isWriteSuccess;
         }
         Logger.i(TAG, "write, set value false");
@@ -339,7 +353,7 @@ public class LeDevice {
         String payloadLen = bytesStr.substring(4, 6);
         Logger.d(TAG, "classify command, payloadLen: " + payloadLen);
         RetResponse retResponse = new RetResponse();
-        retResponse.enumCmdId =  EnumCmdId.DEFAULT;
+        retResponse.enumCmdId = EnumCmdId.DEFAULT;
         switch (cmdId) {
             case RetHeader.RET_DEV_ACK:
                 retResponse.enumCmdId = EnumCmdId.RET_DEV_ACK;
@@ -355,9 +369,13 @@ public class LeDevice {
             case RetHeader.RET_DEV_FIN_ACK:
                 retResponse.enumCmdId = EnumCmdId.RET_DEV_FIN_ACK;
                 retResponse.object = null;
+                if (eqData == null){
+                    Logger.d(TAG, "classify command, ret dev fin ack");
+                    break;
+                }
                 String cmdIdAck = bytesStr.substring(4, 6);
-                Logger.d(TAG, "classify command, ret dev fin ack, command id: " + cmdIdAck);
-                Logger.d(TAG, "classify command, ret dev fin ack, eq data: " + eqData.curEqData);
+                Logger.d(TAG, "classify command, current eq, command id: " + cmdIdAck);
+                Logger.d(TAG, "classify command, current eq, eq data: " + eqData.curEqData);
                 if (cmdIdAck.equals("43")) {
                     String packageIdx = eqData.curEqData.substring(0, 2);
                     Logger.d(TAG, "classify command, ret dev fin ack, package index: " + packageIdx);
@@ -371,9 +389,9 @@ public class LeDevice {
                     dataCurrentEQ.enumEqCategory = parseEqCategory(eqCategory);
 
                     Logger.d(TAG, "classify command, ret dev fin ack, eq category: " + dataCurrentEQ.enumEqCategory);
-                    dataCurrentEQ.sampleRate = Integer.valueOf(eqData.curEqData.substring(6, 8),16);
+                    dataCurrentEQ.sampleRate = Integer.valueOf(eqData.curEqData.substring(6, 8), 16);
                     Logger.d(TAG, "classify command, ret dev fin ack, sample rate: " + dataCurrentEQ.sampleRate);
-                    dataCurrentEQ.gain0 =  ArrayUtil.hexStrToInt(eqData.curEqData.substring(8, 16));
+                    dataCurrentEQ.gain0 = ArrayUtil.hexStrToInt(eqData.curEqData.substring(8, 16));
                     Logger.d(TAG, "classify command, ret dev fin ack, gain0: " + dataCurrentEQ.gain0);
                     dataCurrentEQ.gain1 = ArrayUtil.hexStrToInt(eqData.curEqData.substring(16, 24));
                     Logger.d(TAG, "classify command, ret dev fin ack, gain1: " + dataCurrentEQ.gain1);
@@ -386,13 +404,13 @@ public class LeDevice {
                     for (int i = 0; i < dataCurrentEQ.bandCount; i++) {
                         int pos = 32 * i;
                         int type = ArrayUtil.hexStrToInt(eqData.curEqData.substring(32 + pos, 40 + pos));
-                        Logger.d(TAG, "classify command, ret dev fin ack, band type: " + type);
                         float gain = ArrayUtil.hexStrToInt(eqData.curEqData.substring(40 + pos, 48 + pos));
-                        Logger.d(TAG, "classify command, ret dev fin ack, band gain: "+gain);
                         int fc = ArrayUtil.hexStrToInt(eqData.curEqData.substring(48 + pos, 56 + pos));
-                        Logger.d(TAG, "classify command, ret dev fin ack, band fc: "+fc);
                         float q = ArrayUtil.hexStrToInt(eqData.curEqData.substring(56 + pos, 64 + pos));
-                        Logger.d(TAG, "classify command, ret dev fin ack, band type q: "+q);
+                        Logger.i(TAG, "classify command, ret dev fin ack, band type: " + type
+                                + ", gain: " + gain
+                                + "fc: " + fc
+                                + " q: " + q);
                         bands[i] = new Band(type, gain, fc, q);
                     }
                     dataCurrentEQ.bands = bands;
@@ -620,7 +638,7 @@ public class LeDevice {
                     Logger.e(TAG, "on connectionState change, discover services failed");
                     close();
                 }
-            } else {
+            } else if (status == BluetoothGatt.GATT_FAILURE || newState == BluetoothGatt.STATE_DISCONNECTED){
                 notifyConnectionStateChanged(false);
             }
         }
@@ -657,6 +675,7 @@ public class LeDevice {
                     + ",uuid = " + characteristic.getUuid());
             if (status == BluetoothGatt.GATT_SUCCESS) {
 //                notifyWrite(LE_SUCCESS);
+
             } else {
 //                notifyWrite(LE_ERROR);
             }
@@ -680,8 +699,10 @@ public class LeDevice {
                 Logger.i(TAG, "on characteristic changed, characteristic is null");
                 return;
             }
-            Logger.i(TAG, "on characteristic changed, read bytes: " + ArrayUtil.toHex(characteristic.getValue()));
-            notifyReceive(classifyCommand(characteristic));
+            Message msg = new Message();
+            msg.what = MSG_ON_CHAR_CHANGE;
+            msg.obj = characteristic;
+            leHandler.sendMessage(msg);
             isFreeToWrite = true;
         }
 
@@ -714,6 +735,7 @@ public class LeDevice {
     private LeHandler leHandler = new LeHandler(Looper.getMainLooper());
     private final static int MSG_ON_MTU_CHANGED = 0;
     private final static int MSG_APP_ACK = 1;
+    private final static int MSG_ON_CHAR_CHANGE = 2;
 
     private class LeHandler extends Handler {
 
@@ -739,7 +761,17 @@ public class LeDevice {
                 }
                 case MSG_APP_ACK: {
                     CmdAppAckSet cmdAppAckSet = new CmdAppAckSet((String) msg.obj, EnumStatusCode.SUCCESS);
-                    write(cmdAppAckSet.getCommand());
+                    write(cmdAppAckSet.getCommand(),false);
+                    break;
+                }
+                case MSG_ON_CHAR_CHANGE: {
+                    BluetoothGattCharacteristic characteristic = (BluetoothGattCharacteristic) msg.obj;
+                    Logger.i(TAG, "on characteristic changed, read bytes: " + ArrayUtil.toHex(characteristic.getValue()));
+                    notifyReceive(classifyCommand(characteristic));
+                    Logger.i(TAG, "notify all lock = " + lock);
+                    synchronized (lock) {
+                        lock.notifyAll();
+                    }
                     break;
                 }
                 default: {
