@@ -70,7 +70,9 @@ public class LeDevice {
     private static final int DEFAULT_MTU = 512;
 
     public LeDevice() {
+        mConnectState = STATE_DISCONNECTED;
     }
+
 
     public void setBesListener(List<BleListener> listBleListener) {
         mListBleListener = listBleListener;
@@ -369,7 +371,7 @@ public class LeDevice {
                     dataCurrentEQ.enumEqCategory = parseEqCategory(eqCategory);
 
                     Logger.d(TAG, "classify command, ret dev fin ack, eq category: " + dataCurrentEQ.enumEqCategory);
-                    dataCurrentEQ.sampleRate = ArrayUtil.hexStrToInt(eqData.curEqData.substring(6, 8));
+                    dataCurrentEQ.sampleRate = Integer.valueOf(eqData.curEqData.substring(6, 8),16);
                     Logger.d(TAG, "classify command, ret dev fin ack, sample rate: " + dataCurrentEQ.sampleRate);
                     dataCurrentEQ.gain0 =  ArrayUtil.hexStrToInt(eqData.curEqData.substring(8, 16));
                     Logger.d(TAG, "classify command, ret dev fin ack, gain0: " + dataCurrentEQ.gain0);
@@ -384,10 +386,13 @@ public class LeDevice {
                     for (int i = 0; i < dataCurrentEQ.bandCount; i++) {
                         int pos = 32 * i;
                         int type = ArrayUtil.hexStrToInt(eqData.curEqData.substring(32 + pos, 40 + pos));
+                        Logger.d(TAG, "classify command, ret dev fin ack, band type: " + type);
                         float gain = ArrayUtil.hexStrToInt(eqData.curEqData.substring(40 + pos, 48 + pos));
+                        Logger.d(TAG, "classify command, ret dev fin ack, band gain: "+gain);
                         int fc = ArrayUtil.hexStrToInt(eqData.curEqData.substring(48 + pos, 56 + pos));
+                        Logger.d(TAG, "classify command, ret dev fin ack, band fc: "+fc);
                         float q = ArrayUtil.hexStrToInt(eqData.curEqData.substring(56 + pos, 64 + pos));
-                        Logger.d(TAG, "classify command, ret dev fin ack, band type: " + type+",gain: "+gain+",fc: "+fc+",q: "+q);
+                        Logger.d(TAG, "classify command, ret dev fin ack, band type q: "+q);
                         bands[i] = new Band(type, gain, fc, q);
                     }
                     dataCurrentEQ.bands = bands;

@@ -252,8 +252,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         super.onResume();
         Logger.d(TAG, "onResume");
         if (LeManager.getInstance().isConnected()) {
-            CmdDevStatus cmdDevStatus = new CmdDevStatus(EnumDeviceStatusType.AUTO_OFF);
-            LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(myDevice.connectStatus).mac, cmdDevStatus);
+            getBleDeviceInfo();
         }
         tvToggleAutoOff.setText(PreferenceUtils.getString(PreferenceKeys.AUTOOFFTIMER, getActivity(), getContext().getString(R.string.five_minute)));
         if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
@@ -273,6 +272,11 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 return false;
             }
         });
+    }
+
+    private void getBleDeviceInfo(){
+        CmdDevStatus cmdDevStatus = new CmdDevStatus(EnumDeviceStatusType.AUTO_OFF);
+        LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(myDevice.connectStatus).mac, cmdDevStatus);
     }
 
     @Override

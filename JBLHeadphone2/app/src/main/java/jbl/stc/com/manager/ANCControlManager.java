@@ -1,12 +1,17 @@
 package jbl.stc.com.manager;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.avnera.smartdigitalheadset.ANCAwarenessPreset;
 import com.avnera.smartdigitalheadset.Command;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.avnera.smartdigitalheadset.Logger;
+import com.harman.bluetooth.engine.BesEngine;
+import com.harman.bluetooth.req.CmdDevStatus;
+import com.harman.bluetooth.req.CmdHeader;
 
+import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.dialog.AlertsDialog;
 import jbl.stc.com.storage.PreferenceUtils;
 
@@ -206,9 +211,9 @@ public class ANCControlManager {
         }
     }
 
-    public void getBatterLeverl() {
-        if ( AvneraManager.getAvenraManager().getLightX() != null) {
-             AvneraManager.getAvenraManager().getLightX().readApp(Command.AppBatteryLevel);
+    public void getBatterLevel() {
+        if (AvneraManager.getAvenraManager().getLightX() != null) {
+            AvneraManager.getAvenraManager().getLightX().readApp(Command.AppBatteryLevel);
         } else {
             Cmd150Manager.getInstance().getBatteryLevel(AvneraManager.getAvenraManager().getAudioManager());
             Logger.d(TAG, "SendCommand getBatterLevel");

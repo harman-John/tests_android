@@ -2,7 +2,11 @@ package com.harman.bluetooth.utils;
 
 import java.util.zip.CRC32;
 
+
 public class ArrayUtil {
+
+    public static final String TAG = "ArrayUtil";
+
     public static byte[] extractBytes(byte[] data, int start, int length) {
         byte[] bytes = new byte[length];
         System.arraycopy(data, start, bytes, 0, length);
@@ -80,19 +84,45 @@ public class ArrayUtil {
         return new String(hexChars);
     }
 
-    public static byte[] hexStr2Bytes(String src)
-    {
-        int m,n;
-        int l=src.length()/2;
-        byte[] ret = new byte[l];
-        for (int i = 0; i < l; i++)
-        {
-            m=i*2+1;
-            n=m+1;
-            ret[i] = Byte.decode("0x" + src.substring(i*2, m) + src.substring(m,n));
+    public static byte[] hexStr2Bytes(String s) {
+//        int m,n;
+//        int l=src.length()/2;
+//        byte[] ret = new byte[l];
+//        for (int i = 0; i < l; i++)
+//        {
+//            m=i*2+1;
+//            n=m+1;
+//            ret[i] = (byte)Integer.valueOf(("0x" + src.substring(i*2, m) + src.substring(m,n)),16);
+//        }
+//
+//        return ret;
+        final int len = s.length();
+
+        // "111" is not a valid hex encoding.
+        if (len % 2 != 0)
+            throw new IllegalArgumentException("hexBinary needs to be even-length: " + s);
+
+        byte[] out = new byte[len / 2];
+
+        for (int i = 0; i < len; i += 2) {
+            int h = hexToBin(s.charAt(i));
+            int l = hexToBin(s.charAt(i + 1));
+            if (h == -1 || l == -1)
+                throw new IllegalArgumentException("contains illegal character for hexBinary: " + s);
+
+            out[i / 2] = (byte) (h * 16 + l);
         }
-        return ret;
+
+        return out;
     }
+
+    private static int hexToBin(char ch) {
+        if ('0' <= ch && ch <= '9') return ch - '0';
+        if ('A' <= ch && ch <= 'F') return ch - 'A' + 10;
+        if ('a' <= ch && ch <= 'f') return ch - 'a' + 10;
+        return -1;
+    }
+
 
     public static boolean startsWith(byte[] data, byte[] param) {
         if (data == null) {
@@ -120,6 +150,7 @@ public class ArrayUtil {
     }
 
     public static int hexStrToInt(String bc) {
+//        Logger.d(TAG, "hex string: " + bc);
         byte[] src = hexStr2Bytes(bc);
         return (src[0] & 0xFF)
                 | ((src[1] & 0xFF) << 8)

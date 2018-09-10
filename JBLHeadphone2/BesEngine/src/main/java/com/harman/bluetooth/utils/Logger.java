@@ -18,7 +18,7 @@ public class Logger {
 
     public static void i(String TAG, String message) {
         if (BuildConfig.DEBUG)
-            Log.d(TAG, message);
+            Log.i(TAG, message);
     }
     public static void w(String TAG, String message) {
         if (BuildConfig.DEBUG)

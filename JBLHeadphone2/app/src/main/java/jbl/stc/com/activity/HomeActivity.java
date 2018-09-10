@@ -50,6 +50,7 @@ import com.harman.bluetooth.req.CmdAASet;
 import com.harman.bluetooth.req.CmdAncSet;
 import com.harman.bluetooth.req.CmdCurrEq;
 import com.harman.bluetooth.req.CmdDevStatus;
+import com.harman.bluetooth.ret.RetCurrentEQ;
 import com.harman.bluetooth.ret.RetResponse;
 
 import jbl.stc.com.manager.LiveCmdManager;
@@ -491,9 +492,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
                         }
                         if (LeManager.getInstance().isConnected()) {
-                            CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked()? EnumAncStatus.ON: EnumAncStatus.OFF);
+                            CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked() ? EnumAncStatus.ON : EnumAncStatus.OFF);
                             LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
-                            CmdAASet cmdAASet = new CmdAASet(checkBoxNoiseCancel.isChecked()? EnumAAStatus.TALK_THRU: EnumAAStatus.AMBIENT_AWARE);
+                            CmdAASet cmdAASet = new CmdAASet(checkBoxNoiseCancel.isChecked() ? EnumAAStatus.TALK_THRU : EnumAAStatus.AMBIENT_AWARE);
                             LiveCmdManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
                         }
                     }
@@ -519,7 +520,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             }
             case R.id.image_view_home_noise_cancel: {
-                Logger.d(TAG, "on click, noise cancel, device name: "+deviceName);
+                Logger.d(TAG, "on click, noise cancel, device name: " + deviceName);
                 if (AppUtils.isNewDevice(deviceName)) {
                     if (checkBoxNoiseCancel.isChecked()) {
                         Logger.d(TAG, "noise cancel  checked");
@@ -533,7 +534,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         checkBoxNoiseCancel.setChecked(false);
                     }
                     if (LeManager.getInstance().isConnected()) {
-                        CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked()? EnumAncStatus.ON: EnumAncStatus.OFF);
+                        CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked() ? EnumAncStatus.ON : EnumAncStatus.OFF);
                         LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
                     }
                 } else {
@@ -997,17 +998,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void run() {
                 if (LeManager.getInstance().isConnected()) {
-                    LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
-                    timeInterval();
-                    CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
-                    LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
-                    timeInterval();
-                    CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
-                    LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
-                    timeInterval();
-                    CmdCurrEq cmdCurrEq1 = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
-                    LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq1);
-                }else {
+                    linearLayoutBattery.setVisibility(View.VISIBLE);
+                    getBleDeviceInfo();
+                } else {
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                         case NONE:
                             break;
@@ -1018,7 +1011,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                             break;
                         case Connected_BluetoothDevice:
                             linearLayoutBattery.setVisibility(View.VISIBLE);
-                            ANCControlManager.getANCManager(getApplicationContext()).getBatterLeverl();
+                            ANCControlManager.getANCManager(getApplicationContext()).getBatterLevel();
                             homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
                             break;
                     }
@@ -1052,6 +1045,19 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     }
 
+    private void getBleDeviceInfo() {
+        LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
+        timeInterval();
+        CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
+        LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
+        timeInterval();
+        CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
+        LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+//        timeInterval();
+//        CmdCurrEq cmdCurrEq1 = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
+//        LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq1);
+    }
+
     private void timeInterval() {
         try {
             Thread.sleep(200);
@@ -1081,7 +1087,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 case MSG_READ_BATTERY_INTERVAL: {
                     if (getSupportFragmentManager().getBackStackEntryCount() <= 0) {
                         homeHandler.removeMessages(MSG_READ_BATTERY_INTERVAL);
-                        ANCControlManager.getANCManager(getApplicationContext()).getBatterLeverl();
+                        ANCControlManager.getANCManager(getApplicationContext()).getBatterLevel();
                     }
                     homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
                     break;
@@ -1100,14 +1106,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 case MSG_AMBIENT_LEVEL: {
                     //for old devices
-                    aaPopupWindow.updateAAUI(msg.arg1,(ImageView)findViewById(R.id.image_view_home_ambient_aware));//AppUtils.levelTransfer(msg.arg1)<---method for new device
+                    aaPopupWindow.updateAAUI(msg.arg1, (ImageView) findViewById(R.id.image_view_home_ambient_aware));//AppUtils.levelTransfer(msg.arg1)<---method for new device
                     break;
                 }
                 case MSG_AA_LEFT:
-                    aaPopupWindow.updateAALeft(msg.arg1,(ImageView)findViewById(R.id.image_view_home_ambient_aware));
+                    aaPopupWindow.updateAALeft(msg.arg1, (ImageView) findViewById(R.id.image_view_home_ambient_aware));
                     break;
                 case MSG_AA_RIGHT:
-                    aaPopupWindow.updateAARight(msg.arg1,(ImageView)findViewById(R.id.image_view_home_ambient_aware));
+                    aaPopupWindow.updateAARight(msg.arg1, (ImageView) findViewById(R.id.image_view_home_ambient_aware));
                     break;
                 case MSG_CURRENT_PRESET: {
                     updateCurrentEQ(msg.arg1);
@@ -1471,7 +1477,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //                    homeHandler.sendEmptyMessage(MSG_FIRMWARE_INFO);
                 } else {
                     //TODO: bes live update eq settings.
-                    RetResponse retResponse = (RetResponse) objects[1];
+                    RetCurrentEQ retCurrentEQ = (RetCurrentEQ) objects[1];
                 }
                 break;
             }
@@ -1521,7 +1527,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 int amVal = (Integer) objects[0];
                 Logger.d(TAG, "on receive, cmd ambient notification: " + amVal);
-                aaPopupWindow.updateAAUI(amVal,(ImageView)findViewById(R.id.image_view_home_ambient_aware));
+                aaPopupWindow.updateAAUI(amVal, (ImageView) findViewById(R.id.image_view_home_ambient_aware));
                 break;
             }
             case CMD_BootReadVersionFile: {

@@ -254,8 +254,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
                     e.printStackTrace();
                 }
 
-                Logger.d(TAG, "read basic information, getBatterLeverl");
-                ANCControlManager.getANCManager(getActivity()).getBatterLeverl();
+                Logger.d(TAG, "read basic information, getBatterLevel");
+                ANCControlManager.getANCManager(getActivity()).getBatterLevel();
             }
         }).start();
 
