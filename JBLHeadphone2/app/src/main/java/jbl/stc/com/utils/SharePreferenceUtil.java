@@ -26,6 +26,7 @@ public class SharePreferenceUtil {
 
     public final static String BLE_DESIGN_EQ = "ble_design_eq_key";
     public final static String BLE_GRAPHIC_EQ = "ble_graphic_eq_key";
+    public final static String BLE_EQS = "ble_eqs";
 
 
     private static String TAG = SharePreferenceUtil.class.getSimpleName();
@@ -108,10 +109,8 @@ public class SharePreferenceUtil {
         List<RetCurrentEQ> dataList=new ArrayList<>();
         SharedPreferences preferences = context.getSharedPreferences(FILENAME, MODE_PRIVATE);
         String json = preferences.getString(key, null);
-        if (json == null)
-        {
+        if (json == null) {
             return  dataList;
-
         }
         Gson gson = new Gson();
         dataList = gson.fromJson(json,new TypeToken<List<RetCurrentEQ>>(){}.getType());

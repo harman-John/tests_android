@@ -1571,8 +1571,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void parseBleCustomEq(RetCurrentEQ retCurrentEQ) {
-
-        List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this,SharePreferenceUtil.BLE_GRAPHIC_EQ);
+        List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this,SharePreferenceUtil.BLE_EQS);
         boolean isExist = false;
         if (retCurrentEQList!=null && retCurrentEQList.size()>0){
             Logger.d(TAG,"retCurrentEQList size is "+retCurrentEQList.size());
@@ -1602,7 +1601,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             Logger.d(TAG,"retCurrentEQList size is 0 ,add it");
             retCurrentEQList.add(retCurrentEQ);
         }
-        SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this,retCurrentEQList,SharePreferenceUtil.BLE_GRAPHIC_EQ);
+        SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this,retCurrentEQList,SharePreferenceUtil.BLE_EQS);
+        List<RetCurrentEQ> retGraphicEQs = new ArrayList<>();
+        retGraphicEQs.add(retCurrentEQ);
+        SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this,retGraphicEQs,SharePreferenceUtil.BLE_EQS);
         homeHandler.sendEmptyMessageDelayed(MSG_GET_DESIGN_EQ, 500);
     }
 

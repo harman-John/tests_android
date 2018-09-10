@@ -21,6 +21,9 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.harman.bluetooth.ret.RetCurrentEQ;
+
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
@@ -48,6 +51,7 @@ import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.InsertPredefinePreset;
+import jbl.stc.com.utils.SharePreferenceUtil;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.MyDragGridView;
@@ -573,15 +577,38 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     };
 
     public float getCalib() {
+        /*List<RetCurrentEQ> bleDesignEqs = SharePreferenceUtil.readCurrentEqSet(DashboardActivity.this,SharePreferenceUtil.BLE_DESIGN_EQ);
+        designer_cfg designerCfg = null;
+        IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[0];
+        designer_cfg userCfg = null;
+        IIR_PARAM_T[] user_iir_param_t = new IIR_PARAM_T[0];
+        if (bleDesignEqs!=null&&bleDesignEqs.size()>0){
+            RetCurrentEQ bleDesignEq = bleDesignEqs.get(0);
+            designerCfg = new designer_cfg(bleDesignEq.gain0, bleDesignEq.gain1, bleDesignEq.bandCount, bleDesignEq.sampleRate);
+            def_iir_param_t = new IIR_PARAM_T[bleDesignEq.bandCount];
+            for (int i=0;i<bleDesignEq.bandCount;i++){
+                def_iir_param_t[i] = new IIR_PARAM_T(bleDesignEq.bands[i].type, bleDesignEq.bands[i].gain, bleDesignEq.bands[i].fc, bleDesignEq.bands[i].q);
+            }
+        }
+
+        List<RetCurrentEQ> bleGraphicEqs = SharePreferenceUtil.readCurrentEqSet(DashboardActivity.this,SharePreferenceUtil.BLE_GRAPHIC_EQ);
+        if (bleGraphicEqs!=null&&bleGraphicEqs.size()>0){
+            RetCurrentEQ bleGraphicEq = bleGraphicEqs.get(0);
+            userCfg = new designer_cfg(bleGraphicEq.gain0, bleGraphicEq.gain1, bleGraphicEq.bandCount, bleGraphicEq.sampleRate);
+            user_iir_param_t = new IIR_PARAM_T[bleGraphicEq.bandCount];
+            for (int i=0;i<bleGraphicEq.bandCount;i++){
+                user_iir_param_t[i] = new IIR_PARAM_T(bleGraphicEq.bands[i].type, bleGraphicEq.bands[i].gain, bleGraphicEq.bands[i].fc, bleGraphicEq.bands[i].q);
+            }
+        }*/
         designer_cfg designerCfg = new designer_cfg(0.21f, 0.22f, 1, 40);
         IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[2];
         def_iir_param_t[0] = new IIR_PARAM_T(2, 0.25f, 2, 3);
         def_iir_param_t[1] = new IIR_PARAM_T(3, 0.26f, 3, 4);
-
         designer_cfg userCfg = new designer_cfg(0.91f, 0.12f, 3, 20);
         IIR_PARAM_T[] user_iir_param_t = new IIR_PARAM_T[2];
         user_iir_param_t[0] = new IIR_PARAM_T(2, 0.15f, 2, 3);
         user_iir_param_t[1] = new IIR_PARAM_T(4, 0.16f, 1, 2);
+
         Logger.d(TAG, "calculate calibration, length = " + def_iir_param_t.length);
         float a = calculateCalib(designerCfg, def_iir_param_t, def_iir_param_t.length, userCfg,
                 user_iir_param_t, user_iir_param_t.length);
