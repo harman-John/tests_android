@@ -27,6 +27,7 @@ import com.harman.bluetooth.ret.RetResponse;
 import java.util.HashSet;
 import java.util.Set;
 
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.constant.LeStatus;
@@ -36,6 +37,7 @@ import jbl.stc.com.listener.OnRetListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.scan.LeLollipopScanner;
 import jbl.stc.com.scan.ScanListener;
+import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.SharePreferenceUtil;
@@ -143,7 +145,7 @@ public class LeManager implements ScanListener, BleListener {
             if (myDevice == null) {
                 myDevice = AppUtils.getMyDevice(device.getName(), ConnectStatus.A2DP_HALF_CONNECTED, pid, device.getAddress());
                 devicesSet.add(myDevice);
-                SharePreferenceUtil.saveSet(mContext, SharePreferenceUtil.PRODUCT_DEVICE_LIST_PER_KEY,devicesSet);
+                SharePreferenceUtil.saveSet(mContext, SharePreferenceUtil.PRODUCT_DEVICE_LIST_PER_KEY, devicesSet);
             }
             if (myDevice == null) {
                 Logger.e(TAG, "on found, my device is null");
@@ -155,9 +157,9 @@ public class LeManager implements ScanListener, BleListener {
                 BesEngine.getInstance().addListener(this);
                 //if (device.getAddress().equals("12:34:56:09:23:56")) {
                 leStatus = LeStatus.CONNECTING;
-                    boolean result = BesEngine.getInstance().connect(mContext, device);
-                    Logger.d(TAG, "on found, connect result = " + result);
-               // }
+                boolean result = BesEngine.getInstance().connect(mContext, device);
+                Logger.d(TAG, "on found, connect result = " + result);
+                // }
             }
         }
     }
@@ -199,7 +201,7 @@ public class LeManager implements ScanListener, BleListener {
         return leStatus == LeStatus.CONNECTING || leStatus == LeStatus.CONNECTED;
     }
 
-    public boolean isConnected(){
+    public boolean isConnected() {
         return BesEngine.getInstance().isConnected();
     }
 
@@ -231,6 +233,7 @@ public class LeManager implements ScanListener, BleListener {
             if (isConnected) {
                 leStatus = LeStatus.CONNECTED;
                 myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
+                AppUtils.setModelNumber(JBLApplication.getJBLApplicationContext(), JBLConstant.DEVICE_LIVE_400BT);
             } else {
                 leStatus = LeStatus.DISCONNECTED;
                 myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
@@ -257,10 +260,10 @@ public class LeManager implements ScanListener, BleListener {
 
     @Override
     public void onRetReceived(BluetoothDevice bluetoothDevice, RetResponse retResponse) {
-        if (retResponse == null){
+        if (retResponse == null) {
             return;
         }
-        Logger.d(TAG, "on bes received, mac = " + bluetoothDevice.getAddress() + " , cmdId = " + retResponse.enumCmdId+"");
+        Logger.d(TAG, "on bes received, mac = " + bluetoothDevice.getAddress() + " , cmdId = " + retResponse.enumCmdId + "");
         switch (retResponse.enumCmdId) {
             case RET_DEV_ACK:
             case RET_DEV_BYE:
@@ -269,17 +272,17 @@ public class LeManager implements ScanListener, BleListener {
             case RET_DEV_INFO:
                 RetDeviceInfo retDeviceInfo = (RetDeviceInfo) retResponse.object;
                 notifyUiUpdate(EnumCommands.CMD_ConfigProductName, retDeviceInfo.deviceName);
-                notifyUiUpdate(EnumCommands.CMD_FIRMWARE_VERSION, retDeviceInfo.firmwareVersion,true);
-                notifyUiUpdate(EnumCommands.CMD_BATTERY_LEVEL, retDeviceInfo.retBatteryStatus.percent,retDeviceInfo.retBatteryStatus.charging);
+                notifyUiUpdate(EnumCommands.CMD_FIRMWARE_VERSION, retDeviceInfo.firmwareVersion, true);
+                notifyUiUpdate(EnumCommands.CMD_BATTERY_LEVEL, retDeviceInfo.retBatteryStatus.percent, retDeviceInfo.retBatteryStatus.charging);
                 break;
             case RET_DEV_STATUS:
                 RetDevStatus retDevStatus = (RetDevStatus) retResponse.object;
-                Logger.d(TAG, "on bes received, status type = "+ retDevStatus.enumDeviceStatusType);
+                Logger.d(TAG, "on bes received, status type = " + retDevStatus.enumDeviceStatusType);
                 switch (retDevStatus.enumDeviceStatusType) {
                     case ALL_STATUS: {
                         notifyUiUpdate(EnumCommands.CMD_ANC, retDevStatus.enumAncStatus.ordinal());
                         notifyUiUpdate(EnumCommands.CMD_AMBIENT_LEVELING, retDevStatus.enumAAStatus.ordinal());
-                        notifyUiUpdate(EnumCommands.CMD_AutoOffEnable, retDevStatus.retAutoOff.isOnOff,retDevStatus.retAutoOff.time);
+                        notifyUiUpdate(EnumCommands.CMD_AutoOffEnable, retDevStatus.retAutoOff.isOnOff, retDevStatus.retAutoOff.time);
                         notifyUiUpdate(EnumCommands.CMD_GEQ_CURRENT_PRESET, retDevStatus.enumEqPresetIdx.ordinal());
                         break;
                     }
@@ -302,7 +305,7 @@ public class LeManager implements ScanListener, BleListener {
                 }
                 break;
             case RET_CURRENT_EQ: {
-                RetCurrentEQ dataCurrentEQ =  (RetCurrentEQ) retResponse.object;
+                RetCurrentEQ dataCurrentEQ = (RetCurrentEQ) retResponse.object;
                 notifyUiUpdate(EnumCommands.CMD_GRAPHIC_EQ_PRESET_BAND_SETTINGS, null, dataCurrentEQ);
                 break;
             }
@@ -316,7 +319,7 @@ public class LeManager implements ScanListener, BleListener {
             @Override
             public void run() {
                 for (OnRetListener onRetListener : mOnRetListener) {
-                    Logger.d(TAG, "notify ui update, on ret listener:"+onRetListener);
+                    Logger.d(TAG, "notify ui update, on ret listener:" + onRetListener);
                     onRetListener.onReceive(enumCommands, objects);
                 }
             }
