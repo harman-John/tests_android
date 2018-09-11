@@ -527,7 +527,7 @@ public class EQSettingManager implements EqDbKey {
         }
         float[] pointX = eqModel.getPointX();
         float[] pointY = eqModel.getPointY();
-        Logger.d(TAG, "bleEqSetting pointX size:" + pointY.length);
+        Logger.d(TAG, "bleEqSetting pointX size:" + pointY.length+"presetIndex:" + presetIndex);
         Band[] bands = new Band[pointX.length];
         for (int i = 0; i < pointX.length; i++) {
             bands[i] = new Band(bandType, pointY[i], pointX[i], qValue);
