@@ -965,7 +965,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                             Logger.d(TAG, "cmd eq settings eq: " + ", band count:" + cmdEqSettingsSet.getBand().length + "calib:" + cmdEqSettingsSet.getCalib());
                             LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdEqSettingsSet);
                         } else {
-                            Logger.d(TAG, "cmdEqSettingset is null");
+                            Logger.d(TAG, "cmd eq settings eq: is null");
                         }
 
                     } else {

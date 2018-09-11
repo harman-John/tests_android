@@ -439,13 +439,23 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             DeviceManager.getInstance(this).setOnRetListener(this);
             LiveManager.getInstance().setOnConnectStatusListener(this);
             LiveManager.getInstance().setOnRetListener(this);
-            ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
+            if (LiveManager.getInstance().isConnected()) {
+                CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
+                LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
+            }else{
+                ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
+            }
         }
         if (fr == null) {
             DeviceManager.getInstance(this).setOnRetListener(this);
             LiveManager.getInstance().setOnConnectStatusListener(this);
             LiveManager.getInstance().setOnRetListener(this);
-            doResume();
+            if (LiveManager.getInstance().isConnected()) {
+                CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
+                LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
+            }else{
+                ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
+            }
         }
 
     }
