@@ -32,6 +32,7 @@ import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Logger;
 import com.harman.bluetooth.constants.EnumEqPresetIdx;
 import com.harman.bluetooth.req.CmdEqPresetSet;
+import com.harman.bluetooth.req.CmdEqSettingsSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -653,7 +654,6 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         } else {
             eqAdapter.setEqModels(eqModelList, true, false, eqRecycleView);
         }
-        //float[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
         if (currSelectedEq != null) {
             if (isDynamicDrawCurve) {
                 pos = 0;
@@ -899,7 +899,6 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         if (!currSelectedEq.eqName.equals(getResources().getString(R.string.off))) {
             PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, currSelectedEq.eqName, mContext);
         }
-        //int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(currSelectedEq);
         if (!isDynamicDrawCurve) {
             equalizerView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
             equalizerLineView.setCurveData(currSelectedEq.getPointX(), currSelectedEq.getPointY(), R.color.text_white_80, isDynamicDrawCurve);
@@ -962,6 +961,14 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                     if (LiveManager.getInstance().isConnected()) {
                         //add the ble user Eq code
                         LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq, getActivity()));
+                        CmdEqSettingsSet cmdEqSettingsSet = EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq, getActivity());
+                        if (cmdEqSettingsSet != null) {
+                            Logger.d(TAG, "cmdEqsettingset:" + "bandcount:" + cmdEqSettingsSet.getBand().length + "calib:" + cmdEqSettingsSet.getCalib());
+                            LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdEqSettingsSet);
+                        } else {
+                            Logger.d(TAG, "cmdEqSettingset is null");
+                        }
+
                     } else {
                         ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(currSelectedEq));
                     }
