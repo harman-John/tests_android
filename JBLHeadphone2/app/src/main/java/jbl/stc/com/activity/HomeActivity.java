@@ -42,7 +42,7 @@ import android.widget.Toast;
 import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.audioManager;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
-import com.google.android.gms.common.util.SharedPreferencesUtils;
+import com.harman.bluetooth.constants.Band;
 import com.harman.bluetooth.constants.EnumAAStatus;
 import com.harman.bluetooth.constants.EnumAncStatus;
 import com.harman.bluetooth.constants.EnumDeviceStatusType;
@@ -53,9 +53,8 @@ import com.harman.bluetooth.req.CmdAncSet;
 import com.harman.bluetooth.req.CmdCurrEq;
 import com.harman.bluetooth.req.CmdDevStatus;
 import com.harman.bluetooth.req.CmdEqPresetSet;
+import com.harman.bluetooth.req.CmdEqSettingsSet;
 import com.harman.bluetooth.ret.RetCurrentEQ;
-
-import jbl.stc.com.manager.LiveCmdManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,6 +82,7 @@ import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.manager.LeManager;
+import jbl.stc.com.manager.LiveCmdManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -525,7 +525,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             }
             case R.id.frame_layout_home_device_image: {
-
                 createDeviceImageView(HomeActivity.this);
                 break;
             }
@@ -568,6 +567,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
             case R.id.image_view_ota_download: {
                 switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                break;
             }
         }
     }
@@ -1112,6 +1112,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
         CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
         LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+    }
+
+    private void setEqSettingsData(){
+        Band[] bands = new Band[10];
+        for (int i =0;i<10; i++) {
+            bands[i] = new Band(1, 3.0f, 32.0f, 1.0f);
+        }
+        CmdEqSettingsSet cmdEqSettingsSet = new CmdEqSettingsSet(4
+                ,EnumEqCategory.GRAPHIC_EQ, 1,64,0.0f,0.0f, bands);
+        LiveCmdManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).mac,cmdEqSettingsSet);
     }
 
     private void timeInterval() {

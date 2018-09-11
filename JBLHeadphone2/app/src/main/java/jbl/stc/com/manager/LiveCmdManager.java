@@ -125,7 +125,7 @@ public class LiveCmdManager {
      */
     public void reqSetEQSettings(String mac,CmdEqSettingsSet reqEqSettingsSet) {
         Logger.d(TAG,"request to set EQ settings");
-        BesEngine.getInstance().sendCommand(mac, reqEqSettingsSet.getCommand());
+        BesEngine.getInstance().sendEqSettingData(mac, reqEqSettingsSet);
     }
 
     /**

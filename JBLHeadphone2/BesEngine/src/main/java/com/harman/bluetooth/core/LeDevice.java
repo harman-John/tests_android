@@ -16,7 +16,9 @@ import android.os.Message;
 
 import com.harman.bluetooth.constants.Band;
 import com.harman.bluetooth.constants.EqData;
+import com.harman.bluetooth.constants.EqSettingsData;
 import com.harman.bluetooth.req.CmdAppAckSet;
+import com.harman.bluetooth.req.CmdEqSettingsSet;
 import com.harman.bluetooth.ret.RetAutoOff;
 import com.harman.bluetooth.constants.EnumAAStatus;
 import com.harman.bluetooth.constants.EnumAncStatus;
@@ -205,6 +207,13 @@ public class LeDevice {
         return true;
     }
 
+    private EqSettingsData eqSettingsData;
+    public boolean writeEqSettingsData(CmdEqSettingsSet cmdEqSettingsSet, boolean isFromUser){
+        this.eqSettingsData = new EqSettingsData(cmdEqSettingsSet.getCommand());
+        this.eqSettingsData.sendIdx = 0;
+        return write(eqSettingsData.getHeader(),isFromUser);
+    }
+
     public boolean write(byte[] data, boolean isFromUser) {
         if (mBluetoothGatt == null) {
             Logger.e(TAG, "write, bluetooth gatt is null");
@@ -357,8 +366,20 @@ public class LeDevice {
         switch (cmdId) {
             case RetHeader.RET_DEV_ACK:
                 retResponse.enumCmdId = EnumCmdId.RET_DEV_ACK;
-                String statusCode = bytesStr.substring(6, 8);
+                String requestCmdId = bytesStr.substring(6, 8);
+                Logger.d(TAG, "classify command, request cmd id: " + requestCmdId);
+                String statusCode = bytesStr.substring(8, 10);
+                Logger.d(TAG, "classify command, status code: " + statusCode);
                 retResponse.object = parseStatusCode(statusCode);
+                if (requestCmdId.equals("41") && eqSettingsData!= null){
+                    Message msg = new Message();
+                    msg.what = MSG_SEND_EQ_SETTINGS_DATA;
+                    Logger.d(TAG, "classify command, send idx: " + eqSettingsData.sendIdx
+                            +", package count: "+eqSettingsData.packageCount);
+                    if (eqSettingsData.sendIdx < eqSettingsData.packageCount ) {
+                        leHandler.sendMessage(msg);
+                    }
+                }
                 break;
             case RetHeader.RET_DEV_BYE:
                 retResponse.enumCmdId = EnumCmdId.RET_DEV_BYE;
@@ -739,6 +760,7 @@ public class LeDevice {
     private final static int MSG_ON_MTU_CHANGED = 0;
     private final static int MSG_APP_ACK = 1;
     private final static int MSG_ON_CHAR_CHANGE = 2;
+    private final static int MSG_SEND_EQ_SETTINGS_DATA = 3;
 
     private class LeHandler extends Handler {
 
@@ -775,6 +797,12 @@ public class LeDevice {
                     synchronized (lock) {
                         lock.notifyAll();
                     }
+                    break;
+                }
+                case MSG_SEND_EQ_SETTINGS_DATA: {
+                    Logger.d(TAG, "msg send eq settings data");
+                    write(eqSettingsData.getPayload(eqSettingsData.sendIdx), false);
+                    eqSettingsData.sendIdx++;
                     break;
                 }
                 default: {

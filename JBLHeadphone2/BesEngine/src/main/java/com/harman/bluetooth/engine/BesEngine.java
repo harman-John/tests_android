@@ -6,6 +6,7 @@ import android.content.Context;
 import com.harman.bluetooth.core.LeDevice;
 import com.harman.bluetooth.listeners.BleListener;
 import com.harman.bluetooth.ota.BleOta;
+import com.harman.bluetooth.req.CmdEqSettingsSet;
 import com.harman.bluetooth.utils.Logger;
 
 import java.util.ArrayList;
@@ -75,6 +76,16 @@ public class BesEngine {
             }
         }
         return false;
+    }
+
+    public boolean sendEqSettingData(String mac, CmdEqSettingsSet cmdEqSettingsSet){
+        if (cmdEqSettingsSet == null) {
+            Logger.e(TAG, "set eq settings data error, cmd eq settings is null");
+            return false;
+        }
+        Logger.d(TAG,"set eq setting data, mac = "+mac);
+        LeDevice mLeDevice = mLeConnectorMap.get(mac);
+        return mLeDevice != null && mLeDevice.writeEqSettingsData(cmdEqSettingsSet,true);
     }
 
     public boolean sendCommand(String mac, byte[] command) {

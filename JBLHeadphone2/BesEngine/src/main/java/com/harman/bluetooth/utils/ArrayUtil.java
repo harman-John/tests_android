@@ -160,8 +160,36 @@ public class ArrayUtil {
                 | ((src[3] & 0xFF) << 24);
     }
 
+    public static byte[] intToByteArray(int a) {
+        return new byte[] {
+                (byte) ((a >> 24) & 0xFF),
+                (byte) ((a >> 16) & 0xFF),
+                (byte) ((a >> 8) & 0xFF),
+                (byte) (a & 0xFF)
+        };
+    }
+
     public static float hexStrToFloat(String bc){
         byte[] bytes = hexStr2Bytes(bc);
         return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+    }
+
+    public static byte[] float2bytes(float f) {
+        int fbit = Float.floatToIntBits(f);
+        byte[] b = new byte[4];
+        for (int i = 0; i < 4; i++) {
+            b[i] = (byte) (fbit >> (24 - i * 8));
+        }
+        int len = b.length;
+        byte[] dest = new byte[len];
+        System.arraycopy(b, 0, dest, 0, len);
+        byte temp;
+        for (int i = 0; i < len / 2; ++i) {
+            temp = dest[i];
+            dest[i] = dest[len - i - 1];
+            dest[len - i - 1] = temp;
+        }
+        return dest;
+
     }
 }

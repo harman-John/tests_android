@@ -9,15 +9,13 @@ public class CmdEqSettingsSet extends BaseCmd {
 
     private final static String TAG = CmdEqSettingsSet.class.getSimpleName();
 
-    public CmdEqSettingsSet(int packageIndex,
-                            int presetIndex,
+    public CmdEqSettingsSet(int presetIndex,
                             EnumEqCategory eqCATEGORY,
                             float calib,
                             int sampleRate,
                             float gain0,
                             float gain1,
                             Band[] band) {
-        this.packageIndex = packageIndex;
         this.presetIndex = presetIndex;
         this.eqCATEGORY = eqCATEGORY;
         this.calib = calib;
@@ -25,9 +23,8 @@ public class CmdEqSettingsSet extends BaseCmd {
         this.gain0 = gain0;
         this.gain1 = gain1;
         this.band = band;
+        combine(CmdHeader.SET_EQ_SETTINGS, getPayload());
     }
-
-    private int packageIndex; //always 4
 
     private int presetIndex; //always 4
 
@@ -76,7 +73,7 @@ public class CmdEqSettingsSet extends BaseCmd {
     }
 
     private byte[] getPayload() {
-        byte[] payload = new byte[10 + 9 * band.length];
+        byte[] payload = new byte[19 + 16 * band.length];
         payload[0] = (byte) presetIndex;
         switch (eqCATEGORY) {
             case DESIGN_EQ:
@@ -89,46 +86,31 @@ public class CmdEqSettingsSet extends BaseCmd {
                 payload[1] = (byte) 0x02;
                 break;
         }
-        byte[] cali = float2bytes(calib);
+        byte[] cali = ArrayUtil.float2bytes(calib);
         System.arraycopy(cali, 0, payload, 2, 4);
         payload[6] = (byte) sampleRate;
-        payload[7] = (byte) gain0;
-        payload[8] = (byte) gain1;
-        payload[9] = (byte) band.length;
+        byte[] gain0 = ArrayUtil.float2bytes(this.gain0);
+        System.arraycopy(gain0, 0, payload, 7, 4);
+
+        byte[] gain1 = ArrayUtil.float2bytes(this.gain1);
+        System.arraycopy(gain1, 0, payload, 11, 4);
+
+        byte[] bandCount = ArrayUtil.intToByteArray(this.band.length);
+        System.arraycopy(bandCount, 0, payload, 12, 4);
 
         for (int i = 0; i < band.length; i++) {
-            int pos = 10 + 13 * i;
+            int pos = 16 + 16 * i;
             payload[pos] = (byte) band[i].type;
-            payload[pos + 1] = (byte) band[i].gain;
-            payload[pos + 5] = (byte) band[i].fc;
-            payload[pos + 9] = (byte) band[i].q;
+            payload[pos + 4] = (byte) band[i].gain;
+            payload[pos + 8] = (byte) band[i].fc;
+            payload[pos + 12] = (byte) band[i].q;
         }
         Logger.d(TAG, "get payload: " + ArrayUtil.bytesToHex(payload));
         return payload;
     }
 
-    private static byte[] float2bytes(float f) {
-        int fbit = Float.floatToIntBits(f);
-        byte[] b = new byte[4];
-        for (int i = 0; i < 4; i++) {
-            b[i] = (byte) (fbit >> (24 - i * 8));
-        }
-        int len = b.length;
-        byte[] dest = new byte[len];
-        System.arraycopy(b, 0, dest, 0, len);
-        byte temp;
-        for (int i = 0; i < len / 2; ++i) {
-            temp = dest[i];
-            dest[i] = dest[len - i - 1];
-            dest[len - i - 1] = temp;
-        }
-        return dest;
-
-    }
-
     @Override
     public byte[] getCommand() {
-        combine(CmdHeader.SET_EQ_SETTINGS, getPayload());
         return super.getCommand();
     }
 }
