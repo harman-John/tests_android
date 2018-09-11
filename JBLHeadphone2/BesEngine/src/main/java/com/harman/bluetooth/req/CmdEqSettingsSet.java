@@ -43,6 +43,38 @@ public class CmdEqSettingsSet extends BaseCmd {
 
     private Band[] band;
 
+    public void setCalib(float calib) {
+        this.calib = calib;
+    }
+
+    public int getPackageIndex() {
+        return packageIndex;
+    }
+
+    public int getPresetIndex() {
+        return presetIndex;
+    }
+
+    public EnumEqCategory getEqCATEGORY() {
+        return eqCATEGORY;
+    }
+
+    public int getSampleRate() {
+        return sampleRate;
+    }
+
+    public float getGain0() {
+        return gain0;
+    }
+
+    public float getGain1() {
+        return gain1;
+    }
+
+    public Band[] getBand() {
+        return band;
+    }
+
     private byte[] getPayload() {
         byte[] payload = new byte[10 + 9 * band.length];
         payload[0] = (byte) presetIndex;

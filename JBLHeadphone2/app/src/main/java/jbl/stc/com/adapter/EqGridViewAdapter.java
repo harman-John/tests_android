@@ -29,18 +29,20 @@ import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.view.EqGridView;
 
-public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGridBaseAdapter{
+public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGridBaseAdapter {
     private static final String TAG = EqGridViewAdapter.class.getSimpleName();
     private List<EQModel> eqModels = new ArrayList<>();
     public int mHidePosition = -1;
     private Context context;
     private LightX lightX;
+
     public void setEqModels(List<EQModel> models, LightX lightX) {
         this.eqModels.clear();
         this.eqModels.addAll(models);
-        this.lightX=lightX;
+        this.lightX = lightX;
         notifyDataSetChanged();
     }
+
     @Override
     public int getCount() {
         return eqModels.size();
@@ -60,23 +62,23 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder viewHolder;
         context = parent.getContext();
-        String curEqName= PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, context, "");
+        String curEqName = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, context, "");
         if (convertView == null) {
             convertView = View.inflate(context, R.layout.item_eq_more_setting_grid, null);
             viewHolder = new ViewHolder();
             viewHolder.tv_eqname = (TextView) convertView.findViewById(R.id.tv_eqname);
-            viewHolder.image_view=(ImageView) convertView.findViewById(R.id.image_view);
+            viewHolder.image_view = (ImageView) convertView.findViewById(R.id.image_view);
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        final EQModel eqModel =eqModels.get(position);
+        final EQModel eqModel = eqModels.get(position);
         viewHolder.tv_eqname.setText(eqModel.eqName);
-        if (!TextUtils.isEmpty(curEqName)&&curEqName.equals(eqModel.eqName)){
+        if (!TextUtils.isEmpty(curEqName) && curEqName.equals(eqModel.eqName)) {
             viewHolder.image_view.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_selected);
             viewHolder.tv_eqname.setTextColor(context.getResources().getColor(R.color.white));
-        }else{
+        } else {
             viewHolder.image_view.setBackgroundResource(R.drawable.shape_circle_eq_name_bg_normal);
             viewHolder.tv_eqname.setTextColor(context.getResources().getColor(R.color.eq_panel_name_text));
         }
@@ -92,7 +94,7 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
 
     @Override
     public void reorderItems(int oldPosition, int newPosition) {
-         if(oldPosition < 0) return;
+        if (oldPosition < 0) return;
 
         EQModel eqModel = eqModels.get(oldPosition);
         if (oldPosition < newPosition) {
@@ -116,52 +118,52 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
 
     @Override
     public void deleteItem(int deletePosition) {
-        String deleteEqName=eqModels.get(deletePosition).eqName;
-        String curEqName= PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, context, "");
-        int mConnectStatus = PreferenceUtils.getInt(JBLConstant.KEY_CONNECT_STATUS,context);
-          if (null != eqModels &&eqModels.size()>0&& deletePosition < eqModels.size()) {
-                EQSettingManager.OperationStatus operationStatus = EQSettingManager.get().deleteEQ(eqModels.get(deletePosition).eqName,context);
-                eqModels.remove(deletePosition);
-              if (!TextUtils.isEmpty(curEqName)&&!(curEqName.equals(context.getResources().getString(R.string.off)))&&
-                      !(curEqName.equals(context.getResources().getString(R.string.jazz)))
-                      &&!(curEqName.equals(context.getResources().getString(R.string.vocal)))&&
-                      !(curEqName.equals(context.getResources().getString(R.string.bass)))){
-                  if (operationStatus == EQSettingManager.OperationStatus.DELETED) {
-                          if (eqModels!=null&&eqModels.size()>0){
-                              if (curEqName.equals(deleteEqName)){
-                              int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(eqModels.get(0));
-                              if (LeManager.getInstance().isConnected()) {
-                                  //add the ble user Eq code
-                              }else{
-                                  ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
-                              }
-                              PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,eqModels.get(0).eqName,context);
-                              PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, eqModels.get(0).eqName, context);
-                             }
-                          }else{
-                              if (LeManager.getInstance().isConnected()) {
-                                  LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
-                              }else{
-                                  ANCControlManager.getANCManager(context).applyPresetWithoutBand(GraphicEQPreset.Off);
-                              }
-                              PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME,context.getResources().getString(R.string.off),context);
-                              PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF,context.getResources().getString(R.string.jazz),context);
+        String deleteEqName = eqModels.get(deletePosition).eqName;
+        String curEqName = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, context, "");
+        int mConnectStatus = PreferenceUtils.getInt(JBLConstant.KEY_CONNECT_STATUS, context);
+        if (null != eqModels && eqModels.size() > 0 && deletePosition < eqModels.size()) {
+            EQSettingManager.OperationStatus operationStatus = EQSettingManager.get().deleteEQ(eqModels.get(deletePosition).eqName, context);
+            eqModels.remove(deletePosition);
+            if (!TextUtils.isEmpty(curEqName) && !(curEqName.equals(context.getResources().getString(R.string.off))) &&
+                    !(curEqName.equals(context.getResources().getString(R.string.jazz)))
+                    && !(curEqName.equals(context.getResources().getString(R.string.vocal))) &&
+                    !(curEqName.equals(context.getResources().getString(R.string.bass)))) {
+                if (operationStatus == EQSettingManager.OperationStatus.DELETED) {
+                    if (eqModels != null && eqModels.size() > 0) {
+                        if (curEqName.equals(deleteEqName)) {
+                            int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(eqModels.get(0));
+                            if (LeManager.getInstance().isConnected()) {
+                                //add the ble user Eq code
+                                LiveCmdManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModels.get(0), context));
+                            } else {
+                                ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
+                            }
+                            PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, eqModels.get(0).eqName, context);
+                            PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, eqModels.get(0).eqName, context);
+                        }
+                    } else {
+                        if (LeManager.getInstance().isConnected()) {
+                            LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
+                        } else {
+                            ANCControlManager.getANCManager(context).applyPresetWithoutBand(GraphicEQPreset.Off);
+                        }
+                        PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, context.getResources().getString(R.string.off), context);
+                        PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, context.getResources().getString(R.string.jazz), context);
 
-                      }
-                  }
-              }
-
-              notifyDataSetChanged();
+                    }
+                }
             }
 
+            notifyDataSetChanged();
+        }
+
 
     }
 
-    private class ViewHolder{
-      private TextView  tv_eqname;
-      private ImageView image_view;
+    private class ViewHolder {
+        private TextView tv_eqname;
+        private ImageView image_view;
     }
-
 
 
 }

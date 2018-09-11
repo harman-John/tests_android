@@ -165,7 +165,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         setContentView(R.layout.activity_home);
         DeviceManager.getInstance(this).setOnRetListener(this);
         mConnectStatus = getIntent().getIntExtra(JBLConstant.KEY_CONNECT_STATUS, -1);
-        PreferenceUtils.setInt(JBLConstant.KEY_CONNECT_STATUS,mConnectStatus,HomeActivity.this);
+        PreferenceUtils.setInt(JBLConstant.KEY_CONNECT_STATUS, mConnectStatus, HomeActivity.this);
         Intent intent = getIntent();
         String action = intent.getAction();
         Logger.d(TAG, "onResume action =" + action + ",mConnectStatus =" + mConnectStatus);
@@ -514,7 +514,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.arrowUpImage: {
                 EqSettingFragment fragment = new EqSettingFragment();
                 Bundle bundle = new Bundle();
-                bundle.putInt(JBLConstant.KEY_CONNECT_STATUS,mConnectStatus);
+                bundle.putInt(JBLConstant.KEY_CONNECT_STATUS, mConnectStatus);
                 fragment.setArguments(bundle);
                 switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                 break;
@@ -757,7 +757,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                                     Logger.d(TAG, String.valueOf(yMove));
                                     EqSettingFragment fragment = new EqSettingFragment();
                                     Bundle bundle = new Bundle();
-                                    bundle.putInt(JBLConstant.KEY_CONNECT_STATUS,mConnectStatus);
+                                    bundle.putInt(JBLConstant.KEY_CONNECT_STATUS, mConnectStatus);
                                     bundle.putFloat("rawY", screenHeight - bottomHeight);
                                     fragment.setArguments(bundle);
                                     switchFragment(fragment, 4);
@@ -796,7 +796,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                                     if (((fr != null) && !(fr instanceof EqSettingFragment)) || (fr == null)) {
                                         EqSettingFragment fragment = new EqSettingFragment();
                                         Bundle bundle = new Bundle();
-                                        bundle.putInt(JBLConstant.KEY_CONNECT_STATUS,mConnectStatus);
+                                        bundle.putInt(JBLConstant.KEY_CONNECT_STATUS, mConnectStatus);
                                         fragment.setArguments(bundle);
                                         switchFragment(fragment, JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
                                     }
@@ -876,7 +876,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             if (LeManager.getInstance().isConnected()) {
                 CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
                 LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
-            }else{
+            } else {
                 ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
             }
         }
@@ -894,13 +894,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 if (eqModels.size() < 5) {
                     if (LeManager.getInstance().isConnected()) {
                         LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
-                    }else{
+                    } else {
                         ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz);
                     }
                 } else {
                     if (LeManager.getInstance().isConnected()) {
                         // add the ble user eq code
-                    }else{
+                        LiveCmdManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModels.get(4), HomeActivity.this));
+                    } else {
                         ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModels.get(4)));
                     }
                 }
@@ -909,26 +910,27 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 if (curEqNameExclusiveOff.equals(getString(R.string.jazz))) {
                     if (LeManager.getInstance().isConnected()) {
                         LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
-                    }else{
+                    } else {
                         ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz);
                     }
                 } else if (curEqNameExclusiveOff.equals(getString(R.string.vocal))) {
                     if (LeManager.getInstance().isConnected()) {
                         LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.VOCAL));
-                    }else{
+                    } else {
                         ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Vocal);
                     }
                 } else if (curEqNameExclusiveOff.equals(getString(R.string.bass))) {
                     if (LeManager.getInstance().isConnected()) {
                         LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.BASS));
-                    }else{
+                    } else {
                         ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Bass);
                     }
                 } else {
                     EQModel eqModel = EQSettingManager.get().getEQModelByName(curEqNameExclusiveOff, this);
                     if (LeManager.getInstance().isConnected()) {
                         // add the ble user eq code
-                    }else{
+                        LiveCmdManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModel, HomeActivity.this));
+                    } else {
                         ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModel));
                     }
                 }
@@ -938,7 +940,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             Logger.d(TAG, "turn off the eq");
             if (LeManager.getInstance().isConnected()) {
                 LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
-            }else{
+            } else {
                 ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Off);
             }
         }
@@ -1103,7 +1105,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void getBleDeviceInfo() {
-        Logger.i(TAG,"get ble device info");
+        Logger.i(TAG, "get ble device info");
         LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
         CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
         LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
@@ -1215,9 +1217,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     ANCControlManager.getANCManager(getApplicationContext()).getFirmwareInfo();
                     break;
                 }
-                case MSG_GET_DESIGN_EQ:{
-                    CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
-                    LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+                case MSG_GET_DESIGN_EQ: {
+                    List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this, SharePreferenceUtil.BLE_DESIGN_EQ);
+                    if (retCurrentEQList != null && retCurrentEQList.size() > 0) {
+                        Logger.d(TAG, "retCurrentEQ ble design eq band count:" + retCurrentEQList.get(0).bandCount);
+                    } else {
+                        CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
+                        LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+                    }
                     break;
                 }
             }
@@ -1537,17 +1544,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         Logger.d(TAG, "retCurrentEQ:" + retCurrentEQ.enumEqCategory);
                         if (retCurrentEQ.enumEqCategory == EnumEqCategory.DESIGN_EQ) {
                             //save the designEq
-                            List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this, SharePreferenceUtil.BLE_DESIGN_EQ);
-                            if (retCurrentEQList!=null&&retCurrentEQList.size()>0)
-                            Logger.d(TAG, "retCurrentEQ ble design eq band count:" + retCurrentEQList.get(0).bandCount);
                             List<RetCurrentEQ> retCurrentEQS = new ArrayList<>();
                             retCurrentEQS.add(retCurrentEQ);
                             SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this, retCurrentEQS, SharePreferenceUtil.BLE_DESIGN_EQ);
                         } else if (retCurrentEQ.enumEqCategory == EnumEqCategory.GRAPHIC_EQ) {
                             //parse the graficEq
                             parseBleCustomEq(retCurrentEQ);
-
-
                         }
                     }
                 }
@@ -1619,47 +1621,48 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void parseBleCustomEq(RetCurrentEQ retCurrentEQ) {
-        for (int i=0;i<retCurrentEQ.bandCount;i++){
-            Logger.d(TAG,"reCurrentEQ GraphicEq fc:"+i+retCurrentEQ.bands[i].fc);
+        for (int i = 0; i < retCurrentEQ.bandCount; i++) {
+            Logger.d(TAG, "reCurrentEQ GraphicEq fc:" + i + retCurrentEQ.bands[i].fc);
         }
-        List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this,SharePreferenceUtil.BLE_EQS);
+        List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this, SharePreferenceUtil.BLE_EQS);
         boolean isExist = false;
-        if (retCurrentEQList!=null && retCurrentEQList.size()>0){
-            Logger.d(TAG,"retCurrentEQList size is "+retCurrentEQList.size());
-            for (int i =0;i<retCurrentEQList.size();i++){
+        if (retCurrentEQList != null && retCurrentEQList.size() > 0) {
+            Logger.d(TAG, "retCurrentEQList size is " + retCurrentEQList.size());
+            for (int i = 0; i < retCurrentEQList.size(); i++) {
                 RetCurrentEQ retCurrentEQModel = retCurrentEQList.get(i);
-                if (retCurrentEQModel.enumEqPresetIdx==retCurrentEQ.enumEqPresetIdx&&retCurrentEQModel.sampleRate==retCurrentEQ.sampleRate
-                        &&retCurrentEQModel.gain0==retCurrentEQ.gain0 &&retCurrentEQModel.gain1==retCurrentEQ.gain1
-                        &&retCurrentEQModel.bandCount == retCurrentEQ.bandCount){
-                    for (int j =0;j<retCurrentEQModel.bandCount;j++){
-                        if (retCurrentEQModel.bands[j].type ==retCurrentEQ.bands[j].type &&retCurrentEQModel.bands[j].gain ==retCurrentEQ.bands[j].gain
-                                &&retCurrentEQModel.bands[j].fc ==retCurrentEQ.bands[j].fc&&retCurrentEQModel.bands[j].q ==retCurrentEQ.bands[j].q){
+                if (retCurrentEQModel.enumEqPresetIdx == retCurrentEQ.enumEqPresetIdx && retCurrentEQModel.sampleRate == retCurrentEQ.sampleRate
+                        && retCurrentEQModel.gain0 == retCurrentEQ.gain0 && retCurrentEQModel.gain1 == retCurrentEQ.gain1
+                        && retCurrentEQModel.bandCount == retCurrentEQ.bandCount) {
+                    for (int j = 0; j < retCurrentEQModel.bandCount; j++) {
+                        if (retCurrentEQModel.bands[j].type == retCurrentEQ.bands[j].type && retCurrentEQModel.bands[j].gain == retCurrentEQ.bands[j].gain
+                                && retCurrentEQModel.bands[j].fc == retCurrentEQ.bands[j].fc && retCurrentEQModel.bands[j].q == retCurrentEQ.bands[j].q) {
                             isExist = true;
                         }
                     }
-                    if (isExist){
+                    if (isExist) {
                         break;
                     }
                 }
             }
-            if (!isExist){
-                Logger.d(TAG,"retCurrentEQ is not exist,add it");
+            if (!isExist) {
+                Logger.d(TAG, "retCurrentEQ is not exist,add it");
                 retCurrentEQList.add(retCurrentEQ);
-            }else{
-                Logger.d(TAG,"retCurrentEQ is exist");
+            } else {
+                Logger.d(TAG, "retCurrentEQ is exist");
             }
-        }else{
-            Logger.d(TAG,"retCurrentEQList size is 0 ,add it");
+        } else {
+            Logger.d(TAG, "retCurrentEQList size is 0 ,add it");
             retCurrentEQList.add(retCurrentEQ);
         }
-        SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this,retCurrentEQList,SharePreferenceUtil.BLE_EQS);
+        SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this, retCurrentEQList, SharePreferenceUtil.BLE_EQS);
         List<RetCurrentEQ> retGraphicEQs = new ArrayList<>();
         retGraphicEQs.add(retCurrentEQ);
-        SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this,retGraphicEQs,SharePreferenceUtil.BLE_EQS);
+        SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this, retGraphicEQs, SharePreferenceUtil.BLE_EQS);
         homeHandler.sendEmptyMessageDelayed(MSG_GET_DESIGN_EQ, 500);
     }
 
     private final static int MSG_GET_DESIGN_EQ = 7;
+
     private void doInBootLoaderMode(boolean isInBootloaderMode) {
         if (isInBootloaderMode) {
             switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {

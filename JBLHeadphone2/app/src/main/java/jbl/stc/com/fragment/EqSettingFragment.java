@@ -936,34 +936,35 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 case 0:
                     if (LeManager.getInstance().isConnected()) {
                         LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
-                    }else{
+                    } else {
                         ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Off);
                     }
                     break;
                 case 1:
                     if (LeManager.getInstance().isConnected()) {
                         LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
-                    }else{
+                    } else {
                         ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz);
                     }
                     break;
                 case 2:
                     if (LeManager.getInstance().isConnected()) {
                         LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.VOCAL));
-                    }else{
+                    } else {
                         ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Vocal);
                     }
                     break;
                 case 3:
                     if (LeManager.getInstance().isConnected()) {
                         LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.BASS));
-                    }else{
+                    } else {
                         ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Bass);
                     }
                     break;
                 default:
                     if (LeManager.getInstance().isConnected()) {
                         //add the ble user Eq code
+                        LiveCmdManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq, getActivity()));
                     } else {
                         ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(currSelectedEq));
                     }

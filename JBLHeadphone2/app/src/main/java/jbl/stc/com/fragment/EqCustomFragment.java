@@ -33,6 +33,8 @@ import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.listener.OnCustomEqListener;
 import jbl.stc.com.listener.OnEqChangeListener;
 import jbl.stc.com.manager.LeManager;
+import jbl.stc.com.manager.LiveCmdManager;
+import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.ToastUtil;
@@ -128,8 +130,8 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         rootView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode==KeyEvent.KEYCODE_BACK && event.getAction() ==KeyEvent.ACTION_DOWN){
-                    Logger.d(TAG,"click back");
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    Logger.d(TAG, "click back");
                     if (isAddOperate) {
                         EQSettingManager.get().deleteEQ(currSelectedEq.eqName, getActivity());
                         if (application.globalEqInfo.eqOn) {
@@ -142,7 +144,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                         }
                     }
                     getActivity().onBackPressed();
-                    return  true;
+                    return true;
                 }
                 return false;
             }
@@ -159,8 +161,8 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             currSelectedEq = (EQModel) bundle.getSerializable(EXTRA_EQ_MODEL);
             isPreset = bundle.getBoolean(EXTRA_IS_PRESET);
         }
-        if (isPreset){
-            defaultEqName =currSelectedEq.eqName;
+        if (isPreset) {
+            defaultEqName = currSelectedEq.eqName;
         }
         Logger.d(TAG, "isAddOperate=" + isAddOperate + ",currSelectedEq=" + currSelectedEq);
         if (currSelectedEq == null) {
@@ -298,59 +300,59 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             }
         }
         return EQSettingManager.getNewEqName(eqModelList, eqName, updateEqName);*/
-        String eqName="";
-        if (currSelectedEq!=null){
+        String eqName = "";
+        if (currSelectedEq != null) {
 
-            if (isAddOperate){
+            if (isAddOperate) {
 
-                boolean isContainDefault =false;
-                boolean isEqualDefault=false;
-                List<EQModel> eqNameModels =new ArrayList<>();
-                for (EQModel eqModel :eqModelList){
-                    if (eqModel.eqName.contains(defaultEqName)){
-                        if (eqModel.eqName.equals(defaultEqName)){
-                            isEqualDefault=true;
+                boolean isContainDefault = false;
+                boolean isEqualDefault = false;
+                List<EQModel> eqNameModels = new ArrayList<>();
+                for (EQModel eqModel : eqModelList) {
+                    if (eqModel.eqName.contains(defaultEqName)) {
+                        if (eqModel.eqName.equals(defaultEqName)) {
+                            isEqualDefault = true;
                         }
-                        isContainDefault =true;
-                        if (eqModel.eqName.length()>defaultEqName.length()){
+                        isContainDefault = true;
+                        if (eqModel.eqName.length() > defaultEqName.length()) {
                             eqNameModels.add(eqModel);
                         }
                     }
                 }
-                if (isContainDefault){
-                    if (isEqualDefault){
-                        List<Integer> eqNameIndexs=new ArrayList<>();
-                        if (eqNameIndexs!=null&&eqNameModels.size()>0){
-                            for (EQModel eqModel:eqNameModels){
-                                String[] strs=eqModel.eqName.split(defaultEqName);
+                if (isContainDefault) {
+                    if (isEqualDefault) {
+                        List<Integer> eqNameIndexs = new ArrayList<>();
+                        if (eqNameIndexs != null && eqNameModels.size() > 0) {
+                            for (EQModel eqModel : eqNameModels) {
+                                String[] strs = eqModel.eqName.split(defaultEqName);
                                 eqNameIndexs.add(Integer.valueOf(strs[1]));
                             }
                             Collections.max(eqNameIndexs);
-                            int minIndex=Collections.min(eqNameIndexs);
-                            int maxIndex=Collections.max(eqNameIndexs);
-                            Logger.d(TAG,"EqNamemax:"+Collections.max(eqNameIndexs));
-                            Logger.d(TAG,"EqNamemin:"+Collections.min(eqNameIndexs));
-                            if (minIndex>2){
-                                eqName=defaultEqName+String.valueOf(minIndex-1);
-                            }else{
-                                eqName=defaultEqName+String.valueOf(maxIndex+1);
+                            int minIndex = Collections.min(eqNameIndexs);
+                            int maxIndex = Collections.max(eqNameIndexs);
+                            Logger.d(TAG, "EqNamemax:" + Collections.max(eqNameIndexs));
+                            Logger.d(TAG, "EqNamemin:" + Collections.min(eqNameIndexs));
+                            if (minIndex > 2) {
+                                eqName = defaultEqName + String.valueOf(minIndex - 1);
+                            } else {
+                                eqName = defaultEqName + String.valueOf(maxIndex + 1);
                             }
-                        }else{
-                            eqName=defaultEqName+"2";
+                        } else {
+                            eqName = defaultEqName + "2";
                         }
-                    }else{
-                        eqName=defaultEqName;
+                    } else {
+                        eqName = defaultEqName;
                     }
-                }else{
-                    if (defaultEqName.equals(getString(R.string.create_eq_default_name))){
-                        eqName=defaultEqName;
+                } else {
+                    if (defaultEqName.equals(getString(R.string.create_eq_default_name))) {
+                        eqName = defaultEqName;
                     }
                 }
-            }else{
-                eqName =currSelectedEq.eqName;
+            } else {
+                eqName = currSelectedEq.eqName;
             }
         }
-        return  eqName;
+        return eqName;
     }
 
     private void setResultOk() {
@@ -363,10 +365,11 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             onCustomEqListener.onCustomEqResult(currSelectedEq, isAddOperate);
         } else {
             application.globalEqInfo.hasEq = true;
-            int mConnectStatus = PreferenceUtils.getInt(JBLConstant.KEY_CONNECT_STATUS,getActivity());
+            int mConnectStatus = PreferenceUtils.getInt(JBLConstant.KEY_CONNECT_STATUS, getActivity());
             if (LeManager.getInstance().isConnected()) {
                 //add the ble user Eq code
-            }else{
+                LiveCmdManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq, getActivity()));
+            } else {
                 ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
             }
             switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);

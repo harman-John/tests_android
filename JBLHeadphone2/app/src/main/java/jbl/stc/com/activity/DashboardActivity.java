@@ -21,6 +21,8 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.harman.bluetooth.constants.Band;
+import com.harman.bluetooth.req.CmdEqSettingsSet;
 import com.harman.bluetooth.ret.RetCurrentEQ;
 
 import java.util.List;
@@ -360,8 +362,8 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onCheckDevices() {
-        if (myGridAdapter == null){
-            Logger.d(TAG,"on check devices, my grid adapter is null");
+        if (myGridAdapter == null) {
+            Logger.d(TAG, "on check devices, my grid adapter is null");
             return;
         }
         myGridAdapter.setMyAdapterList();
@@ -576,30 +578,28 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         }
     };
 
-    public float getCalib() {
-        List<RetCurrentEQ> bleDesignEqs = SharePreferenceUtil.readCurrentEqSet(DashboardActivity.this,SharePreferenceUtil.BLE_DESIGN_EQ);
+    public float getCalib(CmdEqSettingsSet cmdEqSettingsSet) {
+        List<RetCurrentEQ> bleDesignEqs = SharePreferenceUtil.readCurrentEqSet(DashboardActivity.this, SharePreferenceUtil.BLE_DESIGN_EQ);
         designer_cfg designerCfg = null;
         IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[0];
         designer_cfg userCfg = null;
         IIR_PARAM_T[] user_iir_param_t = new IIR_PARAM_T[0];
-        if (bleDesignEqs!=null&&bleDesignEqs.size()>0){
+        if (bleDesignEqs != null && bleDesignEqs.size() > 0) {
             RetCurrentEQ bleDesignEq = bleDesignEqs.get(0);
             designerCfg = new designer_cfg(bleDesignEq.gain0, bleDesignEq.gain1, bleDesignEq.bandCount, bleDesignEq.sampleRate);
             def_iir_param_t = new IIR_PARAM_T[bleDesignEq.bandCount];
-            for (int i=0;i<bleDesignEq.bandCount;i++){
+            for (int i = 0; i < bleDesignEq.bandCount; i++) {
                 def_iir_param_t[i] = new IIR_PARAM_T(bleDesignEq.bands[i].type, bleDesignEq.bands[i].gain, bleDesignEq.bands[i].fc, bleDesignEq.bands[i].q);
             }
         }
 
-        List<RetCurrentEQ> bleGraphicEqs = SharePreferenceUtil.readCurrentEqSet(DashboardActivity.this,SharePreferenceUtil.BLE_GRAPHIC_EQ);
-        if (bleGraphicEqs!=null&&bleGraphicEqs.size()>0){
-            RetCurrentEQ bleGraphicEq = bleGraphicEqs.get(0);
-            userCfg = new designer_cfg(bleGraphicEq.gain0, bleGraphicEq.gain1, bleGraphicEq.bandCount, bleGraphicEq.sampleRate);
-            user_iir_param_t = new IIR_PARAM_T[bleGraphicEq.bandCount];
-            for (int i=0;i<bleGraphicEq.bandCount;i++){
-                user_iir_param_t[i] = new IIR_PARAM_T(bleGraphicEq.bands[i].type, bleGraphicEq.bands[i].gain, bleGraphicEq.bands[i].fc, bleGraphicEq.bands[i].q);
-            }
+        Band[] bands = cmdEqSettingsSet.getBand();
+        userCfg = new designer_cfg(cmdEqSettingsSet.getGain0(), cmdEqSettingsSet.getGain1(), bands.length, cmdEqSettingsSet.getSampleRate());
+        user_iir_param_t = new IIR_PARAM_T[bands.length];
+        for (int i = 0; i < bands.length; i++) {
+            user_iir_param_t[i] = new IIR_PARAM_T(bands[i].type, bands[i].gain, bands[i].fc, bands[i].q);
         }
+
         /*designer_cfg designerCfg = new designer_cfg(0.21f, 0.22f, 1, 40);
         IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[2];
         def_iir_param_t[0] = new IIR_PARAM_T(2, 0.25f, 2, 3);

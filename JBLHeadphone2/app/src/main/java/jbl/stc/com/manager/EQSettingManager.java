@@ -8,12 +8,19 @@ import android.util.Log;
 
 
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
+import com.harman.bluetooth.constants.Band;
+import com.harman.bluetooth.constants.EnumEqCategory;
+import com.harman.bluetooth.constants.EnumEqPresetIdx;
+import com.harman.bluetooth.req.CmdEqSettingsSet;
+import com.harman.bluetooth.ret.RetCurrentEQ;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.constant.EqDbKey;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.logger.Logger;
@@ -21,6 +28,7 @@ import jbl.stc.com.storage.DatabaseHelper;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
+import jbl.stc.com.utils.SharePreferenceUtil;
 
 
 public class EQSettingManager implements EqDbKey {
@@ -380,45 +388,45 @@ public class EQSettingManager implements EqDbKey {
         return model;
     }
 
-    public EQModel getCustomeEQModelFromValues(int[] eqArray,String eqName){
+    public EQModel getCustomeEQModelFromValues(int[] eqArray, String eqName) {
         float[] pointY = new float[10];
         float[] pointX = {32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000};
-        EQModel eqModel =new EQModel();
-        eqModel.eqName=eqName;
-        eqModel.value_32=eqArray[0];
-        pointY[0]=eqModel.value_32;
-        eqModel.value_64=eqArray[1];
-        pointY[1]=eqModel.value_64;
-        eqModel.value_125=eqArray[2];
-        pointY[2]=eqModel.value_125;
-        eqModel.value_250=eqArray[3];
-        pointY[3]=eqModel.value_250;
-        eqModel.value_500=eqArray[4];
-        pointY[4]=eqModel.value_500;
-        eqModel.value_1000=eqArray[5];
-        pointY[5]=eqModel.value_1000;
-        eqModel.value_2000=eqArray[6];
-        pointY[6]=eqModel.value_2000;
-        eqModel.value_4000=eqArray[7];
-        pointY[7]=eqModel.value_4000;
-        eqModel.value_8000=eqArray[8];
-        pointY[8]=eqModel.value_8000;
-        eqModel.value_16000=eqArray[9];
-        pointY[9]=eqModel.value_16000;
+        EQModel eqModel = new EQModel();
+        eqModel.eqName = eqName;
+        eqModel.value_32 = eqArray[0];
+        pointY[0] = eqModel.value_32;
+        eqModel.value_64 = eqArray[1];
+        pointY[1] = eqModel.value_64;
+        eqModel.value_125 = eqArray[2];
+        pointY[2] = eqModel.value_125;
+        eqModel.value_250 = eqArray[3];
+        pointY[3] = eqModel.value_250;
+        eqModel.value_500 = eqArray[4];
+        pointY[4] = eqModel.value_500;
+        eqModel.value_1000 = eqArray[5];
+        pointY[5] = eqModel.value_1000;
+        eqModel.value_2000 = eqArray[6];
+        pointY[6] = eqModel.value_2000;
+        eqModel.value_4000 = eqArray[7];
+        pointY[7] = eqModel.value_4000;
+        eqModel.value_8000 = eqArray[8];
+        pointY[8] = eqModel.value_8000;
+        eqModel.value_16000 = eqArray[9];
+        pointY[9] = eqModel.value_16000;
         eqModel.setPointY(pointY);
         eqModel.setPointX(pointX);
         eqModel.eqType = 4;
-        return  eqModel;
+        return eqModel;
     }
 
-    public boolean isTheSameEQ(EQModel eqModel,int[] eqArray){
-        boolean isSame=false;
-        if (eqModel.value_32==eqArray[0]&&eqModel.value_64==eqArray[1]&&eqModel.value_125==eqArray[2]&&eqModel.value_250==eqArray[3]
-                &&eqModel.value_500==eqArray[4]&&eqModel.value_1000==eqArray[5]&&eqModel.value_2000==eqArray[6]&&eqModel.value_4000==eqArray[7]
-                &&eqModel.value_8000==eqArray[8]&&eqModel.value_16000==eqArray[9]){
-            isSame=true;
+    public boolean isTheSameEQ(EQModel eqModel, int[] eqArray) {
+        boolean isSame = false;
+        if (eqModel.value_32 == eqArray[0] && eqModel.value_64 == eqArray[1] && eqModel.value_125 == eqArray[2] && eqModel.value_250 == eqArray[3]
+                && eqModel.value_500 == eqArray[4] && eqModel.value_1000 == eqArray[5] && eqModel.value_2000 == eqArray[6] && eqModel.value_4000 == eqArray[7]
+                && eqModel.value_8000 == eqArray[8] && eqModel.value_16000 == eqArray[9]) {
+            isSame = true;
         }
-        return  isSame;
+        return isSame;
     }
 
     public EQModel getEQModelFromValues(EQModel model, int[] values) {
@@ -465,9 +473,37 @@ public class EQSettingManager implements EqDbKey {
         return equals;
     }
 
+    public CmdEqSettingsSet getBleEqSettingFromEqModel(EQModel eqModel, Context context) {
+        CmdEqSettingsSet cmdEqSettingsSet = null;
+        List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(context, SharePreferenceUtil.BLE_DESIGN_EQ);
+        if (retCurrentEQList != null && retCurrentEQList.size() > 0) {
+            RetCurrentEQ bleDesignEq = retCurrentEQList.get(0);
+            int packageIndex = 4;
+            int presetIndex = EnumEqPresetIdx.USER.ordinal();
+            EnumEqCategory eqCATEGORY = bleDesignEq.enumEqCategory;
+            int sampleRate = bleDesignEq.sampleRate;
+            float gain0 = bleDesignEq.gain0;
+            float gain1 = bleDesignEq.gain1;
+            Band[] bleDesignBands = bleDesignEq.bands;
+            int bandType = bleDesignBands[0].type;
+            float qValue = bleDesignBands[0].q;
+            float[] pointX = eqModel.getPointX();
+            float[] pointY = eqModel.getPointY();
+            Band[] bands = new Band[pointX.length];
+            for (int i = 0; i < pointX.length; i++) {
+                bands[i] = new Band(bandType, pointY[i], pointX[i], qValue);
+            }
+            cmdEqSettingsSet = new CmdEqSettingsSet(packageIndex, presetIndex, eqCATEGORY, 0f, sampleRate, gain0, gain1, bands);
+            float calib = DashboardActivity.getDashboardActivity().getCalib(cmdEqSettingsSet);
+            cmdEqSettingsSet.setCalib(calib);
+        }
+
+        return cmdEqSettingsSet;
+    }
+
     public static String getNewEqName(List<EQModel> eqModelList, String eqName, String updateEqName) {
 
-        Logger.d(TAG, "getNewEqName eqName=" + eqName+"updateEqName:"+updateEqName);
+        Logger.d(TAG, "getNewEqName eqName=" + eqName + "updateEqName:" + updateEqName);
         String newEqName;
         if (eqName.equals(updateEqName) || (eqModelList == null || eqModelList.isEmpty())) {
             return eqName;
@@ -558,4 +594,5 @@ public class EQSettingManager implements EqDbKey {
             return 0;
         }
     }
+
 }
