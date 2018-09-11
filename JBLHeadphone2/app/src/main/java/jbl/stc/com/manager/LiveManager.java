@@ -136,6 +136,7 @@ public class LiveManager implements ScanListener, BleListener {
             leLollipopScanner = new LeLollipopScanner(mContext);
         }
         leStatus = LeStatus.START_SCAN;
+        Logger.i(TAG,"start ble scan");
         leLollipopScanner.startScan(this);
     }
 
@@ -146,7 +147,8 @@ public class LiveManager implements ScanListener, BleListener {
     @Override
     public void onFound(BluetoothDevice device, String pid) {
         leStatus = LeStatus.SCANNING;
-        leLollipopScanner.stopScan();
+//        Logger.d(TAG,"on found device, stop scan");
+//        leLollipopScanner.stopScan();
         String key = pid + "-" + device.getAddress();
         devicesSet.clear();
         if (pid.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT_PID)) {
@@ -235,16 +237,20 @@ public class LiveManager implements ScanListener, BleListener {
                 leHandler.sendEmptyMessageDelayed(MSG_DISCONNECT, 200);
                 return;
             }
-            MyDevice myDevice = ProductListManager.getInstance().getDeviceByKey(bluetoothDevice.getAddress());
-            if (myDevice == null) {
-                Logger.d(TAG, "on bes connect status, myDevice is null");
+
+            if (!isByConnectedDevice(bluetoothDevice.getAddress())){
+                Logger.d(TAG, "on bes connect status, not by connected device, throw connection callback away");
                 return;
             }
+            MyDevice myDevice = ProductListManager.getInstance().getDeviceByKey(bluetoothDevice.getAddress());
             if (isConnected) {
+                Logger.d(TAG, "on bes connect status, connected, stop scan");
+                leLollipopScanner.stopScan();
                 leStatus = LeStatus.CONNECTED;
                 myDevice.connectStatus = ConnectStatus.DEVICE_CONNECTED;
                 AppUtils.setModelNumber(JBLApplication.getJBLApplicationContext(), JBLConstant.DEVICE_LIVE_400BT);
             } else {
+                Logger.d(TAG, "on bes connect status, disconnected");
                 leStatus = LeStatus.DISCONNECTED;
                 myDevice.connectStatus = ConnectStatus.A2DP_UNCONNECTED;
             }
@@ -270,10 +276,17 @@ public class LiveManager implements ScanListener, BleListener {
 
     @Override
     public void onRetReceived(BluetoothDevice bluetoothDevice, RetResponse retResponse) {
-        if (retResponse == null) {
+        if (bluetoothDevice == null || retResponse == null) {
+            Logger.d(TAG, "on ret received, bt device is null or retResponse is null");
             return;
         }
-        Logger.d(TAG, "on bes received, mac = " + bluetoothDevice.getAddress() + " , cmdId = " + retResponse.enumCmdId + "");
+
+        if (!isByConnectedDevice(bluetoothDevice.getAddress())){
+            Logger.d(TAG, "on ret received, not by connected device, throw receive msg callback away");
+            return;
+        }
+
+        Logger.d(TAG, "on ret received, mac = " + bluetoothDevice.getAddress() + " , cmd id = " + retResponse.enumCmdId + "");
         switch (retResponse.enumCmdId) {
             case RET_DEV_ACK:
             case RET_DEV_BYE:
@@ -323,6 +336,20 @@ public class LiveManager implements ScanListener, BleListener {
 
     }
 
+    private boolean isByConnectedDevice(String mac){
+        MyDevice myDevice = ProductListManager.getInstance().getDeviceByKey(mac);
+        if (myDevice == null) {
+            Logger.d(TAG, "is by connected device, myDevice is null");
+            return false;
+        }
+        MyDevice myDeviceConnected = ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED);
+        if (myDeviceConnected!= null && !myDeviceConnected.mac.equals(myDevice.mac)){
+            Logger.d(TAG, "is by connected device, not connected device callback");
+            return false;
+        }
+        return true;
+    }
+
     private void notifyUiUpdate(final EnumCommands enumCommands, final Object... objects) {
         mContext.runOnUiThread(new Runnable() {
             @Override
@@ -351,11 +378,13 @@ public class LiveManager implements ScanListener, BleListener {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_START_SCAN: {
-                    if (!isConnecting()) {
+                    if (!isConnected()) {
                         startBleScan();
-                        leHandler.removeMessages(MSG_START_SCAN);
-                        leHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
+//                        leHandler.removeMessages(MSG_START_SCAN);
+//                        leHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
+                        Logger.d(TAG,"handle message, in msg start scan, start scan cycle.");
                     } else {
+                        Logger.d(TAG,"handle message, in msg start scan, stop scan.");
                         leLollipopScanner.stopScan();
                     }
                     break;

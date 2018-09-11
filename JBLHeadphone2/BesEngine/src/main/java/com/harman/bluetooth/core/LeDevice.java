@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -320,7 +321,7 @@ public class LeDevice {
     private void notifyReceive(RetResponse retResponse) {
         synchronized (mListenerLock) {
             for (BleListener listener : mListBleListener) {
-                listener.onRetReceived(mBluetoothGatt.getDevice(), retResponse);
+                listener.onRetReceived(mBluetoothGatt!= null ?mBluetoothGatt.getDevice():null, retResponse);
             }
         }
     }

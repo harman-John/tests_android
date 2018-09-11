@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Set;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.AmCmds;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
@@ -270,7 +271,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
     public void startA2DPCheck() {
         BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBtAdapter != null && mBtAdapter.isEnabled()) {
-            mBtAdapter.getProfileProxy(mContext, mListener, BluetoothProfile.A2DP);
+            mBtAdapter.getProfileProxy(JBLApplication.getJBLApplicationContext(), mListener, BluetoothProfile.A2DP);
         }
     }
 

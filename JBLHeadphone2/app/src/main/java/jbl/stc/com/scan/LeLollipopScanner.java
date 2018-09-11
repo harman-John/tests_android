@@ -76,6 +76,7 @@ public class LeLollipopScanner extends BaseScanner {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             if (DeviceManager.getInstance((Activity) context).isConnected()){
+                Logger.d(TAG,"on can result, device is connected");
                 stopScan();
                 return;
             }
@@ -84,13 +85,13 @@ public class LeLollipopScanner extends BaseScanner {
                 if (deviceName.contains("samsung")){
                     return;
                 }
-                Logger.d(TAG,"on scan result, le scan callback, "+ deviceName);
+                Logger.d(TAG,"on scan result, le scan callback, device name: "+ deviceName);
                 byte[] manufacturerSpecificData = result.getScanRecord().getManufacturerSpecificData(JBLConstant.HARMAN_VENDOR_ID);
                 if (manufacturerSpecificData !=null && manufacturerSpecificData.length > 0) {
                     byte[] pid = new byte[2];
                     pid[0] = manufacturerSpecificData[0];
                     pid[1] = manufacturerSpecificData[1];
-                    Logger.e(TAG, "on scan result, le scan callback, device name = " + deviceName
+                    Logger.i(TAG, "on scan result, le scan callback, device name = " + deviceName
                             + ", Rssi = " + result.getRssi()
                             + ", data = " + ArrayUtil.toHex(pid));
                     // This is JBL Live 400BT
