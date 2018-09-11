@@ -22,8 +22,7 @@ import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.EQSettingManager;
-import jbl.stc.com.manager.LeManager;
-import jbl.stc.com.manager.LiveCmdManager;
+import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -132,9 +131,9 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
                     if (eqModels != null && eqModels.size() > 0) {
                         if (curEqName.equals(deleteEqName)) {
                             int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(eqModels.get(0));
-                            if (LeManager.getInstance().isConnected()) {
+                            if (LiveManager.getInstance().isConnected()) {
                                 //add the ble user Eq code
-                                LiveCmdManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModels.get(0), context));
+                                LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModels.get(0), context));
                             } else {
                                 ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
                             }
@@ -142,8 +141,8 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
                             PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, eqModels.get(0).eqName, context);
                         }
                     } else {
-                        if (LeManager.getInstance().isConnected()) {
-                            LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
+                        if (LiveManager.getInstance().isConnected()) {
+                            LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
                         } else {
                             ANCControlManager.getANCManager(context).applyPresetWithoutBand(GraphicEQPreset.Off);
                         }

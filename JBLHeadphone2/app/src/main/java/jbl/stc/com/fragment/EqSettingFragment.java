@@ -35,8 +35,6 @@ import com.harman.bluetooth.req.CmdEqPresetSet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.HomeActivity;
@@ -50,8 +48,7 @@ import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.listener.OnCustomEqListener;
 import jbl.stc.com.listener.OnEqItemSelectedListener;
-import jbl.stc.com.manager.LeManager;
-import jbl.stc.com.manager.LiveCmdManager;
+import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -934,37 +931,37 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         public void run() {
             switch (currSelectedEqIndex) {
                 case 0:
-                    if (LeManager.getInstance().isConnected()) {
-                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
+                    if (LiveManager.getInstance().isConnected()) {
+                        LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
                     } else {
                         ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Off);
                     }
                     break;
                 case 1:
-                    if (LeManager.getInstance().isConnected()) {
-                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
+                    if (LiveManager.getInstance().isConnected()) {
+                        LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
                     } else {
                         ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Jazz);
                     }
                     break;
                 case 2:
-                    if (LeManager.getInstance().isConnected()) {
-                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.VOCAL));
+                    if (LiveManager.getInstance().isConnected()) {
+                        LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.VOCAL));
                     } else {
                         ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Vocal);
                     }
                     break;
                 case 3:
-                    if (LeManager.getInstance().isConnected()) {
-                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.BASS));
+                    if (LiveManager.getInstance().isConnected()) {
+                        LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.BASS));
                     } else {
                         ANCControlManager.getANCManager(getContext()).applyPresetWithoutBand(GraphicEQPreset.Bass);
                     }
                     break;
                 default:
-                    if (LeManager.getInstance().isConnected()) {
+                    if (LiveManager.getInstance().isConnected()) {
                         //add the ble user Eq code
-                        LiveCmdManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq, getActivity()));
+                        LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq, getActivity()));
                     } else {
                         ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(currSelectedEq));
                     }

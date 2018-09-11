@@ -16,7 +16,7 @@ import jbl.stc.com.R;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.manager.DeviceManager;
-import jbl.stc.com.manager.LeManager;
+import jbl.stc.com.manager.LiveManager;
 
 
 public class UiUtils {
@@ -190,7 +190,7 @@ public class UiUtils {
     public static boolean isConnected(int mConnectStatus, Activity mActivity) {
         boolean isConnected = false;
         if ((DeviceManager.getInstance(mActivity).isConnected() ||
-                LeManager.getInstance().isConnected()) && mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
+                LiveManager.getInstance().isConnected()) && mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
             isConnected = true;
         }
         return isConnected;

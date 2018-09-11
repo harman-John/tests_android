@@ -525,7 +525,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 && !bluetoothDevice.getName().contains(JBLConstant.DEVICE_150NC)
                 && specifiedDevice != null
                 && specifiedDevice.getAddress().equalsIgnoreCase(bluetoothDevice.getAddress())) {
-            if (!LeManager.getInstance().isConnected()) {
+            if (!LiveManager.getInstance().isConnected()) {
                 FirmwareUtil.disconnectHeadphoneText = mContext.getResources().getString(R.string.plsConnect);
                 AnalyticsManager.getInstance(mContext).reportDeviceConnect(bluetoothDevice.getName());
                 synchronized (this) {
@@ -640,7 +640,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 && !bluetoothDevice.getName().contains(JBLConstant.DEVICE_150NC)
                 && specifiedDevice != null
                 && specifiedDevice.getAddress().equalsIgnoreCase(bluetoothDevice.getAddress())
-                && !LeManager.getInstance().isConnected()) {
+                && !LiveManager.getInstance().isConnected()) {
             Logger.d(TAG, "bluetooth device discovered, so call connect");
             connect(bluetoothDevice);
         }
@@ -1232,7 +1232,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 if (specifiedDevice != null && specifiedDevice.getName().contains(JBLConstant.DEVICE_150NC) && value == null
                         || specifiedDevice != null && value != null && ((HashMap) value).containsKey(specifiedDevice.getAddress())) {
 
-                    if (!LeManager.getInstance().isConnected()) {
+                    if (!LiveManager.getInstance().isConnected()) {
                         if (mLightX != null) {
                             mLightX.close();
                             mLightX = null;
@@ -1433,7 +1433,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                             && entry.getValue().contains(JBLConstant.DEVICE_150NC)
                             && specifiedDevice != null
                             && specifiedDevice.getAddress().equalsIgnoreCase(entry.getKey())
-                            && !LeManager.getInstance().isConnected()) {
+                            && !LiveManager.getInstance().isConnected()) {
                         Status status = bt150Manager.connectDevice(entry.getKey(), false);
                         if (status == Status.AccessoryNotConnected) {
                             disconnectDevice();

@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.harman.bluetooth.constants.Constants;
 import com.harman.bluetooth.constants.EnumOtaState;
+import com.harman.bluetooth.core.LeDevice;
 import com.harman.bluetooth.engine.BesEngine;
 import com.harman.bluetooth.listeners.BleListener;
 import com.harman.bluetooth.ret.RetResponse;
@@ -27,7 +28,7 @@ public class BleOta implements BleListener {
     private final static String TAG = BleOta.class.getSimpleName();
 
     protected static final String KEY_OTA_FILE = "ota_file";
-    private static final String OTA_FILE = "ota.bin";
+    private static final String OTA_FILE = "live_400.bin";
 
     private static final byte[] OTA_PASS_RESPONSE = new byte[]{0x11, 0x22};
     private static final byte[] OTA_RESEND_RESPONSE = new byte[]{0x33, 0x44};
@@ -109,7 +110,7 @@ public class BleOta implements BleListener {
 
     private List<BleListener> mListeners;
 
-    public void setListener(List<BleListener> listeners) {
+    public void addListener(List<BleListener> listeners) {
         mListeners = listeners;
     }
 
@@ -495,6 +496,11 @@ public class BleOta implements BleListener {
         Log.i(TAG, "onWritten mWritten = true");
     }
 
+    private LeDevice leDevice;
+    public void setLeDevice(LeDevice leDevice){
+        this.leDevice = leDevice;
+    }
+
     public void sendFileInfo(Context context) {
         mContext = context;
         mState = STATE_CONNECTED;
@@ -515,7 +521,7 @@ public class BleOta implements BleListener {
 //            message.arg1 = R.string.old_ota_profile;
             message.arg2 = CMD_LOAD_FILE;
             mOtaHandler.sendMessageDelayed(message, 5000);
-            sendData("", new byte[]{(byte) 0x80, 0x42, 0x45, 0x53, 0x54, (byte) dataSize, (byte) (dataSize >> 8), (byte) (dataSize >> 16), (byte) (dataSize >> 24), (byte) crc32, (byte) (crc32 >> 8), (byte) (crc32 >> 16), (byte) (crc32 >> 24)});
+            sendData(new byte[]{(byte) 0x80, 0x42, 0x45, 0x53, 0x54, (byte) dataSize, (byte) (dataSize >> 8), (byte) (dataSize >> 16), (byte) (dataSize >> 24), (byte) crc32, (byte) (crc32 >> 8), (byte) (crc32 >> 16), (byte) (crc32 >> 24)});
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -908,7 +914,7 @@ public class BleOta implements BleListener {
             if (mSupportNewOtaProfile || mWritten) {
 
                 if ((mOtaPacketItemCount < mOtaData[mOtaPacketCount].length)) {
-                    boolean sendRet = sendData(null, mOtaData[mOtaPacketCount][mOtaPacketItemCount]);
+                    boolean sendRet = sendData(mOtaData[mOtaPacketCount][mOtaPacketItemCount]);
                     if (!sendRet) {
                         Log.i(TAG, "otaNext write failed , try to resend");
                         sendCmdDelayed(CMD_OTA_NEXT, 40);
@@ -947,7 +953,7 @@ public class BleOta implements BleListener {
             }
             Log.i(TAG, "otaConfigNext " + mOtaConfigPacketCount + "; " + mOtaConfigData.length + " mWritten = " + mWritten);
             if (true) {
-                if (!sendData(null, mOtaConfigData[mOtaConfigPacketCount])) {
+                if (!sendData(mOtaConfigData[mOtaConfigPacketCount])) {
                     Log.e(TAG, "otaConfigNext write failed");
                     sendCmdDelayed(CMD_OTA_CONFIG_NEXT, 10);
                 } else {
@@ -981,7 +987,7 @@ public class BleOta implements BleListener {
     @Override
     public void onRetReceived(BluetoothDevice bluetoothDevice, RetResponse retResponse) {
         byte[] data = (byte[]) retResponse.object;
-        Log.i(TAG, "onReceive data = " + ArrayUtil.toHex(data));
+        Log.i(TAG, "onReceive data = " + ArrayUtil.bytesToHex(data));
         synchronized (mOtaLock) {
             Log.e(TAG, "onReceive " + ArrayUtil.toHex(data));
             if (ArrayUtil.isEqual(OTA_PASS_RESPONSE, data)) {
@@ -1077,8 +1083,9 @@ public class BleOta implements BleListener {
 //
 //    protected abstract void saveLastDeviceAddress(String address);
 
-    private boolean sendData(String mac, byte[] data) {
-        return BesEngine.getInstance().sendCommand(mac, data);
+    private boolean sendData(byte[] data) {
+
+        return leDevice.write(data,false);
     }
 
     private boolean isBle() {

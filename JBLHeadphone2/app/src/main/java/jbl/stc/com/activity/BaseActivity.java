@@ -1,11 +1,8 @@
 package jbl.stc.com.activity;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -19,7 +16,6 @@ import android.widget.TextView;
 import com.avnera.smartdigitalheadset.LightX;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.Stack;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -33,7 +29,7 @@ import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.listener.OnRetListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.DeviceManager;
-import jbl.stc.com.manager.LeManager;
+import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -54,8 +50,8 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate, Vi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
-        LeManager.getInstance().setOnConnectStatusListener(this);
-        LeManager.getInstance().setOnRetListener(this);
+        LiveManager.getInstance().setOnConnectStatusListener(this);
+        LiveManager.getInstance().setOnRetListener(this);
         LightX.sEnablePacketDumps = false;
     }
 
@@ -75,7 +71,7 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate, Vi
     protected void onResume() {
         super.onResume();
         DeviceManager.getInstance(this).setOnConnectStatusListener(this);
-        LeManager.getInstance().setOnRetListener(this);
+        LiveManager.getInstance().setOnRetListener(this);
     }
 
     @Override

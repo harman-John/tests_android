@@ -48,8 +48,7 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
-import jbl.stc.com.manager.LeManager;
-import jbl.stc.com.manager.LiveCmdManager;
+import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -263,7 +262,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 return false;
             }
         });
-        if (LeManager.getInstance().isConnected()) {
+        if (LiveManager.getInstance().isConnected()) {
             getBleDeviceInfo();
         }
     }
@@ -273,7 +272,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             @Override
             public void run() {
                 CmdDevStatus cmdDevStatus = new CmdDevStatus(EnumDeviceStatusType.AUTO_OFF);
-                LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(myDevice.connectStatus).mac, cmdDevStatus);
+                LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(myDevice.connectStatus).mac, cmdDevStatus);
             }
         }).start();
     }

@@ -28,6 +28,7 @@ import com.avnera.audiomanager.AccessoryInfo;
 import com.avnera.audiomanager.ImageType;
 import com.avnera.smartdigitalheadset.Debug;
 import com.avnera.smartdigitalheadset.LightX;
+import com.harman.bluetooth.engine.BesEngine;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -37,6 +38,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
 import jbl.stc.com.data.FwTYPE;
@@ -50,6 +52,8 @@ import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.Cmd150Manager;
 import jbl.stc.com.manager.DeviceManager;
+import jbl.stc.com.manager.LiveManager;
+import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.ota.DownloadProgrammingFile;
 import jbl.stc.com.storage.PreferenceKeys;
@@ -227,38 +231,35 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
         }
     }
 
-    public void readBasicInformation() {
+    public void getDeviceInfo() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (BesEngine.getInstance().isConnected()) {
+                    LiveManager.getInstance().updateImage(ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).mac);
+                }else{
+                    interval();
+                    Logger.d(TAG, "read basic information, getFirmwareInfo");
+                    ANCControlManager.getANCManager(getActivity()).getFirmwareInfo();
+                    interval();
+                    Logger.d(TAG, "read basic information, getFirmwareVersion");
+                    ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
+                    ANCControlManager.getANCManager(getActivity()).readBootVersionFileResource();
+                    interval();
+                    Logger.d(TAG, "read basic information, getBatterLevel");
+                    ANCControlManager.getANCManager(getActivity()).getBatterLevel();
                 }
-
-                Logger.d(TAG, "read basic information, getFirmwareInfo");
-                ANCControlManager.getANCManager(getActivity()).getFirmwareInfo();
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                Logger.d(TAG, "read basic information, getFirmwareVersion");
-                ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
-                ANCControlManager.getANCManager(getActivity()).readBootVersionFileResource();
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                Logger.d(TAG, "read basic information, getBatterLevel");
-                ANCControlManager.getANCManager(getActivity()).getBatterLevel();
             }
         }).start();
 
+    }
+
+    private void interval(){
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void registerConnectivity() {
@@ -1100,7 +1101,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
                     }
                     break;
                 case MSG_READ_BASIC_INFO:
-                    readBasicInformation();
+                    getDeviceInfo();
                     break;
             }
         }

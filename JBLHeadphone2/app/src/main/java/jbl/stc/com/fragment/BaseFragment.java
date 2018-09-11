@@ -26,7 +26,7 @@ import jbl.stc.com.listener.OnMainAppListener;
 import jbl.stc.com.listener.OnRetListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.DeviceManager;
-import jbl.stc.com.manager.LeManager;
+import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.EnumCommands;
@@ -86,7 +86,7 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppU
     public void onResume() {
         super.onResume();
         Logger.d(TAG, "onResume()");
-        LeManager.getInstance().setOnRetListener(this);
+        LiveManager.getInstance().setOnRetListener(this);
         DeviceManager.getInstance(getActivity()).setOnRetListener(this);
     }
 

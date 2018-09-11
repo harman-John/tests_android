@@ -81,8 +81,7 @@ import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.EQSettingManager;
-import jbl.stc.com.manager.LeManager;
-import jbl.stc.com.manager.LiveCmdManager;
+import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -438,14 +437,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
         if ((fr != null) && fr instanceof EqSettingFragment) {
             DeviceManager.getInstance(this).setOnRetListener(this);
-            LeManager.getInstance().setOnConnectStatusListener(this);
-            LeManager.getInstance().setOnRetListener(this);
+            LiveManager.getInstance().setOnConnectStatusListener(this);
+            LiveManager.getInstance().setOnRetListener(this);
             ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
         }
         if (fr == null) {
             DeviceManager.getInstance(this).setOnRetListener(this);
-            LeManager.getInstance().setOnConnectStatusListener(this);
-            LeManager.getInstance().setOnRetListener(this);
+            LiveManager.getInstance().setOnConnectStatusListener(this);
+            LiveManager.getInstance().setOnRetListener(this);
         }
     }
 
@@ -496,14 +495,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                             checkBoxNoiseCancel.setChecked(false);
 
                         }
-                        if (LeManager.getInstance().isConnected()) {
+                        if (LiveManager.getInstance().isConnected()) {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
                                     CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked() ? EnumAncStatus.ON : EnumAncStatus.OFF);
-                                    LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
+                                    LiveManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
                                     CmdAASet cmdAASet = new CmdAASet(checkBoxNoiseCancel.isChecked() ? EnumAAStatus.TALK_THRU : EnumAAStatus.AMBIENT_AWARE);
-                                    LiveCmdManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
+                                    LiveManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
                                 }
                             }).start();
                         }
@@ -546,12 +545,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         Logger.d(TAG, "noise cancel unchecked");
                         checkBoxNoiseCancel.setChecked(false);
                     }
-                    if (LeManager.getInstance().isConnected()) {
+                    if (LiveManager.getInstance().isConnected()) {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
                                 CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked() ? EnumAncStatus.ON : EnumAncStatus.OFF);
-                                LiveCmdManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
+                                LiveManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
                             }
                         }).start();
                     }
@@ -692,8 +691,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void doResume() {
         DeviceManager.getInstance(this).setOnRetListener(this);
-        LeManager.getInstance().setOnConnectStatusListener(this);
-        LeManager.getInstance().setOnRetListener(this);
+        LiveManager.getInstance().setOnConnectStatusListener(this);
+        LiveManager.getInstance().setOnRetListener(this);
         if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
             getDeviceInfo();
         } else if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
@@ -873,9 +872,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     Runnable applyRunnable = new Runnable() {
         @Override
         public void run() {
-            if (LeManager.getInstance().isConnected()) {
+            if (LiveManager.getInstance().isConnected()) {
                 CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
-                LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
+                LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
             } else {
                 ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
             }
@@ -892,15 +891,15 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(this);
                 Logger.d(TAG, "eqSize:" + eqModels.size());
                 if (eqModels.size() < 5) {
-                    if (LeManager.getInstance().isConnected()) {
-                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
+                    if (LiveManager.getInstance().isConnected()) {
+                        LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
                     } else {
                         ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz);
                     }
                 } else {
-                    if (LeManager.getInstance().isConnected()) {
+                    if (LiveManager.getInstance().isConnected()) {
                         // add the ble user eq code
-                        LiveCmdManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModels.get(4), HomeActivity.this));
+                        LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModels.get(4), HomeActivity.this));
                     } else {
                         ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModels.get(4)));
                     }
@@ -908,28 +907,28 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             } else {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, curEqNameExclusiveOff, this);
                 if (curEqNameExclusiveOff.equals(getString(R.string.jazz))) {
-                    if (LeManager.getInstance().isConnected()) {
-                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
+                    if (LiveManager.getInstance().isConnected()) {
+                        LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
                     } else {
                         ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz);
                     }
                 } else if (curEqNameExclusiveOff.equals(getString(R.string.vocal))) {
-                    if (LeManager.getInstance().isConnected()) {
-                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.VOCAL));
+                    if (LiveManager.getInstance().isConnected()) {
+                        LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.VOCAL));
                     } else {
                         ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Vocal);
                     }
                 } else if (curEqNameExclusiveOff.equals(getString(R.string.bass))) {
-                    if (LeManager.getInstance().isConnected()) {
-                        LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.BASS));
+                    if (LiveManager.getInstance().isConnected()) {
+                        LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.BASS));
                     } else {
                         ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Bass);
                     }
                 } else {
                     EQModel eqModel = EQSettingManager.get().getEQModelByName(curEqNameExclusiveOff, this);
-                    if (LeManager.getInstance().isConnected()) {
+                    if (LiveManager.getInstance().isConnected()) {
                         // add the ble user eq code
-                        LiveCmdManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModel, HomeActivity.this));
+                        LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModel, HomeActivity.this));
                     } else {
                         ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModel));
                     }
@@ -938,8 +937,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         } else {
             //turn off the eq
             Logger.d(TAG, "turn off the eq");
-            if (LeManager.getInstance().isConnected()) {
-                LiveCmdManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
+            if (LiveManager.getInstance().isConnected()) {
+                LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
             } else {
                 ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Off);
             }
@@ -1056,7 +1055,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (LeManager.getInstance().isConnected()) {
+                if (LiveManager.getInstance().isConnected()) {
                     linearLayoutBattery.setVisibility(View.VISIBLE);
                     getBleDeviceInfo();
                 } else {
@@ -1106,12 +1105,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void getBleDeviceInfo() {
         Logger.i(TAG, "get ble device info");
-        LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
+        LiveManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
         CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
-        LiveCmdManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
-        LiveCmdManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
+        LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
+        LiveManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
         CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
-        LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+        LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
     }
 
     private void setEqSettingsData(){
@@ -1121,7 +1120,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
         CmdEqSettingsSet cmdEqSettingsSet = new CmdEqSettingsSet(4
                 ,EnumEqCategory.GRAPHIC_EQ, 1,64,0.0f,0.0f, bands);
-        LiveCmdManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).mac,cmdEqSettingsSet);
+        LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).mac,cmdEqSettingsSet);
     }
 
     private void timeInterval() {
@@ -1135,7 +1134,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onButtonDone() {
         DeviceManager.getInstance(this).setOnRetListener(this);
-        LeManager.getInstance().setOnConnectStatusListener(this);
+        LiveManager.getInstance().setOnConnectStatusListener(this);
         getDeviceInfo();
     }
 
@@ -1233,7 +1232,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         Logger.d(TAG, "retCurrentEQ ble design eq band count:" + retCurrentEQList.get(0).bandCount);
                     } else {
                         CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
-                        LiveCmdManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+                        LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
                     }
                     break;
                 }

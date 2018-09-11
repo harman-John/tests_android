@@ -21,7 +21,7 @@ public class BesEngine {
     private Map<String,LeDevice> mLeConnectorMap;
     private List<BleListener> bleListeners;
 
-    private BleOta besOtaUpdate;
+    private BleOta bleOta;
 
     private final Object mLock = new Object();
     private final static String TAG = BesEngine.class.getSimpleName();
@@ -31,8 +31,7 @@ public class BesEngine {
     private BesEngine() {
         mLeConnectorMap = new HashMap<>();
         bleListeners = new ArrayList<>();
-//        besOtaUpdate = new BesOtaUpdate();
-
+        bleOta = new BleOta();
     }
 
     public static BesEngine getInstance() {
@@ -113,8 +112,14 @@ public class BesEngine {
     }
 
     public void updateImage(String mac, Context context) {
-        besOtaUpdate.sendFileInfo(context);
-        besOtaUpdate.setListener(bleListeners);
+        LeDevice leDevice = mLeConnectorMap.get(mac);
+        if (leDevice == null){
+            Logger.i(TAG,"update image error, no le device found");
+            return;
+        }
+        bleOta.setLeDevice(leDevice);
+        bleOta.addListener(bleListeners);
+        bleOta.sendFileInfo(context);
     }
 
 }

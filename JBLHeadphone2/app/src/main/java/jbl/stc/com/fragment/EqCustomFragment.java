@@ -32,8 +32,7 @@ import jbl.stc.com.manager.EQSettingManager;
 import jbl.stc.com.entity.EQModel;
 import jbl.stc.com.listener.OnCustomEqListener;
 import jbl.stc.com.listener.OnEqChangeListener;
-import jbl.stc.com.manager.LeManager;
-import jbl.stc.com.manager.LiveCmdManager;
+import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -366,9 +365,9 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         } else {
             application.globalEqInfo.hasEq = true;
             int mConnectStatus = PreferenceUtils.getInt(JBLConstant.KEY_CONNECT_STATUS, getActivity());
-            if (LeManager.getInstance().isConnected()) {
+            if (LiveManager.getInstance().isConnected()) {
                 //add the ble user Eq code
-                LiveCmdManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq, getActivity()));
+                LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq, getActivity()));
             } else {
                 ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
             }

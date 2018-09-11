@@ -44,10 +44,6 @@ public class CmdEqSettingsSet extends BaseCmd {
         this.calib = calib;
     }
 
-    public int getPackageIndex() {
-        return packageIndex;
-    }
-
     public int getPresetIndex() {
         return presetIndex;
     }

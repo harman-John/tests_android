@@ -493,7 +493,7 @@ public class EQSettingManager implements EqDbKey {
             for (int i = 0; i < pointX.length; i++) {
                 bands[i] = new Band(bandType, pointY[i], pointX[i], qValue);
             }
-            cmdEqSettingsSet = new CmdEqSettingsSet(packageIndex, presetIndex, eqCATEGORY, 0f, sampleRate, gain0, gain1, bands);
+            cmdEqSettingsSet = new CmdEqSettingsSet( presetIndex, eqCATEGORY, 0f, sampleRate, gain0, gain1, bands);
             float calib = DashboardActivity.getDashboardActivity().getCalib(cmdEqSettingsSet);
             cmdEqSettingsSet.setCalib(calib);
         }

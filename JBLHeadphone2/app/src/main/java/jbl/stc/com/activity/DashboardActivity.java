@@ -47,7 +47,7 @@ import jbl.stc.com.listener.OnCheckDevicesListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.DeviceManager;
-import jbl.stc.com.manager.LeManager;
+import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -87,14 +87,14 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         InsertPredefinePreset insertPredefinePreset = new InsertPredefinePreset();
         insertPredefinePreset.executeOnExecutor(InsertPredefinePreset.THREAD_POOL_EXECUTOR, this);
         ProductListManager.getInstance().setOnCheckDevicesListener(this);
-        LeManager.getInstance().setOnConnectStatusListener(this);
-        LeManager.getInstance().setOnRetListener(this);
+        LiveManager.getInstance().setOnConnectStatusListener(this);
+        LiveManager.getInstance().setOnRetListener(this);
     }
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        LeManager.getInstance().onRequestPermissionsResult(requestCode, grantResults);
+        LiveManager.getInstance().onRequestPermissionsResult(requestCode, grantResults);
     }
 
     private void initView() {
@@ -225,7 +225,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         Logger.d(TAG, "on resume, is in background: " + isInBackground + ",is connected: " + DeviceManager.getInstance(this).isConnected());
         checkBluetooth();
         if (DeviceManager.getInstance(this).isConnected() ||
-                LeManager.getInstance().isConnected()) {
+                LiveManager.getInstance().isConnected()) {
             Logger.d(TAG, "on resume, is first user: " + DeviceManager.getInstance(this).isFromHome());
             if (DeviceConnectionManager.getInstance().getCurrentDevice() == ConnectedDeviceType.Connected_USBDevice
                     && !DeviceManager.getInstance(this).isFromHome()) {
@@ -242,7 +242,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         } else {
             dashboardHandler.removeMessages(MSG_START_SCAN);
             dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
-            LeManager.getInstance().checkPermission(this);   //start ble scan
+            LiveManager.getInstance().checkPermission(this);   //start ble scan
         }
     }
 
@@ -310,7 +310,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 removeAllFragment();
                 currentActivity().finish();
             }
-            LeManager.getInstance().checkPermission(this);
+            LiveManager.getInstance().checkPermission(this);
             myGridAdapter.setMyAdapterList();
         }
     }
@@ -540,7 +540,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                             if (ProductListManager.getInstance().getMyDeviceList().size() == 0) {
                                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 2000);
                             }
-                            LeManager.getInstance().checkPermission(DashboardActivity.this);
+                            LiveManager.getInstance().checkPermission(DashboardActivity.this);
                             break;
                         }
                         default: {
