@@ -960,10 +960,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 default:
                     if (LiveManager.getInstance().isConnected()) {
                         //add the ble user Eq code
-                        LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq, getActivity()));
                         CmdEqSettingsSet cmdEqSettingsSet = EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq, getActivity());
                         if (cmdEqSettingsSet != null) {
-                            Logger.d(TAG, "cmdEqsettingset:" + "bandcount:" + cmdEqSettingsSet.getBand().length + "calib:" + cmdEqSettingsSet.getCalib());
+                            Logger.d(TAG, "cmd eq settings eq: " + ", band count:" + cmdEqSettingsSet.getBand().length + "calib:" + cmdEqSettingsSet.getCalib());
                             LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdEqSettingsSet);
                         } else {
                             Logger.d(TAG, "cmdEqSettingset is null");

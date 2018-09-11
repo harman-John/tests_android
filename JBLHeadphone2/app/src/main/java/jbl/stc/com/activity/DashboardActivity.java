@@ -587,7 +587,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         if (bleDesignEqs != null && bleDesignEqs.size() > 0) {
             RetCurrentEQ bleDesignEq = bleDesignEqs.get(0);
             Band[] bands = bleDesignEq.bands;
-            Logger.d(TAG, "cmdEqSettingSet designEq bands size" + bands.length);
+            Logger.d(TAG, "cmdEqSettingSet designEq bands size: " + bands.length);
             designerCfg = new designer_cfg(bleDesignEq.gain0, bleDesignEq.gain1, bands.length, bleDesignEq.sampleRate);
             def_iir_param_t = new IIR_PARAM_T[bands.length];
             for (int i = 0; i < bands.length; i++) {
@@ -599,7 +599,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         }
 
         Band[] bands = cmdEqSettingsSet.getBand();
-        Logger.d(TAG, "cmdEqSettingSet bands size" + bands.length);
+        Logger.d(TAG, "cmdEqSettingSet bands size: " + bands.length);
         userCfg = new designer_cfg(cmdEqSettingsSet.getGain0(), cmdEqSettingsSet.getGain1(), bands.length, cmdEqSettingsSet.getSampleRate());
         user_iir_param_t = new IIR_PARAM_T[bands.length];
         for (int i = 0; i < bands.length; i++) {
