@@ -7,6 +7,8 @@ enum IIR_BIQUARD_TYPE
 {
     // pass through
     IIR_BIQUARD_PASS = 0,
+    // peakingEQ
+    IIR_BIQUARD_PEAKINGEQ,
     // low pass filter
     IIR_BIQUARD_LPF,
     // high pass filter
@@ -19,8 +21,7 @@ enum IIR_BIQUARD_TYPE
     IIR_BIQUARD_NOTCH,
     // allpass filter
     IIR_BIQUARD_APF,
-    // peakingEQ
-    IIR_BIQUARD_PEAKINGEQ,
+
     // low shelf filter
     IIR_BIQUARD_LOWSHELF,
     // high shelf filter
@@ -36,7 +37,7 @@ struct IirBiquardState
 
 typedef struct IirBiquardState IirBiquardState;
 
-void iirfilt_design(IirBiquardState *st, int fs, int f0, float gain, float q, enum IIR_BIQUARD_TYPE type);
+void iirfilt_design(IirBiquardState *st, float fs, float f0, float gain, float q, enum IIR_BIQUARD_TYPE type);
 
 void iirfilt_reset(IirBiquardState *st, int stages);
 

@@ -23,7 +23,7 @@
 typedef struct {
     enum IIR_BIQUARD_TYPE  type;
     float       gain;
-    int       fc;
+    float       fc;
     float       Q;
 } IIR_PARAM_T;
 
@@ -41,6 +41,5 @@ typedef struct{
 }designer_cfg;
 
 float calculateCalib(designer_cfg designEQ, designer_cfg userEQ);
-
 
 #endif /* EQAlgorithm_h */

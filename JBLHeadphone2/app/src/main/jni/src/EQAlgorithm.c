@@ -2,11 +2,6 @@
 
 #include "../inc/EQAlgorithm.h"
 
-#include <android/log.h>
-#define TAG "EQAlgorithm-jni"
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,TAG ,__VA_ARGS__)
-
-
 void test_cpx_div(void)
 {
 	Complex a = cpx_create(1.f, 2.f);
@@ -181,9 +176,10 @@ void app_audio_total_audio_eq_init()
 	for (i = 0;i < EQ_DESIGNER_BANDS_NUM;i++) {
 		memcpy((uint8_t*)&iir_total_audio_eq_cfg.param[i], (uint8_t*)&iir_designer_deafult_eq_cfg.param[i],sizeof(IIR_PARAM_T));
 	}
-	for (i = iir_designer_deafult_eq_cfg.num;i < iir_total_audio_eq_cfg.num;i++) {
-		memcpy((uint8_t*)&iir_total_audio_eq_cfg.param[i], (uint8_t*)&iir_user_eq_cfg.param[i], sizeof(IIR_PARAM_T));
-	}
+    for (i = 0;i < iir_user_eq_cfg.num;i++) {
+        memcpy((uint8_t*)&iir_total_audio_eq_cfg.param[i+ iir_designer_deafult_eq_cfg.num], (uint8_t*)&iir_user_eq_cfg.param[i], sizeof(IIR_PARAM_T));
+    }
+
 
 	sys_fs = device_cfg.sample_rate;
 }
@@ -200,7 +196,7 @@ void app_audio_eq_get_desinger_eq_cfg(designer_cfg * designer_eq_cfg)
 
 
 
-void app_audio_eq_generate_coef(enum IIR_BIQUARD_TYPE type, int fs , int f0, float gain , float q , IirBiquardState * band)
+void app_audio_eq_generate_coef(enum IIR_BIQUARD_TYPE type, float fs , float f0, float gain , float q , IirBiquardState * band)
 {
 	iirfilt_design(band, fs, f0, gain, q, type);
 }
@@ -317,7 +313,7 @@ void app_audio_eq_designer_eq_run(float *buffer, int len, designer_cfg designEQ)
 	app_audio_eq_get_designer_coefs(designer_eq_coefs, buffer, len);	
 	desinger_eq_point = app_audio_eq_get_curv_max_point(buffer, len);
 	designer_gain_max_point = desinger_eq_point;
-    LOGD("designer eq run max_point = %f /%f \n", desinger_eq_point.gain, desinger_eq_point.freq_point);
+	printf("max_point = %f /%f \n", desinger_eq_point.gain, desinger_eq_point.freq_point);
 
 	//app_audio_eq_coefs_write_fd("designer_eq_coefs.m", buffer, len);
 }
@@ -337,7 +333,7 @@ void app_audio_eq_user_eq_run(float *buffer, int len, designer_cfg userEQ)
 	app_audio_eq_get_user_coefs(user_eq_coefs, buffer, len);
 	
 	user_eq_point = app_audio_eq_get_curv_max_point(buffer, len);
-    LOGD("user eq run max_point = %f /%f \n", user_eq_point.gain, user_eq_point.freq_point);
+	printf("max_point = %f /%f \n", user_eq_point.gain, user_eq_point.freq_point);
 
 	//app_audio_eq_coefs_write_fd("user_eq_coefs.m", buffer, len);
 }
@@ -354,8 +350,8 @@ void app_audio_total_eq_run(float *buffer, int len, designer_cfg userEQ)
 	app_audio_total_audio_eq_init();
 	app_audio_eq_get_coefs_run(total_eq_coefs, buffer, len);	
 	total_eq_point = app_audio_eq_get_curv_max_point(buffer, len);
-	total_gain_max_point = total_eq_point;
-    LOGD("eq run max_point = %f /%f \n", total_eq_point.gain, total_eq_point.freq_point);
+	total_gain_max_point = total_eq_point;	
+	printf("max_point = %f /%f \n", total_eq_point.gain, total_eq_point.freq_point);
 
 	//app_audio_eq_coefs_write_fd("total_eq_coefs.m", buffer, len);
 }
@@ -434,25 +430,26 @@ float calculateCalib(designer_cfg designEQ, designer_cfg userEQ)
     int len = 1024;
     float *buffer = (float *)malloc(sizeof(float) * len);
     float gain_max_diff = 0;
+    float gain_cut_diff_gain = 0;
     
     app_audio_eq_designer_eq_run(buffer, len, designEQ);
     app_audio_eq_user_eq_run(buffer, len, userEQ);
     app_audio_total_eq_run(buffer, len, userEQ);
     gain_max_diff = total_gain_max_point.gain - designer_gain_max_point.gain;
-    LOGD("total gain = %f, designer gain = %f \n", total_gain_max_point.gain,designer_gain_max_point.gain);
     if (total_gain_max_point.gain > designer_gain_max_point.gain) {
         gain_cut_mask = 1;
         gain_cut_diff = gain_max_diff;
         gain_cut_diff_gain = 20 * log10(total_gain_max_point.gain) - 20 * log10(designer_gain_max_point.gain);
         gain_cut_diff_gain = gain_cut_diff_gain + err_threshold;
-        LOGD("gain_cut_diff_gain = %f", gain_cut_diff_gain);
+        printf("gain_cut_diff_gain = %f ", gain_cut_diff_gain);
     }
     else {
-        LOGD("no need to adjust gain , hold");
+        printf("no need to adjust gain , hold");
     }
-
-    LOGD("gain_max_diff = %f \n", gain_max_diff);
-    LOGD("db:gain_max_diff = %f \n", 20 * log10(total_gain_max_point.gain) - 20 * log10(designer_gain_max_point.gain));
+    
+    printf("gain_max_diff = %f \n", gain_max_diff);
+    printf("db:gain_max_diff = %f \n", 20 * log10(total_gain_max_point.gain) - 20 * log10(designer_gain_max_point.gain));
+    printf("final gain_cut_diff_gain + err_threshold = %f \n", gain_cut_diff_gain);
     
     free(buffer);
     return gain_cut_diff_gain;

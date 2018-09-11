@@ -136,7 +136,7 @@ static void apf_design(IirBiquardState *st, int fs, int f0, float q)
     st->a2 = a2 / a0;
 }
 
-static void peaking_design(IirBiquardState *st, int fs, int f0, float gain, float q)
+static void peaking_design(IirBiquardState *st, float fs, float f0, float gain, float q)
 {
     float a0, a1, a2, b0, b1, b2;
     float w0 = 2 * AE_PI * f0 / fs;
@@ -199,7 +199,7 @@ static void highshelf_design(IirBiquardState *st, int fs, int f0, float gain, fl
     st->a2 = a2 / a0;
 }
 
-void iirfilt_design(IirBiquardState *st, int fs, int f0, float gain, float q, enum IIR_BIQUARD_TYPE type)
+void iirfilt_design(IirBiquardState *st, float fs, float f0, float gain, float q, enum IIR_BIQUARD_TYPE type)
 {
     switch (type) {
     case IIR_BIQUARD_LPF:

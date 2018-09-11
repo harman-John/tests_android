@@ -85,7 +85,7 @@ designer_cfg getEq(JNIEnv *env, jobject defObj, jobjectArray defParamObjArray, j
         jclass clsPArray = env->GetObjectClass(objPArray);
         iir_param_t[i].type = getType(getInt(env, clsPArray, objPArray, "mType", "I"));
         iir_param_t[i].gain = getFloat(env, clsPArray, objPArray, "mGain", "F");
-        iir_param_t[i].fc = getInt(env, clsPArray, objPArray, "mFc", "I");
+        iir_param_t[i].fc = getFloat(env, clsPArray, objPArray, "mFc", "F");
         iir_param_t[i].Q = getFloat(env, clsPArray, objPArray, "mQ", "F");
         LOGD("calculate calibration, i = %d, type = %d, Gain = %f , fc = %d, Q = %f \n", i,iir_param_t[i].type,iir_param_t[i].gain, iir_param_t[i].fc, iir_param_t[i].Q);
         iir_cfg_t.param[i] = iir_param_t[i];
