@@ -40,6 +40,10 @@ public class CmdEqSettingsSet extends BaseCmd {
 
     private Band[] band;
 
+    public float getCalib() {
+        return calib;
+    }
+
     public void setCalib(float calib) {
         this.calib = calib;
     }

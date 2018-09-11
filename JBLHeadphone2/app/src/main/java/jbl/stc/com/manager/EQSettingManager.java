@@ -419,12 +419,35 @@ public class EQSettingManager implements EqDbKey {
         return eqModel;
     }
 
+    public EQModel getEqModelFromPointValue(float[] blePointX, float[] blePointY) {
+        EQModel eqModel = new EQModel();
+        eqModel.setPointX(blePointX);
+        eqModel.setPointY(blePointY);
+        return eqModel;
+    }
+
     public boolean isTheSameEQ(EQModel eqModel, int[] eqArray) {
         boolean isSame = false;
         if (eqModel.value_32 == eqArray[0] && eqModel.value_64 == eqArray[1] && eqModel.value_125 == eqArray[2] && eqModel.value_250 == eqArray[3]
                 && eqModel.value_500 == eqArray[4] && eqModel.value_1000 == eqArray[5] && eqModel.value_2000 == eqArray[6] && eqModel.value_4000 == eqArray[7]
                 && eqModel.value_8000 == eqArray[8] && eqModel.value_16000 == eqArray[9]) {
             isSame = true;
+        }
+        return isSame;
+    }
+
+    public boolean isTheSameBleEQ(EQModel eqModel, float[] blePointY, float[] blePointX) {
+        boolean isSame = true;
+        float[] pointY = eqModel.getPointY();
+        float[] pointX = eqModel.getPointX();
+        if (pointX.length == blePointX.length && pointY.length == blePointY.length) {
+            for (int i = 0; i < blePointX.length; i++) {
+                if ((pointX[i] != blePointX[i]) || (pointY[i] != blePointY[i])) {
+                    isSame = false;
+                }
+            }
+        } else {
+            isSame = false;
         }
         return isSame;
     }
@@ -475,18 +498,21 @@ public class EQSettingManager implements EqDbKey {
 
     public CmdEqSettingsSet getBleEqSettingFromEqModel(EQModel eqModel, Context context) {
         CmdEqSettingsSet cmdEqSettingsSet = null;
+        int packageIndex = 4;
+        int presetIndex = EnumEqPresetIdx.USER.ordinal();
+        EnumEqCategory eqCATEGORY = EnumEqCategory.GRAPHIC_EQ;
+        int sampleRate = 0;
+        float gain0 = 0;
+        float gain1 = 0;
+        int bandType = 0;
+        float qValue = 0;
         List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(context, SharePreferenceUtil.BLE_DESIGN_EQ);
         if (retCurrentEQList != null && retCurrentEQList.size() > 0) {
             RetCurrentEQ bleDesignEq = retCurrentEQList.get(0);
-            int packageIndex = 4;
-            int presetIndex = EnumEqPresetIdx.USER.ordinal();
-            EnumEqCategory eqCATEGORY = bleDesignEq.enumEqCategory;
-            int sampleRate = bleDesignEq.sampleRate;
-            float gain0 = bleDesignEq.gain0;
-            float gain1 = bleDesignEq.gain1;
+            sampleRate = bleDesignEq.sampleRate;
+            gain0 = bleDesignEq.gain0;
+            gain1 = bleDesignEq.gain1;
             Band[] bleDesignBands = bleDesignEq.bands;
-            int bandType = bleDesignBands[0].type;
-            float qValue = bleDesignBands[0].q;
             float[] pointX = eqModel.getPointX();
             float[] pointY = eqModel.getPointY();
             Band[] bands = new Band[pointX.length];
@@ -496,7 +522,19 @@ public class EQSettingManager implements EqDbKey {
             cmdEqSettingsSet = new CmdEqSettingsSet( presetIndex, eqCATEGORY, 0f, sampleRate, gain0, gain1, bands);
             float calib = DashboardActivity.getDashboardActivity().getCalib(cmdEqSettingsSet);
             cmdEqSettingsSet.setCalib(calib);
+            bandType = bleDesignBands[0].type;
+            qValue = bleDesignBands[0].q;
         }
+        float[] pointX = eqModel.getPointX();
+        float[] pointY = eqModel.getPointY();
+        Logger.d(TAG, "bleEqSetting pointX size:" + pointY.length);
+        Band[] bands = new Band[pointX.length];
+        for (int i = 0; i < pointX.length; i++) {
+            bands[i] = new Band(bandType, pointY[i], pointX[i], qValue);
+        }
+        cmdEqSettingsSet = new CmdEqSettingsSet(presetIndex, eqCATEGORY, 0f, sampleRate, gain0, gain1, bands);
+        float calib = DashboardActivity.getDashboardActivity().getCalib(cmdEqSettingsSet);
+        cmdEqSettingsSet.setCalib(calib);
 
         return cmdEqSettingsSet;
     }

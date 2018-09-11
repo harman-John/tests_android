@@ -445,7 +445,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             DeviceManager.getInstance(this).setOnRetListener(this);
             LiveManager.getInstance().setOnConnectStatusListener(this);
             LiveManager.getInstance().setOnRetListener(this);
+            doResume();
         }
+
     }
 
     @Override
@@ -1113,9 +1115,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
     }
 
-    private void setEqSettingsData(){
+    private void setEqSettingsData() {
         Band[] bands = new Band[10];
-        for (int i =0;i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             bands[i] = new Band(1, 3.0f, 32.0f, 1.0f);
         }
         CmdEqSettingsSet cmdEqSettingsSet = new CmdEqSettingsSet(4
@@ -1227,13 +1229,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     break;
                 }
                 case MSG_GET_DESIGN_EQ: {
-                    List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this, SharePreferenceUtil.BLE_DESIGN_EQ);
-                    if (retCurrentEQList != null && retCurrentEQList.size() > 0) {
-                        Logger.d(TAG, "retCurrentEQ ble design eq band count:" + retCurrentEQList.get(0).bandCount);
-                    } else {
-                        CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
-                        LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
-                    }
+                    CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
+                    LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
                     break;
                 }
             }
@@ -1421,20 +1418,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         homeHandler.sendMessage(msg);
     }
 
-    private void parseCustomEQ(byte[] v) {
-        if (v != null && v.length == 48) {
-            Logger.d(TAG, "EqBand value1 = " + Arrays.toString(v));
-            int[] eqArray = new int[10];
-            eqArray[0] = v[8];
-            eqArray[1] = v[12];
-            eqArray[2] = v[16];
-            eqArray[3] = v[20];
-            eqArray[4] = v[24];
-            eqArray[5] = v[28];
-            eqArray[6] = v[32];
-            eqArray[7] = v[36];
-            eqArray[8] = v[40];
-            eqArray[9] = v[44];
+    private void parseCustomEQ(int[] eqArray) {
+        if (eqArray.length == 10) {
             boolean isHave = false;
             String curEQName = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, this, "");
             if (!TextUtils.isEmpty(curEQName)) {
@@ -1478,6 +1463,22 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 sendMessageTo(MSG_UPDATE_CUSTOM_EQ, -1);
             }
 
+        }
+        if (LiveManager.getInstance().isConnected()) {
+            homeHandler.sendEmptyMessageDelayed(MSG_GET_DESIGN_EQ, 1000);
+        }
+    }
+
+    private void parseBleCustomEq(RetCurrentEQ retCurrentEQ) {
+        Band[] bands = retCurrentEQ.bands;
+
+        if (bands.length == 10) {
+            int[] eqArray = new int[10];
+            for (int i = 0; i < bands.length; i++) {
+                Logger.d(TAG, "reCurrentEQ GraphicEq fc:" + i + bands[i].fc + "gain:" + bands[i].gain);
+                eqArray[i] = (int) bands[i].gain;
+            }
+            parseCustomEQ(eqArray);
         }
     }
 
@@ -1544,13 +1545,32 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 if (objects[0] != null) {
                     byte[] eqBytes = (byte[]) (objects[0]);
                     Logger.d(TAG, "on receive, cmd eq band settings: " + ArrayUtil.toHex(eqBytes));
-                    parseCustomEQ(eqBytes);
+                    if (eqBytes != null && eqBytes.length == 48) {
+                        Logger.d(TAG, "EqBand value1 = " + Arrays.toString(eqBytes));
+                        int[] eqArray = new int[10];
+                        eqArray[0] = eqBytes[8];
+                        eqArray[1] = eqBytes[12];
+                        eqArray[2] = eqBytes[16];
+                        eqArray[3] = eqBytes[20];
+                        eqArray[4] = eqBytes[24];
+                        eqArray[5] = eqBytes[28];
+                        eqArray[6] = eqBytes[32];
+                        eqArray[7] = eqBytes[36];
+                        eqArray[8] = eqBytes[40];
+                        eqArray[9] = eqBytes[44];
+                        parseCustomEQ(eqArray);
+                    }
+
 //                    homeHandler.sendEmptyMessage(MSG_FIRMWARE_INFO);
                 } else {
                     //TODO: bes live update eq settings.
                     RetCurrentEQ retCurrentEQ = (RetCurrentEQ) objects[1];
                     if (retCurrentEQ != null) {
                         Logger.d(TAG, "retCurrentEQ:" + retCurrentEQ.enumEqCategory);
+                        Band[] bands = retCurrentEQ.bands;
+                        for (int i = 0; i < bands.length; i++) {
+                            Logger.d(TAG, "retCurrentEQ:" + i + ":gain:" + bands[i].gain + ";q:" + i + bands[i].q);
+                        }
                         if (retCurrentEQ.enumEqCategory == EnumEqCategory.DESIGN_EQ) {
                             //save the designEq
                             List<RetCurrentEQ> retCurrentEQS = new ArrayList<>();
@@ -1560,6 +1580,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                             //parse the graficEq
                             parseBleCustomEq(retCurrentEQ);
                         }
+                    } else {
+                        Logger.d(TAG, "retCurrentEQ is null");
                     }
                 }
                 break;
@@ -1629,46 +1651,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-    private void parseBleCustomEq(RetCurrentEQ retCurrentEQ) {
-        for (int i = 0; i < retCurrentEQ.bandCount; i++) {
-            Logger.d(TAG, "reCurrentEQ GraphicEq fc:" + i + retCurrentEQ.bands[i].fc);
-        }
-        List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(HomeActivity.this, SharePreferenceUtil.BLE_EQS);
-        boolean isExist = false;
-        if (retCurrentEQList != null && retCurrentEQList.size() > 0) {
-            Logger.d(TAG, "retCurrentEQList size is " + retCurrentEQList.size());
-            for (int i = 0; i < retCurrentEQList.size(); i++) {
-                RetCurrentEQ retCurrentEQModel = retCurrentEQList.get(i);
-                if (retCurrentEQModel.enumEqPresetIdx == retCurrentEQ.enumEqPresetIdx && retCurrentEQModel.sampleRate == retCurrentEQ.sampleRate
-                        && retCurrentEQModel.gain0 == retCurrentEQ.gain0 && retCurrentEQModel.gain1 == retCurrentEQ.gain1
-                        && retCurrentEQModel.bandCount == retCurrentEQ.bandCount) {
-                    for (int j = 0; j < retCurrentEQModel.bandCount; j++) {
-                        if (retCurrentEQModel.bands[j].type == retCurrentEQ.bands[j].type && retCurrentEQModel.bands[j].gain == retCurrentEQ.bands[j].gain
-                                && retCurrentEQModel.bands[j].fc == retCurrentEQ.bands[j].fc && retCurrentEQModel.bands[j].q == retCurrentEQ.bands[j].q) {
-                            isExist = true;
-                        }
-                    }
-                    if (isExist) {
-                        break;
-                    }
-                }
-            }
-            if (!isExist) {
-                Logger.d(TAG, "retCurrentEQ is not exist,add it");
-                retCurrentEQList.add(retCurrentEQ);
-            } else {
-                Logger.d(TAG, "retCurrentEQ is exist");
-            }
-        } else {
-            Logger.d(TAG, "retCurrentEQList size is 0 ,add it");
-            retCurrentEQList.add(retCurrentEQ);
-        }
-        SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this, retCurrentEQList, SharePreferenceUtil.BLE_EQS);
-        List<RetCurrentEQ> retGraphicEQs = new ArrayList<>();
-        retGraphicEQs.add(retCurrentEQ);
-        SharePreferenceUtil.saveCurrentEqSet(HomeActivity.this, retGraphicEQs, SharePreferenceUtil.BLE_EQS);
-        homeHandler.sendEmptyMessageDelayed(MSG_GET_DESIGN_EQ, 500);
-    }
 
     private final static int MSG_GET_DESIGN_EQ = 7;
 

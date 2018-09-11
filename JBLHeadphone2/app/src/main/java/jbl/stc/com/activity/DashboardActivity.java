@@ -581,23 +581,30 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     public float getCalib(CmdEqSettingsSet cmdEqSettingsSet) {
         List<RetCurrentEQ> bleDesignEqs = SharePreferenceUtil.readCurrentEqSet(DashboardActivity.this, SharePreferenceUtil.BLE_DESIGN_EQ);
         designer_cfg designerCfg = null;
-        IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[0];
+        IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[10];
         designer_cfg userCfg = null;
-        IIR_PARAM_T[] user_iir_param_t = new IIR_PARAM_T[0];
+        IIR_PARAM_T[] user_iir_param_t = new IIR_PARAM_T[10];
         if (bleDesignEqs != null && bleDesignEqs.size() > 0) {
             RetCurrentEQ bleDesignEq = bleDesignEqs.get(0);
-            designerCfg = new designer_cfg(bleDesignEq.gain0, bleDesignEq.gain1, bleDesignEq.bandCount, bleDesignEq.sampleRate);
-            def_iir_param_t = new IIR_PARAM_T[bleDesignEq.bandCount];
-            for (int i = 0; i < bleDesignEq.bandCount; i++) {
-                def_iir_param_t[i] = new IIR_PARAM_T(bleDesignEq.bands[i].type, bleDesignEq.bands[i].gain, bleDesignEq.bands[i].fc, bleDesignEq.bands[i].q);
+            Band[] bands = bleDesignEq.bands;
+            Logger.d(TAG, "cmdEqSettingSet designEq bands size" + bands.length);
+            designerCfg = new designer_cfg(bleDesignEq.gain0, bleDesignEq.gain1, bands.length, bleDesignEq.sampleRate);
+            def_iir_param_t = new IIR_PARAM_T[bands.length];
+            for (int i = 0; i < bands.length; i++) {
+                def_iir_param_t[i] = new IIR_PARAM_T(bands[i].type, bands[i].gain, bands[i].fc, bands[i].q);
+                Logger.d(TAG, "cmdEqSettingSet def" + i + ":gain" + bands[i].gain + ";q:" + bands[i].q + ";fc:" + bands[i].fc + ";");
             }
+        } else {
+            Logger.d(TAG, "cmdEqSettingSet designEq is null");
         }
 
         Band[] bands = cmdEqSettingsSet.getBand();
+        Logger.d(TAG, "cmdEqSettingSet bands size" + bands.length);
         userCfg = new designer_cfg(cmdEqSettingsSet.getGain0(), cmdEqSettingsSet.getGain1(), bands.length, cmdEqSettingsSet.getSampleRate());
         user_iir_param_t = new IIR_PARAM_T[bands.length];
         for (int i = 0; i < bands.length; i++) {
             user_iir_param_t[i] = new IIR_PARAM_T(bands[i].type, bands[i].gain, bands[i].fc, bands[i].q);
+            Logger.d(TAG, "cmdEqSettingSet user" + i + ":gain:" + bands[i].gain + ";q:" + bands[i].q);
         }
 
         /*designer_cfg designerCfg = new designer_cfg(0.21f, 0.22f, 1, 40);
@@ -609,7 +616,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         user_iir_param_t[0] = new IIR_PARAM_T(2, 0.15f, 2, 3);
         user_iir_param_t[1] = new IIR_PARAM_T(4, 0.16f, 1, 2);*/
 
-        Logger.d(TAG, "calculate calibration, length = " + def_iir_param_t.length);
+        Logger.d(TAG, "cmdEqSettingSet calculate calib def length= " + def_iir_param_t.length + "user length:" + user_iir_param_t.length);
         float a = calculateCalib(designerCfg, def_iir_param_t, def_iir_param_t.length, userCfg,
                 user_iir_param_t, user_iir_param_t.length);
         Logger.d(TAG, "calculate calibration, a = " + a);
