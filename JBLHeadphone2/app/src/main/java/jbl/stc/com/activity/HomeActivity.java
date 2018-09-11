@@ -1111,8 +1111,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
         LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
         LiveManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
-        CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
-        LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+        //CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
+        //LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
     }
 
     private void setEqSettingsData() {
@@ -1289,7 +1289,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             }
             case 4: {
-                ANCControlManager.getANCManager(this).getAppGraphicEQPresetBandSettings(GraphicEQPreset.User, 10);
+                if (LiveManager.getInstance().isConnected()) {
+                    CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
+                    LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+                }else{
+                    ANCControlManager.getANCManager(this).getAppGraphicEQPresetBandSettings(GraphicEQPreset.User, 10);
+                }
                 break;
             }
             default:
@@ -1566,10 +1571,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     //TODO: bes live update eq settings.
                     RetCurrentEQ retCurrentEQ = (RetCurrentEQ) objects[1];
                     if (retCurrentEQ != null) {
-                        Logger.d(TAG, "retCurrentEQ:" + retCurrentEQ.enumEqCategory);
+                        Logger.d(TAG, "on receive, retCurrentEQ:" + retCurrentEQ.enumEqCategory);
                         Band[] bands = retCurrentEQ.bands;
                         for (int i = 0; i < bands.length; i++) {
-                            Logger.d(TAG, "retCurrentEQ:" + i + ":gain:" + bands[i].gain + ";q:" + i + bands[i].q);
+                            Logger.d(TAG, "on receive, retCurrentEQ:" + i + ":gain:" + bands[i].gain + ";q:" + i + bands[i].q);
                         }
                         if (retCurrentEQ.enumEqCategory == EnumEqCategory.DESIGN_EQ) {
                             //save the designEq
