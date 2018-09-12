@@ -1,0 +1,59 @@
+package jbl.stc.com.view;
+
+
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.provider.Settings;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.PopupWindow;
+
+import jbl.stc.com.R;
+
+/**
+ * @name JBLHeadphone2
+ * @class name：jbl.stc.com.view
+ * @class describe
+ * Created by Vicky on 09/12/18.
+ */
+public class VoiceAssistantSettingPopWindow extends PopupWindow implements View.OnClickListener {
+
+    private Button buttonGotIt;
+    private Context mContext;
+
+    public VoiceAssistantSettingPopWindow(Context context) {
+        super(context);
+        mContext = context;
+        init(context);
+    }
+
+    private void init(Context context) {
+        View popupWindow_view = LayoutInflater.from(context).inflate(R.layout.popwindow_voice_assistant, null,
+                false);
+        setContentView(popupWindow_view);
+        setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+        setFocusable(true);
+        setAnimationStyle(R.style.style_down_to_top);
+        buttonGotIt = (Button) popupWindow_view.findViewById(R.id.button_got_it);
+        buttonGotIt.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.aa_popup_close_arrow:
+                dismiss();
+                break;
+            case R.id.button_got_it:
+                dismiss();
+                break;
+        }
+
+    }
+
+}
