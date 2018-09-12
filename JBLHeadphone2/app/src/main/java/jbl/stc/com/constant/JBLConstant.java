@@ -65,11 +65,13 @@ public class JBLConstant {
     public static final String DEVICE_EVEREST_ELITE_750NC = "EVEREST ELITE 750NC";
 
     public static final String DEVICE_LIVE_400BT_PID = "111F";
+    public static final String DEVICE_LIVE_500BT_PID = "121F";
+    public static final String DEVICE_LIVE_650BTNC_PID = "151F";
+    public static final String DEVICE_LIVE_FREE_GA_PID = "161F";
+
     public static final String DEVICE_LIVE_400BT = "LIVE 400BT";
-    public static final String DEVICE_LIVE_500BT_PID = "xxxF";
-    public static final String DEVICE_LIVE_500BT = "JBL LIVE500BT";
-    public static final String DEVICE_LIVE_650BTNC_PID = "xxxx";
-    public static final String DEVICE_LIVE_650BTNC = "JBL LIVE650BTNC";
+    public static final String DEVICE_LIVE_500BT = "LIVE 500BT";
+    public static final String DEVICE_LIVE_650BTNC = "LIVE 650BTNC";
     public static final String DEVICE_LIVE_FREE_GA = "LIVE FREE GA";
 
 

@@ -516,7 +516,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             }
             case CMD_FIRMWARE_VERSION: {
                 String version = (String) objects[0];
-                if (version == null) {
+                if (version == null && AvneraManager.getAvenraManager().getAudioManager()!= null) {
                     AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager().getAudioManager().getAccessoryStatus();
                     String firmwareRev = accessoryInfo.getFirmwareRev();
                     textViewFwVersion.setText(firmwareRev);

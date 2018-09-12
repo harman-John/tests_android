@@ -59,19 +59,20 @@
         <feature name="ENABLE_AMBIENT_AWARE"/>
 
         <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_SMART_ASSISTANT"/>
     </product>
 
     <product name="LIVE 500BT">
         <feature name="ENABLE_AMBIENT_AWARE"/>
 
         <feature name="ENABLE_AUTO_OFF_TIMER"/>
+        <feature name="ENABLE_SMART_ASSISTANT"/>
     </product>
 
     <product name="LIVE 650BTNC">
         <feature name="ENABLE_NOISE_CANCEL"/>
 
         <feature name="ENABLE_AUTO_OFF_TIMER"/>
-        <feature name="ENABLE_SOUND_X_SETUP"/>
         <feature name="ENABLE_SMART_ASSISTANT"/>
     </product>
 

@@ -92,10 +92,13 @@ public class LeLollipopScanner extends BaseScanner {
                     pid[0] = manufacturerSpecificData[0];
                     pid[1] = manufacturerSpecificData[1];
                     Logger.i(TAG, "on scan result, le scan callback, device name = " + deviceName
+                            + ", mac = " + result.getDevice().getAddress()
                             + ", Rssi = " + result.getRssi()
                             + ", data = " + ArrayUtil.toHex(pid));
-                    // This is JBL Live 400BT
-                    if (pid[0] == 0x11 && pid[1] == 0x1f) {
+                    if (pid[0] == 0x11 && pid[1] == 0x1f
+                            || pid[0] == 0x12 && pid[1] == 0x1f
+                            || pid[0] == 0x15 && pid[1] == 0x1f
+                            || pid[0] == 0x16 && pid[1] == 0x1f) {
                         String sPid = ArrayUtil.toHexNoAppend(pid);
                         onFound(result.getDevice(), sPid);
                     }

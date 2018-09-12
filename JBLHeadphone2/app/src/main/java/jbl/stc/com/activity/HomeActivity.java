@@ -227,6 +227,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         });
         RelativeLayout linearLayoutNoiseCanceling = findViewById(R.id.relative_layout_home_noise_cancel);
         deviceName = ProductListManager.getInstance().getSelectDevice(mConnectStatus).deviceName;
+        Logger.i(TAG,"on create, device name = "+deviceName);
         if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_NOISE_CANCEL)) {
             linearLayoutNoiseCanceling.setVisibility(View.GONE);
         } else {
@@ -242,22 +243,21 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_AMBIENT_AWARE)) {
             linearLayoutAmbientAware.setVisibility(View.GONE);
         } else {
-            findViewById(R.id.image_view_home_ambient_aware).setOnClickListener(this);
+            imageViewAmbientAaware.setOnClickListener(this);
             if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
                 linearLayoutAmbientAware.setAlpha((float) 0.5);
             }
             if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
-                CustomFontTextView textViewNoiseCancle = findViewById(R.id.text_view_home_noise_cancle);
-                textViewNoiseCancle.setText(R.string.talkthru);
+                CustomFontTextView textViewNoiseCancel = findViewById(R.id.text_view_home_noise_cancle);
+                textViewNoiseCancel.setText(R.string.talkthru);
                 checkBoxNoiseCancel.setOnClickListener(this);
                 findViewById(R.id.relative_layout_home_noise_cancel).setVisibility(View.VISIBLE);
                 linearLayoutAmbientAware.setVisibility(View.VISIBLE);
-                ImageView imageViewAmbientAware = findViewById(R.id.image_view_home_ambient_aware);
-                imageViewAmbientAware.setBackgroundResource(R.mipmap.aa_icon_non_active);
-                imageViewAmbientAware.setTag("0");
-                imageViewAmbientAware.setOnClickListener(this);
+                imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+                imageViewAmbientAaware.setTag("0");
+                imageViewAmbientAaware.setOnClickListener(this);
 
             }
         }
@@ -548,7 +548,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     if (checkBoxNoiseCancel.isChecked()) {
                         Logger.d(TAG, "noise cancel  checked");
                         checkBoxNoiseCancel.setChecked(true);
-                        if (imageViewAmbientAaware.getTag().equals("1")) {
+                        if (imageViewAmbientAaware!= null
+                                && imageViewAmbientAaware.getTag()!=null
+                                && imageViewAmbientAaware.getTag().equals("1")) {
                             imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
                             imageViewAmbientAaware.setTag("0");
                         }
