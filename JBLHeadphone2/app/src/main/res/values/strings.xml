@@ -41,7 +41,6 @@
 
     <string name="true_note">TruNote</string>
     <string name="sound_x_setup">SoundX setup</string>
-    <string name="smart_assistant">Smart assistant</string>
     <string name="user_manual">User manual</string>
     <string name="updating">Updating&#8230;</string>
 
@@ -214,6 +213,7 @@
     <string name="no_product_tips">You don\'t have any product yet, add a product now!</string>
     <string name="share_element">Share element</string>
     <string name="percent_100">100%</string>
+    <string name="voice_assistant">Voice Assistant</string>
     <string name="google_assistant_tips">not set up</string>
     <string name="google_assistant">Google Assistant</string>
     <string name="google_assistant_content">Use the action button to talk to your Google Assistant</string>

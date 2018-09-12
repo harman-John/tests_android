@@ -156,7 +156,7 @@
                     android:gravity="center_vertical"
                     android:paddingEnd="@dimen/settings_item_padding_right"
                     android:paddingStart="@dimen/settings_item_padding_left"
-                    android:text="@string/smart_assistant"
+                    android:text="@string/voice_assistant"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </RelativeLayout>

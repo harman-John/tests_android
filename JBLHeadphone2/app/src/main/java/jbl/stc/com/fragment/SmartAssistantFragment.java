@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import jbl.stc.com.R;
@@ -30,6 +31,10 @@ public class SmartAssistantFragment extends BaseFragment implements View.OnClick
         textView.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         textView.setOnClickListener(this);
         view.findViewById(R.id.image_view_back).setOnClickListener(this);
+        Switch switchGA = view.findViewById(R.id.switch_google_assistant);
+        switchGA.setVisibility(View.GONE);
+        switchGA.setOnClickListener(this);
+        view.findViewById(R.id.text_view_not_set_up).setVisibility(View.VISIBLE);
         return view;
     }
 
@@ -48,6 +53,8 @@ public class SmartAssistantFragment extends BaseFragment implements View.OnClick
                 getActivity().onBackPressed();
                 break;
             case R.id.text_view_go_to_google_assistant:
+                break;
+            case R.id.switch_google_assistant:
                 break;
         }
     }

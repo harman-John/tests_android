@@ -27,9 +27,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/smart_assistant"
-            android:textStyle="bold"
-            android:textSize="18sp" />
+            android:text="@string/voice_assistant"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 
@@ -83,6 +83,7 @@
                         android:textStyle="bold" />
 
                     <jbl.stc.com.view.CustomFontTextView
+                        android:id="@+id/text_view_not_set_up"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -90,6 +91,20 @@
                         android:gravity="end"
                         android:textSize="14sp"
                         android:textStyle="normal"/>
+
+                    <Switch
+                        android:id="@+id/switch_google_assistant"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom"
+                        android:saveEnabled="true"
+                        android:switchMinWidth="0dp"
+                        android:text=""
+                        android:textOff=""
+                        android:textOn=""
+                        android:thumb="@drawable/toggle_switch_thumb"
+                        android:track="@drawable/toggle_switch_track"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <jbl.stc.com.view.CustomFontTextView

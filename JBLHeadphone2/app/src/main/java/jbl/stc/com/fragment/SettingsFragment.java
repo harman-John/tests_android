@@ -100,7 +100,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         tvToggleAutoOff = view.findViewById(R.id.tv_toggleautoOff);
         toggleVoicePrompt = view.findViewById(R.id.toggleVoicePrompt);
         view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
-        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+        if (myDevice!=null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             toggleVoicePrompt.setOnClickListener(this);
             textViewFirmware.setOnClickListener(this);
             view.findViewById(R.id.voice_prompt_layout).setOnClickListener(this);
@@ -122,7 +122,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         }
 
         RelativeLayout relativeLayoutAutoOffTimer = view.findViewById(R.id.relative_layout_settings_auto_off);
-        if (DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_AUTO_OFF_TIMER)) {
+        if (myDevice!=null && DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_AUTO_OFF_TIMER)) {
             relativeLayoutAutoOffTimer.setVisibility(View.VISIBLE);
             tvToggleAutoOff.setVisibility(View.VISIBLE);
             toggleAutoOffTimer.setVisibility(View.GONE);
@@ -141,20 +141,20 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             relativeLayoutAutoOffTimer.setVisibility(View.GONE);
         }
         RelativeLayout relativeLayoutTrueNote = view.findViewById(R.id.relative_layout_settings_true_note);
-        if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
+        if (myDevice!=null && !DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
             relativeLayoutTrueNote.setVisibility(View.GONE);
         } else {
             relativeLayoutTrueNote.setVisibility(View.VISIBLE);
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            if (myDevice!=null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 relativeLayoutTrueNote.setOnClickListener(this);
             }
         }
         RelativeLayout relativeLayoutSoundXSetup = view.findViewById(R.id.relative_layout_settings_sound_x_setup);
-        if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_SOUND_X_SETUP)) {
+        if (myDevice!=null && !DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_SOUND_X_SETUP)) {
             relativeLayoutSoundXSetup.setVisibility(View.GONE);
         } else {
             relativeLayoutSoundXSetup.setVisibility(View.VISIBLE);
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            if (myDevice!=null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 relativeLayoutSoundXSetup.setOnClickListener(this);
             }
         }
@@ -163,22 +163,22 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             relativeLayoutSmartAssitant.setVisibility(View.GONE);
         } else {
             relativeLayoutSmartAssitant.setVisibility(View.VISIBLE);
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            if (myDevice!=null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 relativeLayoutSmartAssitant.setOnClickListener(this);
             }
         }
 
-        if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_VOICE_PROMPT)) {
+        if (myDevice!=null && !DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_VOICE_PROMPT)) {
             view.findViewById(R.id.relative_layout_settings_voice_prompt).setVisibility(View.GONE);
         } else {
             view.findViewById(R.id.relative_layout_settings_voice_prompt).setVisibility(View.VISIBLE);
         }
-        deviceNameStr = myDevice.deviceName;
-//        deviceNameStr=PreferenceUtils.getString(PreferenceKeys.MODEL, mContext, "");
-        Logger.d(TAG, "deviceName:" + textViewDeviceName.getText());
-        updateDeviceNameAndImage(deviceNameStr, deviceImage, textViewDeviceName);
-
-        updateUI();
+        if (myDevice!=null) {
+            deviceNameStr = myDevice.deviceName;
+            Logger.d(TAG, "deviceName:" + textViewDeviceName.getText());
+            updateDeviceNameAndImage(deviceNameStr, deviceImage, textViewDeviceName);
+            updateUI();
+        }
         showOta(false);
         registerConnectivity();
         return view;
@@ -196,7 +196,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             imageViewDownload.setVisibility(View.GONE);
             textViewFwVersion.setVisibility(View.VISIBLE);
             String firmwareVersion = PreferenceUtils.getString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, getActivity(), "");
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            if (myDevice!=null &&myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 textViewFwVersion.setText(firmwareVersion);
             } else {
                 textViewFwVersion.setText("");
@@ -207,7 +207,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void updateUI() {
-        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+        if (myDevice!=null &&myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             ANCControlManager.getANCManager(getActivity()).getVoicePrompt();
             ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
         }
@@ -222,7 +222,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             tvToggleAutoOff.setVisibility(View.GONE);
             toggleAutoOffTimer.setVisibility(View.VISIBLE);
             //get autooff timer
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            if (myDevice!=null &&myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 ANCControlManager.getANCManager(getActivity()).getAutoOffFeature();
             }
         } else if (deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_500BT).toUpperCase()) ||
@@ -245,7 +245,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         super.onResume();
         Logger.d(TAG, "onResume");
         tvToggleAutoOff.setText(PreferenceUtils.getString(PreferenceKeys.AUTOOFFTIMER, getActivity(), getContext().getString(R.string.five_minute)));
-        if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+        if (myDevice!=null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             if (getActivity() instanceof BaseActivity) {
                 ((BaseActivity) getActivity()).startCheckingIfUpdateIsAvailable(SettingsFragment.this);
             }
@@ -271,8 +271,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         new Thread(new Runnable() {
             @Override
             public void run() {
-                CmdDevStatus cmdDevStatus = new CmdDevStatus(EnumDeviceStatusType.AUTO_OFF);
-                LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(myDevice.connectStatus).mac, cmdDevStatus);
+                if(myDevice!=null) {
+                    CmdDevStatus cmdDevStatus = new CmdDevStatus(EnumDeviceStatusType.AUTO_OFF);
+                    LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(myDevice.connectStatus).mac, cmdDevStatus);
+                }
             }
         }).start();
     }
