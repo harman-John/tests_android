@@ -252,6 +252,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 CustomFontTextView textViewNoiseCancle = findViewById(R.id.text_view_home_noise_cancle);
                 textViewNoiseCancle.setText(R.string.talkthru);
                 checkBoxNoiseCancel.setOnClickListener(this);
+                checkBoxNoiseCancel.setBackgroundResource(R.drawable.checkbox_talk_through_selector);
                 findViewById(R.id.relative_layout_home_noise_cancel).setVisibility(View.VISIBLE);
                 linearLayoutAmbientAware.setVisibility(View.VISIBLE);
                 ImageView imageViewAmbientAware = findViewById(R.id.image_view_home_ambient_aware);
@@ -501,23 +502,23 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                         if (imageViewAmbientAaware.getTag().equals("1")) {
                             imageViewAmbientAaware.setBackground(getResources().getDrawable(R.mipmap.aa_icon_non_active));
                             imageViewAmbientAaware.setTag("0");
+                            checkBoxNoiseCancel.setChecked(true);
                         } else if (imageViewAmbientAaware.getTag().equals("0")) {
                             imageViewAmbientAaware.setBackground(getResources().getDrawable(R.mipmap.aa_icon_active));
                             imageViewAmbientAaware.setTag("1");
                             checkBoxNoiseCancel.setChecked(false);
+                            if (LiveManager.getInstance().isConnected()) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        CmdAASet cmdAASet = new CmdAASet(checkBoxNoiseCancel.isChecked() ? EnumAAStatus.TALK_THRU : EnumAAStatus.AMBIENT_AWARE);
+                                        LiveManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
+                                    }
+                                }).start();
+                            }
 
                         }
-                        if (LiveManager.getInstance().isConnected()) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked() ? EnumAncStatus.ON : EnumAncStatus.OFF);
-                                    LiveManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
-                                    CmdAASet cmdAASet = new CmdAASet(checkBoxNoiseCancel.isChecked() ? EnumAAStatus.TALK_THRU : EnumAAStatus.AMBIENT_AWARE);
-                                    LiveManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
-                                }
-                            }).start();
-                        }
+
                     }
                 }
                 break;
@@ -556,13 +557,17 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     } else {
                         Logger.d(TAG, "noise cancel unchecked");
                         checkBoxNoiseCancel.setChecked(false);
+                        if (imageViewAmbientAaware.getTag().equals("0")) {
+                            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_active);
+                            imageViewAmbientAaware.setTag("1");
+                        }
                     }
                     if (LiveManager.getInstance().isConnected()) {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked() ? EnumAncStatus.ON : EnumAncStatus.OFF);
-                                LiveManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
+                                CmdAASet cmdAASet = new CmdAASet(checkBoxNoiseCancel.isChecked() ? EnumAAStatus.TALK_THRU : EnumAAStatus.AMBIENT_AWARE);
+                                LiveManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
                             }
                         }).start();
                     }
