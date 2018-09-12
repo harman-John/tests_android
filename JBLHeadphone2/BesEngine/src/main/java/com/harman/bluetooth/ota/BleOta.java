@@ -74,7 +74,7 @@ public class BleOta implements BleListener {
     private boolean mExit = false;
 
     private HandlerThread mCmdThread;
-    private CmdHandler mCmdHandler;
+    private CmdHandler mCmdHandler = new CmdHandler(Looper.getMainLooper());
 
     private byte[][][] mOtaData;
     private int mOtaPacketCount = 0;
@@ -248,7 +248,6 @@ public class BleOta implements BleListener {
     protected void initConfig() {
         mCmdThread = new HandlerThread(TAG);
         mCmdThread.start();
-        mCmdHandler = new CmdHandler(mCmdThread.getLooper());
     }
 
     //    @Override

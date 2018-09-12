@@ -38,6 +38,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
@@ -1212,7 +1213,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
                     Logger.e(TAG, "on receive, onLineFwVersion : " + version);
                 }
                 onLineFwVersion = version;
-                PreferenceUtils.setString(PreferenceKeys.FirmVersion, version, getActivity());
+                PreferenceUtils.setString(PreferenceKeys.FirmVersion, version, JBLApplication.getJBLApplicationContext());
                 AnalyticsManager.getInstance(getActivity()).reportFirmwareVersion(onLineFwVersion);
                 break;
             }
