@@ -89,7 +89,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         screenWidth = dm.widthPixels;
         screenHeight = dm.widthPixels;
         myDevice = ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED);
-        Logger.d(TAG, "deviceName:" + myDevice.deviceName);
+        Logger.d(TAG, "deviceName:" + ((myDevice!=null)?myDevice.deviceName:"device is null"));
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);
@@ -326,6 +326,10 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             }
             case R.id.relative_layout_settings_auto_off: {
                 switchFragment(new AutoOffTimeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                break;
+            }
+            case R.id.relative_layout_settings_smart_assistant:{
+                switchFragment(new SmartAssistantFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
         }
