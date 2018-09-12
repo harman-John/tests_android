@@ -146,7 +146,6 @@ public class LiveManager implements ScanListener, BleListener {
     //For scan callbacks
     @Override
     public void onFound(BluetoothDevice device, String pid) {
-        leStatus = LeStatus.SCANNING;
 //        Logger.d(TAG,"on found device, stop scan");
 //        leLollipopScanner.stopScan();
         String key = pid + "-" + device.getAddress();
@@ -161,6 +160,10 @@ public class LiveManager implements ScanListener, BleListener {
             }
             if (myDevice == null) {
                 Logger.e(TAG, "on found, my device is null");
+                return;
+            }
+            if(leStatus == LeStatus.CONNECTING || leStatus == LeStatus.CONNECTED){
+                Logger.e(TAG, "on found, status is connecting or connected");
                 return;
             }
             SharePreferenceUtil.saveSet(mContext, SharePreferenceUtil.PRODUCT_DEVICE_LIST_PER_KEY, devicesSet);

@@ -309,7 +309,9 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.image_view_settings_back: {
-                getActivity().onBackPressed();
+//                getActivity().onBackPressed();
+
+                createDeviceImageView(getActivity());
                 break;
             }
             case R.id.relative_layout_settings_true_note: {

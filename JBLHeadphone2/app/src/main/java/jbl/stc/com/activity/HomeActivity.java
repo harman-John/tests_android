@@ -511,8 +511,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    CmdAncSet cmdAncSet = new CmdAncSet(checkBoxNoiseCancel.isChecked() ? EnumAncStatus.ON : EnumAncStatus.OFF);
-                                    LiveManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAncSet);
                                     CmdAASet cmdAASet = new CmdAASet(checkBoxNoiseCancel.isChecked() ? EnumAAStatus.TALK_THRU : EnumAAStatus.AMBIENT_AWARE);
                                     LiveManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
                                 }
@@ -540,7 +538,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             }
             case R.id.image_view_home_settings: {
-                switchFragment(new SettingsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+//                switchFragment(new SettingsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                createDeviceImageView(HomeActivity.this);
                 break;
             }
             case R.id.image_view_home_noise_cancel: {
