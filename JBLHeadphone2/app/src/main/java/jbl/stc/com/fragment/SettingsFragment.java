@@ -515,7 +515,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             }
             case CMD_AutoOffEnable: {
                 toggleAutoOffTimer.setChecked((boolean) objects[0]);
-                if (objects[1] != null) {
+                if (objects.length>1&&objects[1] != null) {
                     tvToggleAutoOff.setText(String.valueOf(objects[1])+"min");
                 }
                 break;

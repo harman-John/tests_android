@@ -174,7 +174,7 @@
     <string name="tutorial_tips_one_live">Now the smart ambient button is used for Daylight ambient.</string>
     <string name="tutorial_tips_two_live">Now the smart ambient button is used for TalkTru.</string>
 
-    <string name="tutorial_tips_zero_live_400">Tap TalkThru to keep your\nheadphones on and have clear\nconversations.\nTap Ambient Aware to be aware of your surroundings </string>
+    <string name="tutorial_tips_zero_live_400">Tap TalkThru to keep your\nheadphones on and have clear\nconversations.\n\nTap Ambient Aware to be aware of your surroundings </string>
 
     <string name="tutorial_tips_zero_live_650">Noise cancelling is switched on.\nToggle on and off noise\ncancelling by tapping the icon.</string>
     <string name="tutorial_tips_one_live_650">Noise cancelling is switched off.\nToggle on and off noise\ncancelling by tapping the icon.</string>

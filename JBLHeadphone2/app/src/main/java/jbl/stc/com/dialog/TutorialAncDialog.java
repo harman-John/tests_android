@@ -123,7 +123,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
             window.setAttributes(lp);
 
         deviceName = ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).deviceName;
-        Logger.d("TAG", deviceName);
+        Logger.d(TAG,"deviceName"+ deviceName);
         RelativeLayout relativeLayoutNoiceCancel = findViewById(R.id.relative_layout_tutorial_dialog_noise_cancel);
         if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_NOISE_CANCEL)) {
             relativeLayoutNoiceCancel.setVisibility(View.GONE);
@@ -136,11 +136,10 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_AMBIENT_AWARE) || isShowOnlyNoiceCancelingType()) {
             relativeLayoutAmbientAware.setVisibility(View.GONE);
         } else {
-            relativeLayoutAmbientAware.setVisibility(View.VISIBLE);
+            //relativeLayoutAmbientAware.setVisibility(View.VISIBLE);
             ImageView imageViewAbientAware = findViewById(R.id.image_view_tutorial_dialog_ambient_aware);
             imageViewAbientAware.setOnClickListener(this);
         }
-
         if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
                 || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)) {
             relativeLayoutNoiceCancel.setVisibility(View.VISIBLE);
@@ -205,20 +204,23 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         if (checkBoxANC != null) {
             checkBoxANC.setChecked(isChecked);
         }
-        if (isChecked) {
-            if (relativeLayoutAmbientAware != null) {
-                relativeLayoutAmbientAware.setVisibility(View.VISIBLE);
+        if (!deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC)){
+            if (isChecked) {
+                if (relativeLayoutAmbientAware != null) {
+                    relativeLayoutAmbientAware.setVisibility(View.VISIBLE);
+                }
+                setTextViewTips(R.string.tutorial_tips_one);
+            } else {
+                if (relativeLayoutAmbientAware != null) {
+                    relativeLayoutAmbientAware.setVisibility(View.INVISIBLE);
+                }
+
+                setTextViewTips(R.string.tutorial_tips_zero);
+
+
             }
-            setTextViewTips(R.string.tutorial_tips_one);
-        } else {
-            if (relativeLayoutAmbientAware != null) {
-                relativeLayoutAmbientAware.setVisibility(View.INVISIBLE);
-            }
-
-            setTextViewTips(R.string.tutorial_tips_zero);
-
-
         }
+
     }
 
     public void setTextViewTips(int restId) {
@@ -406,8 +408,10 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                     ((HomeActivity) mActivity).tutorialSetANC();
                     setChecked(checkBoxANC.isChecked());
                     if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
-                            || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)) {
+                            || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
+                            || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC)) {
                         showEqInfo();
+                        setTextViewTips(R.string.tutorial_tips_three);
                     }
                 }
                 break;
@@ -422,6 +426,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                     } else {
                         //((HomeActivity) mActivity).showSaPopupWindow(relativeLayout, this);
                         showEqInfo();
+                        setTextViewTips(R.string.tutorial_tips_three);
                     }
                 }
                 break;

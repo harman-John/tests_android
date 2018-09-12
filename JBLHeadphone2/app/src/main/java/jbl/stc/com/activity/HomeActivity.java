@@ -1262,7 +1262,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         if (checkBoxNoiseCancel != null)
             checkBoxNoiseCancel.setChecked(onOff);
         if (tutorialAncDialog != null) {
-            tutorialAncDialog.setChecked(onOff);
+            if (!(deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
+                    || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT))){
+                tutorialAncDialog.setChecked(onOff);
+            }
         }
     }
 
