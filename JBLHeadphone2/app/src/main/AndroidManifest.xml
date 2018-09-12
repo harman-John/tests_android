@@ -50,7 +50,6 @@
         <activity
             android:name=".activity.HomeActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme1"
             android:windowSoftInputMode="adjustResize|stateHidden">
 
