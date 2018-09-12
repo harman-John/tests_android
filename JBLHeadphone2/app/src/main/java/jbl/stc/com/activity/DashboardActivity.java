@@ -449,12 +449,16 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
         dashboardHandler.removeMessages(MSG_START_SCAN);
         boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
-        if (!isShowTutorialManyTimes
-                && DeviceManager.getInstance(this).isConnected()
-                && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
-                && DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
-            Logger.d(TAG, "show home activity, show calibration activity");
-            startActivity(new Intent(this, CalibrationActivity.class));
+        if (!isShowTutorialManyTimes && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
+                && ((DeviceManager.getInstance(this).isConnected() && DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE))
+                || LiveManager.getInstance().isConnected())) {
+            if (LiveManager.getInstance().isConnected()) {
+                Logger.d(TAG, "show home activity, show VoiceAssistant activity");
+                startActivity(new Intent(this, VoiceAssistantActivity.class));
+            } else {
+                Logger.d(TAG, "show home activity, show calibration activity");
+                startActivity(new Intent(this, CalibrationActivity.class));
+            }
         } else {
             Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra(JBLConstant.KEY_CONNECT_STATUS, myDevice.connectStatus);

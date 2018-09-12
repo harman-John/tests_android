@@ -41,6 +41,13 @@
 
     <string name="true_note">TruNote</string>
     <string name="sound_x_setup">SoundX setup</string>
+    <string name="voice_assistant">Voice assistant</string>
+    <string name="voice_assistant_hint">Set up your voice assistant with JBL Headphones</string>
+    <string name="goto_google_voice_assistant">Go to your Google\n assistant settings</string>
+    <string name="voice_assistant_set_up_later">Do it later</string>
+    <string name="set_voice_assistant_by_JBL_headphones">Set up your preferred voice assistant with your JBL headphones</string>
+    <string name="voice_assistant_setting">Voice assistant setting</string>
+    <string name="set_voice_assistant_later_from_setting">You may change settings of voice assistants from the settings memu later</string>
     <string name="user_manual">User manual</string>
     <string name="updating">Updating&#8230;</string>
 
@@ -213,7 +220,6 @@
     <string name="no_product_tips">You don\'t have any product yet, add a product now!</string>
     <string name="share_element">Share element</string>
     <string name="percent_100">100%</string>
-    <string name="voice_assistant">Voice Assistant</string>
     <string name="google_assistant_tips">not set up</string>
     <string name="google_assistant">Google Assistant</string>
     <string name="google_assistant_content">Use the action button to talk to your Google Assistant</string>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relative_layout_voice_assistant_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true">
+
+    <RelativeLayout
+        android:id="@+id/relative_layout_vocie_assistant"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_gradient_home_fragment">
+
+        <RelativeLayout
+            android:id="@+id/titleBar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_bar_height"
+            android:paddingLeft="@dimen/margin_top_10dp"
+            android:paddingRight="@dimen/margin_top_10dp">
+
+            <jbl.stc.com.view.AppImageView
+                android:id="@+id/image_view_back"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/grey_arrow_back"
+                android:visibility="visible" />
+
+            <jbl.stc.com.view.CustomFontTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/voice_assistant"
+                android:textColor="@color/black_4C596B"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <jbl.stc.com.view.CustomFontTextView
+            android:id="@+id/tv_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleBar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="40dp"
+            android:text="@string/voice_assistant_hint"
+            android:textColor="@color/black_4C596B"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+
+        <ImageView
+            android:id="@+id/iv_google_assistant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/google_assistant_big" />
+
+        <jbl.stc.com.view.CustomFontTextView
+            android:id="@+id/tv_goto_voice_assistant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_google_assistant"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/goto_google_voice_assistant"
+            android:textColor="@color/black_4C596B"
+            android:textSize="16sp"
+            android:textStyle="normal" />
+
+
+        <jbl.stc.com.view.CustomFontTextView
+            android:id="@+id/tv_set_up_later"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="66dp"
+            android:text="@string/voice_assistant_set_up_later"
+            android:textColor="@color/black_4C596B"
+            android:textSize="16sp"
+            android:textStyle="normal" />
+    </RelativeLayout>
+
+    <jbl.stc.com.view.BlurringView
+        android:id="@+id/view_blur"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:visibility="gone"
+        app:blurRadius="11"
+        app:downsampleFactor="6"
+        app:overlayColor="@color/blur_overlay_color" />
+
+
+</RelativeLayout>
