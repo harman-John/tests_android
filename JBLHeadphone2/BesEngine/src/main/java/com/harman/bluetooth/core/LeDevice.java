@@ -528,6 +528,7 @@ public class LeDevice {
             bands[i] = new Band(type, gain, fc, q);
         }
         dataCurrentEQ.bands = bands;
+        eqData= null;
         return dataCurrentEQ;
     }
 

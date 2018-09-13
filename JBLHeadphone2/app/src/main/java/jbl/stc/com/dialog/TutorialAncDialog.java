@@ -1,6 +1,10 @@
 package jbl.stc.com.dialog;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.media.Image;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -30,6 +34,7 @@ import jbl.stc.com.fragment.EqSettingFragment;
 import jbl.stc.com.listener.OnDialogListener;
 import jbl.stc.com.listener.OnEqChangeListener;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
@@ -55,6 +60,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     private TextView textViewSkip;
     private RelativeLayout relativeLayoutAdd;
     private RelativeLayout relativeLayoutAmbientAware;
+    private ImageView imageViewAmbientAaware;
     private TextView textViewEqGrey;
     private EqualizerAddView mEqAddView;
     private FrameLayout tutorialEqualizerLayout;
@@ -62,6 +68,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
     private AppImageView tripleUpArrow;
     private String deviceName;
     private final static String TAG = TutorialAncDialog.class.getSimpleName();
+    private boolean isDelayed = false;
 
     public void setOnDialogListener(OnDialogListener onDialogListener) {
         this.onDialogListener = onDialogListener;
@@ -97,6 +104,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         mEqAddView = findViewById(R.id.tutorial_equalizerView);
         tripleUpArrow = findViewById(R.id.eq_tutorial_triple_up_arrows_img);
         checkBoxANC = findViewById(R.id.image_view_tutorial_dialog_noise_cancel);
+        imageViewAmbientAaware = findViewById(R.id.image_view_tutorial_dialog_ambient_aware);
         mEqAddView.setOnEqChangeListener(new OnEqChangeListener() {
             @Override
             public void onEqValueChanged(int eqIndex, float value) {
@@ -123,7 +131,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
             window.setAttributes(lp);
 
         deviceName = ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).deviceName;
-        Logger.d(TAG,"deviceName"+ deviceName);
+        Logger.d(TAG, "deviceName" + deviceName);
         RelativeLayout relativeLayoutNoiceCancel = findViewById(R.id.relative_layout_tutorial_dialog_noise_cancel);
         if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_NOISE_CANCEL)) {
             relativeLayoutNoiceCancel.setVisibility(View.GONE);
@@ -148,6 +156,8 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
             CustomFontTextView tv_noise_cancle = findViewById(R.id.tv_noise_cancle);
             tv_noise_cancle.setText(R.string.talkthru);
             relativeLayoutAmbientAware.setVisibility(View.VISIBLE);
+            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+            imageViewAmbientAaware.setTag("0");
             setTextViewTips(R.string.tutorial_tips_zero_live_400);
         }
 
@@ -204,7 +214,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         if (checkBoxANC != null) {
             checkBoxANC.setChecked(isChecked);
         }
-        if (!deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC)){
+        if (!deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC)) {
             if (isChecked) {
                 if (relativeLayoutAmbientAware != null) {
                     relativeLayoutAmbientAware.setVisibility(View.VISIBLE);
@@ -219,8 +229,31 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
 
 
             }
+        } else {
+            if (isChecked) {
+                setTextViewTips(R.string.tutorial_tips_zero_live_650);
+            } else {
+                setTextViewTips(R.string.tutorial_tips_one_live_650);
+            }
         }
 
+    }
+
+    public void updateBleAAUI(int aaValue) {
+        Logger.d(TAG, "updateAAUI:" + aaValue);
+        if (aaValue == 0) {
+            checkBoxANC.setChecked(false);
+            imageViewAmbientAaware.setTag("0");
+            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+        } else if (aaValue == 1) {
+            checkBoxANC.setChecked(true);
+            imageViewAmbientAaware.setTag("0");
+            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+        } else if (aaValue == 2) {
+            checkBoxANC.setChecked(false);
+            imageViewAmbientAaware.setTag("1");
+            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_active);
+        }
     }
 
     public void setTextViewTips(int restId) {
@@ -405,28 +438,78 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         switch (v.getId()) {
             case R.id.image_view_tutorial_dialog_noise_cancel: {
                 if (mActivity instanceof HomeActivity) {
-                    ((HomeActivity) mActivity).tutorialSetANC();
-                    setChecked(checkBoxANC.isChecked());
-                    if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
-                            || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
-                            || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC)) {
-                        showEqInfo();
-                        setTextViewTips(R.string.tutorial_tips_three);
+                    if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT) || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)) {
+                        if (checkBoxANC.isChecked()) {
+                            Logger.d(TAG, "noise cancel  checked");
+                            checkBoxANC.setChecked(true);
+                            if (imageViewAmbientAaware.getTag().equals("1")) {
+                                imageViewAmbientAaware.setBackground(mActivity.getResources().getDrawable(R.mipmap.aa_icon_non_active));
+                                imageViewAmbientAaware.setTag("0");
+                            }
+                            if (!isDelayed) {
+                                isDelayed = true;
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        setTextViewTips(R.string.tutorial_tips_three);
+                                        showEqInfo();
+                                    }
+                                }, 1000);
+                            }
+                        } else {
+                            Logger.d(TAG, "noise cancel unchecked");
+                            checkBoxANC.setChecked(false);
+                        }
+                        ((HomeActivity) mActivity).setBleAAComand(checkBoxANC, imageViewAmbientAaware);
+                    } else {
+                        setChecked(checkBoxANC.isChecked());
+                        if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC)) {
+                            if (!isDelayed) {
+                                isDelayed = true;
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        showEqInfo();
+                                        setTextViewTips(R.string.tutorial_tips_three);
+                                    }
+                                }, 1000);
+                            }
+                        }
+                        ((HomeActivity) mActivity).tutorialSetANC(checkBoxANC);
                     }
                 }
                 break;
             }
             case R.id.image_view_tutorial_dialog_ambient_aware: {
                 if (mActivity instanceof HomeActivity) {
-                    if (!deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
-                            && !deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)) {
+                    if (!LiveManager.getInstance().isConnected()) {
                         setTextViewTips(R.string.tutorial_tips_two);
                         checkBoxANC.setChecked(true);
                         ((HomeActivity) mActivity).showAncPopupWindow(relativeLayout);
                     } else {
-                        //((HomeActivity) mActivity).showSaPopupWindow(relativeLayout, this);
-                        showEqInfo();
-                        setTextViewTips(R.string.tutorial_tips_three);
+                        if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
+                                || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)) {
+                            Logger.d(TAG, "tag: new device" + imageViewAmbientAaware.getTag());
+                            if (imageViewAmbientAaware.getTag().equals("1")) {
+                                imageViewAmbientAaware.setBackground(mActivity.getResources().getDrawable(R.mipmap.aa_icon_non_active));
+                                imageViewAmbientAaware.setTag("0");
+                            } else if (imageViewAmbientAaware.getTag().equals("0")) {
+                                imageViewAmbientAaware.setBackground(mActivity.getResources().getDrawable(R.mipmap.aa_icon_active));
+                                imageViewAmbientAaware.setTag("1");
+                                checkBoxANC.setChecked(false);
+                            }
+                            if (!isDelayed) {
+                                isDelayed = true;
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        showEqInfo();
+                                        setTextViewTips(R.string.tutorial_tips_three);
+                                    }
+                                }, 1000);
+                            }
+                            ((HomeActivity) mActivity).setBleAAComand(checkBoxANC, imageViewAmbientAaware);
+                        }
                     }
                 }
                 break;
