@@ -111,15 +111,23 @@ public class BesEngine {
         }
     }
 
-    public void updateImage(String mac, Context context) {
-        LeDevice leDevice = mLeConnectorMap.get(mac);
-        if (leDevice == null){
-            Logger.i(TAG,"update image error, no le device found");
-            return;
-        }
-        bleOta.setLeDevice(leDevice);
-        bleOta.addListener(bleListeners);
-        bleOta.sendFileInfo(context);
+    public void setOtaCharacter(String mac, Context context) {
+//        LeDevice leDevice = mLeConnectorMap.get(mac);
+//        if (leDevice == null){
+//            Logger.i(TAG,"update image error, no le device found");
+//            return;
+//        }
+//        bleOta.setLeDevice(leDevice);
+//        bleOta.addListener(bleListeners);
+//        bleOta.setCharacter(context);
     }
 
+    public void updateImage(String mac) {
+//        LeDevice leDevice = mLeConnectorMap.get(mac);
+//        if (leDevice == null){
+//            Logger.i(TAG,"update image error, no le device found");
+//            return;
+//        }
+//        bleOta.sendFileInfo();
+    }
 }
