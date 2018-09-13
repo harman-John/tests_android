@@ -73,8 +73,6 @@ public class LiveManager implements ScanListener, BleListener {
     }
 
     private LiveManager() {
-        if (mOnRetListener == null)
-            mOnRetListener = new HashSet<>();
         if (mOnConnectStatusListeners == null) {
             mOnConnectStatusListeners = new HashSet<>();
         }
@@ -180,21 +178,14 @@ public class LiveManager implements ScanListener, BleListener {
     }
 
     private final Object mLock = new Object();
-    private Set<OnRetListener> mOnRetListener;
+    private OnRetListener mOnRetListener;
 
     public void setOnRetListener(OnRetListener listener) {
         synchronized (mLock) {
-            if (!mOnRetListener.contains(listener)) {
-                mOnRetListener.add(listener);
-            }
+            mOnRetListener = listener;
         }
     }
 
-    public void removeOnRetListener(OnRetListener listener) {
-        synchronized (mLock) {
-            mOnRetListener.remove(listener);
-        }
-    }
 
     private Set<OnConnectStatusListener> mOnConnectStatusListeners;
 
@@ -341,6 +332,7 @@ public class LiveManager implements ScanListener, BleListener {
                 notifyUiUpdate(EnumCommands.CMD_GRAPHIC_EQ_PRESET_BAND_SETTINGS, null, dataCurrentEQ);
                 break;
             }
+
         }
 
     }
@@ -363,10 +355,8 @@ public class LiveManager implements ScanListener, BleListener {
         mContext.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for (OnRetListener onRetListener : mOnRetListener) {
-                    Logger.d(TAG, "notify ui update, on ret listener:" + onRetListener);
-                    onRetListener.onReceive(enumCommands, objects);
-                }
+                Logger.d(TAG, "notify ui update, on ret listener:" + mOnRetListener);
+                mOnRetListener.onReceive(enumCommands, objects);
             }
         });
     }
@@ -374,6 +364,7 @@ public class LiveManager implements ScanListener, BleListener {
     @Override
     public void onLeOta(BluetoothDevice bluetoothDevice, EnumOtaState state, int progress) {
         Logger.d(TAG, "on bes update image state");
+        BesEngine.getInstance().updateImage(bluetoothDevice.getAddress());
     }
 
     private class LeHandler extends Handler {
@@ -539,6 +530,6 @@ public class LiveManager implements ScanListener, BleListener {
     }
 
     public void updateImage(String mac) {
-        BesEngine.getInstance().updateImage(mac, JBLApplication.getJBLApplicationContext());
+        BesEngine.getInstance().setOtaCharacter(mac, JBLApplication.getJBLApplicationContext());
     }
 }

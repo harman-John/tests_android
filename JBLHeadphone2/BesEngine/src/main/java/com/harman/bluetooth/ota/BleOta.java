@@ -20,6 +20,7 @@ import com.harman.bluetooth.utils.SPHelper;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -499,8 +500,13 @@ public class BleOta implements BleListener {
         this.leDevice = leDevice;
     }
 
-    public void sendFileInfo(Context context) {
+    public void setCharacter(Context context){
         mContext = context;
+        leDevice.getOtaWriteCharacter();
+//        leDevice.getOtaReadCharacter();
+    }
+
+    public void sendFileInfo() {
         mState = STATE_CONNECTED;
         reconnectTimes = 0;
         Log.i(TAG, "send file info");
@@ -1086,7 +1092,7 @@ public class BleOta implements BleListener {
 
     private boolean sendData(byte[] data) {
 
-        return leDevice.writeOta(data,false);
+        return leDevice.write(data,false);
     }
 
     private boolean isBle() {
@@ -1199,6 +1205,6 @@ public class BleOta implements BleListener {
 
     @Override
     public void onLeOta(BluetoothDevice bluetoothDevice, EnumOtaState state, int progress) {
-
+        sendFileInfo();
     }
 }

@@ -15,6 +15,7 @@ import android.os.Message;
 
 
 import com.harman.bluetooth.constants.Band;
+import com.harman.bluetooth.constants.EnumOtaState;
 import com.harman.bluetooth.constants.EqData;
 import com.harman.bluetooth.constants.EqSettingsData;
 import com.harman.bluetooth.req.CmdAppAckSet;
@@ -68,6 +69,7 @@ public class LeDevice {
     private int mConnectState = STATE_DISCONNECTED;
 
     private List<BleListener> mListBleListener;
+
     private static final int DEFAULT_MTU = 512;
     private Object lock = new Object();
 
@@ -140,97 +142,64 @@ public class LeDevice {
         return false;
     }
 
-    public boolean getWriteCharacteristic() {
+    private boolean getWriteCharacteristic(UUID service, UUID characteristic) {
         if (mBluetoothGatt == null) {
             Logger.e(TAG, "set write characteristic, bluetooth gatt is null");
             return false;
         }
-        BluetoothGattService gattService = mBluetoothGatt.getService(Constants.BLE_RX_TX_SERVICE_UUID);
+        BluetoothGattService gattService = mBluetoothGatt.getService(service);
         if (gattService == null) {
             Logger.e(TAG, "set write characteristic, cant't get gatt service");
             return false;
         }
-        mCharacteristicTx = gattService.getCharacteristic(Constants.TX_CHAR_UUID);
+        mCharacteristicTx = gattService.getCharacteristic(characteristic);
         if (mCharacteristicTx == null) {
             Logger.e(TAG, "set write characteristic, cant't get write characteristic");
             return false;
         }
-//        if (!mBluetoothGatt.setCharacteristicNotification(mCharacteristicTx, true)) {
-//            Logger.e(TAG, "set write characteristic, set write characteristic notification error");
-//            return false;
-//        }
-
         Logger.i(TAG, "set write characteristic success");
         mCharacteristicTx.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
         return true;
     }
 
-    public boolean getReadCharacteristic() {
+    private boolean getReadCharacteristic(UUID service, UUID characteristic, UUID descriptor) {
         if (mBluetoothGatt == null) {
-            Logger.e(TAG, "set read characteristic, bluetooth is null");
+            Logger.e(TAG, "get read characteristic, bluetooth is null");
             return false;
         }
-        BluetoothGattService gattService = mBluetoothGatt.getService(Constants.BLE_RX_TX_SERVICE_UUID);
+        BluetoothGattService gattService = mBluetoothGatt.getService(service);
         if (gattService == null) {
-            Logger.e(TAG, "set read characteristic, gatt service is null");
+            Logger.e(TAG, "get read characteristic, gatt service is null");
             return false;
         }
-        BluetoothGattCharacteristic readCharacteristic = gattService.getCharacteristic(Constants.RX_CHAR_UUID);
+        BluetoothGattCharacteristic readCharacteristic = gattService.getCharacteristic(characteristic);
         if (readCharacteristic == null) {
-            Logger.e(TAG, "set read characteristic, gatt read characteristic is null");
+            Logger.e(TAG, "get read characteristic, gatt read characteristic is null");
             return false;
         }
 
         if (!mBluetoothGatt.setCharacteristicNotification(readCharacteristic, true)) {
-            Logger.e(TAG, "set read characteristic, notify failed");
+            Logger.e(TAG, "get read characteristic, notify failed");
             return false;
         }
 
-        BluetoothGattDescriptor gattDescriptor = readCharacteristic.getDescriptor(Constants.BES_DESCRIPTOR_UUID);
+        BluetoothGattDescriptor gattDescriptor = readCharacteristic.getDescriptor(descriptor);
         if (gattDescriptor == null) {
-            Logger.e(TAG, "set read characteristic, gattDescriptor is null");
+            Logger.e(TAG, "get read characteristic, gattDescriptor is null");
             return false;
         }
 
         if (!gattDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)) {
-            Logger.e(TAG, "set read characteristic, enable notify failed");
+            Logger.e(TAG, "get read characteristic, enable notify failed");
             return false;
         }
-        Logger.i(TAG, "set read characteristic, success");
+
         if (!mBluetoothGatt.writeDescriptor(gattDescriptor)) {
-            Logger.e(TAG, "set read characteristic, write descriptor failed");
+            Logger.e(TAG, "get read characteristic, write descriptor failed");
             return false;
         }
-
+        Logger.i(TAG, "get read characteristic, success, UUID: "+characteristic);
         return true;
-    }
-
-    private BluetoothGattCharacteristic bluetoothGattCharacteristicOta;
-    private boolean getOtaCharacteristic() {
-        Logger.d(TAG , "get ota characteristic");
-        if (mBluetoothGatt != null) {
-            BluetoothGattService gattService = mBluetoothGatt.getService(Constants.OTA_SERVICE_OTA_UUID);
-            if (gattService == null) {
-                Logger.d(TAG , "get ota characteristic, get service failed");
-                return false;
-            }
-            bluetoothGattCharacteristicOta = gattService.getCharacteristic(Constants.OTA_CHARACTERISTIC_OTA_UUID);
-            if (bluetoothGattCharacteristicOta == null) {
-                Logger.d(TAG , "get ota characteristic, get char failed");
-                return false;
-            }
-            BluetoothGattDescriptor gattDescriptor = bluetoothGattCharacteristicOta.getDescriptor(Constants.OTA_DESCRIPTOR_OTA_UUID);
-            if (gattDescriptor == null) {
-                Logger.d(TAG , "get ota characteristic, gatt descriptor is null");
-                return false;
-            }
-            if (!mBluetoothGatt.setCharacteristicNotification(bluetoothGattCharacteristicOta, true)) {
-                Logger.d(TAG , "get ota characteristic, set char notification failed");
-                return false;
-            }
-            return mBluetoothGatt.writeDescriptor(gattDescriptor);
-        }
-        return false;
     }
 
     private EqSettingsData eqSettingsData;
@@ -276,40 +245,40 @@ public class LeDevice {
         return false;
     }
 
-    public boolean writeOta(byte[] data, boolean isFromUser) {
-        if (mBluetoothGatt == null) {
-            Logger.e(TAG, "write ota, bluetooth gatt is null");
-            return false;
-        }
-
-        if (bluetoothGattCharacteristicOta.getService() == null) {
-            Logger.e(TAG, "write ota, service is null");
-            return false;
-        }
-
-        if (bluetoothGattCharacteristicOta.setValue(data)) {
-            bluetoothGattCharacteristicOta.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
-            mBluetoothGatt.setCharacteristicNotification(bluetoothGattCharacteristicOta, true);
-            boolean isWriteSuccess = mBluetoothGatt.writeCharacteristic(bluetoothGattCharacteristicOta);
-            Logger.i(TAG, "write ota characteristic values = " + ArrayUtil.toHexAppendCommaByByte(bluetoothGattCharacteristicOta.getValue())
-                    + ",mac = " + mBluetoothGatt.getDevice().getAddress()
-                    + ", lock = " + lock
-                    + ",status  = " + isWriteSuccess);
-            if (isFromUser) {
-                synchronized (lock) {
-                    try {
-                        lock.wait(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        Logger.e(TAG, "write ota, command but have no respond.");
-                    }
-                }
-            }
-            return isWriteSuccess;
-        }
-        Logger.i(TAG, "write, set value false");
-        return false;
-    }
+//    public boolean writeOta(byte[] data, boolean isFromUser) {
+//        if (mBluetoothGatt == null) {
+//            Logger.e(TAG, "write ota, bluetooth gatt is null");
+//            return false;
+//        }
+//
+//        if (bluetoothGattCharacteristicOta.getService() == null) {
+//            Logger.e(TAG, "write ota, service is null");
+//            return false;
+//        }
+//
+//        if (bluetoothGattCharacteristicOta.setValue(data)) {
+//            bluetoothGattCharacteristicOta.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+//            mBluetoothGatt.setCharacteristicNotification(bluetoothGattCharacteristicOta, true);
+//            boolean isWriteSuccess = mBluetoothGatt.writeCharacteristic(bluetoothGattCharacteristicOta);
+//            Logger.i(TAG, "write ota characteristic values = " + ArrayUtil.toHexAppendCommaByByte(bluetoothGattCharacteristicOta.getValue())
+//                    + ",mac = " + mBluetoothGatt.getDevice().getAddress()
+//                    + ", lock = " + lock
+//                    + ",status  = " + isWriteSuccess);
+//            if (isFromUser) {
+//                synchronized (lock) {
+//                    try {
+//                        lock.wait(200);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                        Logger.e(TAG, "write ota, command but have no respond.");
+//                    }
+//                }
+//            }
+//            return isWriteSuccess;
+//        }
+//        Logger.i(TAG, "write, set value false");
+//        return false;
+//    }
 
     public boolean write_no_rsp(byte[] data) {
         if (mBluetoothGatt == null) {
@@ -340,7 +309,7 @@ public class LeDevice {
 
     private void getCharacteristics() {
         synchronized (mListenerLock) {
-            if (!getWriteCharacteristic()) {
+            if (!getWriteCharacteristic(Constants.BLE_RX_TX_SERVICE_UUID,Constants.TX_CHAR_UUID)) {
                 Logger.i(TAG, "set characteristic, set write characteristic failed");
                 notifyConnectionStateChanged(false);
                 return;
@@ -367,6 +336,14 @@ public class LeDevice {
         synchronized (mListenerLock) {
             for (BleListener listener : mListBleListener) {
                 listener.onMtuChanged(mBluetoothGatt.getDevice(), status, mtu);
+            }
+        }
+    }
+
+    private void notifyLeOta(EnumOtaState status, int progress) {
+        synchronized (mListenerLock) {
+            for (BleListener listener : mListBleListener) {
+                listener.onLeOta(mBluetoothGatt.getDevice(), status, progress);
             }
         }
     }
@@ -811,6 +788,9 @@ public class LeDevice {
             Logger.i(TAG, "on descriptor write, status is " + status);
 //            if (descriptor.getUuid().equals(mDescriptor)) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
+                if (isOta){
+                    notifyLeOta(EnumOtaState.Success,0);
+                }
 //                    notifyCharacteristicNotifyEnabled(LE_SUCCESS);
             } else {
 //                    notifyCharacteristicNotifyEnabled(LE_ERROR);
@@ -832,6 +812,32 @@ public class LeDevice {
     };
 
 
+    private boolean isOta = false;
+    public boolean getOtaWriteCharacter(){
+        if (!getWriteCharacteristic(Constants.OTA_SERVICE_OTA_UUID,Constants.OTA_CHARACTERISTIC_OTA_UUID)) {
+            Logger.i(TAG, "get ota write characteristic failed");
+            notifyConnectionStateChanged(false);
+            return false;
+        }
+        isOta = true;
+        requestMtu(DEFAULT_MTU);
+        Logger.i(TAG, "get ota write  characteristic success");
+        return true;
+    }
+
+    public boolean getOtaReadCharacter(){
+        if (!getReadCharacteristic(Constants.OTA_SERVICE_OTA_UUID,Constants.OTA_CHARACTERISTIC_OTA_UUID,Constants.OTA_DESCRIPTOR_OTA_UUID)){
+            Logger.i(TAG, "get ota read character failed ");
+            notifyConnectionStateChanged(false);
+            refresh();
+            close();
+            return false;
+        }
+        Logger.i(TAG, "get ota read characteristic success");
+        return true;
+    }
+
+
     private LeHandler leHandler = new LeHandler(Looper.getMainLooper());
     private final static int MSG_ON_MTU_CHANGED = 0;
     private final static int MSG_APP_ACK_CUR_EQ_RECEIVED = 1;
@@ -849,16 +855,20 @@ public class LeDevice {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_ON_MTU_CHANGED: {
-                    getOtaCharacteristic();
-                    if (!getReadCharacteristic()) {
-                        Logger.i(TAG, "set characteristic, notification false ");
-                        notifyConnectionStateChanged(false);
-                        refresh();
-                        close();
-                        return;
+                    if (isOta) {
+                        getOtaReadCharacter();
+                    }else {
+                        if (!getReadCharacteristic(Constants.BLE_RX_TX_SERVICE_UUID, Constants.RX_CHAR_UUID, Constants.BES_DESCRIPTOR_UUID)) {
+                            Logger.i(TAG, "handle msg, get read character failed ");
+                            notifyConnectionStateChanged(false);
+                            refresh();
+                            close();
+                            return;
+                        }
+
+                        notifyConnectionStateChanged(true);
                     }
-                    notifyConnectionStateChanged(true);
-                    Logger.i(TAG, "set characteristic, done success");
+                    Logger.i(TAG, "handle msg, get all characters, done success");
                     break;
                 }
                 case MSG_APP_ACK_CUR_EQ_RECEIVED: {
