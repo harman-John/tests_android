@@ -63,10 +63,21 @@ public class ArrayUtil {
         return sum;
     }
 
-    public static String toHex(byte[] data) {
+    public static String toHexAppendComma(byte[] data) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < data.length; i++) {
             buffer.append(String.format("%02x", data[i])).append(",");
+        }
+        return buffer.toString();
+    }
+
+    public static String toHexAppendCommaByByte(byte[] data) {
+        StringBuilder buffer = new StringBuilder();
+        for (int i = 0; i < data.length; i++) {
+            buffer.append(String.format("%02x", data[i]));
+            if ((i+1) % 4 == 0) {
+                buffer.append(" ");
+            }
         }
         return buffer.toString();
     }
@@ -161,7 +172,7 @@ public class ArrayUtil {
     }
 
     public static byte[] intToByteArray(int a) {
-        return new byte[] {
+        return new byte[]{
                 (byte) ((a >> 24) & 0xFF),
                 (byte) ((a >> 16) & 0xFF),
                 (byte) ((a >> 8) & 0xFF),
@@ -169,7 +180,7 @@ public class ArrayUtil {
         };
     }
 
-    public static float hexStrToFloat(String bc){
+    public static float hexStrToFloat(String bc) {
         byte[] bytes = hexStr2Bytes(bc);
         return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }

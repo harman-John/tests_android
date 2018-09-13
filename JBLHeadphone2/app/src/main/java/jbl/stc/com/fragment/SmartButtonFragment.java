@@ -40,7 +40,7 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_PROGRAMMABLE_SMART_BUTTON);
+        AnalyticsManager.getInstance().setScreenName(AnalyticsManager.SCREEN_PROGRAMMABLE_SMART_BUTTON);
         ANCControlManager.getANCManager(getActivity()).getSmartButton();
     }
 
@@ -97,14 +97,14 @@ public class SmartButtonFragment extends BaseFragment implements View.OnClickLis
                 iv_check_ambient.setVisibility(View.VISIBLE);
                 iv_check_ambient.setImageResource(R.mipmap.button_selected);
                 ANCControlManager.getANCManager(getActivity()).setSmartButton(false);
-                AnalyticsManager.getInstance(getActivity()).reportSmartButtonChange(getString(R.string.ambientAware));
+                AnalyticsManager.getInstance().reportSmartButtonChange(getString(R.string.ambientAware));
                 break;
             case R.id.relative_layout_smart_button_noise_cancelling:
                 ivCheckNoiseCancelling.setVisibility(View.VISIBLE);
                 ivCheckNoiseCancelling.setImageResource(R.mipmap.button_selected);
                 iv_check_ambient.setVisibility(View.GONE);
                 ANCControlManager.getANCManager(getActivity()).setSmartButton(true);
-                AnalyticsManager.getInstance(getActivity()).reportSmartButtonChange(getString(R.string.noise_cancelling));
+                AnalyticsManager.getInstance().reportSmartButtonChange(getString(R.string.noise_cancelling));
                 break;
         }
     }

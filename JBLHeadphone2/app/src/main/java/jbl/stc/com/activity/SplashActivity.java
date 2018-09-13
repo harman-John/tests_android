@@ -186,7 +186,7 @@ public class SplashActivity extends FragmentActivity implements SurfaceHolder.Ca
         mMediaPlayer = new MediaPlayer();
         Logger.d(TAG, "playVideo holder=" + holder);
         try {
-            AnalyticsManager.getInstance(getApplicationContext()).reportDidSkipCoachMarks();
+            AnalyticsManager.getInstance().reportDidSkipCoachMarks();
             Uri video = Uri.parse("android.resource://" + getPackageName() + "/"
                     + R.raw.jbl_intro);
             mMediaPlayer.setDataSource(SplashActivity.this, video);

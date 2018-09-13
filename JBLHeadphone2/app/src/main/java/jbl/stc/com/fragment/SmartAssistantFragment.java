@@ -41,7 +41,7 @@ public class SmartAssistantFragment extends BaseFragment implements View.OnClick
     @Override
     public void onResume() {
         super.onResume();
-        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_PROGRAMMABLE_SMART_BUTTON);
+        AnalyticsManager.getInstance().setScreenName(AnalyticsManager.SCREEN_PROGRAMMABLE_SMART_BUTTON);
         ANCControlManager.getANCManager(getActivity()).getSmartButton();
     }
 

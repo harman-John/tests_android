@@ -9,7 +9,6 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -43,6 +42,7 @@ import com.harman.bluetooth.utils.Logger;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.UUID;
 
 import static java.lang.Integer.valueOf;
 
@@ -205,6 +205,34 @@ public class LeDevice {
         return true;
     }
 
+    private BluetoothGattCharacteristic bluetoothGattCharacteristicOta;
+    private boolean getOtaCharacteristic() {
+        Logger.d(TAG , "get ota characteristic");
+        if (mBluetoothGatt != null) {
+            BluetoothGattService gattService = mBluetoothGatt.getService(Constants.OTA_SERVICE_OTA_UUID);
+            if (gattService == null) {
+                Logger.d(TAG , "get ota characteristic, get service failed");
+                return false;
+            }
+            bluetoothGattCharacteristicOta = gattService.getCharacteristic(Constants.OTA_CHARACTERISTIC_OTA_UUID);
+            if (bluetoothGattCharacteristicOta == null) {
+                Logger.d(TAG , "get ota characteristic, get char failed");
+                return false;
+            }
+            BluetoothGattDescriptor gattDescriptor = bluetoothGattCharacteristicOta.getDescriptor(Constants.OTA_DESCRIPTOR_OTA_UUID);
+            if (gattDescriptor == null) {
+                Logger.d(TAG , "get ota characteristic, gatt descriptor is null");
+                return false;
+            }
+            if (!mBluetoothGatt.setCharacteristicNotification(bluetoothGattCharacteristicOta, true)) {
+                Logger.d(TAG , "get ota characteristic, set char notification failed");
+                return false;
+            }
+            return mBluetoothGatt.writeDescriptor(gattDescriptor);
+        }
+        return false;
+    }
+
     private EqSettingsData eqSettingsData;
     public boolean writeEqSettingsData(CmdEqSettingsSet cmdEqSettingsSet, boolean isFromUser){
         this.eqSettingsData = new EqSettingsData(cmdEqSettingsSet.getCommand());
@@ -228,7 +256,7 @@ public class LeDevice {
             mCharacteristicTx.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
             mBluetoothGatt.setCharacteristicNotification(mCharacteristicTx, true);
             boolean isWriteSuccess = mBluetoothGatt.writeCharacteristic(mCharacteristicTx);
-            Logger.i(TAG, "write characteristic values = " + ArrayUtil.bytesToHex(mCharacteristicTx.getValue())
+            Logger.i(TAG, "write characteristic values = " + ArrayUtil.toHexAppendCommaByByte(mCharacteristicTx.getValue())
                     + ",mac = " + mBluetoothGatt.getDevice().getAddress()
                     + ", lock = " + lock
                     + ",status  = " + isWriteSuccess);
@@ -239,6 +267,41 @@ public class LeDevice {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         Logger.e(TAG, "write command but have no respond.");
+                    }
+                }
+            }
+            return isWriteSuccess;
+        }
+        Logger.i(TAG, "write, set value false");
+        return false;
+    }
+
+    public boolean writeOta(byte[] data, boolean isFromUser) {
+        if (mBluetoothGatt == null) {
+            Logger.e(TAG, "write ota, bluetooth gatt is null");
+            return false;
+        }
+
+        if (bluetoothGattCharacteristicOta.getService() == null) {
+            Logger.e(TAG, "write ota, service is null");
+            return false;
+        }
+
+        if (bluetoothGattCharacteristicOta.setValue(data)) {
+            bluetoothGattCharacteristicOta.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+            mBluetoothGatt.setCharacteristicNotification(bluetoothGattCharacteristicOta, true);
+            boolean isWriteSuccess = mBluetoothGatt.writeCharacteristic(bluetoothGattCharacteristicOta);
+            Logger.i(TAG, "write ota characteristic values = " + ArrayUtil.toHexAppendCommaByByte(bluetoothGattCharacteristicOta.getValue())
+                    + ",mac = " + mBluetoothGatt.getDevice().getAddress()
+                    + ", lock = " + lock
+                    + ",status  = " + isWriteSuccess);
+            if (isFromUser) {
+                synchronized (lock) {
+                    try {
+                        lock.wait(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        Logger.e(TAG, "write ota, command but have no respond.");
                     }
                 }
             }
@@ -705,7 +768,7 @@ public class LeDevice {
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             Logger.i(TAG, "on characteristic write, status is " + status
-                    + ",write bytes: " + ArrayUtil.bytesToHex(characteristic.getValue())
+                    + ",write bytes: " + ArrayUtil.toHexAppendCommaByByte(characteristic.getValue())
                     + ",mac = " + mBluetoothGatt.getDevice().getAddress()
                     + ",name = " + mBluetoothGatt.getDevice().getName()
                     + ",uuid = " + characteristic.getUuid());
@@ -719,7 +782,7 @@ public class LeDevice {
 
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            Logger.i(TAG, "on characteristic read, status is " + status + ",read bytes: " + ArrayUtil.toHex(characteristic.getValue()));
+            Logger.i(TAG, "on characteristic read, status is " + status + ",read bytes: " + ArrayUtil.toHexAppendComma(characteristic.getValue()));
             if (status == BluetoothGatt.GATT_SUCCESS) {
 //                notifyRead(LE_SUCCESS);
             } else {
@@ -785,6 +848,7 @@ public class LeDevice {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_ON_MTU_CHANGED: {
+                    getOtaCharacteristic();
                     if (!getReadCharacteristic()) {
                         Logger.i(TAG, "set characteristic, notification false ");
                         notifyConnectionStateChanged(false);
@@ -803,7 +867,7 @@ public class LeDevice {
                 }
                 case MSG_ON_CHAR_CHANGE: {
                     BluetoothGattCharacteristic characteristic = (BluetoothGattCharacteristic) msg.obj;
-                    Logger.i(TAG, "on characteristic changed, read bytes: " + ArrayUtil.toHex(characteristic.getValue()));
+                    Logger.i(TAG, "on characteristic changed, read bytes: " + ArrayUtil.toHexAppendComma(characteristic.getValue()));
                     notifyReceive(classifyCommand(characteristic));
                     Logger.i(TAG, "notify all lock = " + lock);
                     synchronized (lock) {

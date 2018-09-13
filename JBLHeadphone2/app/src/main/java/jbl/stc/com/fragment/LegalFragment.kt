@@ -58,7 +58,7 @@ class LegalFragment : Fragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-        AnalyticsManager.getInstance(activity).setScreenName(mScreenName)
+        AnalyticsManager.getInstance().setScreenName(mScreenName)
     }
 
     override fun onClick(v: View) {

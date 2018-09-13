@@ -57,7 +57,7 @@ public class NewEqMoreSettingFragment extends BaseFragment implements View.OnCli
         initView();
         initEvent();
         initValue();
-        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_EQ_MORE);
+        AnalyticsManager.getInstance().setScreenName(AnalyticsManager.SCREEN_EQ_MORE);
         return rootView;
     }
 

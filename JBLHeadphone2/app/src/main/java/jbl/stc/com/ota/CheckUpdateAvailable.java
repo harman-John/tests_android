@@ -170,7 +170,7 @@ public class CheckUpdateAvailable extends AsyncTask<String, Void, CopyOnWriteArr
         if (FirmwareUtil.isUpdateAvailable(appVersion, currentAppVersion)) {
             isUpdateAvailable = true;
             Logger.d(TAG, "App will update");
-            AnalyticsManager.getInstance(context).reportFirmwareUpdateAvailable(appVersion);
+            AnalyticsManager.getInstance().reportFirmwareUpdateAvailable(appVersion);
         } else {
             FirmwareModel modelTemp = null;
             for (FirmwareModel model : fwlist) {
@@ -189,10 +189,10 @@ public class CheckUpdateAvailable extends AsyncTask<String, Void, CopyOnWriteArr
         if (FirmwareUtil.isUpdateAvailable(rsrcVersion, currentRSRCVersion)) {
             currentRSRCVersion = rsrcVersion;
             isUpdateAvailable = true;
-            AnalyticsManager.getInstance(context).reportFirmwareUpdateAvailable(currentRSRCVersion);
+            AnalyticsManager.getInstance().reportFirmwareUpdateAvailable(currentRSRCVersion);
             Logger.d(TAG, "rsrc update on base of last saved");
         } else {
-            AnalyticsManager.getInstance(context).reportFirmwareUpToDate(currentRSRCVersion);
+            AnalyticsManager.getInstance().reportFirmwareUpToDate(currentRSRCVersion);
             Logger.d(TAG, "rsrc will not update");
             FirmwareModel modelTemp = null;
             for (FirmwareModel model : fwlist) {

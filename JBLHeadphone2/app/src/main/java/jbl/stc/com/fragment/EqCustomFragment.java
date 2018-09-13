@@ -75,7 +75,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         initView();
         initEvent();
         initValue();
-        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_CUSTOM_EQ);
+        AnalyticsManager.getInstance().setScreenName(AnalyticsManager.SCREEN_CUSTOM_EQ);
         return rootView;
     }
 

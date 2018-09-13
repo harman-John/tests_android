@@ -390,7 +390,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         String action = intent.getAction();
         Logger.d(TAG, "onResume action =" + action);
         if (TextUtils.isEmpty(action) || !"android.hardware.usb.action.USB_DEVICE_ATTACHED".equals(action)) {
-            AnalyticsManager.getInstance(this).setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
+            AnalyticsManager.getInstance().setScreenName(AnalyticsManager.SCREEN_CONTROL_PANEL);
             Logger.d(TAG, "onResume " + DeviceConnectionManager.getInstance().getCurrentDevice());
             doResume();
         }
@@ -456,12 +456,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             DeviceManager.getInstance(this).setOnRetListener(this);
             LiveManager.getInstance().setOnConnectStatusListener(this);
             LiveManager.getInstance().setOnRetListener(this);
-            if (LiveManager.getInstance().isConnected()) {
-                CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
-                LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
-            }else{
-                ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
-            }
         }
 
     }
@@ -1131,7 +1125,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         LiveManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
         CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
         LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
-        LiveManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
         //CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
         //LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
     }
@@ -1380,7 +1373,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 //                JBLPreferenceUtil.setString(AppUtils.RSRC_VERSION, fwVersion, this);
             PreferenceUtils.setString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, hardVersion, this);
         }
-        AnalyticsManager.getInstance(this).reportFirmwareVersion(hardVersion);
+        AnalyticsManager.getInstance().reportFirmwareVersion(hardVersion);
         homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
     }
 

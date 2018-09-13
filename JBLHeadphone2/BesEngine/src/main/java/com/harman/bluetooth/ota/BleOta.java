@@ -11,7 +11,6 @@ import android.util.Log;
 import com.harman.bluetooth.constants.Constants;
 import com.harman.bluetooth.constants.EnumOtaState;
 import com.harman.bluetooth.core.LeDevice;
-import com.harman.bluetooth.engine.BesEngine;
 import com.harman.bluetooth.listeners.BleListener;
 import com.harman.bluetooth.ret.RetResponse;
 import com.harman.bluetooth.utils.ArrayUtil;
@@ -504,22 +503,25 @@ public class BleOta implements BleListener {
         mContext = context;
         mState = STATE_CONNECTED;
         reconnectTimes = 0;
-        Log.i(TAG, "sendFileInfo MSG_SEND_INFO_TIME_OUT");
+        Log.i(TAG, "send file info");
         //FileInputStream inputStream = null;
         InputStream inputStream = null;
         try {
             //inputStream = new FileInputStream(getOtaFile());
             inputStream = mContext.getAssets().open(getOtaFile());
             int totalSize = inputStream.available();
-            otaImgSize = totalSize; //TODO :TEMP ADD
+            otaImgSize = totalSize;
+
             int dataSize = totalSize - 4;
+            Log.i(TAG, "send file info, data size: "+ dataSize);
             byte[] data = new byte[dataSize];
             inputStream.read(data, 0, dataSize);
             long crc32 = ArrayUtil.crc32(data, 0, dataSize);
-            Message message = mOtaHandler.obtainMessage(MSG_SEND_INFO_TIME_OUT);
-//            message.arg1 = R.string.old_ota_profile;
-            message.arg2 = CMD_LOAD_FILE;
-            mOtaHandler.sendMessageDelayed(message, 5000);
+            Log.i(TAG, "send file info, crc32: "+ crc32);
+//            Message message = mOtaHandler.obtainMessage(MSG_SEND_INFO_TIME_OUT);
+////            message.arg1 = R.string.old_ota_profile;
+//            message.arg2 = CMD_LOAD_FILE;
+//            mOtaHandler.sendMessageDelayed(message, 5000);
             sendData(new byte[]{(byte) 0x80, 0x42, 0x45, 0x53, 0x54, (byte) dataSize, (byte) (dataSize >> 8), (byte) (dataSize >> 16), (byte) (dataSize >> 24), (byte) crc32, (byte) (crc32 >> 8), (byte) (crc32 >> 16), (byte) (crc32 >> 24)});
         } catch (Exception e) {
             e.printStackTrace();
@@ -988,7 +990,7 @@ public class BleOta implements BleListener {
         byte[] data = (byte[]) retResponse.object;
         Log.i(TAG, "onReceive data = " + ArrayUtil.bytesToHex(data));
         synchronized (mOtaLock) {
-            Log.e(TAG, "onReceive " + ArrayUtil.toHex(data));
+            Log.e(TAG, "onReceive " + ArrayUtil.toHexAppendComma(data));
             if (ArrayUtil.isEqual(OTA_PASS_RESPONSE, data)) {
                 removeTimeout();
                 mOtaPacketItemCount = 0;
@@ -1084,7 +1086,7 @@ public class BleOta implements BleListener {
 
     private boolean sendData(byte[] data) {
 
-        return leDevice.write(data,false);
+        return leDevice.writeOta(data,false);
     }
 
     private boolean isBle() {

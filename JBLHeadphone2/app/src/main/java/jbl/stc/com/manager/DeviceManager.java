@@ -528,7 +528,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 && specifiedDevice.getAddress().equalsIgnoreCase(bluetoothDevice.getAddress())) {
             if (!LiveManager.getInstance().isConnected()) {
                 FirmwareUtil.disconnectHeadphoneText = mContext.getResources().getString(R.string.plsConnect);
-                AnalyticsManager.getInstance(mContext).reportDeviceConnect(bluetoothDevice.getName());
+                AnalyticsManager.getInstance().reportDeviceConnect(bluetoothDevice.getName());
                 synchronized (this) {
                     myHandler.removeMessages(MSG_CONNECT_TIME_OUT);
                     DeviceConnectionManager.getInstance().setCurrentDevice(ConnectedDeviceType.Connected_BluetoothDevice);
@@ -615,7 +615,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
             disconnected = true;
             Logger.d(TAG, "disconnect device");
             if (specifiedDevice != null)
-                AnalyticsManager.getInstance(mContext).reportDeviceDisconnect(specifiedDevice.getName());
+                AnalyticsManager.getInstance().reportDeviceDisconnect(specifiedDevice.getName());
 
             mContext.runOnUiThread(new Runnable() {
                 @Override
@@ -1546,7 +1546,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
             showCommunicationIssue = true;
             mHandler.removeCallbacks(resetRunnable);
             AppUtils.setJBLDeviceName(mContext, specifiedDevice.getName());
-            AnalyticsManager.getInstance(mContext).reportDeviceConnect(bt150Manager.getAccessoryStatus().getName());
+            AnalyticsManager.getInstance().reportDeviceConnect(bt150Manager.getAccessoryStatus().getName());
             mIsConnectedPhysically = true;
             isConnected = true;
             AvneraManager.getAvenraManager().setAudioManager(bt150Manager);

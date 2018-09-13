@@ -9,6 +9,7 @@ import com.google.android.gms.analytics.Tracker;
 
 import java.util.HashMap;
 
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
 import jbl.stc.com.utils.AppUtils;
@@ -20,13 +21,11 @@ public class AnalyticsManager {
     private static String PROPERTY_ID = "UA-75438418-8"; //product
     private final static String TAG = AnalyticsManager.class.getSimpleName();
     public HashMap<TrackerName, Tracker> mTrackers = new HashMap<>();
-    private static Context mContext;
     public enum TrackerName {
         APP_TRACKER, GLOBAL_TRACKER
     }
 
-    public static AnalyticsManager getInstance(Context context){
-        mContext = context;
+    public static AnalyticsManager getInstance(){
         if (mInstance == null);{
             mInstance = new AnalyticsManager();
         }
@@ -35,14 +34,14 @@ public class AnalyticsManager {
 
     public synchronized Tracker getTracker(TrackerName appTracker) {
         if (!mTrackers.containsKey(appTracker)) {
-            GoogleAnalytics analytics = GoogleAnalytics.getInstance(mContext);
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(JBLApplication.getJBLApplicationContext());
             Tracker t;
-            if(PreferenceUtils.getBoolean(PreferenceKeys.ANALYTICS_TEST_URL, mContext)) {
+            if(PreferenceUtils.getBoolean(PreferenceKeys.ANALYTICS_TEST_URL, JBLApplication.getJBLApplicationContext())) {
                 t = analytics.newTracker(TEST_PROPERTY_ID);
             }else{
                 t = analytics.newTracker(PROPERTY_ID);
             }
-            GoogleAnalytics.getInstance(mContext).setDryRun(false);
+            GoogleAnalytics.getInstance(JBLApplication.getJBLApplicationContext()).setDryRun(false);
             mTrackers.put(appTracker, t);
         }
         return mTrackers.get(appTracker);
@@ -50,7 +49,7 @@ public class AnalyticsManager {
 
     private void createEvent(String category, String action, String label, Object value) {
         Tracker t = getTracker(TrackerName.APP_TRACKER);
-        String deviceName =  AppUtils.getJBLDeviceName(mContext);
+        String deviceName =  AppUtils.getJBLDeviceName(JBLApplication.getJBLApplicationContext());
         if (value != null) {
             t.send(new HitBuilders.EventBuilder()
                     .setCategory(category)

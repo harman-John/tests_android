@@ -431,7 +431,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         @Override
         public void run() {
             ANCControlManager.getANCManager(getContext()).setAutoOffFeature((toggleAutoOffTimer.isChecked()));
-            AnalyticsManager.getInstance(getActivity()).reportAutoOffToggle(toggleAutoOffTimer.isChecked());
+            AnalyticsManager.getInstance().reportAutoOffToggle(toggleAutoOffTimer.isChecked());
             Logger.d(TAG, "AutoOffFeature " + toggleAutoOffTimer.isChecked() + " sent");
         }
 
@@ -441,7 +441,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         @Override
         public void run() {
             ANCControlManager.getANCManager(getContext()).setVoicePrompt(toggleVoicePrompt.isChecked());
-            AnalyticsManager.getInstance(getActivity()).reportVoicePromptToggle(toggleVoicePrompt.isChecked());
+            AnalyticsManager.getInstance().reportVoicePromptToggle(toggleVoicePrompt.isChecked());
             Logger.d(TAG, "VoicePrompt " + toggleVoicePrompt.isChecked() + " sent");
         }
     };

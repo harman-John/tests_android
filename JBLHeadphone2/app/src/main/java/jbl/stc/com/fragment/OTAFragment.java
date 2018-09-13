@@ -159,7 +159,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
     public void onResume() {
         super.onResume();
         Logger.i(TAG, "on resume");
-        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_UPDATE_DEVICE);
+        AnalyticsManager.getInstance().setScreenName(AnalyticsManager.SCREEN_UPDATE_DEVICE);
     }
 
     @Override
@@ -353,7 +353,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
                     }
                     index = 0;
                     FirmwareUtil.isUpdatingFirmWare.set(true);
-                    AnalyticsManager.getInstance(getActivity()).reportFirmwareUpdateStarted(mOnLineFirmware);
+                    AnalyticsManager.getInstance().reportFirmwareUpdateStarted(mOnLineFirmware);
                     if (progressInfo == null) {
                         progressInfo = new ProgressInfo();
                     }
@@ -385,7 +385,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
 
     @Override
     public void onFailedDownload() {
-        AnalyticsManager.getInstance(getActivity()).reportUsbUpdateAlert(getString(R.string.unplug_plug_while_update_error));
+        AnalyticsManager.getInstance().reportUsbUpdateAlert(getString(R.string.unplug_plug_while_update_error));
 //        otaError(R.string.updating_failed_case_3);
         Logger.i(TAG, "on failed download");
     }
@@ -1119,7 +1119,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
         otaError(true, R.string.update_failed_firmware, R.string.update_failed_firmware_detail_1);
 //        isOTADoing = false;
 //        FirmwareUtil.isUpdatingFirmWare.set(false);
-        AnalyticsManager.getInstance(getActivity()).reportFirmwareUpdateFailed(mOnLineFirmware);
+        AnalyticsManager.getInstance().reportFirmwareUpdateFailed(mOnLineFirmware);
     }
 
     private FirmwareModel findImage(FwTYPE type) {
@@ -1214,7 +1214,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
                 }
                 onLineFwVersion = version;
                 PreferenceUtils.setString(PreferenceKeys.FirmVersion, version, JBLApplication.getJBLApplicationContext());
-                AnalyticsManager.getInstance(getActivity()).reportFirmwareVersion(onLineFwVersion);
+                AnalyticsManager.getInstance().reportFirmwareVersion(onLineFwVersion);
                 break;
             }
             case CMD_BootReadVersionFile: { //RSRC version is coming in ASCII character which is different format from app version.
@@ -1379,7 +1379,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
                                         }
                                     }).start();
                                     Logger.d(TAG, "on receive, OTA enterApplication");
-                                    AnalyticsManager.getInstance(getActivity()).reportFirmwareUpdateComplete(mOnLineFirmware);
+                                    AnalyticsManager.getInstance().reportFirmwareUpdateComplete(mOnLineFirmware);
                                     deviceRestarting();
                                     break;
                             }

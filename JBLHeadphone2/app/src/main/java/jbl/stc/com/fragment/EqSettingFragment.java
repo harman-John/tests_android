@@ -126,7 +126,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         initView();
         initEvent();
         initValue();
-        AnalyticsManager.getInstance(getActivity()).setScreenName(AnalyticsManager.SCREEN_SETTINGS_PANEL);
+        AnalyticsManager.getInstance().setScreenName(AnalyticsManager.SCREEN_SETTINGS_PANEL);
         return rootView;
     }
 
@@ -905,7 +905,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             equalizerLineView.setTranslationX(0);
             equalizerLineView.setAlpha(1);
         }
-        AnalyticsManager.getInstance(getActivity()).reportSelectedNewEQ(currSelectedEq.eqName);
+        AnalyticsManager.getInstance().reportSelectedNewEQ(currSelectedEq.eqName);
         if (fromUser) {
             eqRecycleView.smoothScrollToPosition(currSelectedEqIndex);
         }

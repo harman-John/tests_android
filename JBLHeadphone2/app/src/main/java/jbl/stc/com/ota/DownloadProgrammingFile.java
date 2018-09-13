@@ -72,7 +72,7 @@ public class DownloadProgrammingFile extends AsyncTask<String, Void, CopyOnWrite
     private void startDownload(File file, FirmwareModel firmwareModel) {
         Logger.i(TAG,"startDownload");
         InputStream inputStream = null;
-        AnalyticsManager.getInstance(context).reportFirmwareUpdateStarted(firmwareModel.getVersion());
+        AnalyticsManager.getInstance().reportFirmwareUpdateStarted(firmwareModel.getVersion());
         try {
             URL url = new URL(firmwareModel.getmURL());
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -88,11 +88,11 @@ public class DownloadProgrammingFile extends AsyncTask<String, Void, CopyOnWrite
                 outputStream.write(bytes, 0, read);
             }
             firmwareModel.setSuccess(true);
-            AnalyticsManager.getInstance(context).reportFirmwareUpdateComplete(firmwareModel.getVersion());
+            AnalyticsManager.getInstance().reportFirmwareUpdateComplete(firmwareModel.getVersion());
         } catch (Exception e) {
             e.printStackTrace();
             firmwareModel.setSuccess(false);
-            AnalyticsManager.getInstance(context).reportFirmwareUpdateFailed(null);
+            AnalyticsManager.getInstance().reportFirmwareUpdateFailed(null);
         } finally {
             if (inputStream != null) {
                 try {
