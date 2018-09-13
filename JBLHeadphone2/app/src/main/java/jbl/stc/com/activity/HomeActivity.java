@@ -232,7 +232,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         });
         RelativeLayout linearLayoutNoiseCanceling = findViewById(R.id.relative_layout_home_noise_cancel);
         deviceName = ProductListManager.getInstance().getSelectDevice(mConnectStatus).deviceName;
-        Logger.i(TAG,"on create, device name = "+deviceName);
+        Logger.i(TAG, "on create, device name = " + deviceName);
         if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_NOISE_CANCEL)) {
             linearLayoutNoiseCanceling.setVisibility(View.GONE);
         } else {
@@ -448,7 +448,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             if (LiveManager.getInstance().isConnected()) {
                 CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
                 LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
-            }else{
+            } else {
                 ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
             }
         }
@@ -488,34 +488,22 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     if (AppUtils.isOldDevice(deviceName)) {
                         if (!checkBoxNoiseCancel.isChecked()) {
                             checkBoxNoiseCancel.setChecked(true);
-                        }
-                        showAncPopupWindow(findViewById(R.id.relative_layout_home_activity));
-
-                        if (!checkBoxNoiseCancel.isChecked()) {
                             ANCControlManager.getANCManager(this).setANCValue(true);
                         }
                         ANCControlManager.getANCManager(getApplicationContext()).getAmbientLeveling();
+                        showAncPopupWindow(findViewById(R.id.relative_layout_home_activity));
                     } else if (AppUtils.isNewDevice(deviceName)) {
-                        //showSaPopupWindow(findViewById(R.id.relative_layout_home_activity), null);
-                        Logger.d(TAG, "tag: old device" + imageViewAmbientAaware.getTag());
+                        Logger.d(TAG, "tag: new device" + imageViewAmbientAaware.getTag());
                         if (imageViewAmbientAaware.getTag().equals("1")) {
                             imageViewAmbientAaware.setBackground(getResources().getDrawable(R.mipmap.aa_icon_non_active));
                             imageViewAmbientAaware.setTag("0");
-                            checkBoxNoiseCancel.setChecked(true);
+                            //checkBoxNoiseCancel.setChecked(true);
                         } else if (imageViewAmbientAaware.getTag().equals("0")) {
                             imageViewAmbientAaware.setBackground(getResources().getDrawable(R.mipmap.aa_icon_active));
                             imageViewAmbientAaware.setTag("1");
                             checkBoxNoiseCancel.setChecked(false);
                         }
-                        if (LiveManager.getInstance().isConnected()) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    CmdAASet cmdAASet = new CmdAASet(checkBoxNoiseCancel.isChecked() ? EnumAAStatus.TALK_THRU : EnumAAStatus.AMBIENT_AWARE);
-                                    LiveManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
-                                }
-                            }).start();
-                        }
+                        setBleAAComand(checkBoxNoiseCancel, imageViewAmbientAaware);
                     }
                 }
                 break;
@@ -548,29 +536,19 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     if (checkBoxNoiseCancel.isChecked()) {
                         Logger.d(TAG, "noise cancel  checked");
                         checkBoxNoiseCancel.setChecked(true);
-                        if (imageViewAmbientAaware!= null
-                                && imageViewAmbientAaware.getTag()!=null
-                                && imageViewAmbientAaware.getTag().equals("1")) {
+                        if (imageViewAmbientAaware.getTag().equals("1")) {
                             imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
                             imageViewAmbientAaware.setTag("0");
                         }
                     } else {
                         Logger.d(TAG, "noise cancel unchecked");
                         checkBoxNoiseCancel.setChecked(false);
-                        if (imageViewAmbientAaware.getTag().equals("0")) {
+                        /*if (imageViewAmbientAaware.getTag().equals("0")) {
                             imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_active);
                             imageViewAmbientAaware.setTag("1");
-                        }
+                        }*/
                     }
-                    if (LiveManager.getInstance().isConnected()) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                CmdAASet cmdAASet = new CmdAASet(checkBoxNoiseCancel.isChecked() ? EnumAAStatus.TALK_THRU : EnumAAStatus.AMBIENT_AWARE);
-                                LiveManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
-                            }
-                        }).start();
-                    }
+                    setBleAAComand(checkBoxNoiseCancel, imageViewAmbientAaware);
                 } else {
                     setANC();
 
@@ -585,6 +563,27 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
+        }
+    }
+
+    public void setBleAAComand(final CheckBox checkBoxNoiseCancel, final ImageView imageViewAmbientAaware) {
+        if (LiveManager.getInstance().isConnected()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    CmdAASet cmdAASet = null;
+                    if (checkBoxNoiseCancel.isChecked() && imageViewAmbientAaware.getTag().equals("0")) {
+                        cmdAASet = new CmdAASet(EnumAAStatus.TALK_THRU);
+                    } else if (!checkBoxNoiseCancel.isChecked() && imageViewAmbientAaware.getTag().equals("1")) {
+                        cmdAASet = new CmdAASet(EnumAAStatus.AMBIENT_AWARE);
+                    } else if (!checkBoxNoiseCancel.isChecked() && imageViewAmbientAaware.getTag().equals("0")) {
+                        cmdAASet = new CmdAASet(EnumAAStatus.OFF);
+                    }
+                    if (cmdAASet != null) {
+                        LiveManager.getInstance().reqSetAAMode(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdAASet);
+                    }
+                }
+            }).start();
         }
     }
 
@@ -681,13 +680,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private void showTutorial() {
         if (UiUtils.isConnected(mConnectStatus, HomeActivity.this)) {
             boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
+            isShowTutorialManyTimes = false;
             if (!isShowTutorialManyTimes) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
                 Logger.d(TAG, "showTutorial");
                 if (tutorialAncDialog == null) {
                     tutorialAncDialog = new TutorialAncDialog(this);
                 }
-                if (!tutorialAncDialog.isShowing()) {
+                if (tutorialAncDialog != null && !tutorialAncDialog.isShowing()) {
                     tutorialAncDialog.show();
                 }
 
@@ -972,13 +972,28 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-    public void tutorialSetANC() {
+    public void tutorialSetANC(CheckBox checkBoxNoiseCancel) {
         if (checkBoxNoiseCancel.isChecked()) {
-            checkBoxNoiseCancel.setChecked(false);
-            ANCControlManager.getANCManager(this).setANCValue(false);
+            if (LiveManager.getInstance().isConnected()) {
+                if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC)) {
+                    LiveManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdAncSet(EnumAncStatus.OFF));
+                } else if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT) || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)) {
+
+                }
+
+            } else {
+                ANCControlManager.getANCManager(this).setANCValue(false);
+            }
         } else {
-            checkBoxNoiseCancel.setChecked(true);
-            ANCControlManager.getANCManager(this).setANCValue(true);
+            if (LiveManager.getInstance().isConnected()) {
+                if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC)) {
+                    LiveManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdAncSet(EnumAncStatus.ON));
+                } else if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT) || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)) {
+
+                }
+            } else {
+                ANCControlManager.getANCManager(this).setANCValue(true);
+            }
         }
     }
 
@@ -1125,8 +1140,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         LiveManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
         CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
         LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
-        //CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
-        //LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
     }
 
     private void setEqSettingsData() {
@@ -1135,8 +1148,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             bands[i] = new Band(1, 3.0f, 32.0f, 1.0f);
         }
         CmdEqSettingsSet cmdEqSettingsSet = new CmdEqSettingsSet(4
-                ,EnumEqCategory.GRAPHIC_EQ, 1,64,0.0f,0.0f, bands);
-        LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).mac,cmdEqSettingsSet);
+                , EnumEqCategory.GRAPHIC_EQ, 1, 64, 0.0f, 0.0f, bands);
+        LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).mac, cmdEqSettingsSet);
     }
 
     private void timeInterval() {
@@ -1187,7 +1200,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 case MSG_AMBIENT_LEVEL: {
                     //for old devices
-                    aaPopupWindow.updateAAUI(msg.arg1, (ImageView) findViewById(R.id.image_view_home_ambient_aware));//AppUtils.levelTransfer(msg.arg1)<---method for new device
+                    Logger.d(TAG, "AA Mode:" + msg.arg1);
+                    if (!LiveManager.getInstance().isConnected()) {
+                        aaPopupWindow.updateAAUI(msg.arg1, (ImageView) findViewById(R.id.image_view_home_ambient_aware));//AppUtils.levelTransfer(msg.arg1)<---method for new device
+                    } else if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT) || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)) {
+                        updateBleAAUI(msg.arg1);
+                    }
                     break;
                 }
                 case MSG_AA_LEFT:
@@ -1251,12 +1269,32 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
+    private void updateBleAAUI(int aaValue) {
+        if (aaValue == 0) {
+            checkBoxNoiseCancel.setChecked(false);
+            imageViewAmbientAaware.setTag("0");
+            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+        } else if (aaValue == 1) {
+            checkBoxNoiseCancel.setChecked(true);
+            imageViewAmbientAaware.setTag("0");
+            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+        } else if (aaValue == 2) {
+            checkBoxNoiseCancel.setChecked(false);
+            imageViewAmbientAaware.setTag("1");
+            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_active);
+        }
+        if (tutorialAncDialog != null) {
+            tutorialAncDialog.updateBleAAUI(aaValue);
+        }
+    }
+
     private void updateANC(boolean onOff) {
         if (checkBoxNoiseCancel != null)
-            checkBoxNoiseCancel.setChecked(onOff);
+            Logger.d(TAG, "update ANC" + onOff);
+        checkBoxNoiseCancel.setChecked(onOff);
         if (tutorialAncDialog != null) {
             if (!(deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
-                    || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT))){
+                    || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT))) {
                 tutorialAncDialog.setChecked(onOff);
             }
         }
@@ -1309,7 +1347,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 if (LiveManager.getInstance().isConnected()) {
                     CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.GRAPHIC_EQ);
                     LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
-                }else{
+                } else {
                     ANCControlManager.getANCManager(this).getAppGraphicEQPresetBandSettings(GraphicEQPreset.User, 10);
                 }
                 break;
