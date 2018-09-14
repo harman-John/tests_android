@@ -156,8 +156,8 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
             CustomFontTextView tv_noise_cancle = findViewById(R.id.tv_noise_cancle);
             tv_noise_cancle.setText(R.string.talkthru);
             relativeLayoutAmbientAware.setVisibility(View.VISIBLE);
-            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
-            imageViewAmbientAaware.setTag("0");
+            //imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+            //imageViewAmbientAaware.setTag("0");
             setTextViewTips(R.string.tutorial_tips_zero_live_400);
         }
 
@@ -442,11 +442,11 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                         if (checkBoxANC.isChecked()) {
                             Logger.d(TAG, "noise cancel  checked");
                             checkBoxANC.setChecked(true);
-                            if (imageViewAmbientAaware.getTag().equals("1")) {
+                            /*if (imageViewAmbientAaware.getTag().equals("1")) {
                                 imageViewAmbientAaware.setBackground(mActivity.getResources().getDrawable(R.mipmap.aa_icon_non_active));
                                 imageViewAmbientAaware.setTag("0");
-                            }
-                            if (!isDelayed) {
+                            }*/
+                            /*if (!isDelayed) {
                                 isDelayed = true;
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
@@ -455,10 +455,14 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                                         showEqInfo();
                                     }
                                 }, 1000);
-                            }
+                            }*/
+                            setTextViewTips(R.string.tutorial_tips_three);
+                            showEqInfo();
                         } else {
                             Logger.d(TAG, "noise cancel unchecked");
                             checkBoxANC.setChecked(false);
+                            setTextViewTips(R.string.tutorial_tips_three);
+                            showEqInfo();
                         }
                         ((HomeActivity) mActivity).setBleAAComand(checkBoxANC, imageViewAmbientAaware);
                     } else {
@@ -490,7 +494,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                         if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
                                 || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)) {
                             Logger.d(TAG, "tag: new device" + imageViewAmbientAaware.getTag());
-                            if (imageViewAmbientAaware.getTag().equals("1")) {
+                            /*if (imageViewAmbientAaware.getTag().equals("1")) {
                                 imageViewAmbientAaware.setBackground(mActivity.getResources().getDrawable(R.mipmap.aa_icon_non_active));
                                 imageViewAmbientAaware.setTag("0");
                             } else if (imageViewAmbientAaware.getTag().equals("0")) {
@@ -507,7 +511,9 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                                         setTextViewTips(R.string.tutorial_tips_three);
                                     }
                                 }, 1000);
-                            }
+                            }*/
+                            showEqInfo();
+                            setTextViewTips(R.string.tutorial_tips_three);
                             ((HomeActivity) mActivity).setBleAAComand(checkBoxANC, imageViewAmbientAaware);
                         }
                     }

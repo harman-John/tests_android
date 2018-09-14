@@ -137,7 +137,7 @@
                         android:layout_width="81dp"
                         android:layout_height="81dp"
                         android:layout_centerHorizontal="true"
-                        android:src="@mipmap/aa_icon_non_active" />
+                        android:src="@drawable/checkbox_ambient_selector" />
 
                     <jbl.stc.com.view.CustomFontTextView
                         android:id="@+id/text_view_tutorial_dialog_ambient_aware"
