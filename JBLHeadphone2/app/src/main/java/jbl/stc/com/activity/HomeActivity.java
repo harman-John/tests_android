@@ -571,6 +571,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    Logger.d(TAG, "tag: new device setBleAAComand" + imageViewAmbientAaware.getTag());
                     CmdAASet cmdAASet = null;
                     if (checkBoxNoiseCancel.isChecked() && imageViewAmbientAaware.getTag().equals("0")) {
                         cmdAASet = new CmdAASet(EnumAAStatus.TALK_THRU);
