@@ -331,7 +331,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.relative_layout_settings_smart_assistant:{
-                switchFragment(new SmartAssistantFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                switchFragment(new VoiceAssistantFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
         }

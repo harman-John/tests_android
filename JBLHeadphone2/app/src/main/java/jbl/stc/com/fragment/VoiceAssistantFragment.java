@@ -13,9 +13,9 @@ import jbl.stc.com.manager.ANCControlManager;
 import jbl.stc.com.manager.AnalyticsManager;
 import jbl.stc.com.utils.EnumCommands;
 
-public class SmartAssistantFragment extends BaseFragment implements View.OnClickListener {
+public class VoiceAssistantFragment extends BaseFragment implements View.OnClickListener {
 
-    public static final String TAG = SmartAssistantFragment.class.getSimpleName();
+    public static final String TAG = VoiceAssistantFragment.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class SmartAssistantFragment extends BaseFragment implements View.OnClick
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_smart_assistant,
+        View view = inflater.inflate(R.layout.fragment_voice_assistant,
                 container, false);
         TextView textView = view.findViewById(R.id.text_view_go_to_google_assistant);
         textView.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
