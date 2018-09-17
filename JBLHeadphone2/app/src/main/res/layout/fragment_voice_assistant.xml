@@ -69,7 +69,7 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -84,17 +84,17 @@
 
                     <Switch
                         android:id="@+id/switch_google_assistant"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="bottom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:saveEnabled="true"
                         android:switchMinWidth="0dp"
+                        android:layout_alignParentEnd="true"
                         android:text=""
                         android:textOff=""
                         android:textOn=""
                         android:thumb="@drawable/toggle_switch_thumb"
                         android:track="@drawable/toggle_switch_track"/>
-                </LinearLayout>
+                </RelativeLayout>
 
                 <jbl.stc.com.view.CustomFontTextView
                     android:layout_width="wrap_content"

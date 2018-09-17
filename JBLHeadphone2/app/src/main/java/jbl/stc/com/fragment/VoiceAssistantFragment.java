@@ -33,7 +33,6 @@ public class VoiceAssistantFragment extends BaseFragment implements View.OnClick
         textView.setOnClickListener(this);
         view.findViewById(R.id.image_view_back).setOnClickListener(this);
         Switch switchGA = view.findViewById(R.id.switch_google_assistant);
-        switchGA.setVisibility(View.GONE);
         switchGA.setOnClickListener(this);
         return view;
     }
@@ -53,9 +52,17 @@ public class VoiceAssistantFragment extends BaseFragment implements View.OnClick
                 getActivity().onBackPressed();
                 break;
             case R.id.text_view_go_to_google_assistant:
+                try {
+//                    startActivity(new Intent(Intent.ACTION_VOICE_COMMAND).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    Intent launchIntent = new Intent(Intent.ACTION_VIEW);
+                    launchIntent.setPackage("com.google.android.googlequicksearchbox");
+                    launchIntent.setClassName("com.google.android.googlequicksearchbox", "com.google.android.apps.gsa.staticplugins.opa.OpaActivity");
+                    startActivity(launchIntent);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             case R.id.switch_google_assistant:
-                startActivity(new Intent(Intent.ACTION_VOICE_COMMAND).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 break;
         }
     }
