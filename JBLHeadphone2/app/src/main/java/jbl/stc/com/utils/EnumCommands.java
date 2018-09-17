@@ -35,4 +35,5 @@ public enum EnumCommands {
     CMD_AccessoryDisconnected,
     CMD_headPhoneStatus,
     CMD_App_0xB3,
+    CMD_BES_OTA_PROGRESS
 }

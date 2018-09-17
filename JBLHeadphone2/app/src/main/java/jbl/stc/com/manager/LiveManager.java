@@ -362,9 +362,24 @@ public class LiveManager implements ScanListener, BleListener {
     }
 
     @Override
-    public void onLeOta(BluetoothDevice bluetoothDevice, EnumOtaState state, int progress) {
+    public void onLeOta(BluetoothDevice bluetoothDevice, final EnumOtaState state, final int progress) {
         Logger.d(TAG, "on bes update image state");
-        BesEngine.getInstance().updateImage(bluetoothDevice.getAddress());
+        mContext.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Logger.d(TAG, "notify ui update, on ret listener:" + mOnRetListener);
+                if (state == EnumOtaState.Progress) {
+                    mOnRetListener.onReceive(EnumCommands.CMD_BES_OTA_PROGRESS, progress);
+                } else if ( state == EnumOtaState.Fail){
+                    mOnRetListener.onReceive(EnumCommands.CMD_OTA_PrepImageError, progress);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onWritten(int status) {
+
     }
 
     private class LeHandler extends Handler {

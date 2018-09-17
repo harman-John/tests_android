@@ -179,7 +179,10 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
                 } else if (batteryLevel < 50) {
                     AlertsDialog.showSimpleDialogWithOKButtonWithBack(null, getString(R.string.battery_alert), getActivity());
                 } else {
-                    if (FirmwareUtil.isConnectionAvailable(getActivity())) {
+                    if (BesEngine.getInstance().isConnected()) {
+                        LiveManager.getInstance().updateImage(ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).mac);
+                        otaUpdating();
+                    }else if (FirmwareUtil.isConnectionAvailable(getActivity())) {
                         Logger.e(TAG, "on click, start download firmwareImage");
                         if (!(args != null && args.containsKey("lightXIsInBootloader"))) {
                             startDownloadFirmwareImage();
@@ -237,7 +240,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
             @Override
             public void run() {
                 if (BesEngine.getInstance().isConnected()) {
-                    LiveManager.getInstance().updateImage(ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).mac);
+//                    LiveManager.getInstance().updateImage(ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).mac);
                 }else{
                     interval();
                     Logger.d(TAG, "read basic information, getFirmwareInfo");
@@ -1221,8 +1224,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
                 deviceFwVersion = (String) objects[0];
                 Logger.d(TAG, "on receive, deviceFwVersion = " + deviceFwVersion);
                 PreferenceUtils.setString(AppUtils.getModelNumber(getActivity()), PreferenceKeys.RSRC_VERSION, deviceFwVersion, getActivity());
+                break;
             }
-            break;
             case CMD_FW_INFO: {
                 currentFW = (int) objects[0];
                 Logger.e(TAG, "on receive, currentFirmware = : " + currentFW);
@@ -1234,6 +1237,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
                 } else if (isOTADoing && !FirmwareUtil.isUpdatingFirmWare.get()) {
                     otaSuccess(null);
                 }
+                break;
             }
             case CMD_IsInBootloader: {
                 boolean isInBootloader = (boolean) objects[0];
@@ -1255,14 +1259,25 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
                     AvneraManager.getAvenraManager().getLightX().enterBootloader();
                     Logger.d(TAG, "on receive, OTA enterBootloader");
                 }
+                break;
             }
             /*
               Get this event when device is doing OTA.
              */
-            case CMD_OTA_ImageUpdatePreparing:
+            case CMD_OTA_ImageUpdatePreparing: {
                 Logger.d(TAG, "on receive, message do start");
                 myHandler.sendEmptyMessageDelayed(MSG_TIMER_OUT, OTA_TIME_OUT);
                 break;
+            }
+            case CMD_BES_OTA_PROGRESS:{
+                int progress = (int)objects[0];
+                Logger.d(TAG, "on receive, bes ota progress: "+progress);
+                updateOTAProgress(progress);
+                if (progress == 100){
+                    deviceRestarting();
+                }
+                break;
+            }
             case CMD_OTA_UpdateProgress: {
                 Logger.d(TAG, "on receive, message do remove");
                 myHandler.removeMessages(MSG_TIMER_OUT);

@@ -15,4 +15,5 @@ public interface BleListener {
 
     void onLeOta(BluetoothDevice bluetoothDevice, EnumOtaState state, int progress);
 
+    void onWritten(int status);
 }

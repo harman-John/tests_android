@@ -6,7 +6,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.harman.bluetooth.constants.Constants;
 import com.harman.bluetooth.constants.EnumOtaState;
@@ -14,6 +16,7 @@ import com.harman.bluetooth.core.LeDevice;
 import com.harman.bluetooth.listeners.BleListener;
 import com.harman.bluetooth.ret.RetResponse;
 import com.harman.bluetooth.utils.ArrayUtil;
+import com.harman.bluetooth.utils.Logger;
 import com.harman.bluetooth.utils.ProfileUtils;
 import com.harman.bluetooth.utils.SPHelper;
 
@@ -22,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 
 public class BleOta implements BleListener {
@@ -108,17 +113,15 @@ public class BleOta implements BleListener {
 
     private Context mContext;
 
-    private List<BleListener> mListeners;
+    private BleListener mListeners;
 
-    public void addListener(List<BleListener> listeners) {
+    public void addListener(BleListener listeners) {
         mListeners = listeners;
     }
 
     private void notifyOtaUpdate(EnumOtaState state, int progress) {
         synchronized (mOtaLock) {
-            for (BleListener listener : mListeners) {
-                listener.onLeOta(null, state, progress);
-            }
+            mListeners.onLeOta(null, state, progress);
         }
     }
 
@@ -193,7 +196,7 @@ public class BleOta implements BleListener {
 //                    }
                     break;
                 case MSG_UPDATE_PROGRESS:
-                    notifyOtaUpdate(EnumOtaState.Success, (Integer) msg.obj);
+                    notifyOtaUpdate(EnumOtaState.Progress, (Integer) msg.obj);
 //                    if(mOtaProgress != null){
 //                        mOtaProgress.setProgress((Integer) msg.obj);
 //                    }else{
@@ -355,6 +358,7 @@ public class BleOta implements BleListener {
         Message message = mOtaHandler.obtainMessage(MSG_UPDATE_PROGRESS);
         message.obj = progress;
         mOtaHandler.sendMessage(message);
+//        notifyOtaUpdate(EnumOtaState.Success, progress);
     }
 
     private void sendCmdDelayed(int cmd, long millis) {
@@ -498,9 +502,11 @@ public class BleOta implements BleListener {
     private LeDevice leDevice;
     public void setLeDevice(LeDevice leDevice){
         this.leDevice = leDevice;
+        leDevice.setBesListener(this);
     }
 
     public void setCharacter(Context context){
+        updateProgress(0);
         mContext = context;
         leDevice.getOtaWriteCharacter();
 //        leDevice.getOtaReadCharacter();
@@ -549,8 +555,7 @@ public class BleOta implements BleListener {
         try {
             //inputStream = new FileInputStream(getOtaFile());
             inputStream = mContext.getAssets().open(getOtaFile());
-            int totalSize = inputStream.available();
-            int dataSize = totalSize;
+            int dataSize = inputStream.available();
             byte[] data = new byte[dataSize];
             inputStream.read(data, 0, dataSize);
 
@@ -618,6 +623,7 @@ public class BleOta implements BleListener {
             config[91] = (byte) (crc32 >> 24);
 
             int mtu = getMtu();
+            Logger.d(TAG,"load ota config, mtu: "+mMtu);
             int packetPayload = mtu - 1;
             int packetCount = (configLength + packetPayload - 1) / packetPayload;
             mOtaConfigData = new byte[packetCount][];
@@ -948,7 +954,7 @@ public class BleOta implements BleListener {
         }
     }
 
-    protected void otaConfigNext() {
+    private void otaConfigNext() {
         synchronized (mOtaLock) {
             if (mState != STATE_OTA_CONFIG || mOtaConfigData == null) {
                 Log.i(TAG, "otaConfigNext mState != STATE_OTA_CONFIG || mOtaConfigData == null");
@@ -993,6 +999,9 @@ public class BleOta implements BleListener {
 
     @Override
     public void onRetReceived(BluetoothDevice bluetoothDevice, RetResponse retResponse) {
+        if (!(retResponse.object instanceof byte[])){
+            return;
+        }
         byte[] data = (byte[]) retResponse.object;
         Log.i(TAG, "onReceive data = " + ArrayUtil.bytesToHex(data));
         synchronized (mOtaLock) {
@@ -1092,7 +1101,7 @@ public class BleOta implements BleListener {
 
     private boolean sendData(byte[] data) {
 
-        return leDevice.write(data,false);
+        return leDevice.writeOta(data,false);
     }
 
     private boolean isBle() {
@@ -1149,7 +1158,7 @@ public class BleOta implements BleListener {
                     loadFileForNewProfileSPP();
                     break;
                 case CMD_RESEND_MSG:
-//                    Log.i(TAG , "resend the msg");
+                    Log.i(TAG , "resend the msg");
                     sendCmdDelayed(CMD_OTA_NEXT, 0);
                     break;
             }
@@ -1200,11 +1209,21 @@ public class BleOta implements BleListener {
 
     @Override
     public void onMtuChanged(BluetoothDevice bluetoothDevice, int status, int mtu) {
-
+        mMtu = mtu;
     }
 
     @Override
     public void onLeOta(BluetoothDevice bluetoothDevice, EnumOtaState state, int progress) {
         sendFileInfo();
+    }
+
+    @Override
+    public void onWritten(int status) {
+        if (status == 0) {
+            Logger.d(TAG, "on written SUCCESS");
+            otaNextDelayed(10);
+        }else{
+            Logger.e(TAG, "on written return false status is "+status);
+        }
     }
 }

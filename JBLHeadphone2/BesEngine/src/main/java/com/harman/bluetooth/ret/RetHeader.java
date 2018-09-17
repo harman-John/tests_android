@@ -70,4 +70,14 @@ public class RetHeader {
     public static final String AA_MODE_TYPE = "32";
     public static final String AUTO_OFF_TYPE = "33";
     public static final String EQ_PRESET_TYPE = "34";
+
+
+    public static final String OTA_READY = "81";
+    public static final String OTA_BREAK_POINT = "8D";
+    public static final String OTA_CONFIGURE = "87";
+    public static final String OTA_SEGMENT_CRC_CHECK = "83";
+    public static final String OTA_RESULT_RESPONSE = "84";
+
+    public static final String OTA_PASS_RESPONSE = "1122";
+    public static final String OTA_RESEND_RESPONSE = "3344";
 }

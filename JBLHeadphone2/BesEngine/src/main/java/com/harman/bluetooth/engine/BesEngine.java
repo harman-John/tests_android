@@ -11,7 +11,6 @@ import com.harman.bluetooth.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BesEngine {
@@ -19,7 +18,7 @@ public class BesEngine {
     private static volatile BesEngine mBESEngine;
 
     private Map<String,LeDevice> mLeConnectorMap;
-    private List<BleListener> bleListeners;
+    private BleListener bleListener;
 
     private BleOta bleOta;
 
@@ -30,7 +29,6 @@ public class BesEngine {
 
     private BesEngine() {
         mLeConnectorMap = new HashMap<>();
-        bleListeners = new ArrayList<>();
         bleOta = new BleOta();
     }
 
@@ -51,7 +49,7 @@ public class BesEngine {
             mLeDevice = new LeDevice();
             mLeConnectorMap.put(bluetoothDevice.getAddress(), mLeDevice);
         }
-        mLeDevice.setBesListener(bleListeners);
+        mLeDevice.setBesListener(bleListener);
         boolean result = mLeDevice.connect(context, bluetoothDevice);
         if(!result){
             Logger.d(TAG,"connect failed, close le connector");
@@ -99,35 +97,18 @@ public class BesEngine {
 
     public void addListener(BleListener listener) {
         synchronized (mLock) {
-            if (!bleListeners.contains(listener)) {
-                bleListeners.add(listener);
-            }
-        }
-    }
-
-    public void removeListener(BleListener listener) {
-        synchronized (mLock) {
-            bleListeners.remove(listener);
+            bleListener = listener;
         }
     }
 
     public void setOtaCharacter(String mac, Context context) {
-//        LeDevice leDevice = mLeConnectorMap.get(mac);
-//        if (leDevice == null){
-//            Logger.i(TAG,"update image error, no le device found");
-//            return;
-//        }
-//        bleOta.setLeDevice(leDevice);
-//        bleOta.addListener(bleListeners);
-//        bleOta.setCharacter(context);
-    }
-
-    public void updateImage(String mac) {
-//        LeDevice leDevice = mLeConnectorMap.get(mac);
-//        if (leDevice == null){
-//            Logger.i(TAG,"update image error, no le device found");
-//            return;
-//        }
-//        bleOta.sendFileInfo();
+        LeDevice leDevice = mLeConnectorMap.get(mac);
+        if (leDevice == null){
+            Logger.i(TAG,"update image error, no le device found");
+            return;
+        }
+        bleOta.setLeDevice(leDevice);
+        bleOta.addListener(bleListener);
+        bleOta.setCharacter(context);
     }
 }
