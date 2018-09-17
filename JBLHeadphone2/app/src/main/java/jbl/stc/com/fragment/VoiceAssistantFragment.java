@@ -1,5 +1,6 @@
 package jbl.stc.com.fragment;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,7 +35,6 @@ public class VoiceAssistantFragment extends BaseFragment implements View.OnClick
         Switch switchGA = view.findViewById(R.id.switch_google_assistant);
         switchGA.setVisibility(View.GONE);
         switchGA.setOnClickListener(this);
-        view.findViewById(R.id.text_view_not_set_up).setVisibility(View.VISIBLE);
         return view;
     }
 
@@ -55,6 +55,7 @@ public class VoiceAssistantFragment extends BaseFragment implements View.OnClick
             case R.id.text_view_go_to_google_assistant:
                 break;
             case R.id.switch_google_assistant:
+                startActivity(new Intent(Intent.ACTION_VOICE_COMMAND).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 break;
         }
     }
