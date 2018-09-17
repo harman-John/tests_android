@@ -110,9 +110,11 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             view.findViewById(R.id.scroll_view_settings).setAlpha((float) 0.5);
         }
         toggleAutoOffTimer = view.findViewById(R.id.toggleAutoOffTimer);
-        Logger.i(TAG, "myDevice deviceName is " + myDevice.deviceName);
+        if (myDevice!= null) {
+            Logger.i(TAG, "myDevice deviceName is " + myDevice.deviceName);
+        }
         RelativeLayout relativeLayoutSmartButton = view.findViewById(R.id.relative_layout_settings_smart_button);
-        if (DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_SMART_BUTTON)) {
+        if (myDevice!= null &&DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_SMART_BUTTON)) {
             relativeLayoutSmartButton.setVisibility(View.VISIBLE);
             if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 relativeLayoutSmartButton.setOnClickListener(this);
