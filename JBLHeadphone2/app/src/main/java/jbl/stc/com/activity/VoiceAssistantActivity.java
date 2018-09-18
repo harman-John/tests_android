@@ -13,6 +13,7 @@ import jbl.stc.com.R;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.view.BlurringView;
 import jbl.stc.com.view.CustomFontTextView;
@@ -26,7 +27,7 @@ import jbl.stc.com.view.VoiceAssistantSettingPopWindow;
  */
 
 public class VoiceAssistantActivity extends BaseActivity implements View.OnClickListener {
-
+    private static final String TAG = VoiceAssistantActivity.class.getSimpleName();
     private CustomFontTextView tv_goto_smart_assistant;
     private BlurringView mBlurView;
     private View bluredView;
@@ -78,7 +79,15 @@ public class VoiceAssistantActivity extends BaseActivity implements View.OnClick
                 break;
             }
             case R.id.tv_goto_voice_assistant: {
-                showPopWindow();
+                try {
+                    startActivity(new Intent(Intent.ACTION_VOICE_COMMAND).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    /*Intent launchIntent = new Intent(Intent.ACTION_VIEW);
+                    launchIntent.setPackage("com.google.android.googlequicksearchbox");
+                    launchIntent.setClassName("com.google.android.googlequicksearchbox", "com.google.android.apps.gsa.staticplugins.opa.OpaActivity");
+                    startActivity(launchIntent);*/
+                } catch (Exception e) {
+                    Logger.d(TAG, "start vocie assistant error:" + e.toString());
+                }
                 break;
             }
             case R.id.tv_set_up_later: {
@@ -105,5 +114,16 @@ public class VoiceAssistantActivity extends BaseActivity implements View.OnClick
             }
         });
         voiceAssistantSettingPopWindow.showAtLocation(findViewById(R.id.relative_layout_voice_assistant_root), Gravity.NO_GRAVITY, 0, 0);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (voiceAssistantSettingPopWindow != null && voiceAssistantSettingPopWindow.isShowing()) {
+            voiceAssistantSettingPopWindow.dismiss();
+        } else {
+            gotoHome();
+        }
+
     }
 }
