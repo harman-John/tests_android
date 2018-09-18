@@ -534,7 +534,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             }
             case R.id.titleEqText: {
-                turnOnOffEq();
+                switchEq();
                 break;
             }
             case R.id.image_view_ota_download: {
@@ -852,20 +852,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
     };
 
-    private void turnOnOffEq() {
+    private void switchEq() {
         String curEqName = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, this, getString(R.string.off));
         String curEqNameExclusiveOff = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, this, "");
         if (curEqName.equals(getString(R.string.off))) {
-            Logger.d(TAG, "turn on the eq");
+            Logger.d(TAG, "switch eq on");
             if (TextUtils.isEmpty(curEqNameExclusiveOff)) {
                 List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(this);
-                Logger.d(TAG, "eqSize:" + eqModels.size());
+                Logger.d(TAG, "switch eq on, eq size:" + eqModels.size());
                 if (eqModels.size() < 5) {
-                    if (LiveManager.getInstance().isConnected()) {
-                        LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
-                    } else {
-                        ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz);
-                    }
+                    requestPresetIndex(EnumEqPresetIdx.JAZZ, GraphicEQPreset.Jazz);
                 } else {
                     if (LiveManager.getInstance().isConnected()) {
                         LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModels.get(4), HomeActivity.this));
@@ -876,23 +872,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             } else {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, curEqNameExclusiveOff, this);
                 if (curEqNameExclusiveOff.equals(getString(R.string.jazz))) {
-                    if (LiveManager.getInstance().isConnected()) {
-                        LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.JAZZ));
-                    } else {
-                        ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Jazz);
-                    }
+                    requestPresetIndex(EnumEqPresetIdx.JAZZ, GraphicEQPreset.Jazz);
                 } else if (curEqNameExclusiveOff.equals(getString(R.string.vocal))) {
-                    if (LiveManager.getInstance().isConnected()) {
-                        LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.VOCAL));
-                    } else {
-                        ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Vocal);
-                    }
+                    requestPresetIndex(EnumEqPresetIdx.VOCAL, GraphicEQPreset.Vocal);
                 } else if (curEqNameExclusiveOff.equals(getString(R.string.bass))) {
-                    if (LiveManager.getInstance().isConnected()) {
-                        LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.BASS));
-                    } else {
-                        ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Bass);
-                    }
+                    requestPresetIndex(EnumEqPresetIdx.BASS, GraphicEQPreset.Bass);
                 } else {
                     EQModel eqModel = EQSettingManager.get().getEQModelByName(curEqNameExclusiveOff, this);
                     if (LiveManager.getInstance().isConnected()) {
@@ -903,15 +887,19 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
         } else {
-            Logger.d(TAG, "turn off the eq");
-            if (LiveManager.getInstance().isConnected()) {
-                LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
-            } else {
-                ANCControlManager.getANCManager(this).applyPresetWithoutBand(GraphicEQPreset.Off);
-            }
+            Logger.d(TAG, "switch eq off");
+            requestPresetIndex(EnumEqPresetIdx.OFF, GraphicEQPreset.Off);
         }
         homeHandler.removeCallbacks(applyRunnable);
         homeHandler.postDelayed(applyRunnable, 800);
+    }
+
+    private void requestPresetIndex(EnumEqPresetIdx enumEqPresetIdx, GraphicEQPreset graphicEQPreset) {
+        if (LiveManager.getInstance().isConnected()) {
+            LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(enumEqPresetIdx));
+        } else {
+            ANCControlManager.getANCManager(this).applyPresetWithoutBand(graphicEQPreset);
+        }
     }
 
     public void setANC() {
