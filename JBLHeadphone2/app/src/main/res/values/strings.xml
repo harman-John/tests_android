@@ -224,4 +224,5 @@
     <string name="google_assistant">Google Assistant</string>
     <string name="google_assistant_content">Use the action button to talk to your Google Assistant</string>
     <string name="google_assistant_link">Go to Google assistant settings</string>
+    <string name="min">min</string>
 </resources>

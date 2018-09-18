@@ -53,11 +53,7 @@ public class VoiceAssistantFragment extends BaseFragment implements View.OnClick
                 break;
             case R.id.text_view_go_to_google_assistant:
                 try {
-//                    startActivity(new Intent(Intent.ACTION_VOICE_COMMAND).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                    Intent launchIntent = new Intent(Intent.ACTION_VIEW);
-                    launchIntent.setPackage("com.google.android.googlequicksearchbox");
-                    launchIntent.setClassName("com.google.android.googlequicksearchbox", "com.google.android.apps.gsa.staticplugins.opa.OpaActivity");
-                    startActivity(launchIntent);
+                    startActivity(new Intent(Intent.ACTION_VOICE_COMMAND).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }catch (Exception e){
                     e.printStackTrace();
                 }

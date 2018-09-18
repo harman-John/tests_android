@@ -14,9 +14,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +23,6 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -60,21 +57,18 @@ import jbl.stc.com.utils.UiUtils;
 public class SettingsFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = SettingsFragment.class.getSimpleName();
     private View view;
-    private TextView tvToggleAutoOff;
+    private TextView autoOffTimerTextview;
     private Switch toggleVoicePrompt;
-    private Switch toggleAutoOffTimer;
+    private Switch autoOffToggle;
     private Handler mHandler = new Handler();
-    private String deviceNameStr;
     private MyDevice myDevice;
     private TextView textViewFwVersion;
     private int reTry = 1;
-    private ImageView imageViewDownload;
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mWindowLayoutParams;
     private LinearLayout ll_deviceImage;
     private ImageView deviceImageView;
-    private int screenWidth;
-    private int screenHeight;
+    private int mScreenW;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,153 +80,92 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         mWindowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
-        screenWidth = dm.widthPixels;
-        screenHeight = dm.widthPixels;
+        mScreenW = dm.widthPixels;
         myDevice = ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED);
-        Logger.d(TAG, "deviceName:" + ((myDevice!=null)?myDevice.deviceName:"device is null"));
+        Logger.d(TAG, "deviceName:" + ((myDevice != null) ? myDevice.deviceName : "device is null"));
         view = inflater.inflate(R.layout.fragment_settings, container, false);
-        view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
-        view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);
-        TextView textViewFirmware = view.findViewById(R.id.text_view_settings_firmware);
-        TextView textViewDeviceName = view.findViewById(R.id.deviceName);
-        ImageView deviceImage = view.findViewById(R.id.deviceImage);
-        deviceImage.setOnClickListener(this);
-        tvToggleAutoOff = view.findViewById(R.id.tv_toggleautoOff);
-        toggleVoicePrompt = view.findViewById(R.id.toggleVoicePrompt);
-        view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
-        if (myDevice!=null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            toggleVoicePrompt.setOnClickListener(this);
-            textViewFirmware.setOnClickListener(this);
-            view.findViewById(R.id.voice_prompt_layout).setOnClickListener(this);
-            view.findViewById(R.id.relative_layout_settings_product_help).setOnClickListener(this);
-            view.findViewById(R.id.text_view_settings_smart_button).setOnClickListener(this);
-        } else {
-            view.findViewById(R.id.scroll_view_settings).setAlpha((float) 0.5);
-        }
-        toggleAutoOffTimer = view.findViewById(R.id.toggleAutoOffTimer);
-        if (myDevice!= null) {
-            Logger.i(TAG, "myDevice deviceName is " + myDevice.deviceName);
-        }
-        RelativeLayout relativeLayoutSmartButton = view.findViewById(R.id.relative_layout_settings_smart_button);
-        if (myDevice!= null &&DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_SMART_BUTTON)) {
-            relativeLayoutSmartButton.setVisibility(View.VISIBLE);
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                relativeLayoutSmartButton.setOnClickListener(this);
-            }
-        } else {
-            relativeLayoutSmartButton.setVisibility(View.GONE);
-        }
 
-        RelativeLayout relativeLayoutAutoOffTimer = view.findViewById(R.id.relative_layout_settings_auto_off);
-        if (myDevice!=null && DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_AUTO_OFF_TIMER)) {
-            relativeLayoutAutoOffTimer.setVisibility(View.VISIBLE);
-            tvToggleAutoOff.setVisibility(View.VISIBLE);
-            toggleAutoOffTimer.setVisibility(View.GONE);
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                relativeLayoutAutoOffTimer.setOnClickListener(this);
-            }
-        } else if (DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_AUTO_OFF_TIMER_SWITCH)) {
-            relativeLayoutAutoOffTimer.setVisibility(View.VISIBLE);
-            tvToggleAutoOff.setVisibility(View.GONE);
-            toggleAutoOffTimer.setVisibility(View.VISIBLE);
-            if (myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                toggleAutoOffTimer.setOnClickListener(this);
-            }
+        setViewCommon(view);
+        setViewAutoOffTimer();
 
-        } else {
-            relativeLayoutAutoOffTimer.setVisibility(View.GONE);
-        }
-        RelativeLayout relativeLayoutTrueNote = view.findViewById(R.id.relative_layout_settings_true_note);
-        if (myDevice!=null && !DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE)) {
-            relativeLayoutTrueNote.setVisibility(View.GONE);
-        } else {
-            relativeLayoutTrueNote.setVisibility(View.VISIBLE);
-            if (myDevice!=null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                relativeLayoutTrueNote.setOnClickListener(this);
-            }
-        }
-        RelativeLayout relativeLayoutSoundXSetup = view.findViewById(R.id.relative_layout_settings_sound_x_setup);
-        if (myDevice!=null && !DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_SOUND_X_SETUP)) {
-            relativeLayoutSoundXSetup.setVisibility(View.GONE);
-        } else {
-            relativeLayoutSoundXSetup.setVisibility(View.VISIBLE);
-            if (myDevice!=null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                relativeLayoutSoundXSetup.setOnClickListener(this);
-            }
-        }
-        RelativeLayout relativeLayoutSmartAssitant = view.findViewById(R.id.relative_layout_settings_smart_assistant);
-        if (!DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_SMART_ASSISTANT)) {
-            relativeLayoutSmartAssitant.setVisibility(View.GONE);
-        } else {
-            relativeLayoutSmartAssitant.setVisibility(View.VISIBLE);
-            if (myDevice!=null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                relativeLayoutSmartAssitant.setOnClickListener(this);
-            }
-        }
+        setViewByFeature(view.findViewById(R.id.relative_layout_settings_smart_button), Feature.ENABLE_SMART_BUTTON);
+        setViewByFeature(view.findViewById(R.id.relative_layout_settings_true_note), Feature.ENABLE_TRUE_NOTE);
+        setViewByFeature(view.findViewById(R.id.relative_layout_settings_sound_x_setup), Feature.ENABLE_SOUND_X_SETUP);
+        setViewByFeature(view.findViewById(R.id.relative_layout_settings_smart_assistant), Feature.ENABLE_SMART_ASSISTANT);
+        setViewByFeature(view.findViewById(R.id.relative_layout_settings_voice_prompt), Feature.ENABLE_VOICE_PROMPT);
 
-        if (myDevice!=null && !DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_VOICE_PROMPT)) {
-            view.findViewById(R.id.relative_layout_settings_voice_prompt).setVisibility(View.GONE);
-        } else {
-            view.findViewById(R.id.relative_layout_settings_voice_prompt).setVisibility(View.VISIBLE);
-        }
-        if (myDevice!=null) {
-            deviceNameStr = myDevice.deviceName;
-            Logger.d(TAG, "deviceName:" + textViewDeviceName.getText());
-            updateDeviceNameAndImage(deviceNameStr, deviceImage, textViewDeviceName);
-            updateUI();
-        }
-        showOta(false);
+        setViewFirmware(false);
+
+        getDeviceInfo();
         registerConnectivity();
         return view;
     }
 
-    public void showOta(boolean hasUpdate) {
+    private void setViewCommon(View view){
+        view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
+
+        ImageView deviceImage = view.findViewById(R.id.deviceImage);
+        deviceImage.setOnClickListener(this);
+        updateDeviceNameAndImage(myDevice.deviceName, deviceImage, (TextView) view.findViewById(R.id.deviceName));
+        toggleVoicePrompt = view.findViewById(R.id.toggleVoicePrompt);
+
+        if (myDevice != null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            toggleVoicePrompt.setOnClickListener(this);
+            view.findViewById(R.id.voice_prompt_layout).setOnClickListener(this);
+            view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);
+            view.findViewById(R.id.relative_layout_settings_product_help).setOnClickListener(this);
+
+//            view.findViewById(R.id.text_view_settings_smart_button).setOnClickListener(this);
+        } else {
+            view.findViewById(R.id.scroll_view_settings).setAlpha((float) 0.5);
+        }
+    }
+
+    private void setViewAutoOffTimer(){
+        autoOffToggle = view.findViewById(R.id.toggle_auto_off_timer);
+        autoOffTimerTextview = view.findViewById(R.id.textview_auto_off_live);
+
+        setViewByFeature( view.findViewById(R.id.relative_layout_settings_auto_off),Feature.ENABLE_AUTO_OFF_TIMER_SWITCH);
+        setViewByFeature( view.findViewById(R.id.relative_layout_settings_auto_off_live),Feature.ENABLE_AUTO_OFF_TIMER);
+    }
+
+    private void setViewByFeature(View view, Feature feature) {
+        if (myDevice != null && DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, feature)) {
+            view.setVisibility(View.VISIBLE);
+            if (myDevice != null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+                view.setOnClickListener(this);
+            }
+        } else {
+            view.setVisibility(View.GONE);
+        }
+    }
+
+    public void setViewFirmware(boolean hasUpdate) {
         ImageView imageViewDownload = view.findViewById(R.id.image_view_settings_download);
         textViewFwVersion = view.findViewById(R.id.text_view_settings_firmware_version);
         if (hasUpdate) {
             imageViewDownload.setVisibility(View.VISIBLE);
-            textViewFwVersion.setVisibility(View.GONE);
-            textViewFwVersion.setOnClickListener(this);
+            view.findViewById(R.id.text_view_settings_firmware).setOnClickListener(this);
             view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         } else {
             imageViewDownload.setVisibility(View.GONE);
             textViewFwVersion.setVisibility(View.VISIBLE);
             String firmwareVersion = PreferenceUtils.getString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, getActivity(), "");
-            if (myDevice!=null &&myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+            if (myDevice != null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
                 textViewFwVersion.setText(firmwareVersion);
             } else {
                 textViewFwVersion.setText("");
             }
-            textViewFwVersion.setOnClickListener(null);
+            view.findViewById(R.id.text_view_settings_firmware).setOnClickListener(null);
             view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(null);
         }
     }
 
-    private void updateUI() {
-        if (myDevice!=null &&myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+    private void getDeviceInfo() {
+        if (myDevice != null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             ANCControlManager.getANCManager(getActivity()).getVoicePrompt();
             ANCControlManager.getANCManager(getActivity()).getFirmwareVersion();
-        }
-        if (TextUtils.isEmpty(deviceNameStr)) {
-            return;
-        }
-        if (deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_100).toUpperCase()) ||
-                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_150NC).toUpperCase()) ||
-                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_300).toUpperCase()) ||
-                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_700).toUpperCase()) ||
-                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_EVEREST_ELITE_750NC).toUpperCase())) {
-            tvToggleAutoOff.setVisibility(View.GONE);
-            toggleAutoOffTimer.setVisibility(View.VISIBLE);
-            //get autooff timer
-            if (myDevice!=null &&myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                ANCControlManager.getANCManager(getActivity()).getAutoOffFeature();
-            }
-        } else if (deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_500BT).toUpperCase()) ||
-                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_400BT).toUpperCase()) ||
-                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_650BTNC).toUpperCase()) ||
-                deviceNameStr.toUpperCase().contains((JBLConstant.DEVICE_LIVE_FREE_GA).toUpperCase())) {
-            tvToggleAutoOff.setVisibility(View.VISIBLE);
-            toggleAutoOffTimer.setVisibility(View.GONE);
+            ANCControlManager.getANCManager(getActivity()).getAutoOffFeature();
         }
     }
 
@@ -246,8 +179,8 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     public void onResume() {
         super.onResume();
         Logger.d(TAG, "onResume");
-        tvToggleAutoOff.setText(PreferenceUtils.getString(PreferenceKeys.AUTOOFFTIMER, getActivity(), getContext().getString(R.string.five_minute)));
-        if (myDevice!=null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
+        autoOffTimerTextview.setText(PreferenceUtils.getString(PreferenceKeys.AUTOOFFTIMER, getActivity(), getContext().getString(R.string.five_minute)));
+        if (myDevice != null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {
             if (getActivity() instanceof BaseActivity) {
                 ((BaseActivity) getActivity()).startCheckingIfUpdateIsAvailable(SettingsFragment.this);
             }
@@ -269,11 +202,11 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         }
     }
 
-    private void getBleDeviceInfo(){
+    private void getBleDeviceInfo() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if(myDevice!=null) {
+                if (myDevice != null) {
                     CmdDevStatus cmdDevStatus = new CmdDevStatus(EnumDeviceStatusType.AUTO_OFF);
                     LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(myDevice.connectStatus).mac, cmdDevStatus);
                 }
@@ -292,7 +225,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 startActivity(intent);
                 break;
             }
-            case R.id.toggleAutoOffTimer: {
+            case R.id.toggle_auto_off_timer: {
                 mHandler.removeCallbacks(autoOffToggleRunnable);
                 mHandler.postDelayed(autoOffToggleRunnable, 1000);
                 break;
@@ -302,7 +235,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 mHandler.postDelayed(enableVoicePromptRunnable, 1000);
                 break;
             }
-            case R.id.text_view_settings_firmware_version:
+            case R.id.text_view_settings_firmware:
             case R.id.relative_layout_settings_firmware: {
                 switchFragment(new OTAFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
@@ -323,16 +256,17 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 startActivity(new Intent(getActivity(), CalibrationActivity.class));
                 break;
             }
+            case R.id.relative_layout_settings_smart_button:
             case R.id.text_view_settings_smart_button: {
                 Logger.d(TAG, "smart button click");
                 switchFragment(new SmartButtonFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
-            case R.id.relative_layout_settings_auto_off: {
+            case R.id.relative_layout_settings_auto_off_live: {
                 switchFragment(new AutoOffTimeFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
-            case R.id.relative_layout_settings_smart_assistant:{
+            case R.id.relative_layout_settings_smart_assistant: {
                 switchFragment(new VoiceAssistantFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 break;
             }
@@ -347,50 +281,47 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         float y = UiUtils.dip2px(getActivity(), 105) + UiUtils.getStatusHeight(context);
         view.findViewById(R.id.rl_deviceImage).setVisibility(View.INVISIBLE);
         int dashboardImageHeight = UiUtils.getDashboardDeviceImageHeight(context);
-        final int height = UiUtils.dip2px(getActivity(), 120);
+        final int h = UiUtils.dip2px(getActivity(), 120);
         mWindowLayoutParams = new WindowManager.LayoutParams();
         mWindowLayoutParams.format = PixelFormat.TRANSLUCENT;
-        mWindowLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;
+        mWindowLayoutParams.gravity = 51;
         mWindowLayoutParams.x = (int) x;
         mWindowLayoutParams.y = (int) y;
         mWindowLayoutParams.alpha = 1.0f;
         mWindowLayoutParams.width = screenWidth;
-        mWindowLayoutParams.height = screenHeight;
+        mWindowLayoutParams.height = mScreenW;
         mWindowLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         ll_deviceImage = new LinearLayout(context);
         WindowManager.LayoutParams ll_params = new WindowManager.LayoutParams();
-        ll_params.gravity = Gravity.TOP | Gravity.LEFT;
-        ll_params.height = height;
-        ll_params.width = height;
+        ll_params.gravity = 51;
+        ll_params.height = h;
+        ll_params.width = h;
         ll_deviceImage.setLayoutParams(ll_params);
         deviceImageView = new ImageView(context);
         deviceImageView.setBackgroundResource(R.drawable.shape_dashboard_device_circle);
         WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-        params.gravity = Gravity.TOP | Gravity.LEFT;
-        params.width = height;
-        params.height = height;
-        UiUtils.setDeviceImage(deviceNameStr, deviceImageView);
+        params.gravity = 51;
+        params.width = h;
+        params.height = h;
+        UiUtils.setDeviceImage(((TextView)view.findViewById(R.id.deviceName)).getText().toString(), deviceImageView);
         ll_deviceImage.addView(deviceImageView, params);
         mWindowManager.addView(ll_deviceImage, mWindowLayoutParams);
 
         ll_deviceImage.clearAnimation();
         deviceImageView.clearAnimation();
 
-        final float startX = x;
-        float startY = y;
         Logger.d(TAG, "createDeviceImageView x:" + x + "y:" + y);
-        float endX = startX;
-        float endY = startY - UiUtils.dip2px(context, 35) + ((UiUtils.getDeviceImageMarginTop(context) + UiUtils.dip2px(context, 62)) + (dashboardImageHeight - height) / 2 - (UiUtils.dip2px(context, 105) + height));
+        float endY = y - UiUtils.dip2px(context, 35) + ((UiUtils.getDeviceImageMarginTop(context) + UiUtils.dip2px(context, 62)) + (dashboardImageHeight - h) / 2 - (UiUtils.dip2px(context, 105) + h));
 
         ObjectAnimator animX = ObjectAnimator.ofFloat(ll_deviceImage, "translationX",
-                startX, endX);
+                x, x);
         ObjectAnimator animY = ObjectAnimator.ofFloat(ll_deviceImage, "translationY",
-                startY, endY);
+                y, endY);
         ObjectAnimator animScaleY = ObjectAnimator.ofFloat(deviceImageView, "scaleY",
-                1, (float) (dashboardImageHeight) / (float) (height));
+                1, (float) (dashboardImageHeight) / (float) (h));
         ObjectAnimator animScaleX = ObjectAnimator.ofFloat(deviceImageView, "scaleX",
-                1, (float) (dashboardImageHeight) / (float) (height));
+                1, (float) (dashboardImageHeight) / (float) (h));
         AnimatorSet animSetXY = new AnimatorSet();
         animSetXY.playTogether(animX, animY, animScaleX, animScaleY);
         animSetXY.setDuration(400);
@@ -432,9 +363,9 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     private Runnable autoOffToggleRunnable = new Runnable() {
         @Override
         public void run() {
-            ANCControlManager.getANCManager(getContext()).setAutoOffFeature((toggleAutoOffTimer.isChecked()));
-            AnalyticsManager.getInstance().reportAutoOffToggle(toggleAutoOffTimer.isChecked());
-            Logger.d(TAG, "AutoOffFeature " + toggleAutoOffTimer.isChecked() + " sent");
+            ANCControlManager.getANCManager(getContext()).setAutoOffFeature((autoOffToggle.isChecked()));
+            AnalyticsManager.getInstance().reportAutoOffToggle(autoOffToggle.isChecked());
+            Logger.d(TAG, "AutoOffFeature " + autoOffToggle.isChecked() + " sent");
         }
 
     };
@@ -499,7 +430,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                             ((BaseActivity) getActivity()).startCheckingIfUpdateIsAvailable(SettingsFragment.this);
                         }
                     } else {
-                        showOta(false);
+                        setViewFirmware(false);
                     }
                 }
             }
@@ -516,15 +447,15 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case CMD_AutoOffEnable: {
-                toggleAutoOffTimer.setChecked((boolean) objects[0]);
-                if (objects.length>1&&objects[1] != null) {
-                    tvToggleAutoOff.setText(String.valueOf(objects[1])+"min");
+                autoOffToggle.setChecked((boolean) objects[0]);
+                if (objects.length > 1 && objects[1] != null) {
+                    autoOffTimerTextview.setText(String.format("%s%s", String.valueOf(objects[1]), getString(R.string.min)));
                 }
                 break;
             }
             case CMD_FIRMWARE_VERSION: {
                 String version = (String) objects[0];
-                if (version == null && AvneraManager.getAvenraManager().getAudioManager()!= null) {
+                if (version == null && AvneraManager.getAvenraManager().getAudioManager() != null) {
                     AccessoryInfo accessoryInfo = AvneraManager.getAvenraManager().getAudioManager().getAccessoryStatus();
                     String firmwareRev = accessoryInfo.getFirmwareRev();
                     textViewFwVersion.setText(firmwareRev);

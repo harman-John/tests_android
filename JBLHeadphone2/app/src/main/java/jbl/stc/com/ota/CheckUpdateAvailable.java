@@ -13,7 +13,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.data.FwTYPE;
 import jbl.stc.com.entity.FirmwareModel;
@@ -130,7 +129,7 @@ public class CheckUpdateAvailable extends AsyncTask<String, Void, CopyOnWriteArr
                 ((OTAFragment) object).setIsUpdateAvailable(isUpdateAvailable(fwlist), fwlist);
             } else if (object instanceof SettingsFragment) {
                 Logger.d(TAG,"onPostExecute SettingsFragment");
-                ((SettingsFragment) object).showOta(isUpdateAvailable(fwlist));
+                ((SettingsFragment) object).setViewFirmware(isUpdateAvailable(fwlist));
             } else if (object instanceof HomeActivity) {
                 Logger.d(TAG,"onPostExecute HomeActivity");
                 ((HomeActivity) object).showOta(isUpdateAvailable(fwlist));
