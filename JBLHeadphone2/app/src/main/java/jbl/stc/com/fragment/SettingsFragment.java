@@ -82,12 +82,16 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
         mScreenW = dm.widthPixels;
         myDevice = ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED);
-        Logger.d(TAG, "deviceName:" + ((myDevice != null) ? myDevice.deviceName : "device is null"));
+        Logger.d(TAG, "on create, device name: " + ((myDevice != null) ? myDevice.deviceName : "device is null"));
         view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         setViewCommon(view);
-        setViewAutoOffTimer();
 
+        autoOffToggle = view.findViewById(R.id.toggle_auto_off_timer);
+        autoOffTimerTextview = view.findViewById(R.id.textview_auto_off_live);
+
+        setViewByFeature(view.findViewById(R.id.relative_layout_settings_auto_off), Feature.ENABLE_AUTO_OFF_TIMER_SWITCH);
+        setViewByFeature(view.findViewById(R.id.relative_layout_settings_auto_off_live), Feature.ENABLE_AUTO_OFF_TIMER);
         setViewByFeature(view.findViewById(R.id.relative_layout_settings_smart_button), Feature.ENABLE_SMART_BUTTON);
         setViewByFeature(view.findViewById(R.id.relative_layout_settings_true_note), Feature.ENABLE_TRUE_NOTE);
         setViewByFeature(view.findViewById(R.id.relative_layout_settings_sound_x_setup), Feature.ENABLE_SOUND_X_SETUP);
@@ -101,7 +105,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         return view;
     }
 
-    private void setViewCommon(View view){
+    private void setViewCommon(View view) {
         view.findViewById(R.id.image_view_settings_back).setOnClickListener(this);
 
         ImageView deviceImage = view.findViewById(R.id.deviceImage);
@@ -114,19 +118,9 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
             view.findViewById(R.id.voice_prompt_layout).setOnClickListener(this);
             view.findViewById(R.id.text_view_settings_product_help).setOnClickListener(this);
             view.findViewById(R.id.relative_layout_settings_product_help).setOnClickListener(this);
-
-//            view.findViewById(R.id.text_view_settings_smart_button).setOnClickListener(this);
         } else {
             view.findViewById(R.id.scroll_view_settings).setAlpha((float) 0.5);
         }
-    }
-
-    private void setViewAutoOffTimer(){
-        autoOffToggle = view.findViewById(R.id.toggle_auto_off_timer);
-        autoOffTimerTextview = view.findViewById(R.id.textview_auto_off_live);
-
-        setViewByFeature( view.findViewById(R.id.relative_layout_settings_auto_off),Feature.ENABLE_AUTO_OFF_TIMER_SWITCH);
-        setViewByFeature( view.findViewById(R.id.relative_layout_settings_auto_off_live),Feature.ENABLE_AUTO_OFF_TIMER);
     }
 
     private void setViewByFeature(View view, Feature feature) {
@@ -304,7 +298,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         params.gravity = 51;
         params.width = h;
         params.height = h;
-        UiUtils.setDeviceImage(((TextView)view.findViewById(R.id.deviceName)).getText().toString(), deviceImageView);
+        UiUtils.setDeviceImage(((TextView) view.findViewById(R.id.deviceName)).getText().toString(), deviceImageView);
         ll_deviceImage.addView(deviceImageView, params);
         mWindowManager.addView(ll_deviceImage, mWindowLayoutParams);
 

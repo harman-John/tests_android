@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/relative_layout_home_activity"
+    android:id="@+id/relative_layout_home_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true">
 
     <RelativeLayout
-        android:id="@+id/relative_Layout_home"
+        android:id="@+id/relative_layout_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/shape_gradient_home_fragment"

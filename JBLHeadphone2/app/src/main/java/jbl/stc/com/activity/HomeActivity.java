@@ -55,7 +55,6 @@ import com.harman.bluetooth.req.CmdAncSet;
 import com.harman.bluetooth.req.CmdCurrEq;
 import com.harman.bluetooth.req.CmdDevStatus;
 import com.harman.bluetooth.req.CmdEqPresetSet;
-import com.harman.bluetooth.req.CmdEqSettingsSet;
 import com.harman.bluetooth.ret.RetCurrentEQ;
 
 import java.util.ArrayList;
@@ -68,10 +67,8 @@ import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.data.DeviceConnectionManager;
-import jbl.stc.com.dialog.CreateEqTipsDialog;
 import jbl.stc.com.dialog.TutorialAncDialog;
 import jbl.stc.com.entity.EQModel;
-import jbl.stc.com.fragment.EqCustomFragment;
 import jbl.stc.com.fragment.EqSettingFragment;
 import jbl.stc.com.fragment.OTAFragment;
 import jbl.stc.com.fragment.SettingsFragment;
@@ -98,7 +95,6 @@ import jbl.stc.com.view.AppImageView;
 import jbl.stc.com.view.BlurringView;
 import jbl.stc.com.view.CustomFontTextView;
 import jbl.stc.com.view.NotConnectedPopupWindow;
-import jbl.stc.com.view.SaPopupWindow;
 
 
 public class HomeActivity extends BaseActivity implements View.OnClickListener, OnOtaListener {
@@ -121,30 +117,28 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private final static int MSG_FIRMWARE_INFO = 11;
 
     private final long timeInterval = 30 * 1000L;
-    private ProgressBar progressBarBattery;
-    private TextView textViewBattery;
-    private TextView textViewCurrentEQ;
-    private TextView textViewDeviceName;
-    private ImageView imageViewDevice;
-    private CheckBox checkBoxNoiseCancel;
-    private ImageView imageViewAmbientAaware;
-    private LinearLayout linearLayoutBattery;
+    private ProgressBar batteryPb;
+    private TextView batteryTv;
+    private TextView eqNameTv;
+    private TextView deviceNameTv;
+    private ImageView deviceImage;
+    private CheckBox noiseCancelCb;
+    private ImageView ambientAwareIv;
+    private LinearLayout batteryLl;
     private AaPopupWindow aaPopupWindow;
-    private SaPopupWindow saPopupwindow;
 
-    private RelativeLayout relative_layout_home_eq_info;
+    private RelativeLayout eqInfoBarRl;
     private String deviceName;
-    private SaPopupWindow.OnSmartAmbientStatusReceivedListener mSaListener;
-    private AppImageView image_view_ota_download;
+    private AppImageView otaDownloadIv;
     private NotConnectedPopupWindow notConnectedPopupWindow;
     private TutorialAncDialog tutorialAncDialog;
 
-    private FrameLayout frameLayout;
+    private FrameLayout deviceImageFl;
     private HomeHandler homeHandler = new HomeHandler(Looper.getMainLooper());
     private float yDown;
     private float yMove;
     public static boolean isEnter = false;
-    private RelativeLayout relative_layout_home_activity;
+    private RelativeLayout homeRl;
     private int screenHeight;
     private int screenWidth;
 
@@ -153,7 +147,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private int mConnectStatus = -1;
-    private RelativeLayout rootLayout;
+    private RelativeLayout rootHomeRl;
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mWindowLayoutParams;
     private LinearLayout ll_deviceImage;
@@ -182,98 +176,89 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
         addActivity(this);
         Logger.d(TAG, "onCreate");
-        rootLayout = findViewById(R.id.relative_layout_home_activity);
+        rootHomeRl = findViewById(R.id.relative_layout_home_root);
         mWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenHeight = dm.heightPixels;
         screenWidth = dm.widthPixels;
         showTutorial();
         generateAAPopupWindow();
-        generateSaPopupWindow();
-        relative_layout_home_activity = findViewById(R.id.relative_Layout_home);
+        homeRl = findViewById(R.id.relative_layout_home);
         findViewById(R.id.image_view_home_back).setOnClickListener(this);
-        textViewDeviceName = findViewById(R.id.text_view_home_device_name);
-        frameLayout = findViewById(R.id.frame_layout_home_device_image);
-        frameLayout.setOnClickListener(this);
-        imageViewDevice = findViewById(R.id.image_view_home_device_image);
-        relative_layout_home_eq_info = findViewById(R.id.relative_layout_home_eq_info);
-        relative_layout_home_eq_info.setVisibility(View.VISIBLE);
+        deviceImageFl = findViewById(R.id.frame_layout_home_device_image);
+        deviceImageFl.setOnClickListener(this);
+        deviceImage = findViewById(R.id.image_view_home_device_image);
+        deviceNameTv = findViewById(R.id.text_view_home_device_name);
+        eqInfoBarRl = findViewById(R.id.relative_layout_home_eq_info);
+        eqInfoBarRl.setVisibility(View.VISIBLE);
         TextView titleEqText = findViewById(R.id.titleEqText);
         if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             setEqMenuColor(false);
-            relative_layout_home_eq_info.setAlpha((float) 0.5);
+            eqInfoBarRl.setAlpha((float) 0.5);
         } else {
             setEqMenuColor(true);
             titleEqText.setOnClickListener(this);
             findViewById(R.id.image_view_home_settings).setOnClickListener(this);
             findViewById(R.id.arrowUpImage).setOnClickListener(this);
         }
-        textViewCurrentEQ = findViewById(R.id.text_view_home_eq_name);
-        linearLayoutBattery = findViewById(R.id.linear_layout_home_battery);
-        progressBarBattery = findViewById(R.id.progress_bar_battery);
-        textViewBattery = findViewById(R.id.text_view_battery_level);
-        image_view_ota_download = findViewById(R.id.image_view_ota_download);
-        image_view_ota_download.setOnClickListener(this);
-        checkBoxNoiseCancel = findViewById(R.id.image_view_home_noise_cancel);
-        imageViewAmbientAaware = findViewById(R.id.image_view_home_ambient_aware);
+        eqNameTv = findViewById(R.id.text_view_home_eq_name);
+        batteryLl = findViewById(R.id.linear_layout_home_battery);
+        batteryPb = findViewById(R.id.progress_bar_battery);
+        batteryTv = findViewById(R.id.text_view_battery_level);
+        otaDownloadIv = findViewById(R.id.image_view_ota_download);
+        otaDownloadIv.setOnClickListener(this);
+        noiseCancelCb = findViewById(R.id.image_view_home_noise_cancel);
+        ambientAwareIv = findViewById(R.id.image_view_home_ambient_aware);
 
         mBlurView = findViewById(R.id.view_home_blur);
-        CreateEqTipsDialog createEqTipsDialog = new CreateEqTipsDialog(this);
-        createEqTipsDialog.setOnDialogListener(new OnDialogListener() {
-            @Override
-            public void onConfirm() {
-                switchFragment(new EqCustomFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
-            }
 
-            @Override
-            public void onCancel() {
-
-            }
-        });
-        RelativeLayout linearLayoutNoiseCanceling = findViewById(R.id.relative_layout_home_noise_cancel);
         deviceName = ProductListManager.getInstance().getSelectDevice(mConnectStatus).deviceName;
         Logger.i(TAG, "on create, device name = " + deviceName);
-        if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_NOISE_CANCEL)) {
-            linearLayoutNoiseCanceling.setVisibility(View.GONE);
-        } else {
-            linearLayoutNoiseCanceling.setVisibility(View.VISIBLE);
-            if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
-                checkBoxNoiseCancel.setOnClickListener(this);
-            } else {
-                linearLayoutNoiseCanceling.setAlpha((float) 0.5);
-            }
-        }
+        setViewNoiseCancel(findViewById(R.id.relative_layout_home_noise_cancel), Feature.ENABLE_NOISE_CANCEL);
+        setViewAmbientAware(findViewById(R.id.relative_layout_home_ambient_aware), Feature.ENABLE_AMBIENT_AWARE);
 
-        RelativeLayout linearLayoutAmbientAware = findViewById(R.id.relative_layout_home_ambient_aware);
-        if (!DeviceFeatureMap.isFeatureSupported(deviceName, Feature.ENABLE_AMBIENT_AWARE)) {
-            linearLayoutAmbientAware.setVisibility(View.GONE);
+        updateDeviceNameAndImage(deviceName, deviceImage, deviceNameTv);
+        initEvent();
+        setDeviceImageHeight();
+        setupEnterAnimations();
+        setupExitAnimations();
+    }
+
+    private void setViewNoiseCancel(View view, Feature feature) {
+        if (deviceName != null && DeviceFeatureMap.isFeatureSupported(deviceName, feature)) {
+            view.setVisibility(View.VISIBLE);
+            if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
+                noiseCancelCb.setOnClickListener(this);
+            } else {
+                view.setAlpha((float) 0.5);
+            }
         } else {
-            imageViewAmbientAaware.setOnClickListener(this);
+            view.setVisibility(View.GONE);
+        }
+    }
+
+    private void setViewAmbientAware(View view, Feature feature) {
+        if (DeviceFeatureMap.isFeatureSupported(deviceName, feature)) {
+            ambientAwareIv.setOnClickListener(this);
             if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
-                linearLayoutAmbientAware.setAlpha((float) 0.5);
+                view.setAlpha((float) 0.5);
             }
             if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
                 CustomFontTextView textViewNoiseCancel = findViewById(R.id.text_view_home_noise_cancle);
                 textViewNoiseCancel.setText(R.string.talkthru);
-                checkBoxNoiseCancel.setOnClickListener(this);
-                checkBoxNoiseCancel.setBackgroundResource(R.drawable.checkbox_talk_through_selector);
+                noiseCancelCb.setOnClickListener(this);
+                noiseCancelCb.setBackgroundResource(R.drawable.checkbox_talk_through_selector);
                 findViewById(R.id.relative_layout_home_noise_cancel).setVisibility(View.VISIBLE);
-                linearLayoutAmbientAware.setVisibility(View.VISIBLE);
-                imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
-                imageViewAmbientAaware.setTag("0");
-                imageViewAmbientAaware.setOnClickListener(this);
-
+                view.setVisibility(View.VISIBLE);
+                ambientAwareIv.setBackgroundResource(R.mipmap.aa_icon_non_active);
+                ambientAwareIv.setTag("0");
+                ambientAwareIv.setOnClickListener(this);
             }
+        } else {
+            view.setVisibility(View.GONE);
         }
-
-
-        updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
-        initEvent();
-        setDeviceImageHeight();
-        setupEnterAnimations();
-        setupExitAnimations();
     }
 
     private void setupEnterAnimations() {
@@ -311,20 +296,20 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     void enterReveal() {
         int[] location = new int[2];
-        frameLayout.getLocationOnScreen(location);
+        deviceImageFl.getLocationOnScreen(location);
         int cx = location[0];
         int cy = location[1];
-        int startRadius = frameLayout.getMeasuredHeight() / 2;
-        int finalRadius = Math.max(rootLayout.getWidth(), rootLayout.getHeight());
+        int startRadius = deviceImageFl.getMeasuredHeight() / 2;
+        int finalRadius = Math.max(rootHomeRl.getWidth(), rootHomeRl.getHeight());
 
         Animator anim =
-                ViewAnimationUtils.createCircularReveal(rootLayout,
+                ViewAnimationUtils.createCircularReveal(rootHomeRl,
                         cx + startRadius,
                         cy + startRadius,
                         startRadius,
                         finalRadius);
         anim.setDuration(500);
-        rootLayout.setVisibility(View.VISIBLE);
+        rootHomeRl.setVisibility(View.VISIBLE);
         anim.start();
     }
 
@@ -362,13 +347,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     void exitReveal() {
         int[] location = new int[2];
-        frameLayout.getLocationOnScreen(location);
+        deviceImageFl.getLocationOnScreen(location);
         int cx = location[0];
         int cy = location[1];
-        int startRadius = frameLayout.getHeight() / 2;
-        int initialRadius = (rootLayout.getWidth() + rootLayout.getHeight()) / 2;
+        int startRadius = deviceImageFl.getHeight() / 2;
+        int initialRadius = (rootHomeRl.getWidth() + rootHomeRl.getHeight()) / 2;
         Animator anim =
-                ViewAnimationUtils.createCircularReveal(rootLayout,
+                ViewAnimationUtils.createCircularReveal(rootHomeRl,
                         cx + startRadius,
                         cy + startRadius,
                         initialRadius,
@@ -411,7 +396,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             Fragment fr = getSupportFragmentManager().findFragmentById(R.id.containerLayout);
             if (fr != null && fr instanceof OTAFragment) {
                 Logger.i(TAG, "on connect status, connected, myDevice = " + mConnectStatus);
-//                DeviceManager.getInstance(this).startA2DPCheck();
                 ((OTAFragment) fr).otaSuccess(this);
             }
         }
@@ -486,24 +470,23 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.image_view_home_ambient_aware: {
                 if (UiUtils.isConnected(mConnectStatus, HomeActivity.this)) {
                     if (AppUtils.isOldDevice(deviceName)) {
-                        if (!checkBoxNoiseCancel.isChecked()) {
-                            checkBoxNoiseCancel.setChecked(true);
+                        if (!noiseCancelCb.isChecked()) {
+                            noiseCancelCb.setChecked(true);
                             ANCControlManager.getANCManager(this).setANCValue(true);
                         }
                         ANCControlManager.getANCManager(getApplicationContext()).getAmbientLeveling();
-                        showAncPopupWindow(findViewById(R.id.relative_layout_home_activity));
+                        showAncPopupWindow(findViewById(R.id.relative_layout_home_root));
                     } else if (AppUtils.isNewDevice(deviceName)) {
-                        Logger.d(TAG, "tag: new device" + imageViewAmbientAaware.getTag());
-                        if (imageViewAmbientAaware.getTag().equals("1")) {
-                            imageViewAmbientAaware.setBackground(getResources().getDrawable(R.mipmap.aa_icon_non_active));
-                            imageViewAmbientAaware.setTag("0");
-                            //checkBoxNoiseCancel.setChecked(true);
-                        } else if (imageViewAmbientAaware.getTag().equals("0")) {
-                            imageViewAmbientAaware.setBackground(getResources().getDrawable(R.mipmap.aa_icon_active));
-                            imageViewAmbientAaware.setTag("1");
-                            checkBoxNoiseCancel.setChecked(false);
+                        Logger.d(TAG, "tag: new device" + ambientAwareIv.getTag());
+                        if (ambientAwareIv.getTag().equals("1")) {
+                            ambientAwareIv.setBackground(getResources().getDrawable(R.mipmap.aa_icon_non_active));
+                            ambientAwareIv.setTag("0");
+                        } else if (ambientAwareIv.getTag().equals("0")) {
+                            ambientAwareIv.setBackground(getResources().getDrawable(R.mipmap.aa_icon_active));
+                            ambientAwareIv.setTag("1");
+                            noiseCancelCb.setChecked(false);
                         }
-                        setBleAAComand(checkBoxNoiseCancel, imageViewAmbientAaware);
+                        setBleAAComand(noiseCancelCb, ambientAwareIv);
                     }
                 }
                 break;
@@ -526,29 +509,24 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             }
             case R.id.image_view_home_settings: {
-//                switchFragment(new SettingsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
                 createDeviceImageView(HomeActivity.this);
                 break;
             }
             case R.id.image_view_home_noise_cancel: {
                 Logger.d(TAG, "on click, noise cancel, device name: " + deviceName);
                 if (AppUtils.isNewDevice(deviceName)) {
-                    if (checkBoxNoiseCancel.isChecked()) {
+                    if (noiseCancelCb.isChecked()) {
                         Logger.d(TAG, "noise cancel  checked");
-                        checkBoxNoiseCancel.setChecked(true);
-                        if (imageViewAmbientAaware.getTag().equals("1")) {
-                            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
-                            imageViewAmbientAaware.setTag("0");
+                        noiseCancelCb.setChecked(true);
+                        if (ambientAwareIv.getTag().equals("1")) {
+                            ambientAwareIv.setBackgroundResource(R.mipmap.aa_icon_non_active);
+                            ambientAwareIv.setTag("0");
                         }
                     } else {
                         Logger.d(TAG, "noise cancel unchecked");
-                        checkBoxNoiseCancel.setChecked(false);
-                        /*if (imageViewAmbientAaware.getTag().equals("0")) {
-                            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_active);
-                            imageViewAmbientAaware.setTag("1");
-                        }*/
+                        noiseCancelCb.setChecked(false);
                     }
-                    setBleAAComand(checkBoxNoiseCancel, imageViewAmbientAaware);
+                    setBleAAComand(noiseCancelCb, ambientAwareIv);
                 } else {
                     setANC();
 
@@ -589,13 +567,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void createDeviceImageView(final Context context) {
-        final int height = UiUtils.getDashboardDeviceImageHeight(context);
-        float x = (screenWidth - height) / 2;
+        final int h = UiUtils.getDashboardDeviceImageHeight(context);
+        float x = (screenWidth - h) / 2;
         float y = UiUtils.dip2px(context, 62) + UiUtils.getDeviceImageMarginTop(context);
-        frameLayout.setVisibility(View.INVISIBLE);
+        deviceImageFl.setVisibility(View.INVISIBLE);
         mWindowLayoutParams = new WindowManager.LayoutParams();
         mWindowLayoutParams.format = PixelFormat.TRANSLUCENT;
-        mWindowLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;
+        mWindowLayoutParams.gravity = 51;
         mWindowLayoutParams.x = (int) x;
         mWindowLayoutParams.y = (int) y;
         mWindowLayoutParams.alpha = 1.0f;
@@ -605,16 +583,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         ll_deviceImage = new LinearLayout(context);
         WindowManager.LayoutParams ll_params = new WindowManager.LayoutParams();
-        ll_params.gravity = Gravity.TOP | Gravity.LEFT;
-        ll_params.width = height;
-        ll_params.height = height;
+        ll_params.gravity = 51;
+        ll_params.width = h;
+        ll_params.height = h;
         ll_deviceImage.setLayoutParams(ll_params);
         deviceImageView = new ImageView(context);
         deviceImageView.setBackgroundResource(R.drawable.shape_dashboard_device_circle);
         WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-        params.gravity = Gravity.TOP | Gravity.LEFT;
-        params.width = height;
-        params.height = height;
+        params.gravity = 51;
+        params.width = h;
+        params.height = h;
         UiUtils.setDeviceImage(deviceName, deviceImageView);
         ll_deviceImage.addView(deviceImageView, params);
         mWindowManager.addView(ll_deviceImage, mWindowLayoutParams);
@@ -626,23 +604,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         final int settingDeviceImageMargin_ParentTop = settingTitleBar + settingDeviceNameMarginTop +
                 settingDeviceNameHeight + settingDeviceImageMarginTop;
         final int settingDeviceImageHeight = UiUtils.dip2px(context, 120);
-        final int settingDeviceImageMarginLeft = (screenWidth - settingDeviceImageHeight) / 2;
-
 
         ll_deviceImage.clearAnimation();
         deviceImageView.clearAnimation();
-        final float startX = x;
-        float startY = y;
-        float endX = startX;
-        float endY = startY + settingDeviceImageMargin_ParentTop - (UiUtils.getDeviceImageMarginTop(context) + UiUtils.dip2px(context, 62) + (height - settingDeviceImageHeight) / 2);
+        float endY = y + settingDeviceImageMargin_ParentTop - (UiUtils.getDeviceImageMarginTop(context) + UiUtils.dip2px(context, 62) + (h - settingDeviceImageHeight) / 2);
         ObjectAnimator animX = ObjectAnimator.ofFloat(ll_deviceImage, "translationX",
-                startX, endX);
+                x, x);
         ObjectAnimator animY = ObjectAnimator.ofFloat(ll_deviceImage, "translationY",
-                startY, endY);
+                y, endY);
         ObjectAnimator animScaleY = ObjectAnimator.ofFloat(deviceImageView, "scaleY",
-                1, (float) (settingDeviceImageHeight) / (float) (height));
+                1, (float) (settingDeviceImageHeight) / (float) (h));
         ObjectAnimator animScaleX = ObjectAnimator.ofFloat(deviceImageView, "scaleX",
-                1, (float) (settingDeviceImageHeight) / (float) (height));
+                1, (float) (settingDeviceImageHeight) / (float) (h));
         AnimatorSet animSetXY = new AnimatorSet();
         animSetXY.playTogether(animX, animY, animScaleX, animScaleY);
         animSetXY.setDuration(400);
@@ -655,7 +628,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                frameLayout.setVisibility(View.VISIBLE);
+                deviceImageFl.setVisibility(View.VISIBLE);
                 mWindowLayoutParams.alpha = 0f;
                 mWindowManager.updateViewLayout(ll_deviceImage, mWindowLayoutParams);
                 if (ll_deviceImage != null) {
@@ -687,7 +660,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 if (tutorialAncDialog == null) {
                     tutorialAncDialog = new TutorialAncDialog(this);
                 }
-                if (tutorialAncDialog != null && !tutorialAncDialog.isShowing()) {
+                if (!tutorialAncDialog.isShowing()) {
                     tutorialAncDialog.show();
                 }
 
@@ -715,10 +688,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         } else if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             if (!PreferenceUtils.getBoolean(PreferenceKeys.SHOW_NC_POP, this)) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_NC_POP, true, this);
-                findViewById(R.id.relative_layout_home_activity).post(new Runnable() {
+                findViewById(R.id.relative_layout_home_root).post(new Runnable() {
                     @Override
                     public void run() {
-                        showNCPopupWindow();
+                        showNotConnectedPopupWindow();
                     }
                 });
             }
@@ -726,27 +699,27 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void setDeviceImageHeight() {
-        int height = UiUtils.getDashboardDeviceImageHeight(this);
-        Logger.d(TAG, "height:" + height);
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imageViewDevice.getLayoutParams();
-        params.height = height;
-        params.width = height;
-        imageViewDevice.setLayoutParams(params);
-        int marginTop = (int) (height / 2 - height / 2 * Math.sin(45 * 3.14 / 180) - UiUtils.dip2px(this, 35) / 2);
-        int marginRight = (int) (height / 2 - height / 2 * Math.cos(45 * 3.14 / 180) - UiUtils.dip2px(this, 35) / 2);
-        image_view_ota_download.setTop(marginTop);
-        image_view_ota_download.setRight(marginRight);
-        FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) image_view_ota_download.getLayoutParams();
+        int h = UiUtils.getDashboardDeviceImageHeight(this);
+        Logger.d(TAG, "height:" + h);
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) deviceImage.getLayoutParams();
+        params.height = h;
+        params.width = h;
+        deviceImage.setLayoutParams(params);
+        int marginTop = (int) (h / 2 - h / 2 * Math.sin(45 * 3.14 / 180) - UiUtils.dip2px(this, 35) / 2);
+        int marginRight = (int) (h / 2 - h / 2 * Math.cos(45 * 3.14 / 180) - UiUtils.dip2px(this, 35) / 2);
+        otaDownloadIv.setTop(marginTop);
+        otaDownloadIv.setRight(marginRight);
+        FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) otaDownloadIv.getLayoutParams();
         params1.topMargin = marginTop;
         params1.rightMargin = marginRight;
-        image_view_ota_download.setLayoutParams(params1);
+        otaDownloadIv.setLayoutParams(params1);
     }
 
     public void showOta(boolean hasUpdate) {
         if (hasUpdate) {
-            image_view_ota_download.setVisibility(View.VISIBLE);
+            otaDownloadIv.setVisibility(View.VISIBLE);
         } else {
-            image_view_ota_download.setVisibility(View.GONE);
+            otaDownloadIv.setVisibility(View.GONE);
         }
     }
 
@@ -756,7 +729,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         final int distance = UiUtils.dip2px(this, 80);
         final int bottomHeight = UiUtils.dip2px(HomeActivity.this, 70);
         if (mConnectStatus == ConnectStatus.DEVICE_CONNECTED) {
-            relative_layout_home_activity.setOnTouchListener(new View.OnTouchListener() {
+            homeRl.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     switch (event.getAction()) {
@@ -849,25 +822,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
 
-    private void generateSaPopupWindow() {
-        saPopupwindow = new SaPopupWindow(this);
-        saPopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                //dismiss blur view
-                if (mBlurView != null) {
-                    mBlurView.setVisibility(View.GONE);
-                }
-            }
-        });
-        saPopupwindow.setOnSmartAmbientStatusReceivedListener(nativeSaListener);
-    }
-
-
-//    private void getRawSteps() {
-//        ANCControlManager.getANCManager(JBLApplication.getJBLApplicationContext()).getRawStepsByCmd();//get raw steps count of connected device
-//    }
-
     private void generateAAPopupWindow() {
         aaPopupWindow = new AaPopupWindow(this);
         aaPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -902,7 +856,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         String curEqName = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, this, getString(R.string.off));
         String curEqNameExclusiveOff = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, this, "");
         if (curEqName.equals(getString(R.string.off))) {
-            // turn on the eq
             Logger.d(TAG, "turn on the eq");
             if (TextUtils.isEmpty(curEqNameExclusiveOff)) {
                 List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(this);
@@ -915,7 +868,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     }
                 } else {
                     if (LiveManager.getInstance().isConnected()) {
-                        // add the ble user eq code
                         LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModels.get(4), HomeActivity.this));
                     } else {
                         ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModels.get(4)));
@@ -944,7 +896,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 } else {
                     EQModel eqModel = EQSettingManager.get().getEQModelByName(curEqNameExclusiveOff, this);
                     if (LiveManager.getInstance().isConnected()) {
-                        // add the ble user eq code
                         LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModel, HomeActivity.this));
                     } else {
                         ANCControlManager.getANCManager(this).applyPresetsWithBand(GraphicEQPreset.User, EQSettingManager.get().getValuesFromEQModel(eqModel));
@@ -952,7 +903,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
         } else {
-            //turn off the eq
             Logger.d(TAG, "turn off the eq");
             if (LiveManager.getInstance().isConnected()) {
                 LiveManager.getInstance().reqSetEQPreset(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdEqPresetSet(EnumEqPresetIdx.OFF));
@@ -965,7 +915,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     public void setANC() {
-        if (checkBoxNoiseCancel.isChecked()) {
+        if (noiseCancelCb.isChecked()) {
             ANCControlManager.getANCManager(this).setANCValue(true);
         } else {
             ANCControlManager.getANCManager(this).setANCValue(false);
@@ -977,10 +927,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             if (LiveManager.getInstance().isConnected()) {
                 if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC)) {
                     LiveManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdAncSet(EnumAncStatus.OFF));
-                } else if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT) || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)) {
-
                 }
-
             } else {
                 ANCControlManager.getANCManager(this).setANCValue(false);
             }
@@ -988,8 +935,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             if (LiveManager.getInstance().isConnected()) {
                 if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_650BTNC)) {
                     LiveManager.getInstance().reqSetANC(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, new CmdAncSet(EnumAncStatus.ON));
-                } else if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT) || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)) {
-
                 }
             } else {
                 ANCControlManager.getANCManager(this).setANCValue(true);
@@ -997,49 +942,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-    private void setOnSmartAmbientStatusReceivedListener(SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
-        this.mSaListener = listener;
-    }
-
-    public void showSaPopupWindow(View view, SaPopupWindow.OnSmartAmbientStatusReceivedListener listener) {
-        mBlurView.setBlurredView(relative_layout_home_activity);
-//        if (mBlurView.getBackground() == null) {
-//            Bitmap image = BlurBuilder.blur(view);
-//            mBlurView.setBackground(new BitmapDrawable(this.getResources(), image));
-//        }
-        mBlurView.invalidate();
-        mBlurView.setVisibility(View.VISIBLE);
-        mBlurView.setAlpha(0f);
-        mBlurView.animate().alpha(1f).setDuration(500).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                mBlurView.setVisibility(View.VISIBLE);
-                //OR
-                mBlurView.setAlpha(1f);
-            }
-        });
-        if (listener != null) {
-            setOnSmartAmbientStatusReceivedListener(listener);
-        }
-        saPopupwindow.showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
-    }
-
-    private SaPopupWindow.OnSmartAmbientStatusReceivedListener nativeSaListener = new SaPopupWindow.OnSmartAmbientStatusReceivedListener() {
-        @Override
-        public void onSaStatusReceived(boolean isDaEnable, boolean isTtEnable) {
-            if (mSaListener != null) {
-                mSaListener.onSaStatusReceived(isDaEnable, isTtEnable);
-            }
-        }
-    };
-
     public void showAncPopupWindow(View view) {
-//        if (mBlurView.getBackground() == null) {
-//            Bitmap image = BlurBuilder.blur(view);
-//            mBlurView.setBackground(new BitmapDrawable(this.getResources(), image));
-//        }
-        mBlurView.setBlurredView(relative_layout_home_activity);
+        mBlurView.setBlurredView(homeRl);
         mBlurView.invalidate();
         mBlurView.setVisibility(View.VISIBLE);
         mBlurView.setAlpha(0f);
@@ -1048,7 +952,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 mBlurView.setVisibility(View.VISIBLE);
-                //OR
                 mBlurView.setAlpha(1f);
             }
         });
@@ -1056,7 +959,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         aaPopupWindow.setImageViewAmbientAware((ImageView) findViewById(R.id.image_view_home_ambient_aware));
     }
 
-    public void showNCPopupWindow() {
+    public void showNotConnectedPopupWindow() {
         notConnectedPopupWindow = new NotConnectedPopupWindow(this);
         notConnectedPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -1067,7 +970,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
         });
-        mBlurView.setBlurredView(relative_layout_home_activity);
+        mBlurView.setBlurredView(homeRl);
         mBlurView.invalidate();
         mBlurView.setVisibility(View.VISIBLE);
         mBlurView.setAlpha(0f);
@@ -1079,7 +982,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 mBlurView.setAlpha(1f);
             }
         });
-        notConnectedPopupWindow.showAtLocation(findViewById(R.id.relative_layout_home_activity), Gravity.NO_GRAVITY, 0, 0);
+        notConnectedPopupWindow.showAtLocation(findViewById(R.id.relative_layout_home_root), Gravity.NO_GRAVITY, 0, 0);
     }
 
     private void getDeviceInfo() {
@@ -1088,19 +991,19 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void run() {
                 if (LiveManager.getInstance().isConnected()) {
-                    linearLayoutBattery.setVisibility(View.VISIBLE);
+                    batteryLl.setVisibility(View.VISIBLE);
                     getBleDeviceInfo();
                 } else {
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                         case NONE:
                             break;
                         case Connected_USBDevice:
-                            linearLayoutBattery.setVisibility(View.VISIBLE);
-                            progressBarBattery.setProgress(100);
-                            textViewBattery.setText(getString(R.string.percent_100));
+                            batteryLl.setVisibility(View.VISIBLE);
+                            batteryPb.setProgress(100);
+                            batteryTv.setText(getString(R.string.percent_100));
                             break;
                         case Connected_BluetoothDevice:
-                            linearLayoutBattery.setVisibility(View.VISIBLE);
+                            batteryLl.setVisibility(View.VISIBLE);
                             ANCControlManager.getANCManager(getApplicationContext()).getBatterLevel();
                             homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
                             break;
@@ -1140,16 +1043,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         LiveManager.getInstance().reqDevInfo(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac);
         CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
         LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
-    }
-
-    private void setEqSettingsData() {
-        Band[] bands = new Band[10];
-        for (int i = 0; i < 10; i++) {
-            bands[i] = new Band(1, 3.0f, 32.0f, 1.0f);
-        }
-        CmdEqSettingsSet cmdEqSettingsSet = new CmdEqSettingsSet(4
-                , EnumEqCategory.GRAPHIC_EQ, 1, 64, 0.0f, 0.0f, bands);
-        LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(ConnectStatus.DEVICE_CONNECTED).mac, cmdEqSettingsSet);
     }
 
     private void timeInterval() {
@@ -1225,32 +1118,22 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     break;
                 }
                 case MSG_UPDATE_CUSTOM_EQ: {
-                    relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
+                    eqInfoBarRl.setBackgroundResource(R.drawable.shape_gradient_eq);
                     ((JBLApplication) getApplication()).globalEqInfo.eqOn = true;
                     String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, getApplicationContext(), null);
                     PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, name, getApplicationContext());
                     Logger.d(TAG, "turnOnEq name:" + name);
                     if (name != null) {
-                        textViewCurrentEQ.setText(name);
-                        if (textViewCurrentEQ.getText().length() >= JBLConstant.MAX_MARQUEE_LEN) {
-                            textViewCurrentEQ.setSelected(true);
-                            textViewCurrentEQ.setMarqueeRepeatLimit(-1);
+                        eqNameTv.setText(name);
+                        if (eqNameTv.getText().length() >= JBLConstant.MAX_MARQUEE_LEN) {
+                            eqNameTv.setSelected(true);
+                            eqNameTv.setMarqueeRepeatLimit(-1);
                         }
                     } else {
-                        textViewCurrentEQ.setText(getString(R.string.custom_eq));
+                        eqNameTv.setText(getString(R.string.custom_eq));
                     }
                     break;
                 }
-//                case MSG_CHECK_MY_DEVICE:{
-//                    Logger.i(TAG, "handleMessage MSG_CHECK_DEVICES start");
-//                    Set<String> deviceList = (Set<String>) msg.obj;
-//                    if (hasNewDevice(deviceList)) {
-//                        initDeviceSet();
-//                    }
-//                    updateMyDeviceStatus(deviceList);
-//                    Logger.i(TAG, "handleMessage MSG_CHECK_DEVICES end");
-//                    break;
-//                }
                 case MSG_CHECK_UPDATE: {
                     startCheckingIfUpdateIsAvailable(HomeActivity.this);
                     registerConnectivity();
@@ -1271,17 +1154,17 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void updateBleAAUI(int aaValue) {
         if (aaValue == 0) {
-            checkBoxNoiseCancel.setChecked(false);
-            imageViewAmbientAaware.setTag("0");
-            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+            noiseCancelCb.setChecked(false);
+            ambientAwareIv.setTag("0");
+            ambientAwareIv.setBackgroundResource(R.mipmap.aa_icon_non_active);
         } else if (aaValue == 1) {
-            checkBoxNoiseCancel.setChecked(true);
-            imageViewAmbientAaware.setTag("0");
-            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_non_active);
+            noiseCancelCb.setChecked(true);
+            ambientAwareIv.setTag("0");
+            ambientAwareIv.setBackgroundResource(R.mipmap.aa_icon_non_active);
         } else if (aaValue == 2) {
-            checkBoxNoiseCancel.setChecked(false);
-            imageViewAmbientAaware.setTag("1");
-            imageViewAmbientAaware.setBackgroundResource(R.mipmap.aa_icon_active);
+            noiseCancelCb.setChecked(false);
+            ambientAwareIv.setTag("1");
+            ambientAwareIv.setBackgroundResource(R.mipmap.aa_icon_active);
         }
         if (tutorialAncDialog != null) {
             tutorialAncDialog.updateBleAAUI(aaValue);
@@ -1289,9 +1172,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void updateANC(boolean onOff) {
-        if (checkBoxNoiseCancel != null)
+        if (noiseCancelCb != null) {
             Logger.d(TAG, "update ANC" + onOff);
-        checkBoxNoiseCancel.setChecked(onOff);
+            noiseCancelCb.setChecked(onOff);
+        }
         if (tutorialAncDialog != null) {
             if (!(deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT))) {
@@ -1301,11 +1185,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     public void setEqMenuColor(boolean onOff) {
-        if (relative_layout_home_eq_info != null) {
+        if (eqInfoBarRl != null) {
             if (onOff) {
-                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
+                eqInfoBarRl.setBackgroundResource(R.drawable.shape_gradient_eq);
             } else {
-                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq_off);
+                eqInfoBarRl.setBackgroundResource(R.drawable.shape_gradient_eq_off);
             }
         }
     }
@@ -1315,32 +1199,32 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         switch (index) {
             case 0: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.off), this);
-                textViewCurrentEQ.setText(getString(R.string.off));
-                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq_off);
+                eqNameTv.setText(getString(R.string.off));
+                eqInfoBarRl.setBackgroundResource(R.drawable.shape_gradient_eq_off);
                 break;
             }
             case 1: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.jazz), this);
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.jazz), this);
                 ((JBLApplication) getApplication()).globalEqInfo.eqOn = true;
-                textViewCurrentEQ.setText(getString(R.string.jazz));
-                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
+                eqNameTv.setText(getString(R.string.jazz));
+                eqInfoBarRl.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 2: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.vocal), this);
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.vocal), this);
                 ((JBLApplication) getApplication()).globalEqInfo.eqOn = true;
-                textViewCurrentEQ.setText(getString(R.string.vocal));
-                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
+                eqNameTv.setText(getString(R.string.vocal));
+                eqInfoBarRl.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 3: {
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME, getString(R.string.bass), this);
                 PreferenceUtils.setString(PreferenceKeys.CURR_EQ_NAME_EXCLUSIVE_OFF, getString(R.string.bass), this);
                 ((JBLApplication) getApplication()).globalEqInfo.eqOn = true;
-                textViewCurrentEQ.setText(getString(R.string.bass));
-                relative_layout_home_eq_info.setBackgroundResource(R.drawable.shape_gradient_eq);
+                eqNameTv.setText(getString(R.string.bass));
+                eqInfoBarRl.setBackgroundResource(R.drawable.shape_gradient_eq);
                 break;
             }
             case 4: {
@@ -1354,7 +1238,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
             default:
                 String name = PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, this, null);
-                textViewCurrentEQ.setText(name != null ? name : getString(R.string.off));
+                eqNameTv.setText(name != null ? name : getString(R.string.off));
                 break;
         }
         if (tutorialAncDialog != null) {
@@ -1366,27 +1250,21 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         Logger.d(TAG, "battery value = " + value);
         PreferenceUtils.setInt(PreferenceKeys.BATTERY_VALUE, value, this);
         if (value == 255) {
-            progressBarBattery.setProgress(100);
-            textViewBattery.setText(getString(R.string.percent_100));
-            progressBarBattery.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_not_charge));
+            batteryPb.setProgress(100);
+            batteryTv.setText(getString(R.string.percent_100));
+            batteryPb.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_not_charge));
         } else {
-            progressBarBattery.setProgress(value);
-            textViewBattery.setText(String.format("%s%%", String.valueOf(value)));
+            batteryPb.setProgress(value);
+            batteryTv.setText(String.format("%s%%", String.valueOf(value)));
             if (value > 0 && value <= 15) {
-                progressBarBattery.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_red_charge));
+                batteryPb.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_red_charge));
             } else if (value > 15 && value <= 30) {
-                progressBarBattery.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_orange_charge));
+                batteryPb.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_orange_charge));
             } else if (value > 30) {
-                progressBarBattery.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_not_charge));
+                batteryPb.setProgressDrawable(getResources().getDrawable(R.drawable.horizontal_progress_not_charge));
             }
         }
     }
-
-//    private void updateUSBBattery() {
-//        progressBarBattery.setVisibility(View.INVISIBLE);
-//        textViewBattery.setVisibility(View.INVISIBLE);
-//        textViewBattery.setVisibility(View.INVISIBLE);
-//    }
 
     private void updateFirmwareVersion() {
         audioManager am = AvneraManager.getAvenraManager().getAudioManager();
@@ -1399,7 +1277,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         deviceName = accessoryInfo.getModelNumber();
         AppUtils.setModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext(), deviceName);
         Logger.d(TAG, "modelName : " + accessoryInfo.getModelNumber());
-        updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
+        updateDeviceNameAndImage(deviceName, deviceImage, deviceNameTv);
         String version = accessoryInfo.getFirmwareRev();
         if (version.length() >= 5) {
             Logger.d(TAG, "currentVersion : " + version);
@@ -1408,7 +1286,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         String hardVersion = accessoryInfo.getHardwareRev();
         if (hardVersion.length() >= 5) {
             Logger.d(TAG, "hardVersion : " + hardVersion);
-//                JBLPreferenceUtil.setString(AppUtils.RSRC_VERSION, fwVersion, this);
             PreferenceUtils.setString(AppUtils.getModelNumber(this), PreferenceKeys.RSRC_VERSION, hardVersion, this);
         }
         AnalyticsManager.getInstance().reportFirmwareVersion(hardVersion);
@@ -1605,7 +1482,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 if (objects[0] != null) {
                     byte[] eqBytes = (byte[]) (objects[0]);
                     Logger.d(TAG, "on receive, cmd eq band settings: " + ArrayUtil.toHex(eqBytes));
-                    if (eqBytes != null && eqBytes.length == 48) {
+                    if (eqBytes.length == 48) {
                         Logger.d(TAG, "EqBand value1 = " + Arrays.toString(eqBytes));
                         int[] eqArray = new int[10];
                         eqArray[0] = eqBytes[8];
@@ -1623,7 +1500,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
 //                    homeHandler.sendEmptyMessage(MSG_FIRMWARE_INFO);
                 } else {
-                    //TODO: bes live update eq settings.
                     RetCurrentEQ retCurrentEQ = (RetCurrentEQ) objects[1];
                     if (retCurrentEQ != null) {
                         Logger.d(TAG, "on receive, retCurrentEQ:" + retCurrentEQ.enumEqCategory);
@@ -1661,7 +1537,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             case CMD_ConfigModelNumber: {
                 Logger.d(TAG, "on receive, cmd config model number");
                 AppUtils.setModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext(), deviceName);
-                updateDeviceNameAndImage(deviceName, imageViewDevice, textViewDeviceName);
+                updateDeviceNameAndImage(deviceName, deviceImage, deviceNameTv);
                 break;
             }
             case CMD_AppPushANCEnable: {
@@ -1679,9 +1555,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 Logger.d(TAG, "on receive, cmd anc notification: " + ancValue);
                 PreferenceUtils.setInt(PreferenceKeys.ANC_VALUE, (Integer) objects[0], this);
                 if (ancValue == 1) {
-                    checkBoxNoiseCancel.setChecked(true);
+                    noiseCancelCb.setChecked(true);
                 } else if (ancValue == 0) {
-                    checkBoxNoiseCancel.setChecked(false);
+                    noiseCancelCb.setChecked(false);
                 }
                 break;
             }
