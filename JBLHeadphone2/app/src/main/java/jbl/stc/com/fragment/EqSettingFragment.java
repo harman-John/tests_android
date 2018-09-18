@@ -981,7 +981,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 default:
                     if (LiveManager.getInstance().isConnected()) {
                         //add the ble user Eq code
-                        CmdEqSettingsSet cmdEqSettingsSet = EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq, getActivity());
+                        CmdEqSettingsSet cmdEqSettingsSet = EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq);
                         if (cmdEqSettingsSet != null) {
                             Logger.d(TAG, "cmd eq settings eq: " + ", band count:" + cmdEqSettingsSet.getBand().length + "calib:" + cmdEqSettingsSet.getCalib());
                             LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdEqSettingsSet);
@@ -1092,7 +1092,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                             SharePreferenceUtil.saveCurrentEqSet(JBLApplication.getJBLApplicationContext(), retCurrentEQS, SharePreferenceUtil.BLE_DESIGN_EQ);
                         }
                     } else {
-                        jbl.stc.com.logger.Logger.d(TAG, "retCurrentEQ is null");
+                        Logger.d(TAG, "retCurrentEQ is null");
                     }
                 }
                 break;

@@ -595,7 +595,11 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[designedBands.length];
         for (int i = 0; i < designedBands.length; i++) {
             def_iir_param_t[i] = new IIR_PARAM_T(designedBands[i].type, designedBands[i].gain, designedBands[i].fc, designedBands[i].q);
-            Logger.d(TAG, "get calib, designed eq i: " + i + ":gain" + designedBands[i].gain + ";q:" + designedBands[i].q + ";fc:" + designedBands[i].fc + ";");
+            Logger.d(TAG, "get calib, designed eq i: " + i +
+                    ", type: " + designedBands[i].type +
+                    ", gain:" + designedBands[i].gain +
+                    ", fc:" + designedBands[i].fc +
+                    ", q:" + designedBands[i].q );
         }
 
         Band[] bands = cmdEqSettingsSet.getBand();
@@ -604,7 +608,11 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         IIR_PARAM_T[] user_iir_param_t = new IIR_PARAM_T[bands.length];
         for (int i = 0; i < bands.length; i++) {
             user_iir_param_t[i] = new IIR_PARAM_T(bands[i].type, bands[i].gain, bands[i].fc, bands[i].q);
-            Logger.d(TAG, "get calib, user" + i + ":gain:" + bands[i].gain + ";q:" + bands[i].q);
+            Logger.d(TAG, "get calib, user: " + i +
+                    ", type: " + bands[i].type +
+                    ", gain: " + bands[i].gain +
+                    ", fc: " + bands[i].fc+
+                    ", q: " + bands[i].q );
         }
         Logger.d(TAG, "get calib, calculate calib def length= " + def_iir_param_t.length + "user length:" + user_iir_param_t.length);
         float a = calculateCalib(designerCfg, def_iir_param_t, def_iir_param_t.length, userCfg,

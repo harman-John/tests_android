@@ -496,43 +496,17 @@ public class EQSettingManager implements EqDbKey {
         return equals;
     }
 
-    public CmdEqSettingsSet getBleEqSettingFromEqModel(EQModel eqModel, Context context) {
-        CmdEqSettingsSet cmdEqSettingsSet = null;
-        int packageIndex = 4;
+    public CmdEqSettingsSet getBleEqSettingFromEqModel(EQModel eqModel) {
         int presetIndex = EnumEqPresetIdx.USER.ordinal();
         EnumEqCategory eqCATEGORY = EnumEqCategory.GRAPHIC_EQ;
-        int sampleRate = 0;
-        float gain0 = 0;
-        float gain1 = 0;
-        int bandType = 0;
-        float qValue = 0;
-        List<RetCurrentEQ> retCurrentEQList = SharePreferenceUtil.readCurrentEqSet(context, SharePreferenceUtil.BLE_DESIGN_EQ);
-        if (retCurrentEQList != null && retCurrentEQList.size() > 0) {
-            RetCurrentEQ bleDesignEq = retCurrentEQList.get(0);
-            sampleRate = bleDesignEq.sampleRate;
-            gain0 = bleDesignEq.gain0;
-            gain1 = bleDesignEq.gain1;
-            Band[] bleDesignBands = bleDesignEq.bands;
-            float[] pointX = eqModel.getPointX();
-            float[] pointY = eqModel.getPointY();
-            Band[] bands = new Band[pointX.length];
-            for (int i = 0; i < pointX.length; i++) {
-                bands[i] = new Band(bandType, pointY[i], pointX[i], qValue);
-            }
-            cmdEqSettingsSet = new CmdEqSettingsSet( presetIndex, eqCATEGORY, 0f, sampleRate, gain0, gain1, bands);
-            float calib = DashboardActivity.getDashboardActivity().getCalib(cmdEqSettingsSet);
-            cmdEqSettingsSet.setCalib(calib);
-            bandType = bleDesignBands[0].type;
-            qValue = bleDesignBands[0].q;
-        }
         float[] pointX = eqModel.getPointX();
         float[] pointY = eqModel.getPointY();
-        Logger.d(TAG, "bleEqSetting pointX size:" + pointY.length+"presetIndex:" + presetIndex);
+        Logger.d(TAG, "bleEqSetting pointX size: " + pointY.length+", presetIndex:" + presetIndex);
         Band[] bands = new Band[pointX.length];
         for (int i = 0; i < pointX.length; i++) {
-            bands[i] = new Band(bandType, pointY[i], pointX[i], qValue);
+            bands[i] = new Band(1, pointY[i], pointX[i], 1.0f);
         }
-        cmdEqSettingsSet = new CmdEqSettingsSet(presetIndex, eqCATEGORY, 0f, sampleRate, gain0, gain1, bands);
+        CmdEqSettingsSet cmdEqSettingsSet = new CmdEqSettingsSet(presetIndex, eqCATEGORY, 0f, 48000, 0, 0, bands);
         float calib = DashboardActivity.getDashboardActivity().getCalib(cmdEqSettingsSet);
         cmdEqSettingsSet.setCalib(calib);
 

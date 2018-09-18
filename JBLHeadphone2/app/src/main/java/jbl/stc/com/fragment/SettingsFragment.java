@@ -110,7 +110,9 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
 
         ImageView deviceImage = view.findViewById(R.id.deviceImage);
         deviceImage.setOnClickListener(this);
-        updateDeviceNameAndImage(myDevice.deviceName, deviceImage, (TextView) view.findViewById(R.id.deviceName));
+        if (myDevice != null) {
+            updateDeviceNameAndImage(myDevice.deviceName, deviceImage, (TextView) view.findViewById(R.id.deviceName));
+        }
         toggleVoicePrompt = view.findViewById(R.id.toggleVoicePrompt);
 
         if (myDevice != null && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED) {

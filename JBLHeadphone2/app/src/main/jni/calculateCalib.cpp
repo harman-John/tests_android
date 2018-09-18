@@ -87,7 +87,7 @@ designer_cfg getEq(JNIEnv *env, jobject defObj, jobjectArray defParamObjArray, j
         iir_param_t[i].gain = getFloat(env, clsPArray, objPArray, "mGain", "F");
         iir_param_t[i].fc = getFloat(env, clsPArray, objPArray, "mFc", "F");
         iir_param_t[i].Q = getFloat(env, clsPArray, objPArray, "mQ", "F");
-        LOGD("calculate calibration, i = %d, type = %d, Gain = %f , fc = %d, Q = %f \n", i,iir_param_t[i].type,iir_param_t[i].gain, iir_param_t[i].fc, iir_param_t[i].Q);
+        LOGD("calculate calibration, i = %d, type = %d, Gain = %f , fc = %f, Q = %f \n", i,iir_param_t[i].type,iir_param_t[i].gain, iir_param_t[i].fc, iir_param_t[i].Q);
         iir_cfg_t.param[i] = iir_param_t[i];
     }
     designEQ.eq = iir_cfg_t;
@@ -102,7 +102,9 @@ JNIEXPORT jfloat JNICALL Java_jbl_stc_com_activity_DashboardActivity_calculateCa
     LOGD("calculate calibration, in jni");
     designer_cfg designEQ = getEq(env,defObj,defParamObjArray,def_size);
     designer_cfg userEQ = getEq(env,userObj,userParamObjArray,user_size);
-    return calculateCalib(designEQ,userEQ);
+    float a = calculateCalib(designEQ,userEQ);
+    LOGD("calculate calibration, in jni, a = %f", a);
+    return a;
 }
 #ifdef __cplusplus
 }

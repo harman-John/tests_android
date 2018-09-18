@@ -321,7 +321,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                 if (isContainDefault) {
                     if (isEqualDefault) {
                         List<Integer> eqNameIndexs = new ArrayList<>();
-                        if (eqNameIndexs != null && eqNameModels.size() > 0) {
+                        if (eqNameModels.size() > 0) {
                             for (EQModel eqModel : eqNameModels) {
                                 String[] strs = eqModel.eqName.split(defaultEqName);
                                 eqNameIndexs.add(Integer.valueOf(strs[1]));
@@ -367,7 +367,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
             int mConnectStatus = PreferenceUtils.getInt(JBLConstant.KEY_CONNECT_STATUS, getActivity());
             if (LiveManager.getInstance().isConnected()) {
                 //add the ble user Eq code
-                LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq, getActivity()));
+                LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(currSelectedEq));
             } else {
                 ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
             }

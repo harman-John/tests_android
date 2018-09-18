@@ -133,7 +133,7 @@ public class EqGridViewAdapter extends BaseAdapter implements EqGridView.DragGri
                             int[] eqValueArray = EQSettingManager.get().getValuesFromEQModel(eqModels.get(0));
                             if (LiveManager.getInstance().isConnected()) {
                                 //add the ble user Eq code
-                                LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModels.get(0), context));
+                                LiveManager.getInstance().reqSetEQSettings(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, EQSettingManager.get().getBleEqSettingFromEqModel(eqModels.get(0)));
                             } else {
                                 ANCControlManager.getANCManager(context).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
                             }
