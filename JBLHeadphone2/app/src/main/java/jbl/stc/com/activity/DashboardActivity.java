@@ -584,46 +584,32 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     public float getCalib(CmdEqSettingsSet cmdEqSettingsSet) {
         List<RetCurrentEQ> bleDesignEqs = SharePreferenceUtil.readCurrentEqSet(DashboardActivity.this, SharePreferenceUtil.BLE_DESIGN_EQ);
-        designer_cfg designerCfg = null;
-        IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[10];
-        designer_cfg userCfg = null;
-        IIR_PARAM_T[] user_iir_param_t = new IIR_PARAM_T[10];
-        if (bleDesignEqs != null && bleDesignEqs.size() > 0) {
-            RetCurrentEQ bleDesignEq = bleDesignEqs.get(0);
-            Band[] bands = bleDesignEq.bands;
-            Logger.d(TAG, "cmdEqSettingSet designEq bands size: " + bands.length);
-            designerCfg = new designer_cfg(bleDesignEq.gain0, bleDesignEq.gain1, bands.length, bleDesignEq.sampleRate);
-            def_iir_param_t = new IIR_PARAM_T[bands.length];
-            for (int i = 0; i < bands.length; i++) {
-                def_iir_param_t[i] = new IIR_PARAM_T(bands[i].type, bands[i].gain, bands[i].fc, bands[i].q);
-                Logger.d(TAG, "cmdEqSettingSet def" + i + ":gain" + bands[i].gain + ";q:" + bands[i].q + ";fc:" + bands[i].fc + ";");
-            }
-        } else {
-            Logger.d(TAG, "cmdEqSettingSet designEq is null");
+        if (bleDesignEqs == null || bleDesignEqs.size() <=0){
+            Logger.d(TAG, "get calib, design eq is null");
+            return -1;
+        }
+        RetCurrentEQ bleDesignEq = bleDesignEqs.get(0);
+        Band[] designedBands = bleDesignEq.bands;
+        Logger.d(TAG, "get calib, designEq bands size: " + designedBands.length);
+        designer_cfg designerCfg = new designer_cfg(bleDesignEq.gain0, bleDesignEq.gain1, designedBands.length, bleDesignEq.sampleRate);
+        IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[designedBands.length];
+        for (int i = 0; i < designedBands.length; i++) {
+            def_iir_param_t[i] = new IIR_PARAM_T(designedBands[i].type, designedBands[i].gain, designedBands[i].fc, designedBands[i].q);
+            Logger.d(TAG, "get calib, designed eq i: " + i + ":gain" + designedBands[i].gain + ";q:" + designedBands[i].q + ";fc:" + designedBands[i].fc + ";");
         }
 
         Band[] bands = cmdEqSettingsSet.getBand();
-        Logger.d(TAG, "cmdEqSettingSet bands size: " + bands.length);
-        userCfg = new designer_cfg(cmdEqSettingsSet.getGain0(), cmdEqSettingsSet.getGain1(), bands.length, cmdEqSettingsSet.getSampleRate());
-        user_iir_param_t = new IIR_PARAM_T[bands.length];
+        Logger.d(TAG, "get calib, bands size: " + bands.length);
+        designer_cfg userCfg = new designer_cfg(cmdEqSettingsSet.getGain0(), cmdEqSettingsSet.getGain1(), bands.length, cmdEqSettingsSet.getSampleRate());
+        IIR_PARAM_T[] user_iir_param_t = new IIR_PARAM_T[bands.length];
         for (int i = 0; i < bands.length; i++) {
             user_iir_param_t[i] = new IIR_PARAM_T(bands[i].type, bands[i].gain, bands[i].fc, bands[i].q);
-            Logger.d(TAG, "cmdEqSettingSet user" + i + ":gain:" + bands[i].gain + ";q:" + bands[i].q);
+            Logger.d(TAG, "get calib, user" + i + ":gain:" + bands[i].gain + ";q:" + bands[i].q);
         }
-
-        /*designer_cfg designerCfg = new designer_cfg(0.21f, 0.22f, 1, 40);
-        IIR_PARAM_T[] def_iir_param_t = new IIR_PARAM_T[2];
-        def_iir_param_t[0] = new IIR_PARAM_T(2, 0.25f, 2, 3);
-        def_iir_param_t[1] = new IIR_PARAM_T(3, 0.26f, 3, 4);
-        designer_cfg userCfg = new designer_cfg(0.91f, 0.12f, 3, 20);
-        IIR_PARAM_T[] user_iir_param_t = new IIR_PARAM_T[2];
-        user_iir_param_t[0] = new IIR_PARAM_T(2, 0.15f, 2, 3);
-        user_iir_param_t[1] = new IIR_PARAM_T(4, 0.16f, 1, 2);*/
-
-        Logger.d(TAG, "cmdEqSettingSet calculate calib def length= " + def_iir_param_t.length + "user length:" + user_iir_param_t.length);
+        Logger.d(TAG, "get calib, calculate calib def length= " + def_iir_param_t.length + "user length:" + user_iir_param_t.length);
         float a = calculateCalib(designerCfg, def_iir_param_t, def_iir_param_t.length, userCfg,
                 user_iir_param_t, user_iir_param_t.length);
-        Logger.d(TAG, "calculate calibration, a = " + a);
+        Logger.d(TAG, "get calib, calculate calibration, a = " + a);
         return a;
     }
 

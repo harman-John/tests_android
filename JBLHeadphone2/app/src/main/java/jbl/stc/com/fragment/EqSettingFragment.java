@@ -30,15 +30,21 @@ import android.widget.TextView;
 import com.avnera.smartdigitalheadset.GraphicEQPreset;
 import com.avnera.smartdigitalheadset.LightX;
 import com.avnera.smartdigitalheadset.Logger;
+import com.harman.bluetooth.constants.Band;
+import com.harman.bluetooth.constants.EnumEqCategory;
 import com.harman.bluetooth.constants.EnumEqPresetIdx;
+import com.harman.bluetooth.req.CmdCurrEq;
 import com.harman.bluetooth.req.CmdEqPresetSet;
 import com.harman.bluetooth.req.CmdEqSettingsSet;
+import com.harman.bluetooth.ret.RetCurrentEQ;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import jbl.stc.com.R;
+import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.activity.HomeActivity;
+import jbl.stc.com.activity.JBLApplication;
 import jbl.stc.com.adapter.EqRecyclerAdapter;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.CircleModel;
@@ -53,6 +59,8 @@ import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.utils.EnumCommands;
+import jbl.stc.com.utils.SharePreferenceUtil;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.CustomFontTextView;
 import jbl.stc.com.view.EqualizerShowView;
@@ -122,6 +130,19 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             Logger.d(TAG, "OnCreateView:" + String.valueOf(rawY));
             rootView.setTranslationY(rawY);
             bundle.remove("rawY");
+        }
+        if (LiveManager.getInstance().isConnected()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<RetCurrentEQ> bleDesignEqs = SharePreferenceUtil.readCurrentEqSet(JBLApplication.getJBLApplicationContext(), SharePreferenceUtil.BLE_DESIGN_EQ);
+                    if (bleDesignEqs == null || bleDesignEqs.size() <=0){
+                        jbl.stc.com.logger.Logger.d(TAG, "on create, design eq is null, request again");
+                        CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
+                        LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+                    }
+                }
+            }).start();
         }
         initView();
         initEvent();
@@ -1050,4 +1071,32 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
             }
         }
     };
+
+    @Override
+    public void onReceive(EnumCommands enumCommands, Object... objects) {
+        super.onReceive(enumCommands, objects);
+        switch (enumCommands) {
+            case CMD_GRAPHIC_EQ_PRESET_BAND_SETTINGS: {
+                if (objects[0] == null) {
+                    RetCurrentEQ retCurrentEQ = (RetCurrentEQ) objects[1];
+                    if (retCurrentEQ != null) {
+                        jbl.stc.com.logger.Logger.d(TAG, "on receive, retCurrentEQ:" + retCurrentEQ.enumEqCategory);
+                        Band[] bands = retCurrentEQ.bands;
+                        for (int i = 0; i < bands.length; i++) {
+                            jbl.stc.com.logger.Logger.d(TAG, "on receive, retCurrentEQ:" + i + ":gain:" + bands[i].gain + ";q:" + i + bands[i].q);
+                        }
+                        if (retCurrentEQ.enumEqCategory == EnumEqCategory.DESIGN_EQ) {
+                            //save the designEq
+                            List<RetCurrentEQ> retCurrentEQS = new ArrayList<>();
+                            retCurrentEQS.add(retCurrentEQ);
+                            SharePreferenceUtil.saveCurrentEqSet(JBLApplication.getJBLApplicationContext(), retCurrentEQS, SharePreferenceUtil.BLE_DESIGN_EQ);
+                        }
+                    } else {
+                        jbl.stc.com.logger.Logger.d(TAG, "retCurrentEQ is null");
+                    }
+                }
+                break;
+            }
+        }
+    }
 }
