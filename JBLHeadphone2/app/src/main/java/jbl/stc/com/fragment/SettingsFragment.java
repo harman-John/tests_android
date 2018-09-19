@@ -141,6 +141,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         textViewFwVersion = view.findViewById(R.id.text_view_settings_firmware_version);
         if (hasUpdate) {
             imageViewDownload.setVisibility(View.VISIBLE);
+            textViewFwVersion.setVisibility(View.GONE);
             view.findViewById(R.id.text_view_settings_firmware).setOnClickListener(this);
             view.findViewById(R.id.relative_layout_settings_firmware).setOnClickListener(this);
         } else {
@@ -237,13 +238,11 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.deviceImage: {
-
-                createDeviceImageView(getActivity());
+//                createDeviceImageView(getActivity());
                 break;
             }
             case R.id.image_view_settings_back: {
 //                getActivity().onBackPressed();
-
                 createDeviceImageView(getActivity());
                 break;
             }
