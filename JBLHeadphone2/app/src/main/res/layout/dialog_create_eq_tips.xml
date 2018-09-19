@@ -17,7 +17,6 @@
             android:paddingRight="@dimen/page_padding_right">
 
             <jbl.stc.com.view.CustomFontTextView
-                style="@style/PoppinsMediumTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -45,7 +44,6 @@
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/titleText"
-                style="@style/PoppinsMediumTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/text_margin_top_small"
@@ -56,7 +54,6 @@
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/messageText"
-                style="@style/PoppinsRegularTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

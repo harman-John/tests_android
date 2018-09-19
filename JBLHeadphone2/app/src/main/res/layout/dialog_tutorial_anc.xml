@@ -66,8 +66,6 @@
                     android:id="@+id/image_view_tutorial_dialog_device_image"
                     android:layout_width="240dp"
                     android:layout_height="240dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
                     android:background="@drawable/shape_dashboard_device_circle"
                     android:clickable="false"
                     android:scaleType="fitCenter"
@@ -127,7 +125,7 @@
                     android:id="@+id/relative_layout_tutorial_dialog_ambient_aware"
                     android:layout_width="wrap_content"
                     android:layout_height="128dp"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginStart="30dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     android:visibility="invisible">
@@ -170,51 +168,51 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="@dimen/page_padding_left"
-            android:paddingRight="@dimen/page_padding_right">
+            android:layout_height="match_parent">
+
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_tutorial_dialog_eq"
-                style="@style/PoppinsRegularTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="24dp"
                 android:text="@string/title_eq"
                 android:textColor="@color/white"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <View
                 android:id="@+id/view_dialog_eq_divider"
                 android:layout_width="@dimen/divider_size"
-                android:layout_height="45dp"
+                android:layout_height="27dp"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="13dp"
-                android:layout_marginRight="13dp"
-                android:layout_toRightOf="@+id/text_view_tutorial_dialog_eq"
+                android:layout_marginStart="67dp"
                 android:background="@color/white" />
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_tutorial_dialog_eq_name"
-                style="@style/PoppinsRegularTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/image_button_width_and_height"
-                android:layout_toRightOf="@id/view_dialog_eq_divider"
+                android:layout_marginStart="85dp"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="@string/off"
                 android:textColor="@color/white"
-                android:textSize="20dp" />
+                android:textSize="20sp"
+                android:textStyle="normal" />
 
             <jbl.stc.com.view.AppImageView
                 android:id="@+id/image_view_tutorial_dialog_arrow_up"
                 android:layout_width="@dimen/image_button_width_and_height"
                 android:layout_height="@dimen/image_button_width_and_height"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:layout_marginEnd="22dp"
                 android:rotation="90"
                 android:src="@mipmap/white_arrow_back" />
         </RelativeLayout>
@@ -239,7 +237,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginEnd="28dp"
         android:layout_marginTop="37dp"
-        android:text="skip"
+        android:text="@string/skip"
         android:textColor="@color/white" />
 
     <jbl.stc.com.view.CustomFontTextView
@@ -262,12 +260,12 @@
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="5dp"
-        android:layout_marginStart="12dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginStart="6dp"
         android:visibility="invisible">
 
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_tutorial_dialog_eq_grey"
-            style="@style/PoppinsRegularTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -298,7 +296,6 @@
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/tutorial_firstTimeAddEqTipText"
-                style="@style/PoppinsRegularTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

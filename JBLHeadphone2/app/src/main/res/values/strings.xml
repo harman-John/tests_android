@@ -183,7 +183,7 @@
     <string name="tutorial_tips_one">Tap the right icon to adjust ambient awareness.\n\nNoise cancelling is always on while ambient aware is switched on.</string>
     <string name="tutorial_tips_two">Adjust ambient awareness\nusing presets or sliders.</string>
     <string name="tutorial_tips_three">Enable equalizer by tapping the\nEQ button.</string>
-    <string name="tutorial_tips_four">Turn on equalizer by tapping\nthe EQ button.</string>
+    <string name="tutorial_tips_four">Swipe up or tap the bottom bar to explore equalizer.</string>
     <string name="tutorial_tips_five">Add your own customized EQ\nby tapping the + button.</string>
     <string name="tutorial_tips_six">Tap the line to add the dot to\nadjust your curve.</string>
 
@@ -227,4 +227,5 @@
     <string name="google_assistant_content">Use the action button to talk to your Google Assistant</string>
     <string name="google_assistant_link">Go to Google assistant settings</string>
     <string name="min">min</string>
+    <string name="skip">skip</string>
 </resources>

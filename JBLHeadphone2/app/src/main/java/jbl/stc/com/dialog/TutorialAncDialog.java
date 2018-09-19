@@ -8,10 +8,14 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -363,75 +367,70 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
         }
     }
 
-//    @SuppressLint("ClickableViewAccessibility")
-//    private void showTripleArrowsAnimation() {
-//        final Animation tripleArrowsAnim = AnimationUtils.loadAnimation(JBLApplication.getJBLApplicationContext(), R.anim.anim_triple_up_arrow);
-//        tripleUpArrow.setAnimation(tripleArrowsAnim);
-//        tripleUpArrow.setVisibility(View.VISIBLE);
-//
-//
-////        final GestureDetector gestureDetector = new GestureDetector(gestureListener);
-//        final GestureDetector gestureDetector = new GestureDetector(mActivity, gestureListener);
-//
-//        frameLayoutEqInfo.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                return gestureDetector.onTouchEvent(event);
-//            }
-//
-//        });
-//
-//    }
+    private void showTripleArrowsAnimation() {
+        final Animation tripleArrowsAnim = AnimationUtils.loadAnimation(JBLApplication.getJBLApplicationContext(), R.anim.anim_triple_up_arrow);
+        tripleUpArrow.setAnimation(tripleArrowsAnim);
+        tripleUpArrow.setVisibility(View.VISIBLE);
 
-//    private GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
-//        @Override
-//        public boolean onDown(MotionEvent e) {
-//            return false;
-//        }
-//
-//        @Override
-//        public void onShowPress(MotionEvent e) {
-//
-//        }
-//
-//        @Override
-//        public boolean onSingleTapUp(MotionEvent e) {
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-//            return false;
-//        }
-//
-//        @Override
-//        public void onLongPress(MotionEvent e) {
-//
-//        }
-//
-//        @Override
-//        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-//            if (e1.getY() - e2.getY() > 25 && Math.abs(velocityY) > 25) {
-//                tripleUpArrow.clearAnimation();
-//                tripleUpArrow.setVisibility(View.GONE);
-//                Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
-//                if (fr == null) {
-//                    Logger.i(TAG, "fr is null");
-//                    return false;
-//                }
-//                if (fr instanceof EqSettingFragment) {
-//                    Logger.i(TAG, "fr is already showed");
-//                    return false;
-//                }
-//                DashboardActivity.getDashboardActivity().switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
-//                hideEqInfo();
-//                setTextViewTips(R.string.tutorial_tips_five);
+
+//        final GestureDetector gestureDetector = new GestureDetector(gestureListener);
+        final GestureDetector gestureDetector = new GestureDetector(mActivity, gestureListener);
+
+        frameLayoutEqInfo.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+
+        });
+
+    }
+
+    private GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if (e1.getY() - e2.getY() > 25 && Math.abs(velocityY) > 25) {
+                tripleUpArrow.clearAnimation();
+                tripleUpArrow.setVisibility(View.GONE);
+                Fragment fr = mActivity.getSupportFragmentManager().findFragmentById(R.id.containerLayout);
+                if (fr instanceof EqSettingFragment) {
+                    Logger.i(TAG, "fr is already showed");
+                    return false;
+                }
+                ((HomeActivity)mActivity).switchFragment(new EqSettingFragment(), JBLConstant.SLIDE_FROM_DOWN_TO_TOP);
+                hideEqInfo();
+                setTextViewTips(R.string.tutorial_tips_five);
 //                hideSkip();
-//                showAdd();
-//            }
-//            return false;
-//        }
-//    };
+                showAdd();
+            }
+            return false;
+        }
+    };
 
     @Override
     public void onClick(View v) {
@@ -529,7 +528,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                 }
                 hideEqInfo();
                 setTextViewTips(R.string.tutorial_tips_five);
-                hideSkip();
+//                hideSkip();
                 showAdd();
                 break;
             }
@@ -577,7 +576,7 @@ public class TutorialAncDialog extends Dialog implements View.OnClickListener, S
                     textViewEqName.setVisibility(View.VISIBLE);
                 }
                 setTextViewTips(R.string.tutorial_tips_four);
-                //showTripleArrowsAnimation();
+                showTripleArrowsAnimation();
                 break;
             }
         }

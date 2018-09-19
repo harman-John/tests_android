@@ -136,10 +136,15 @@ public class UnableConnectFragment extends BaseFragment implements View.OnClickL
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                breathLight.stopBreathing();
                 linearLayoutTips.setVisibility(View.VISIBLE);
             }
         }, 2000);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        breathLight.stopBreathing();
     }
 
     @Override

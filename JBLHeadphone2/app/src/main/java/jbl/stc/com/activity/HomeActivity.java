@@ -153,7 +153,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private LinearLayout ll_deviceImage;
     private ImageView deviceImageView;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -654,7 +653,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private void showTutorial() {
         if (UiUtils.isConnected(mConnectStatus, HomeActivity.this)) {
             boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
-            if (!isShowTutorialManyTimes) {
+            if (!false) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
                 Logger.d(TAG, "showTutorial");
                 if (tutorialAncDialog == null) {
@@ -975,23 +974,23 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void getDeviceInfo() {
 
+        if (isFinishing()){
+            Logger.d(TAG,"get device info, is finishing");
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
                 if (LiveManager.getInstance().isConnected()) {
-                    batteryLl.setVisibility(View.VISIBLE);
                     getBleDeviceInfo();
                 } else {
                     switch (DeviceConnectionManager.getInstance().getCurrentDevice()) {
                         case NONE:
                             break;
                         case Connected_USBDevice:
-                            batteryLl.setVisibility(View.VISIBLE);
-                            batteryPb.setProgress(100);
-                            batteryTv.setText(getString(R.string.percent_100));
+                            homeHandler.sendEmptyMessage(MSG_REFLECT_AWARE_BATTERY_STATUS);
                             break;
                         case Connected_BluetoothDevice:
-                            batteryLl.setVisibility(View.VISIBLE);
                             ANCControlManager.getANCManager(getApplicationContext()).getBatterLevel();
                             homeHandler.sendEmptyMessageDelayed(MSG_READ_BATTERY_INTERVAL, timeInterval);
                             break;
@@ -1024,6 +1023,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
         }).start();
 
+    }
+
+    private void updateReflectAwareBatteryStatus(){
+        batteryPb.setProgress(100);
+        batteryTv.setText(getString(R.string.percent_100));
     }
 
     private void getBleDeviceInfo() {
@@ -1134,6 +1138,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 case MSG_GET_DESIGN_EQ: {
                     CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
                     LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+                    break;
+                }
+                case MSG_REFLECT_AWARE_BATTERY_STATUS:{
+                    updateReflectAwareBatteryStatus();
                     break;
                 }
             }
@@ -1577,6 +1585,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
 
     private final static int MSG_GET_DESIGN_EQ = 7;
+    private final static int MSG_REFLECT_AWARE_BATTERY_STATUS = 9;
 
     private void doInBootLoaderMode(boolean isInBootloaderMode) {
         if (isInBootloaderMode) {
