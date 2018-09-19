@@ -108,7 +108,7 @@
     <string name="how_to_pair">how to pair my headphones?</string>
     <string name="advice_four">2. Pause music on your headphones.</string>
     <string name="advice_five">3. Disconnect your product from other Bluetooth device.</string>
-    <string name="advice_six">4. Restart your product</string>
+    <string name="advice_six">4. Restart your product。</string>
     <string name="try_again">Try again</string>
     <string name="turn_on_bluetooth">Turn on Bluetooth</string>
     <string name="turn_on_bluetooth_detail_1">Visit control center and turn on Bluetooth.</string>
@@ -190,8 +190,10 @@
 
     <string name="my_products">My products</string>
     <string name="my_products_tips_zero">We can\'t seem to find your product</string>
-    <string name="my_products_tips_one">1.Make sure your product is paired with your mobile via Bluetooth.\n<b>how to pair my headphones?</b></string>
-    <string name="my_products_tips_three">2.To make sure your headphones are compatible with the app.\n<b>Check the compatible product list bellow:</b></string>
+    <string name="my_products_tips_one">1.Make sure your product is paired with your mobile via Bluetooth.</string>
+    <string name="my_products_tips_how_to_pair">how to pair my headphones?</string>
+    <string name="my_products_tips_two">2.To make sure your headphones are compatible with the app.</string>
+    <string name="my_products_tips_check">Check the compatible product list bellow:</string>
 
     <string name="how_to_pair_tips_zero"><b>Enter Bluetooth pairing mode</b></string>
     <string name="how_to_pair_700_300_100">Press and hold the power button in power off state for 6s, you will see the LED flashes with RED and WHITE alternately.</string>

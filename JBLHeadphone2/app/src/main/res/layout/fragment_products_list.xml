@@ -82,20 +82,44 @@
                             app:layout_constraintTop_toBottomOf="@+id/text_view_product_list_zero" />
 
                         <jbl.stc.com.view.CustomFontTextView
-                            android:id="@+id/text_view_product_tips_three"
+                            android:id="@+id/text_view_product_tips_how_to_pair"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="50dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_marginStart="30dp"
+                            android:textColor="@color/black_4C596B"
+                            android:text="@string/my_products_tips_how_to_pair"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_view_product_list_zero" />
+
+                        <jbl.stc.com.view.CustomFontTextView
+                            android:id="@+id/my_products_tips_two"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginEnd="30dp"
                             android:layout_marginStart="30dp"
                             android:layout_marginTop="15dp"
                             android:textColor="@color/black_4C596B"
-                            android:text="@string/my_products_tips_three"
+                            android:text="@string/my_products_tips_two"
                             android:textSize="16sp"
                             android:textStyle="normal"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/text_view_product_list_tips_two" />
+
+                        <jbl.stc.com.view.CustomFontTextView
+                            android:id="@+id/text_view_product_tips_check"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="50dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_marginStart="30dp"
+                            android:textColor="@color/black_4C596B"
+                            android:text="@string/my_products_tips_check"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
                     </LinearLayout>
                 </TableRow>
 

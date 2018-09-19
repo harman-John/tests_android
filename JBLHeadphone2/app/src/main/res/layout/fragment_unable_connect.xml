@@ -85,58 +85,57 @@
                 android:layout_weight="0.25">
 
                 <jbl.stc.com.view.CustomFontTextView
-                    style="@android:style/TextAppearance.Large"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/advice_three"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    android:textSize="16sp"
+                    android:textStyle="normal"/>
 
                 <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/text_view_unable_advice_three"
-                    style="@android:style/TextAppearance.Large"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:textStyle="bold"
                     android:text="@string/how_to_pair"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_unable_advice_four"
-                style="@android:style/TextAppearance.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:gravity="center_vertical"
                 android:text="@string/advice_four"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textStyle="normal"
+                android:textSize="16sp" />
 
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_unable_advice_five"
-                style="@android:style/TextAppearance.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:gravity="center_vertical"
                 android:text="@string/advice_five"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textStyle="normal"
+                android:textSize="16sp" />
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_unable_advice_two"
-                style="@android:style/TextAppearance.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:gravity="center_vertical"
                 android:text="@string/advice_six"
+                android:textStyle="normal"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

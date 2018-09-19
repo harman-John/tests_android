@@ -17,7 +17,6 @@
         android:orientation="vertical">
 
         <jbl.stc.com.view.CustomFontTextView
-            style="@android:style/TextAppearance.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -52,7 +51,7 @@
                 android:gravity="center"
                 android:text="@string/legal_the"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="normal" />
 
             <jbl.stc.com.view.CustomFontTextView
@@ -62,7 +61,7 @@
                 android:gravity="center"
                 android:text="@string/agree_to_eula"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="normal" />
         </LinearLayout>
 
@@ -92,7 +91,7 @@
                 android:gravity="center"
                 android:text="@string/legal_the"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="normal" />
 
             <jbl.stc.com.view.CustomFontTextView
@@ -102,7 +101,7 @@
                 android:gravity="center"
                 android:text="@string/agree_to_hpp"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="normal" />
         </LinearLayout>
     </LinearLayout>

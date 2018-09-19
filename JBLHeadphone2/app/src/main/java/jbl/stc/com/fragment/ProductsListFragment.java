@@ -21,7 +21,6 @@ import jbl.stc.com.logger.Logger;
 public class ProductsListFragment extends BaseFragment implements View.OnClickListener {
     public static final String TAG = ProductsListFragment.class.getSimpleName();
     private View view;
-    private TextView textViewTipsOne;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,26 +32,10 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
         Logger.d(TAG,"onCreateView");
         view = inflater.inflate(R.layout.fragment_products_list,
                 container, false);
-        textViewTipsOne = view.findViewById(R.id.text_view_product_tips_one);
-        SpannableString spannableString = new SpannableString(getString(R.string.my_products_tips_one));
-        spannableString.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View arg0) {
-                DashboardActivity.getDashboardActivity().switchFragment(new HowToPairNextFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
-            }
+        TextView linkHowToPairTv = view.findViewById(R.id.text_view_product_tips_how_to_pair);
+        linkHowToPairTv.setOnClickListener(this);
+        linkHowToPairTv.getPaint().setUnderlineText(true);
 
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setColor(getResources().getColor(R.color.black_4C596B));
-                ds.setUnderlineText(true);
-                ds.setFakeBoldText(true);
-                ds.clearShadowLayer();
-            }
-
-        }, 67, textViewTipsOne.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textViewTipsOne.setText(spannableString);
-        textViewTipsOne.setMovementMethod(LinkMovementMethod.getInstance());
         view.findViewById(R.id.image_view_close_in_pl).setOnClickListener(this);
         view.findViewById(R.id.image_view_400_in_pl).setOnClickListener(this);
         view.findViewById(R.id.image_view_500_in_pl).setOnClickListener(this);
@@ -119,6 +102,10 @@ public class ProductsListFragment extends BaseFragment implements View.OnClickLi
             case R.id.image_view_reflect_in_pl:{
                 bundle.putString(JBLConstant.DEVICE_MODEL_NAME,JBLConstant.DEVICE_REFLECT_AWARE);
                 break;
+            }
+            case R.id.text_view_product_tips_how_to_pair:{
+                DashboardActivity.getDashboardActivity().switchFragment(new HowToPairNextFragment(),JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+                return;
             }
         }
         UnableConnectFragment unableConnectFragment = new UnableConnectFragment();

@@ -34,7 +34,6 @@
 
     <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/txtConnectMessage"
-        style="@android:style/TextAppearance.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/autoCalimarginTopLess"
@@ -82,7 +81,6 @@
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/txtChangeMessage"
-                style="@android:style/TextAppearance.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -105,7 +103,6 @@
 
     <jbl.stc.com.view.CustomFontTextView
         android:id="@+id/txtCalibrating"
-        style="@android:style/TextAppearance.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
