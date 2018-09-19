@@ -102,7 +102,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
 
         getDeviceInfo();
         registerConnectivity();
-        return view;
+        return attachToSwipeBack(view);
     }
 
     private void setViewCommon(View view) {

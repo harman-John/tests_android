@@ -175,22 +175,22 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         }
         addActivity(this);
         Logger.d(TAG, "onCreate");
-        rootHomeRl = findViewById(R.id.relative_layout_home_root);
+        rootHomeRl = (RelativeLayout) findViewById(R.id.relative_layout_home_root);
         mWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenHeight = dm.heightPixels;
         screenWidth = dm.widthPixels;
         showTutorial();
         generateAAPopupWindow();
-        homeRl = findViewById(R.id.relative_layout_home);
+        homeRl = (RelativeLayout) findViewById(R.id.relative_layout_home);
         findViewById(R.id.image_view_home_back).setOnClickListener(this);
-        deviceImageFl = findViewById(R.id.frame_layout_home_device_image);
+        deviceImageFl = (FrameLayout) findViewById(R.id.frame_layout_home_device_image);
         deviceImageFl.setOnClickListener(this);
-        deviceImage = findViewById(R.id.image_view_home_device_image);
-        deviceNameTv = findViewById(R.id.text_view_home_device_name);
-        eqInfoBarRl = findViewById(R.id.relative_layout_home_eq_info);
+        deviceImage = (ImageView) findViewById(R.id.image_view_home_device_image);
+        deviceNameTv = (TextView) findViewById(R.id.text_view_home_device_name);
+        eqInfoBarRl = (RelativeLayout) findViewById(R.id.relative_layout_home_eq_info);
         eqInfoBarRl.setVisibility(View.VISIBLE);
-        TextView titleEqText = findViewById(R.id.titleEqText);
+        TextView titleEqText = (TextView) findViewById(R.id.titleEqText);
         if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {
             setEqMenuColor(false);
             eqInfoBarRl.setAlpha((float) 0.5);
@@ -200,16 +200,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             findViewById(R.id.image_view_home_settings).setOnClickListener(this);
             findViewById(R.id.arrowUpImage).setOnClickListener(this);
         }
-        eqNameTv = findViewById(R.id.text_view_home_eq_name);
-        batteryLl = findViewById(R.id.linear_layout_home_battery);
-        batteryPb = findViewById(R.id.progress_bar_battery);
-        batteryTv = findViewById(R.id.text_view_battery_level);
-        otaDownloadIv = findViewById(R.id.image_view_ota_download);
+        eqNameTv = (TextView) findViewById(R.id.text_view_home_eq_name);
+        batteryLl = (LinearLayout) findViewById(R.id.linear_layout_home_battery);
+        batteryPb = (ProgressBar) findViewById(R.id.progress_bar_battery);
+        batteryTv = (TextView) findViewById(R.id.text_view_battery_level);
+        otaDownloadIv = (AppImageView) findViewById(R.id.image_view_ota_download);
         otaDownloadIv.setOnClickListener(this);
-        noiseCancelCb = findViewById(R.id.image_view_home_noise_cancel);
-        ambientAwareIv = findViewById(R.id.image_view_home_ambient_aware);
+        noiseCancelCb = (CheckBox) findViewById(R.id.image_view_home_noise_cancel);
+        ambientAwareIv = (ImageView) findViewById(R.id.image_view_home_ambient_aware);
 
-        mBlurView = findViewById(R.id.view_home_blur);
+        mBlurView = (BlurringView) findViewById(R.id.view_home_blur);
 
         deviceName = ProductListManager.getInstance().getSelectDevice(mConnectStatus).deviceName;
         Logger.i(TAG, "on create, device name = " + deviceName);
@@ -245,7 +245,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             if (deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_400BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_500BT)
                     || deviceName.equalsIgnoreCase(JBLConstant.DEVICE_LIVE_FREE_GA)) {
-                CustomFontTextView textViewNoiseCancel = findViewById(R.id.text_view_home_noise_cancle);
+                CustomFontTextView textViewNoiseCancel = (CustomFontTextView) findViewById(R.id.text_view_home_noise_cancle);
                 textViewNoiseCancel.setText(R.string.talkthru);
                 noiseCancelCb.setOnClickListener(this);
                 noiseCancelCb.setBackgroundResource(R.drawable.checkbox_talk_through_selector);
@@ -370,6 +370,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onResume() {
         super.onResume();
+        setSwipeBackEnable(false);
         Intent intent = getIntent();
         String action = intent.getAction();
         Logger.d(TAG, "onResume action =" + action);

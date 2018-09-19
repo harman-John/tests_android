@@ -99,11 +99,11 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     private void initView() {
 
-        imageViewWhitePlus = findViewById(R.id.image_view_dashboard_white_plus);
+        imageViewWhitePlus = (ImageView) findViewById(R.id.image_view_dashboard_white_plus);
         imageViewWhitePlus.setOnClickListener(this);
-        EqArcView viewDelete = findViewById(R.id.delete_view);
+        EqArcView viewDelete = (EqArcView) findViewById(R.id.delete_view);
 
-        gridView = findViewById(R.id.grid_view_dashboard);
+        gridView = (MyDragGridView) findViewById(R.id.grid_view_dashboard);
         myGridAdapter = new MyGridAdapter();
 
         myGridAdapter.setOnDeviceSelectedListener(new MyGridAdapter.OnDeviceItemSelectedListener() {
@@ -209,6 +209,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onRestart() {
         Logger.d(TAG, "on restart");
         super.onRestart();
+        setSwipeBackEnable(false);
         DeviceManager.getInstance(this).setOnRestart();
     }
 

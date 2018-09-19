@@ -29,11 +29,12 @@ import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.swipe.BaseSwipeBackFragment;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.UiUtils;
 
 
-public class BaseFragment extends Fragment implements View.OnTouchListener, AppUSBDelegate,OnRetListener {
+public class BaseFragment extends BaseSwipeBackFragment implements View.OnTouchListener, AppUSBDelegate,OnRetListener {
     protected String TAG;
     protected Context mContext = null;
     protected View rootView;

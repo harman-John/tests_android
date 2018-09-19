@@ -33,6 +33,7 @@ import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.swipe.SwipeBackActivity;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.FirmwareUtil;
@@ -41,7 +42,7 @@ import jbl.stc.com.utils.StatusBarUtil;
 import jbl.stc.com.utils.UiUtils;
 
 
-public class BaseActivity extends FragmentActivity implements AppUSBDelegate, View.OnTouchListener, OnDownloadedListener,OnRetListener, OnConnectStatusListener {
+public class BaseActivity extends SwipeBackActivity implements AppUSBDelegate, View.OnTouchListener, OnDownloadedListener,OnRetListener, OnConnectStatusListener {
     private final static String TAG = BaseActivity.class.getSimpleName() + "aa";
     protected Context mContext;
     public static boolean isOTADoing = false;

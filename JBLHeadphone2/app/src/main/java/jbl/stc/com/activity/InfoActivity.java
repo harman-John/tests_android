@@ -27,7 +27,7 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.text_view_eula).setOnClickListener(this);
         findViewById(R.id.text_view_harman_privacy_policy).setOnClickListener(this);
         findViewById(R.id.image_view_info_back).setOnClickListener(this);
-        TextView textView = findViewById(R.id.text_view_info_app_version);
+        TextView textView = (TextView) findViewById(R.id.text_view_info_app_version);
         PackageInfo packageInfo = null;
         try {
             packageInfo = getPackageManager().getPackageInfo(getPackageName(),0);
@@ -52,6 +52,7 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        setSwipeBackEnable(true);
     }
 
     @Override

@@ -42,15 +42,21 @@ public class VoiceAssistantActivity extends BaseActivity implements View.OnClick
         intView();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setSwipeBackEnable(false);
+    }
+
     private void intView() {
-        tv_goto_smart_assistant = findViewById(R.id.tv_goto_voice_assistant);
+        tv_goto_smart_assistant = (CustomFontTextView) findViewById(R.id.tv_goto_voice_assistant);
         tv_goto_smart_assistant.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         tv_goto_smart_assistant.getPaint().setAntiAlias(true);
         tv_goto_smart_assistant.setOnClickListener(this);
         findViewById(R.id.tv_set_up_later).setOnClickListener(this);
         findViewById(R.id.image_view_back).setOnClickListener(this);
         bluredView = findViewById(R.id.relative_layout_vocie_assistant);
-        mBlurView = findViewById(R.id.view_blur);
+        mBlurView = (BlurringView) findViewById(R.id.view_blur);
         voiceAssistantSettingPopWindow = new VoiceAssistantSettingPopWindow(VoiceAssistantActivity.this);
         voiceAssistantSettingPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override

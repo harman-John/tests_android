@@ -64,7 +64,7 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
         txtConnectMessage = (TextView) findViewById(R.id.txtConnectMessage);
         //txtConnectMessage.setText(Html.fromHtml(getResources().getString(R.string.personalizemessgae)));
         txtConnectMessage.setText(getResources().getString(R.string.personalizemessgae));
-        imageViewBack = findViewById(R.id.image_view_calibration_global_back);
+        imageViewBack = (AppImageView) findViewById(R.id.image_view_calibration_global_back);
         imageViewBack.setOnClickListener(this);
         txthelp = (TextView) findViewById(R.id.txthelp);
         txthelp.setText(getResources().getString(R.string.help));
@@ -73,7 +73,7 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         informationLayout = findViewById(R.id.informationLayout);
         informationLayout.setOnClickListener(this);
-        shadowLayout_start = findViewById(R.id.shadowLayout_start);
+        shadowLayout_start = (ShadowLayout) findViewById(R.id.shadowLayout_start);
         tv_calibratingDone = (AppButton) findViewById(R.id.tv_calibratingDone);
         tv_calibratingDone.setOnClickListener(this);
         shadowLayout = (ShadowLayout) findViewById(R.id.shadowLayout);
@@ -109,6 +109,7 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
     @Override
     public void onResume() {
         super.onResume();
+        setSwipeBackEnable(false);
         setFinishOnTouchOutside(true);
 //        getView().requestFocus();
 //        getView().setOnKeyListener(new View.OnKeyListener() {
