@@ -159,7 +159,7 @@ public class UiUtils {
             return;
         }
         //update device name
-        textViewDeviceName.setText(deviceName);
+        textViewDeviceName.setText(deviceName.toUpperCase());
     }
 
     public static void setDeviceImage(String deviceName, ImageView imageViewDevice) {

@@ -653,7 +653,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private void showTutorial() {
         if (UiUtils.isConnected(mConnectStatus, HomeActivity.this)) {
             boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
-            if (!false) {
+            if (!isShowTutorialManyTimes) {
                 PreferenceUtils.setBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, true, getApplicationContext());
                 Logger.d(TAG, "showTutorial");
                 if (tutorialAncDialog == null) {
