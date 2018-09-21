@@ -13,12 +13,12 @@
         android:paddingRight="@dimen/margin_top_10dp">
 
         <jbl.stc.com.view.CustomFontTextView
+            android:id="@+id/eqTitleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
             android:layout_centerInParent="true"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:text="@string/title_eq_edit" />
 
         <jbl.stc.com.view.AppImageView
@@ -96,7 +96,7 @@
                 android:singleLine="true"
                 android:text="@string/create_eq_default_name"
                 android:textColor="@color/white"
-                android:textSize="14dp" />
+                android:textSize="16sp" />
 
             <jbl.stc.com.view.AppImageView
                 android:id="@+id/addEqOkImage"

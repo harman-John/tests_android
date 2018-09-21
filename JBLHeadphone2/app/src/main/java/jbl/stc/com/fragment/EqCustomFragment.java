@@ -1,5 +1,6 @@
 package jbl.stc.com.fragment;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -85,6 +86,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
         addEqOkImage = (ImageView) rootView.findViewById(R.id.addEqOkImage);
         closeImageView = (ImageView) rootView.findViewById(R.id.closeImageView);
         eqNameEdit = (EditText) rootView.findViewById(R.id.eqNameEdit);
+        eqNameEdit.setTypeface(Typeface.createFromAsset(mContext.getAssets(), JBLConstant.OPEN_SANS_BOLD));
         firstTimeAddEqTipText = (TextView) rootView.findViewById(R.id.firstTimeAddEqTipText);
         eqEditLayout = rootView.findViewById(R.id.eqEditLayout);
         equalizerLayout = rootView.findViewById(R.id.equalizerLayout);
@@ -118,6 +120,7 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
                 //ANCControlManager.getANCManager(getContext()).applyPresetsWithBand(GraphicEQPreset.User, eqValueArray);
             }
         });
+
 
     }
 
@@ -268,6 +271,9 @@ public class EqCustomFragment extends BaseFragment implements View.OnClickListen
 
     private void handlerAddOrModifyEq() {
         String eqName = getNewEqName();
+        if (!eqNameEdit.getText().toString().equals(eqName)) {
+            eqName = eqNameEdit.getText().toString();
+        }
         String updateEqName = currSelectedEq.eqName;
         currSelectedEq = EQSettingManager.get().getEQModelFromValues(currSelectedEq, eqValueArray);
         currSelectedEq.eqName = eqName;

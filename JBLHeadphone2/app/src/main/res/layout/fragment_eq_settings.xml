@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent"
@@ -58,8 +59,7 @@
                         android:gravity="center"
                         android:text="@string/title_eq_setting"
                         android:textColor="#FFFFFF"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp" />
 
                     <jbl.stc.com.view.AppImageView
                         android:id="@+id/addImageView"
@@ -115,13 +115,14 @@
                     <RelativeLayout
                         android:id="@+id/eqEditLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="58dp"
                         android:layout_alignParentBottom="true">
 
                         <jbl.stc.com.view.CustomFontTextView
                             android:id="@+id/text_view_eq_settings_eq_name"
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="@dimen/image_button_width_and_height"
                             android:ellipsize="end"
@@ -129,13 +130,14 @@
                             android:singleLine="true"
                             android:text="@string/create_eq_default_name"
                             android:textColor="#FFFFFF"
-                            android:textSize="20sp"
+                            android:textSize="18sp"
                             android:textStyle="bold" />
 
                         <jbl.stc.com.view.CustomFontTextView
                             android:id="@+id/text_view_eq_name_final"
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="@dimen/image_button_width_and_height"
                             android:ellipsize="end"
@@ -157,13 +159,26 @@
                             android:src="@mipmap/button_edit" />
 
                         <LinearLayout
+                            android:visibility="gone"
                             android:id="@+id/ll_small_circle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
+                            android:layout_centerInParent="true"
+                            android:gravity="center_horizontal|center_vertical"
                             android:layout_toLeftOf="@id/eqEditImage"
                             android:layout_toRightOf="@id/text_view_eq_settings_eq_name"
                             android:orientation="horizontal" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/eqDotView"
+                            android:layout_width="78dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:listSelector="@android:color/transparent"
+                            android:overScrollMode="never"
+                            android:scrollbars="none" />
+
                     </RelativeLayout>
                 </RelativeLayout>
 

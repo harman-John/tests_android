@@ -197,8 +197,7 @@
                     android:gravity="center"
                     android:text="@string/title_eq"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
 
                 <View
                     android:id="@+id/eqDividerView"
@@ -220,8 +219,7 @@
                     android:singleLine="true"
                     android:text="@string/off"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="normal" />
+                    android:textSize="18sp" />
 
                 <jbl.stc.com.view.AppImageView
                     android:id="@+id/arrowUpImage"

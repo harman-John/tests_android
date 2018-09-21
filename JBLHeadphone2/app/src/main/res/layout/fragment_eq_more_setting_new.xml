@@ -19,9 +19,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:text="@string/title_eq_setting" />
 
         <jbl.stc.com.view.AppImageView
@@ -71,7 +70,7 @@
                     android:layout_height="110dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="20dp"
-                    android:textStyle="normal"
+                    android:textStyle="bold"
                     android:background="@drawable/shape_circle_eq_name_bg_normal"
                     android:gravity="center"
                     android:text="@string/jazz"
@@ -88,7 +87,7 @@
                     android:background="@drawable/shape_circle_eq_name_bg_normal"
                     android:gravity="center"
                     android:alpha="0.5"
-                    android:textStyle="normal"
+                    android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="@color/eq_panel_name_text"
                     android:text="@string/vocal"
@@ -110,7 +109,7 @@
                     android:background="@drawable/shape_circle_eq_name_bg_normal"
                     android:gravity="center"
                     android:alpha="0.5"
-                    android:textStyle="normal"
+                    android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="@color/eq_panel_name_text"
                     android:text="@string/bass" />

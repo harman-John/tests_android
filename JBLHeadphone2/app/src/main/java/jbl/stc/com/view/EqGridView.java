@@ -426,14 +426,24 @@ public class EqGridView extends GridView {
         }
     }
 
-    private boolean IsDeleteArea(int x, int y) {
+    private boolean IsDeleteArea(View view, float x, float y) {
 
-        int deleteIconSize = (int) mEqArcView.getWidth()/2;
+        /*int deleteIconSize = (int) mEqArcView.getWidth()/4;
         Logger.d(TAG, "DeleteArea CurrentX:" + x + "DeleteArea CurrentY:" + y + "deleteIconSize:" + deleteIconSize + "screenHeight:" + screenHeight + "screenWidth:" + screenWidth);
         if ((y - UiUtils.dip2px(getContext(),40)) > (screenHeight - deleteIconSize) && (x -UiUtils.dip2px(getContext(),40)) > (screenWidth - deleteIconSize)) {
             return true;
         }
-        return false;
+        return false;*/
+
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        int x1 = location[0];
+        int y1 = location[1];
+        if (x < x1 || x > (x1 + view.getWidth()) || y < y1 || y > (y1 + view.getHeight())) {
+            return false;
+        }
+        return true;
+
 
     }
 
@@ -449,47 +459,45 @@ public class EqGridView extends GridView {
         onSwapItem(moveX, moveY);
 
 
-        int currentY = mRawY ;
-        int currentX = mRawX ;
+        int currentY = mRawY;
+        int currentX = mRawX;
         System.out.println("CurrentY" + currentY + "CurrentX" + currentX);
-        if (IsDeleteArea(currentX, currentY)) {
+        if (IsDeleteArea(mEqArcView, currentX, currentY)) {
             Logger.d(TAG, "IsDeleteArea:True");
-            mIsScaleAnima = true;
-            /*for (int i = 1; i < 4; i++) {
-                mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize - 25 * i);
-                mWindowLayoutParams.height = UiUtils.dip2px(getContext(), mDragLayoutSize - 25 * i);
-                mWindowLayoutParams.x = (int) (mRawX - mWindowLayoutParams.height);
-                mWindowLayoutParams.y = (int) (mRawY - mWindowLayoutParams.height / 2 - mStatusHeight);
-                mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
-            }*/
-            mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize - 80);
+            if (!mIsScaleAnima) {
+                mIsScaleAnima = true;
+            /*mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize - 80);
             mWindowLayoutParams.height = UiUtils.dip2px(getContext(), mDragLayoutSize - 80);
             mWindowLayoutParams.x = (int) (mRawX - mWindowLayoutParams.height);
             mWindowLayoutParams.y = (int) (mRawY - mWindowLayoutParams.height / 2 - mStatusHeight);
             mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
-            mDragImageView.setTextSize(8);
-        }else{
+            mDragImageView.setTextSize(8);*/
+
+                ScaleAnimation scaleAnim = new ScaleAnimation(1.0f, .5f, 1.0f, .5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                TranslateAnimation translateAnim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.25f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.25f);
+                AnimationSet anim = new AnimationSet(false);
+                anim.addAnimation(scaleAnim);
+                anim.addAnimation(translateAnim);
+                anim.setDuration(mScaleMill);
+                anim.setFillAfter(true);
+                mDragImageView.clearAnimation();
+                mDragImageView.startAnimation(anim);
+            }
+
+        } else {
             Logger.d(TAG, "IsDeleteArea:false");
             // ScrollView scroll
             mHandler.post(mScrollRunnable);
             if (mIsScaleAnima) {
                 mIsScaleAnima = false;
-                /*for (int i = 1; i < 4; i++) {
-                    mWindowLayoutParams.width = UiUtils.dip2px(getContext(), (mDragLayoutSize - 75) + 25 * i);
-                    mWindowLayoutParams.height = UiUtils.dip2px(getContext(), (mDragLayoutSize - 75) + 25 * i);
-                    mWindowLayoutParams.x = (int) (mRawX - mWindowLayoutParams.height);
-                    mWindowLayoutParams.y = (int) (mRawY - mWindowLayoutParams.height / 2 - mStatusHeight);
-                    mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams);  //update the location
-                    mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
-                }*/
-
-                mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize);
+                mDragImageView.clearAnimation();
+               /* mWindowLayoutParams.width = UiUtils.dip2px(getContext(), mDragLayoutSize);
                 mWindowLayoutParams.height = UiUtils.dip2px(getContext(), mDragLayoutSize);
                 mWindowLayoutParams.x = (int) (mRawX - mWindowLayoutParams.height);
                 mWindowLayoutParams.y = (int) (mRawY - mWindowLayoutParams.height / 2 - mStatusHeight);
                 mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams);  //update the location
                 mWindowManager.updateViewLayout(mDragLayout, mWindowLayoutParams); // 更新镜像的位置
-                mDragImageView.setTextSize(16);
+                mDragImageView.setTextSize(16);*/
             }
         }
 
@@ -705,7 +713,7 @@ public class EqGridView extends GridView {
         Logger.d(TAG, "moveY:" + String.valueOf(moveY) + "mViewHeight:" + String.valueOf(mViewHeight));
         int currentY = mRawY;
         int currentX = mRawX;
-        if (IsDeleteArea(currentX, currentY)) {
+        if (IsDeleteArea(mEqArcView, currentX, currentY)) {
             //startScaleAnimation();
             if (mIsVibrator) mVibrator.vibrate(50);
             mIsScaleAnima = false;
@@ -713,7 +721,7 @@ public class EqGridView extends GridView {
             removeDragImage();
             mDragAdapter.deleteItem(mDragPosition);
             removeEqArcView();
-        }else{
+        } else {
             mDragAdapter.setHideItem(-1);
             removeDragImage();
             removeEqArcView();

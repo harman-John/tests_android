@@ -1,7 +1,7 @@
 {
   "defaults": [
     {
-      "name": "Off",
+      "name": "OFF",
       "presetIndex": 0,
       "settings": {
         "16000Hz": 0,
@@ -17,7 +17,7 @@
       }
     },
     {
-      "name": "Jazz",
+      "name": "JAZZ",
       "presetIndex": 1,
       "settings": {
         "16000Hz": 4,
@@ -33,7 +33,7 @@
       }
     },
     {
-      "name": "Vocal",
+      "name": "VOCAL",
       "presetIndex": 2,
       "settings": {
         "16000Hz": -1.5,
@@ -49,7 +49,7 @@
       }
     },
     {
-      "name": "Bass",
+      "name": "BASS",
       "presetIndex": 3,
       "settings": {
         "16000Hz": 0,
