@@ -264,12 +264,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         DeviceManager.getInstance(this).setOnActivityResult(requestCode, resultCode);
         Logger.d(TAG, "on activity result, request code is: " + requestCode);
-        switch (requestCode) {
-            case JBLConstant.REQUEST_CODE_INFO_ACTIVITY: {
-                dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
-                break;
-            }
-        }
     }
 
     @Override
@@ -324,7 +318,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_dashboard_white_menu: {
-                startActivityForResult(new Intent(this, InfoActivity.class), JBLConstant.REQUEST_CODE_INFO_ACTIVITY);
+                startActivity(new Intent(this, InfoActivity.class));
                 break;
             }
             case R.id.image_view_dashboard_white_plus: {

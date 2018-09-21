@@ -47,12 +47,6 @@
 
         </activity>
         <activity
-            android:name=".activity.InfoActivityaaaa"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Swipe.Back.NoActionBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
             android:name=".activity.HomeActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme1"
@@ -78,7 +72,6 @@
         <activity
             android:name=".activity.InfoActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Swipe.Back.NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 

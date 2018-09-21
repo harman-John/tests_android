@@ -91,10 +91,13 @@ public class Util {
     }
 
     public static void onPanelReset() {
-        Activity activity = WxSwipeBackActivityManager.getInstance().getPenultimateActivity();
-        if (activity != null) {
-            View decorView = activity.getWindow().getDecorView();
-            ViewCompat.setTranslationX(decorView, 0);
+        int len = WxSwipeBackActivityManager.getInstance().getActivitySize();
+        for (int i =0 ;i <len;i++){
+            Activity activity = WxSwipeBackActivityManager.getInstance().getAllActivity(i);
+            if (activity != null) {
+                View decorView = activity.getWindow().getDecorView();
+                ViewCompat.setTranslationX(decorView, 0);
+            }
         }
     }
 }

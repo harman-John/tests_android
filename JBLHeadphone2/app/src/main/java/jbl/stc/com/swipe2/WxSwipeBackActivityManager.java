@@ -45,5 +45,15 @@ public class WxSwipeBackActivityManager extends ActivityLifecycleCallbacksAdapte
         return mActivityStack.size() >= 2 ? mActivityStack.get(mActivityStack.size() - 2) : null;
     }
 
+    public int getActivitySize() {
+        return mActivityStack.size();
+    }
+
+    public Activity getAllActivity(int i) {
+        if (mActivityStack.size()<1){
+            return null;
+        }
+        return mActivityStack.get(i);
+    }
 
 }

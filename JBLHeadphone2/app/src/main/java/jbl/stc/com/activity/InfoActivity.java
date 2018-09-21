@@ -1,9 +1,11 @@
 package jbl.stc.com.activity;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -22,6 +24,9 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_info);
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
         findViewById(R.id.text_jbl_com).setOnClickListener(this);
         findViewById(R.id.text_view_open_source_license).setOnClickListener(this);
@@ -39,15 +44,6 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
             String version = getString(R.string.app_version) + packageInfo.versionName +"."+ packageInfo.versionCode;
             textView.setText(version);
         }
-    }
-
-    @Override
-    public void onConnectStatus(Object... objects) {
-        super.onConnectStatus(objects);
-        removeAllFragment();
-        setResult(JBLConstant.REQUEST_CODE_INFO_ACTIVITY);
-        finish();
-        overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
     }
 
     @Override
