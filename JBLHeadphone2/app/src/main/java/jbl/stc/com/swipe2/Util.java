@@ -1,5 +1,6 @@
 package jbl.stc.com.swipe2;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.Rect;
 import android.support.v4.view.ViewCompat;
@@ -86,7 +87,7 @@ public class Util {
         Activity activity = WxSwipeBackActivityManager.getInstance().getPenultimateActivity();
         if (activity != null && !activity.isFinishing()) {
             View decorView = activity.getWindow().getDecorView();
-            ViewCompat.setTranslationX(decorView.getRootView(), (decorView.getMeasuredWidth() / 3.0f) * (1 - fraction));
+            ViewCompat.setTranslationX(decorView.getRootView(), (decorView.getMeasuredWidth() / 1.0f) * (1 - fraction));
         }
     }
 
