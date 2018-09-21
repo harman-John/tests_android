@@ -1,25 +1,29 @@
-<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"--><!--android:layout_width="fill_parent"--><!--android:layout_height="fill_parent"--><!--android:fillViewport="true"--><!--android:background="@android:color/white">-->
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<jbl.stc.com.swipe2.WxSwipeBackLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeBackLayout"
     android:layout_width="match_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/gray_dee2e6"
-    android:clickable="true"
-    android:focusable="true">
-
+    android:layout_height="match_parent"
+    app:directionMode="right"
+    app:isSwipeFromEdge="true"
+    app:maskAlpha="180"
+    app:swipeBackFactor="0.5">
 
     <RelativeLayout
-        android:id="@+id/titleBar"
+        android:id="@+id/containerLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_height"
-        android:paddingRight="@dimen/margin_top_10dp">
+        android:layout_height="match_parent"
+        android:background="@color/gray_dee2e6"
+        android:orientation="vertical">
 
         <jbl.stc.com.view.AppImageView
             android:id="@+id/image_view_info_back"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="6dp"
             android:rotation="180"
             android:src="@mipmap/grey_arrow_back" />
 
@@ -27,142 +31,125 @@
             android:id="@+id/deviceImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
+            android:layout_marginTop="18dp"
             android:background="@mipmap/jbl_logo_gray" />
 
-    </RelativeLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/linearLayoutVersion"
-        android:layout_below="@id/titleBar"
-        android:layout_marginTop="32dp"
-        android:fadingEdge="vertical"
-        android:scrollbars="vertical">
-
-
-        <LinearLayout
+        <View
+            android:id="@+id/view_divider_one"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginStart="30dp"
-                android:background="@android:color/white" />
+            android:layout_height="1dp"
+            android:layout_marginTop="98dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
+            android:background="@android:color/white" />
 
 
-            <jbl.stc.com.view.CustomFontTextView
-                android:id="@+id/text_jbl_com"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_item_height"
-                android:drawableEnd="@mipmap/button_right_small"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/settings_item_padding_left"
-                android:paddingEnd="@dimen/settings_item_padding_right"
-                android:text="@string/text_jbl_com"
-                android:textColor="@color/black_4C596B"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+        <jbl.stc.com.view.CustomFontTextView
+            android:id="@+id/text_jbl_com"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:layout_below="@id/view_divider_one"
+            android:drawableEnd="@mipmap/button_right_small"
+            android:gravity="start|center_vertical"
+            android:paddingEnd="@dimen/settings_item_padding_right"
+            android:paddingStart="@dimen/settings_item_padding_left"
+            android:text="@string/text_jbl_com"
+            android:textColor="@color/black_4C596B"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginStart="30dp"
-                android:background="@android:color/white" />
+        <View
+            android:id="@+id/view_divider_two"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/text_jbl_com"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
+            android:background="@android:color/white" />
 
-            <jbl.stc.com.view.CustomFontTextView
-                android:id="@+id/text_view_open_source_license"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_item_height"
-                android:drawableEnd="@mipmap/button_right_small"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/settings_item_padding_left"
-                android:paddingEnd="@dimen/settings_item_padding_right"
-                android:text="@string/text_open_source_license"
-                android:textColor="@color/black_4C596B"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+        <jbl.stc.com.view.CustomFontTextView
+            android:id="@+id/text_view_open_source_license"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:layout_below="@id/view_divider_two"
+            android:drawableEnd="@mipmap/button_right_small"
+            android:gravity="start|center_vertical"
+            android:paddingEnd="@dimen/settings_item_padding_right"
+            android:paddingStart="@dimen/settings_item_padding_left"
+            android:text="@string/text_open_source_license"
+            android:textColor="@color/black_4C596B"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginStart="30dp"
-                android:background="@android:color/white" />
+        <View
+            android:id="@+id/view_divider_three"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/text_view_open_source_license"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
+            android:background="@android:color/white" />
 
-            <jbl.stc.com.view.CustomFontTextView
-                android:id="@+id/text_view_eula"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_item_height"
-                android:drawableEnd="@mipmap/button_right_small"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/settings_item_padding_left"
-                android:paddingEnd="@dimen/settings_item_padding_right"
-                android:text="@string/text_eula"
-                android:textColor="@color/black_4C596B"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+        <jbl.stc.com.view.CustomFontTextView
+            android:id="@+id/text_view_eula"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:layout_below="@id/view_divider_three"
+            android:drawableEnd="@mipmap/button_right_small"
+            android:gravity="start|center_vertical"
+            android:paddingEnd="@dimen/settings_item_padding_right"
+            android:paddingStart="@dimen/settings_item_padding_left"
+            android:text="@string/text_eula"
+            android:textColor="@color/black_4C596B"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginStart="30dp"
-                android:background="@android:color/white" />
+        <View
+            android:id="@+id/view_divider_four"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/text_view_eula"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
+            android:background="@android:color/white" />
 
-            <jbl.stc.com.view.CustomFontTextView
-                android:id="@+id/text_view_harman_privacy_policy"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_item_height"
-                android:drawableEnd="@mipmap/button_right_small"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/settings_item_padding_left"
-                android:paddingEnd="@dimen/settings_item_padding_right"
-                android:text="@string/text_harman_privacy_policy"
-                android:textColor="@color/black_4C596B"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+        <jbl.stc.com.view.CustomFontTextView
+            android:id="@+id/text_view_harman_privacy_policy"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_item_height"
+            android:layout_below="@id/view_divider_four"
+            android:drawableEnd="@mipmap/button_right_small"
+            android:gravity="start|center_vertical"
+            android:paddingEnd="@dimen/settings_item_padding_right"
+            android:paddingStart="@dimen/settings_item_padding_left"
+            android:text="@string/text_harman_privacy_policy"
+            android:textColor="@color/black_4C596B"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginStart="30dp"
-                android:background="@android:color/white" />
-        </LinearLayout>
-    </ScrollView>
+        <View
+            android:id="@+id/view_divider_five"
+            android:layout_width="match_parent"
+            android:layout_below="@id/text_view_harman_privacy_policy"
+            android:layout_height="1dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
+            android:background="@android:color/white" />
 
-    <LinearLayout
-        android:id="@+id/linearLayoutVersion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/margin5dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
 
         <jbl.stc.com.view.CustomFontTextView
             android:id="@+id/text_view_info_app_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="17dp"
             android:gravity="center"
             android:text="@string/app_version"
             android:textColor="@color/black_4C596B"
             android:textStyle="normal" />
-    </LinearLayout>
-
-
-    <FrameLayout
-        android:id="@+id/containerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
-
-</RelativeLayout>
+    </RelativeLayout>
+</jbl.stc.com.swipe2.WxSwipeBackLayout>

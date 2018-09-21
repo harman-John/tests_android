@@ -370,7 +370,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onResume() {
         super.onResume();
-        setSwipeBackEnable(false);
         Intent intent = getIntent();
         String action = intent.getAction();
         Logger.d(TAG, "onResume action =" + action);
@@ -1274,7 +1273,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         AccessoryInfo accessoryInfo = am.getAccessoryStatus();
         PreferenceUtils.setString(PreferenceKeys.PRODUCT, accessoryInfo.getName(), this);
         deviceName = accessoryInfo.getModelNumber();
-        AppUtils.setModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext(), deviceName);
+        AppUtils.setModelNumber(JBLApplication.getJBLApplicationContext(), deviceName);
         Logger.d(TAG, "modelName : " + accessoryInfo.getModelNumber());
         updateDeviceNameAndImage(deviceName, deviceImage, deviceNameTv);
         String version = accessoryInfo.getFirmwareRev();
@@ -1460,7 +1459,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             case CMD_FIRMWARE_VERSION: {
                 Logger.d(TAG, "on receive, cmd firmware version");
                 if (objects[0] != null) {
-                    PreferenceUtils.setString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, (String) objects[0], this);
+                    PreferenceUtils.setString(AppUtils.getModelNumber(JBLApplication.getJBLApplicationContext()), PreferenceKeys.APP_VERSION, (String) objects[0], this);
                     homeHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
                 } else {
                     sendMessageTo(MSG_FIRMWARE_VERSION, -1);

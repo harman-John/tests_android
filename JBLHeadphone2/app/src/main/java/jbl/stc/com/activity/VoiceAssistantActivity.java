@@ -45,7 +45,6 @@ public class VoiceAssistantActivity extends BaseActivity implements View.OnClick
     @Override
     protected void onResume() {
         super.onResume();
-        setSwipeBackEnable(false);
     }
 
     private void intView() {

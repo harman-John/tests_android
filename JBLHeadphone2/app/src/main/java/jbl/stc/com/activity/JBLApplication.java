@@ -16,6 +16,7 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.DatabaseHelper;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.swipe2.WxSwipeBackActivityManager;
 
 
 public class JBLApplication extends Application {
@@ -30,6 +31,7 @@ public class JBLApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        WxSwipeBackActivityManager.getInstance().init(this);
         context = this;
         if(BuildConfig.DEBUG){
             PreferenceUtils.setBoolean(PreferenceKeys.OTA_TEST_URL, true, this);

@@ -55,16 +55,36 @@
         <item name="android:drawablePadding">10dp</item>
         <item name="android:background">@drawable/selector_app_button_background</item>
     </style>
+
     <style name="CustomCheckboxTheme" parent="@android:style/Widget.Holo.CheckedTextView">
         <item name="android:button">@drawable/checkbox_selector</item>
     </style>
+
     <style name="CustomCheckboxThemeAnc" parent="@android:style/Widget.Holo.CheckedTextView">
         <item name="android:button">@drawable/checkbox_anc_selector</item>
         <item name="android:width">60dp</item>
         <item name="android:height">60dp</item>
         <item name="android:gravity">center_horizontal</item>
     </style>
+
     <style name="DialogAnimation">
         <item name="android:windowExitAnimation">@anim/fadeout</item>
+    </style>
+
+    <declare-styleable name="SwipeBackLayout">
+        <attr name="swipeBackFactor" format="float" />
+        <attr name="maskAlpha" format="integer" />
+        <attr name="isSwipeFromEdge" format="boolean" />
+        <attr name="directionMode">
+            <enum name="left" value="1" />
+            <enum name="right" value="2" />
+            <enum name="top" value="4" />
+            <enum name="bottom" value="8" />
+        </attr>
+    </declare-styleable>
+
+    <style name="Theme.Swipe.Back.NoActionBar" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 </resources>

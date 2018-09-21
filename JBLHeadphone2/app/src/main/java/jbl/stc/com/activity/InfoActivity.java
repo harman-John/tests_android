@@ -1,26 +1,27 @@
 package jbl.stc.com.activity;
 
-
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
+
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.legal.LegalApi;
-import jbl.stc.com.utils.EnumCommands;
+
 
 public class InfoActivity extends BaseActivity implements View.OnClickListener {
-    public static final String TAG = InfoActivity.class.getSimpleName();
+
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addActivity(this);
-        setContentView(R.layout.activity_info);
+        setContentView( R.layout.activity_info);
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
         findViewById(R.id.text_jbl_com).setOnClickListener(this);
         findViewById(R.id.text_view_open_source_license).setOnClickListener(this);
@@ -52,7 +53,6 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        setSwipeBackEnable(true);
     }
 
     @Override

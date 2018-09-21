@@ -109,7 +109,6 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
     @Override
     public void onResume() {
         super.onResume();
-        setSwipeBackEnable(false);
         setFinishOnTouchOutside(true);
 //        getView().requestFocus();
 //        getView().setOnKeyListener(new View.OnKeyListener() {

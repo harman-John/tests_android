@@ -29,13 +29,13 @@ class LegalFragment : Fragment(), View.OnClickListener {
 
         var content: String? = null
         try {
-            content = readFile(context.openFileInput(mFile))
+            content = readFile(context!!.openFileInput(mFile))
         } catch (e: Exception) {
             Logger.e(TAG, e.message)
         }
         if (content == null) {
             Logger.e(TAG, "Read legal content from assets $mFile")
-            content = readFile(activity.assets.open(mFile))
+            content = readFile(activity!!.assets.open(mFile))
         }else{
             Logger.e(TAG, "Read legal content from data/data/package name/$mFile")
         }
@@ -63,8 +63,8 @@ class LegalFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.agree_btn -> activity.onBackPressed()
-            R.id.back_btn -> activity.onBackPressed()
+            R.id.agree_btn -> activity!!.onBackPressed()
+            R.id.back_btn -> activity!!.onBackPressed()
         }
     }
 

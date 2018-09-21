@@ -209,7 +209,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onRestart() {
         Logger.d(TAG, "on restart");
         super.onRestart();
-        setSwipeBackEnable(false);
         DeviceManager.getInstance(this).setOnRestart();
     }
 
