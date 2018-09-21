@@ -529,7 +529,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                     setBleAAComand(noiseCancelCb, ambientAwareIv);
                 } else {
                     setANC();
-
+                    timeInterval();
+                    ANCControlManager.getANCManager(getApplicationContext()).getAmbientLeveling();
                 }
                 break;
             }
@@ -1179,6 +1180,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 tutorialAncDialog.setChecked(onOff);
             }
         }
+
     }
 
     public void setEqMenuColor(boolean onOff) {

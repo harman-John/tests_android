@@ -64,6 +64,7 @@
                 android:paddingRight="10dp"
                 android:paddingTop="8dp"
                 android:textStyle="normal"
+                android:textColor="@color/white"
                 android:text="@string/eq_add_first_time_tip"
                 android:visibility="gone" />
         </FrameLayout>

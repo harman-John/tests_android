@@ -504,10 +504,10 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         tv_drageq = new TextView(context);
         WindowManager.LayoutParams dragEqParams = new WindowManager.LayoutParams();
         dragEqParams.gravity = Gravity.CENTER;
-        tv_drageq.setTextSize(20);
+        tv_drageq.setTextSize(18);
         tv_drageq.setTextColor(Color.WHITE);
         tv_drageq.setGravity(Gravity.CENTER);
-        tv_drageq.setTypeface(Typeface.createFromAsset(context.getAssets(), JBLConstant.OPEN_SANS_BOLD));
+        tv_drageq.setTypeface(Typeface.createFromAsset(context.getAssets(), JBLConstant.OPEN_SANS_SEMI_BOLD));
         tv_drageq.setText("EQ");
         ll_eqtext.addView(tv_drageq, dragEqParams);
         mWindowManager.addView(ll_eqtext, mEqWindowLayoutParams);
