@@ -26,7 +26,7 @@ import jbl.stc.com.R;
 
 
 public class SwipeBackVg extends ViewGroup {
-    private static final String TAG = "SwipeBackLayout";
+    private static final String TAG = "SwipeBackVg";
 
     public static final int FROM_LEFT = 1 << 0;
     public static final int FROM_RIGHT = 1 << 1;

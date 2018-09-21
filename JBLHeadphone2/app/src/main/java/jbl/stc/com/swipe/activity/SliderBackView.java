@@ -8,7 +8,7 @@ import android.view.View;
 
 
 public class SliderBackView extends SwipeBackVg {
-    private static final String TAG = "WxSwipeBackLayout";
+    private static final String TAG = "SliderBackView";
 
     public SliderBackView(@NonNull Context context) {
         this(context, null);
