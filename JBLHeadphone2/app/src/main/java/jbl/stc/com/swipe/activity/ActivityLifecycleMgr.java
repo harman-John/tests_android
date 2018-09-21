@@ -1,4 +1,4 @@
-package jbl.stc.com.swipe2;
+package jbl.stc.com.swipe.activity;
 
 
 import android.app.Activity;
@@ -7,18 +7,16 @@ import android.os.Bundle;
 
 import java.util.Stack;
 
-/**
- * Created by GongWen on 17/9/4.
- */
 
-public class WxSwipeBackActivityManager extends ActivityLifecycleCallbacksAdapter {
-    private static final WxSwipeBackActivityManager instance = new WxSwipeBackActivityManager();
+
+public class ActivityLifecycleMgr extends ActivityLifecycle {
+    private static final ActivityLifecycleMgr instance = new ActivityLifecycleMgr();
     private Stack<Activity> mActivityStack = new Stack<>();
 
-    private WxSwipeBackActivityManager() {
+    private ActivityLifecycleMgr() {
     }
 
-    public static WxSwipeBackActivityManager getInstance() {
+    public static ActivityLifecycleMgr getInstance() {
         return instance;
     }
 
@@ -36,11 +34,6 @@ public class WxSwipeBackActivityManager extends ActivityLifecycleCallbacksAdapte
         mActivityStack.remove(activity);
     }
 
-    /**
-     * 获取倒数第二个Activity
-     *
-     * @return
-     */
     public Activity getPenultimateActivity() {
         return mActivityStack.size() >= 2 ? mActivityStack.get(mActivityStack.size() - 2) : null;
     }

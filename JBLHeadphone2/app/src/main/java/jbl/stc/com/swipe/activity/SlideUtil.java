@@ -1,9 +1,7 @@
-package jbl.stc.com.swipe2;
+package jbl.stc.com.swipe.activity;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.Rect;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
@@ -14,37 +12,35 @@ import android.widget.AbsListView;
 import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
 
-/**
- * Created by GongWen on 17/8/25.
- */
 
-public class Util {
+public class SlideUtil {
     public static boolean canViewScrollUp(View mView, float x, float y, boolean defaultValueForNull) {
         if (mView == null || !contains(mView, x, y)) {
             return defaultValueForNull;
         }
-        return ViewCompat.canScrollVertically(mView, -1);
+        return mView.canScrollVertically( -1);
     }
 
     public static boolean canViewScrollDown(View mView, float x, float y, boolean defaultValueForNull) {
         if (mView == null || !contains(mView, x, y)) {
             return defaultValueForNull;
         }
-        return ViewCompat.canScrollVertically(mView, 1);
+        return mView.canScrollVertically( 1);
     }
 
     public static boolean canViewScrollRight(View mView, float x, float y, boolean defaultValueForNull) {
         if (mView == null || !contains(mView, x, y)) {
             return defaultValueForNull;
         }
-        return ViewCompat.canScrollHorizontally(mView, -1);
+        return mView.canScrollHorizontally( -1);
     }
 
     public static boolean canViewScrollLeft(View mView, float x, float y, boolean defaultValueForNull) {
         if (mView == null || !contains(mView, x, y)) {
             return defaultValueForNull;
         }
-        return ViewCompat.canScrollHorizontally(mView, 1);
+
+        return mView.canScrollHorizontally(1);
     }
 
 
@@ -84,20 +80,20 @@ public class Util {
     }
 
     public static void onPanelSlide(float fraction) {
-        Activity activity = WxSwipeBackActivityManager.getInstance().getPenultimateActivity();
+        Activity activity = ActivityLifecycleMgr.getInstance().getPenultimateActivity();
         if (activity != null && !activity.isFinishing()) {
             View decorView = activity.getWindow().getDecorView();
-            ViewCompat.setTranslationX(decorView.getRootView(), (decorView.getMeasuredWidth() / 1.0f) * (1 - fraction));
+            decorView.setTranslationX((decorView.getMeasuredWidth() / 1.0f) * (1 - fraction));
         }
     }
 
     public static void onPanelReset() {
-        int len = WxSwipeBackActivityManager.getInstance().getActivitySize();
+        int len = ActivityLifecycleMgr.getInstance().getActivitySize();
         for (int i =0 ;i <len;i++){
-            Activity activity = WxSwipeBackActivityManager.getInstance().getAllActivity(i);
+            Activity activity = ActivityLifecycleMgr.getInstance().getAllActivity(i);
             if (activity != null) {
                 View decorView = activity.getWindow().getDecorView();
-                ViewCompat.setTranslationX(decorView, 0);
+                decorView.setTranslationX(0);
             }
         }
     }

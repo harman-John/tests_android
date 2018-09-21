@@ -1,14 +1,11 @@
-package jbl.stc.com.swipe2;
+package jbl.stc.com.swipe.activity;
 
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
-/**
- * Created by GongWen on 17/9/4.
- */
 
-public class ActivityLifecycleCallbacksAdapter implements Application.ActivityLifecycleCallbacks {
+public class ActivityLifecycle implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
 

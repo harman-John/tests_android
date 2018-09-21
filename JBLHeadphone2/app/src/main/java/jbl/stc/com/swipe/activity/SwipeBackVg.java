@@ -1,4 +1,4 @@
-package jbl.stc.com.swipe2;
+package jbl.stc.com.swipe.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,11 +24,8 @@ import java.lang.annotation.RetentionPolicy;
 
 import jbl.stc.com.R;
 
-/**
- * Created by GongWen on 17/8/24.
- */
 
-public class SwipeBackLayout extends ViewGroup {
+public class SwipeBackVg extends ViewGroup {
     private static final String TAG = "SwipeBackLayout";
 
     public static final int FROM_LEFT = 1 << 0;
@@ -62,15 +59,15 @@ public class SwipeBackLayout extends ViewGroup {
 
     private int touchedEdge = ViewDragHelper.INVALID_POINTER;
 
-    public SwipeBackLayout(@NonNull Context context) {
+    public SwipeBackVg(@NonNull Context context) {
         this(context, null);
     }
 
-    public SwipeBackLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SwipeBackVg(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SwipeBackLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SwipeBackVg(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
         mDragHelper = ViewDragHelper.create(this, 1f, new DragHelperCallback());
@@ -136,7 +133,7 @@ public class SwipeBackLayout extends ViewGroup {
             width = getWidth();
             height = getHeight();
         }
-        innerScrollView = Util.findAllScrollViews(this);
+        innerScrollView = SlideUtil.findAllScrollViews(this);
     }
 
     @Override
@@ -153,7 +150,7 @@ public class SwipeBackLayout extends ViewGroup {
                 downY = ev.getRawY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (innerScrollView != null && Util.contains(innerScrollView, downX, downY)) {
+                if (innerScrollView != null && SlideUtil.contains(innerScrollView, downX, downY)) {
                     float distanceX = Math.abs(ev.getRawX() - downX);
                     float distanceY = Math.abs(ev.getRawY() - downY);
                     if (mDirectionMode == FROM_LEFT || mDirectionMode == FROM_RIGHT) {
@@ -208,9 +205,9 @@ public class SwipeBackLayout extends ViewGroup {
         public int clampViewPositionHorizontal(View child, int left, int dx) {
             leftOffset = getPaddingLeft();
             if (isSwipeEnabled()) {
-                if (mDirectionMode == FROM_LEFT && !Util.canViewScrollRight(innerScrollView, downX, downY, false)) {
+                if (mDirectionMode == FROM_LEFT && !SlideUtil.canViewScrollRight(innerScrollView, downX, downY, false)) {
                     leftOffset = Math.min(Math.max(left, getPaddingLeft()), width);
-                } else if (mDirectionMode == FROM_RIGHT && !Util.canViewScrollLeft(innerScrollView, downX, downY, false)) {
+                } else if (mDirectionMode == FROM_RIGHT && !SlideUtil.canViewScrollLeft(innerScrollView, downX, downY, false)) {
                     leftOffset = Math.min(Math.max(left, -width), getPaddingRight());
                 }
             }
@@ -221,9 +218,9 @@ public class SwipeBackLayout extends ViewGroup {
         public int clampViewPositionVertical(View child, int top, int dy) {
             topOffset = getPaddingTop();
             if (isSwipeEnabled()) {
-                if (mDirectionMode == FROM_TOP && !Util.canViewScrollUp(innerScrollView, downX, downY, false)) {
+                if (mDirectionMode == FROM_TOP && !SlideUtil.canViewScrollUp(innerScrollView, downX, downY, false)) {
                     topOffset = Math.min(Math.max(top, getPaddingTop()), height);
-                } else if (mDirectionMode == FROM_BOTTOM && !Util.canViewScrollDown(innerScrollView, downX, downY, false)) {
+                } else if (mDirectionMode == FROM_BOTTOM && !SlideUtil.canViewScrollDown(innerScrollView, downX, downY, false)) {
                     topOffset = Math.min(Math.max(top, -height), getPaddingBottom());
                 }
             }

@@ -1,4 +1,4 @@
-package jbl.stc.com.swipe2;
+package jbl.stc.com.swipe.activity;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,22 +7,18 @@ import android.util.AttributeSet;
 import android.view.View;
 
 
-/**
- * Created by GongWen on 17/8/24.
- */
-
-public class WxSwipeBackLayout extends SwipeBackLayout {
+public class SliderBackView extends SwipeBackVg {
     private static final String TAG = "WxSwipeBackLayout";
 
-    public WxSwipeBackLayout(@NonNull Context context) {
+    public SliderBackView(@NonNull Context context) {
         this(context, null);
     }
 
-    public WxSwipeBackLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SliderBackView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WxSwipeBackLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SliderBackView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setSwipeBackListener(defaultSwipeBackListener);
     }
@@ -30,15 +26,13 @@ public class WxSwipeBackLayout extends SwipeBackLayout {
     @Override
     public void setDirectionMode(int direction) {
         super.setDirectionMode(direction);
-//        if (direction != SwipeBackLayout.FROM_LEFT)
-//            throw new IllegalArgumentException("The direction of WxSwipeBackLayout must be FROM_LEFT");
     }
 
     private OnSwipeBackListener defaultSwipeBackListener = new OnSwipeBackListener() {
         @Override
         public void onViewPositionChanged(View mView, float swipeBackFraction, float swipeBackFactor) {
             invalidate();
-            Util.onPanelSlide(swipeBackFraction);
+            SlideUtil.onPanelSlide(swipeBackFraction);
         }
 
         @Override
@@ -46,7 +40,7 @@ public class WxSwipeBackLayout extends SwipeBackLayout {
             if (isEnd) {
                 finish();
             }
-            Util.onPanelReset();
+            SlideUtil.onPanelReset();
         }
     };
 }

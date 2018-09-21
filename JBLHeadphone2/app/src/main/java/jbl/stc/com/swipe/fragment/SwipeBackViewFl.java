@@ -1,4 +1,4 @@
-package jbl.stc.com.swipe;
+package jbl.stc.com.swipe.fragment;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -27,41 +27,22 @@ import java.util.List;
 import jbl.stc.com.R;
 
 
-/**
- * Thx https://github.com/ikew0ng/SwipeBackLayout
- * SwipeBackLayout
- * Created by YoKeyword on 16/4/19.
- */
-public class SwipeBackLayout extends FrameLayout {
-    /**
-     * Edge flag indicating that the left edge should be affected.
-     */
+public class SwipeBackViewFl extends FrameLayout {
+
     public static final int EDGE_LEFT = ViewDragHelper.EDGE_LEFT;
 
-    /**
-     * Edge flag indicating that the right edge should be affected.
-     */
+
     public static final int EDGE_RIGHT = ViewDragHelper.EDGE_RIGHT;
 
     public static final int EDGE_ALL = EDGE_LEFT | EDGE_RIGHT;
 
 
-    /**
-     * A view is not currently being dragged or animating as a result of a
-     * fling/snap.
-     */
+
     public static final int STATE_IDLE = ViewDragHelper.STATE_IDLE;
 
-    /**
-     * A view is currently being dragged. The position is currently changing as
-     * a result of user input or simulated user input.
-     */
     public static final int STATE_DRAGGING = ViewDragHelper.STATE_DRAGGING;
 
-    /**
-     * A view is currently settling into place as a result of a fling or
-     * predefined non-interactive motion.
-     */
+
     public static final int STATE_SETTLING = ViewDragHelper.STATE_SETTLING;
 
     private static final int DEFAULT_SCRIM_COLOR = 0x99000000;
@@ -96,20 +77,17 @@ public class SwipeBackLayout extends FrameLayout {
         MAX, MIN, MED
     }
 
-    /**
-     * The set of listeners to be sent events through.
-     */
     private List<OnSwipeListener> mListeners;
 
-    public SwipeBackLayout(Context context) {
+    public SwipeBackViewFl(Context context) {
         this(context, null);
     }
 
-    public SwipeBackLayout(Context context, AttributeSet attrs) {
+    public SwipeBackViewFl(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SwipeBackLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeBackViewFl(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
         init();
@@ -118,15 +96,8 @@ public class SwipeBackLayout extends FrameLayout {
     private void init() {
         mHelper = ViewDragHelper.create(this, new ViewDragCallback());
         setShadow(R.mipmap.shadow_left, EDGE_LEFT);
-//        setEdgeOrientation(EDGE_LEFT);
     }
 
-    /**
-     * Set scroll threshold, we will close the activity, when scrollPercent over
-     * this value
-     *
-     * @param threshold
-     */
     public void setScrollThresHold(float threshold) {
         if (threshold >= 1.0f || threshold <= 0) {
             throw new IllegalArgumentException("Threshold value should be between 0 and 1.0");
@@ -134,16 +105,6 @@ public class SwipeBackLayout extends FrameLayout {
         mScrollFinishThreshold = threshold;
     }
 
-    /**
-     * Enable edge tracking for the selected edges of the parent view.
-     * The callback's {@link ViewDragHelper.Callback#onEdgeTouched(int, int)} and
-     * {@link ViewDragHelper.Callback#onEdgeDragStarted(int, int)} methods will only be invoked
-     * for edges for which edge tracking has been enabled.
-     *
-     * @param orientation Combination of edge flags describing the edges to watch
-     * @see #EDGE_LEFT
-     * @see #EDGE_RIGHT
-     */
     public void setEdgeOrientation(int orientation) {
         mEdgeFlag = orientation;
         mHelper.setEdgeTrackingEnabled(orientation);
@@ -196,9 +157,6 @@ public class SwipeBackLayout extends FrameLayout {
     public @interface EdgeOrientation {
     }
 
-    /**
-     * Set a drawable used for edge shadow.
-     */
     public void setShadow(Drawable shadow, int edgeFlag) {
         if ((edgeFlag & EDGE_LEFT) != 0) {
             mShadowLeft = shadow;
@@ -208,18 +166,10 @@ public class SwipeBackLayout extends FrameLayout {
         invalidate();
     }
 
-    /**
-     * Set a drawable used for edge shadow.
-     */
     public void setShadow(int resId, int edgeFlag) {
         setShadow(getResources().getDrawable(resId), edgeFlag);
     }
 
-    /**
-     * Add a callback to be invoked when a swipe event is sent to this view.
-     *
-     * @param listener the swipe listener to attach to this view
-     */
     public void addSwipeListener(OnSwipeListener listener) {
         if (mListeners == null) {
             mListeners = new ArrayList<>();
@@ -227,11 +177,6 @@ public class SwipeBackLayout extends FrameLayout {
         mListeners.add(listener);
     }
 
-    /**
-     * Removes a listener from the set of listeners
-     *
-     * @param listener
-     */
     public void removeSwipeListener(OnSwipeListener listener) {
         if (mListeners == null) {
             return;
@@ -240,30 +185,11 @@ public class SwipeBackLayout extends FrameLayout {
     }
 
     public interface OnSwipeListener {
-        /**
-         * Invoke when state change
-         *
-         * @param state flag to describe scroll state
-         * @see #STATE_IDLE
-         * @see #STATE_DRAGGING
-         * @see #STATE_SETTLING
-         */
+
         void onDragStateChange(int state);
 
-        /**
-         * Invoke when edge touched
-         *
-         * @param oritentationEdgeFlag edge flag describing the edge being touched
-         * @see #EDGE_LEFT
-         * @see #EDGE_RIGHT
-         */
         void onEdgeTouch(int oritentationEdgeFlag);
 
-        /**
-         * Invoke when scroll percent over the threshold for the first time
-         *
-         * @param scrollPercent scroll percent of this view
-         */
         void onDragScrolled(float scrollPercent);
     }
 
@@ -453,8 +379,6 @@ public class SwipeBackLayout extends FrameLayout {
         @Override
         public int getViewHorizontalDragRange(View child) {
             if (mFragment != null) {
-                return 1;
-            } else if (mActivity != null && ((SwipeBackActivity) mActivity).swipeBackPriority()) {
                 return 1;
             }
             

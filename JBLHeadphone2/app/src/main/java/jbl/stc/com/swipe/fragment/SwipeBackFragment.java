@@ -1,4 +1,4 @@
-package jbl.stc.com.swipe;
+package jbl.stc.com.swipe.fragment;
 
 import android.app.Activity;
 import android.content.res.TypedArray;
@@ -15,13 +15,9 @@ import android.view.animation.AnimationUtils;
 import jbl.stc.com.R;
 
 
-/**
- * SwipeBackFragment
- * Created by YoKeyword on 16/4/19.
- */
 public class SwipeBackFragment extends Fragment {
-    private static final String SWIPEBACKFRAGMENT_STATE_SAVE_IS_HIDDEN = "SWIPEBACKFRAGMENT_STATE_SAVE_IS_HIDDEN";
-    private SwipeBackLayout mSwipeBackLayout;
+    private static final String FRAGMENT_STATE_SAVE_IS_HIDDEN = "FRAGMENT_STATE_SAVE_IS_HIDDEN";
+    private SwipeBackViewFl mSwipeBackLayout;
     private Animation mNoAnim;
     boolean mLocking = false;
 
@@ -38,7 +34,7 @@ public class SwipeBackFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            boolean isSupportHidden = savedInstanceState.getBoolean(SWIPEBACKFRAGMENT_STATE_SAVE_IS_HIDDEN);
+            boolean isSupportHidden = savedInstanceState.getBoolean(FRAGMENT_STATE_SAVE_IS_HIDDEN);
 
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             if (isSupportHidden) {
@@ -56,15 +52,15 @@ public class SwipeBackFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(SWIPEBACKFRAGMENT_STATE_SAVE_IS_HIDDEN, isHidden());
+        outState.putBoolean(FRAGMENT_STATE_SAVE_IS_HIDDEN, isHidden());
     }
 
     private void onFragmentCreate() {
-        mSwipeBackLayout = new SwipeBackLayout(getActivity());
+        mSwipeBackLayout = new SwipeBackViewFl(getActivity());
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mSwipeBackLayout.setLayoutParams(params);
         mSwipeBackLayout.setBackgroundColor(Color.TRANSPARENT);
-        mSwipeBackLayout.setEdgeOrientation(SwipeBackLayout.EDGE_LEFT);
+        mSwipeBackLayout.setEdgeOrientation(SwipeBackViewFl.EDGE_LEFT);
     }
 
     protected View attachToSwipeBack(View view) {
@@ -72,13 +68,13 @@ public class SwipeBackFragment extends Fragment {
         return mSwipeBackLayout;
     }
 
-    protected View attachToSwipeBack(View view, SwipeBackLayout.EdgeLevel edgeLevel) {
+    protected View attachToSwipeBack(View view, SwipeBackViewFl.EdgeLevel edgeLevel) {
         mSwipeBackLayout.attachToFragment(this, view);
         mSwipeBackLayout.setEdgeLevel(edgeLevel);
         return mSwipeBackLayout;
     }
 
-    protected void setEdgeLevel(SwipeBackLayout.EdgeLevel edgeLevel) {
+    protected void setEdgeLevel(SwipeBackViewFl.EdgeLevel edgeLevel) {
         mSwipeBackLayout.setEdgeLevel(edgeLevel);
     }
 
@@ -106,8 +102,8 @@ public class SwipeBackFragment extends Fragment {
     }
 
     private void initFragmentBackground(View view) {
-        if (view instanceof SwipeBackLayout) {
-            View childView = ((SwipeBackLayout) view).getChildAt(0);
+        if (view instanceof SwipeBackViewFl) {
+            View childView = ((SwipeBackViewFl) view).getChildAt(0);
             setBackground(childView);
         } else {
             setBackground(view);
@@ -116,16 +112,8 @@ public class SwipeBackFragment extends Fragment {
 
     private void setBackground(View view) {
         if (view != null && view.getBackground() == null) {
-            int defaultBg = 0;
-            if (_mActivity instanceof SwipeBackActivity) {
-                defaultBg = ((SwipeBackActivity) _mActivity).getDefaultFragmentBackground();
-            }
-            if (defaultBg == 0) {
-                int background = getWindowBackground();
-                view.setBackgroundResource(background);
-            } else {
-                view.setBackgroundResource(defaultBg);
-            }
+            int background = getWindowBackground();
+            view.setBackgroundResource(background);
         }
     }
 
@@ -146,7 +134,7 @@ public class SwipeBackFragment extends Fragment {
         return background;
     }
 
-    public SwipeBackLayout getSwipeBackLayout() {
+    public SwipeBackViewFl getSwipeBackLayout() {
         return mSwipeBackLayout;
     }
 

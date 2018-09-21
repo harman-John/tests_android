@@ -33,7 +33,6 @@ import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.ota.CheckUpdateAvailable;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
-import jbl.stc.com.swipe.SwipeBackActivity;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.FirmwareUtil;
