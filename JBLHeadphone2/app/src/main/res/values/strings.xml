@@ -128,10 +128,10 @@
     <string name="taking_longer_time">Connecting with headphone is taking time. Please wait&#8230;</string>
     <string name="timeout">Headphone is not responding because of slow phone, Please wait&#8230;</string>
 
-    <string name="off">Off</string>
-    <string name="jazz">Jazz</string>
-    <string name="vocal">Vocal</string>
-    <string name="bass">Bass</string>
+    <string name="off">OFF</string>
+    <string name="jazz">JAZZ</string>
+    <string name="vocal">VOCAL</string>
+    <string name="bass">BASS</string>
     <string name="custom_eq">Custom EQ</string>
 
 

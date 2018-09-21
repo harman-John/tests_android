@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -45,6 +46,7 @@ import jbl.stc.com.R;
 import jbl.stc.com.activity.DashboardActivity;
 import jbl.stc.com.activity.HomeActivity;
 import jbl.stc.com.activity.JBLApplication;
+import jbl.stc.com.adapter.EqDotAdapter;
 import jbl.stc.com.adapter.EqRecyclerAdapter;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.CircleModel;
@@ -82,6 +84,8 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private ImageView addImageView;
     private RecyclerView eqRecycleView;
     public static EqRecyclerAdapter eqAdapter;
+    private RecyclerView eqDotView;
+    private EqDotAdapter eqDotAdapter;
     private LinearLayout frameLayout;
     public static List<EQModel> eqModelList = new ArrayList<>();
     private EQModel currSelectedEq;
@@ -112,6 +116,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private boolean isShownFinal = false;
     private float dValue;
     private int mConnectStatus;
+    private int lastEqIndex = 3;
 
 
     @Override
@@ -136,7 +141,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                 @Override
                 public void run() {
                     List<RetCurrentEQ> bleDesignEqs = SharePreferenceUtil.readCurrentEqSet(JBLApplication.getJBLApplicationContext(), SharePreferenceUtil.BLE_DESIGN_EQ);
-                    if (bleDesignEqs == null || bleDesignEqs.size() <=0){
+                    if (bleDesignEqs == null || bleDesignEqs.size() <= 0) {
                         jbl.stc.com.logger.Logger.d(TAG, "on create, design eq is null, request again");
                         CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
                         LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
@@ -171,6 +176,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void initView() {
+        CustomFontTextView eqTitleTextView = rootView.findViewById(R.id.eqTitleTextView);
         titleBar = rootView.findViewById(R.id.titleBar);
         equalizerView = rootView.findViewById(R.id.equalizerView);
         equalizerLineView = rootView.findViewById(R.id.equalizerLineView);
@@ -191,6 +197,12 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         frameLayout = rootView.findViewById(R.id.frameLayout);
         frameLayout.setOnClickListener(this);
         rootView.findViewById(R.id.rl_eqRecycleView).setOnClickListener(this);
+        eqDotView = rootView.findViewById(R.id.eqDotView);
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        eqDotView.setLayoutManager(manager);
+        eqDotAdapter = new EqDotAdapter();
+        eqDotView.setAdapter(eqDotAdapter);
     }
 
     private void initEvent() {
@@ -631,6 +643,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void initValue() {
+        eqDotView.scrollToPosition(0);
         List<EQModel> eqModels = EQSettingManager.get().getCompleteEQList(mContext);
         eqModelList.clear();
         eqModelList.addAll(eqModels);
@@ -698,7 +711,31 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         smoothToPosition();
 
         //create the cicle view under the EqualizerShowView
-        createCircleView();
+        //createCircleView();
+
+        createDotView();
+    }
+
+    private void createDotView() {
+        int padding = UiUtils.dip2px(getActivity(), 12);
+        if (eqModelList.size() > 7) {
+            eqDotAdapter.setEqModels(eqModelList, currSelectedEqIndex);
+            if (currSelectedEqIndex > 3) {
+                if (currSelectedEqIndex > lastEqIndex) {
+                    eqDotView.smoothScrollBy((currSelectedEqIndex - lastEqIndex) * padding, 0);
+                } else {
+                    if (currSelectedEqIndex <= eqModelList.size() - 4) {
+                        eqDotView.smoothScrollBy((currSelectedEqIndex - lastEqIndex) * padding, 0);
+                    }
+                }
+                lastEqIndex = currSelectedEqIndex;
+            } else {
+                eqDotView.scrollToPosition(0);
+                lastEqIndex = 3;
+            }
+        } else {
+            eqDotAdapter.setEqModels(eqModelList, currSelectedEqIndex);
+        }
     }
 
     private void createCircleView() {
@@ -709,15 +746,17 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         if (eqModelList.size() > 6) {
             int ll_width = (circleNum + circleNum - 1) * width;
             RelativeLayout.LayoutParams ll_params = new RelativeLayout.LayoutParams(ll_width, width);
-            if (currSelectedEqIndex < 3) {
+            /*if (currSelectedEqIndex < 6) {
                 ll_params.leftMargin = (int) (screenWidth - ll_width) / 2;
                 ll_params.rightMargin = (int) (screenWidth - ll_width) / 2;
             } else {
-                ll_params.leftMargin = (int) (screenWidth - ll_width) / 2 - (currSelectedEqIndex - 3) * width;
-                ll_params.rightMargin = (int) (screenWidth - ll_width) / 2 + (currSelectedEqIndex - 3) * width;
-            }
-            ll_params.topMargin = (int) (UiUtils.dip2px(getActivity(), 45) - UiUtils.dip2px(getActivity(), 6)) / 2;
-            ll_params.bottomMargin = (int) (UiUtils.dip2px(getActivity(), 45) - UiUtils.dip2px(getActivity(), 6)) / 2;
+                ll_params.leftMargin = (int) (screenWidth - ll_width) / 2 - (currSelectedEqIndex - 6) * 1;
+                ll_params.rightMargin = (int) (screenWidth - ll_width) / 2 + (currSelectedEqIndex - 6) * 1;
+            }*/
+            ll_params.leftMargin = (int) (screenWidth - ll_width) / 2;
+            ll_params.rightMargin = (int) (screenWidth - ll_width) / 2;
+            ll_params.topMargin = (int) (UiUtils.dip2px(getActivity(), 58) - UiUtils.dip2px(getActivity(), 6)) / 2;
+            ll_params.bottomMargin = (int) (UiUtils.dip2px(getActivity(), 58) - UiUtils.dip2px(getActivity(), 6)) / 2;
             ll_small_circle.setLayoutParams(ll_params);
             for (int i = 0; i < circleNum; i++) {
                 ImageView imageView = new ImageView(getActivity());
@@ -830,7 +869,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                     }
                 }
                 ll_small_circle.addView(imageView, params);
+
             }
+
         } else {
             circleNum = eqModelList.size();
             int ll_width = (circleNum + circleNum - 1) * width;
@@ -904,6 +945,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
 
     private void onEqNameSelected(int eqIndex, boolean fromUser) {
         Logger.d(TAG, "onEqNameSelected eqIndex is " + eqIndex);
+        if (eqIndex < 0 || eqIndex > eqModelList.size() - 1) {
+            return;
+        }
         currSelectedEq = eqModelList.get(eqIndex);
         currSelectedEqIndex = eqIndex;
         eqNameText.setText(currSelectedEq.eqName);
@@ -940,7 +984,8 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         mHandler.removeCallbacks(applyRunnable);
         mHandler.postDelayed(applyRunnable, 300);
 
-        createCircleView();
+        //createCircleView();
+        createDotView();
     }
 
     /**
@@ -1047,6 +1092,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
     private OnCustomEqListener onCustomEqListener = new OnCustomEqListener() {
         @Override
         public void onCustomEqResult(EQModel model, boolean isAdd) {
+            lastEqIndex = 0;
             if (model != null) {
                 if (!isAdd) {//modify
                     currSelectedEq = eqModelList.get(currSelectedEqIndex);
@@ -1063,9 +1109,10 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                     currSelectedEq.value_16000 = model.value_16000;
                     onEqNameSelected(currSelectedEqIndex, false);
                 } else {//add new
-                    int addIndex = eqModelList.size() - 1;
-                    eqModelList.add(addIndex, model);
-                    onEqNameSelected(addIndex, false);
+                    //int addIndex = eqModelList.size() - 1;
+                    //eqModelList.add( model);
+                    //onEqNameSelected( eqModelList.size() - 1, false);
+                    initValue();
                 }
                 smoothToPosition();
             }
