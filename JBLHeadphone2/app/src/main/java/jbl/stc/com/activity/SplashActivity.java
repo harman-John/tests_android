@@ -10,12 +10,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.ViewSwitcher;
 
 import com.avnera.smartdigitalheadset.Logger;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.fragment.LegalFragment;
 import jbl.stc.com.fragment.LegalLandingFragment;
 import jbl.stc.com.listener.DismissListener;
 import jbl.stc.com.manager.AnalyticsManager;
@@ -41,27 +43,36 @@ public class SplashActivity extends FragmentActivity implements SurfaceHolder.Ca
         super.onCreate(savedInstanceState);
         Logger.d(TAG,"onCreate");
         setContentView(R.layout.activity_splash);
-
-
         mPreview = findViewById(R.id.videoHolder);
         viewSwitcher = findViewById(R.id.viewswicther);
-        viewSwitcher.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                boolean isShowJBLBrandManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_JBL_BRAND_FIRST_TIME,SplashActivity.this);
-                if (!isShowJBLBrandManyTimes){
-                    //TODO: show JBL Brand related story.
-                    PreferenceUtils.setBoolean(PreferenceKeys.SHOW_JBL_BRAND_FIRST_TIME, true, getApplicationContext());
-                    viewSwitcher.showNext();
-                    holder = mPreview.getHolder();
-                    holder.addCallback(SplashActivity.this);
-                    isNeedToPlayed = true;
-                    playVideo(holder);
-                }else {
+        boolean isShowJBLBrandManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_JBL_BRAND_FIRST_TIME,SplashActivity.this);
+        if (!isShowJBLBrandManyTimes) {
+            findViewById(R.id.relative_layout_jbl).setVisibility(View.GONE);
+            viewSwitcher.post(new Runnable() {
+                @Override
+                public void run() {
+                    boolean isShowJBLBrandManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_JBL_BRAND_FIRST_TIME,SplashActivity.this);
+                    if (!isShowJBLBrandManyTimes){
+                        //TODO: show JBL Brand related story.
+                        PreferenceUtils.setBoolean(PreferenceKeys.SHOW_JBL_BRAND_FIRST_TIME, true, getApplicationContext());
+                        viewSwitcher.showNext();
+                        holder = mPreview.getHolder();
+                        holder.addCallback(SplashActivity.this);
+                        isNeedToPlayed = true;
+                        playVideo(holder);
+                    }
+                }
+            });
+        }else{
+            findViewById(R.id.relative_layout_jbl).setVisibility(View.VISIBLE);
+            viewSwitcher.postDelayed(new Runnable() {
+                @Override
+                public void run() {
                     showLegalFragment();
                 }
-            }
-        }, 1500);
+            },1500);
+        }
+
     }
 
     @Override
@@ -107,6 +118,15 @@ public class SplashActivity extends FragmentActivity implements SurfaceHolder.Ca
         }else{
             showDashBoard();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.relative_layout_splash);
+        if (fr instanceof LegalLandingFragment) {
+            return;
+        }
+        super.onBackPressed();
     }
 
     private void showDashBoard(){
