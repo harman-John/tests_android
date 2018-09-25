@@ -16,16 +16,16 @@
         <attr name="clockwise" format="boolean" />
         <attr name="thumb1_start" format="integer" />
         <attr name="thumb2_start" format="integer" />
-        <attr name="thumb1_radius" format="dimension"></attr>
-        <attr name="thumb2_radius" format="dimension"></attr>
-        <attr name="thumb1_text" format="dimension"></attr>
-        <attr name="thumb2_text" format="dimension"></attr>
-        <attr name="controller_width" format="dimension"></attr>
-        <attr name="controller_height" format="dimension"></attr>
+        <attr name="thumb1_radius" format="dimension" />
+        <attr name="thumb2_radius" format="dimension" />
+        <attr name="thumb1_text" format="dimension" />
+        <attr name="thumb2_text" format="dimension" />
+        <attr name="controller_width" format="dimension" />
+        <attr name="controller_height" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="SeekArcTheme">
-        <attr name="seekArcStyle" format="reference"></attr>
+        <attr name="seekArcStyle" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="SwipeLayout">
@@ -46,28 +46,28 @@
         <attr name="clickToClose" format="boolean" />
     </declare-styleable>
     <declare-styleable name="XEditText">
-        <attr name="x_separator" format="string"/>
-        <attr name="x_customizeMarkerEnable" format="boolean"/>
-        <attr name="x_iOSStyleEnable" format="boolean"/>
-        <attr name="x_disableEmoji" format="boolean"/>
+        <attr name="x_separator" format="string" />
+        <attr name="x_customizeMarkerEnable" format="boolean" />
+        <attr name="x_iOSStyleEnable" format="boolean" />
+        <attr name="x_disableEmoji" format="boolean" />
         <attr name="x_showMarkerTime">
-            <enum name="after_input" value="0"/>
-            <enum name="before_input" value="1"/>
-            <enum name="always" value="2"/>
+            <enum name="after_input" value="0" />
+            <enum name="before_input" value="1" />
+            <enum name="always" value="2" />
         </attr>
     </declare-styleable>
     <declare-styleable name="WaveView">
-        <attr name="wave_color" format="color"/>
-        <attr name="wave_coreImageRadius" format="integer"/>
-        <attr name="wave_width" format="integer"/>
+        <attr name="wave_color" format="color" />
+        <attr name="wave_coreImageRadius" format="integer" />
+        <attr name="wave_width" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="DragGridView">
-        <attr name="drag_scale" format="float"/>
-        <attr name="scale_mill" format="integer"/>
-        <attr name="drag_start_position" format="integer"/>
-        <attr name="drag_last_position" format="boolean"/>
-        <attr name="vibrator" format="boolean"/>
+        <attr name="drag_scale" format="float" />
+        <attr name="scale_mill" format="integer" />
+        <attr name="drag_start_position" format="integer" />
+        <attr name="drag_last_position" format="boolean" />
+        <attr name="vibrator" format="boolean" />
     </declare-styleable>
     <declare-styleable name="EqualizerAddView">
         <attr name="show_type">
@@ -76,22 +76,22 @@
         </attr>
     </declare-styleable>
     <declare-styleable name="BlurringView">
-        <attr name="blurRadius" format="integer"/>
-        <attr name="downsampleFactor" format="integer"/>
-        <attr name="overlayColor" format="color"/>
+        <attr name="blurRadius" format="integer" />
+        <attr name="downsampleFactor" format="integer" />
+        <attr name="overlayColor" format="color" />
     </declare-styleable>
     <declare-styleable name="ShaderView">
-        <attr name="drawableColor" format="color"/>
-        <attr name="shaderColor" format="color"/>
-        <attr name="text" format="string"/>
+        <attr name="drawableColor" format="color" />
+        <attr name="shaderColor" format="color" />
+        <attr name="text" format="string" />
     </declare-styleable>
 
     <declare-styleable name="ShadowLayout">
-        <attr name="shape" format="string"/>
+        <attr name="shape" format="string" />
     </declare-styleable>
 
     <declare-styleable name="EqArcView">
-        <attr name="color" format="color"/>
-        <attr name="drawable" format="reference"/>
+        <attr name="color" format="color" />
+        <attr name="drawable" format="reference" />
     </declare-styleable>
 </resources>

@@ -172,6 +172,8 @@ public class ANCController extends SurfaceView {
                         mIsClicked = false;
                         //Don't forget to turn isAnimationRunning = false before return;
                         isAnimationRunning = false;
+                        setProgress(rightProgress,false);
+                        setProgress(rightProgress,true);
                         return;
 
                     }
@@ -192,6 +194,9 @@ public class ANCController extends SurfaceView {
                         mIsClicked = false;
                         //Don't forget to turn isAnimationRunning = false before return;
                         isAnimationRunning = false;
+
+                        setProgress(rightProgress,false);
+                        setProgress(rightProgress,true);
                         return;
 
                     }
@@ -224,6 +229,9 @@ public class ANCController extends SurfaceView {
                         mIsClicked = false;
                         //Don't forget to turn isAnimationRunning = false before return;
                         isAnimationRunning = false;
+
+                        setProgress(rightProgress,false);
+                        setProgress(rightProgress,true);
                         return;
 
                     }

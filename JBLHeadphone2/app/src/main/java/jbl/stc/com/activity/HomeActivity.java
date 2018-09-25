@@ -424,21 +424,20 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
 
-        if ((fr != null) && fr instanceof EqSettingFragment) {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        if (fr == null || count <= 1) {
             DeviceManager.getInstance(this).setOnRetListener(this);
             LiveManager.getInstance().setOnConnectStatusListener(this);
             LiveManager.getInstance().setOnRetListener(this);
+        }
+
+        if ((fr != null) && fr instanceof EqSettingFragment) {
             if (LiveManager.getInstance().isConnected()) {
                 CmdDevStatus reqDevStatus = new CmdDevStatus(EnumDeviceStatusType.ALL_STATUS);
                 LiveManager.getInstance().reqDevStatus(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, reqDevStatus);
             } else {
                 ANCControlManager.getANCManager(getApplicationContext()).getCurrentPreset();
             }
-        }
-        if (fr == null) {
-            DeviceManager.getInstance(this).setOnRetListener(this);
-            LiveManager.getInstance().setOnConnectStatusListener(this);
-            LiveManager.getInstance().setOnRetListener(this);
         }
 
     }

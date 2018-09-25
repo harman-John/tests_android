@@ -756,7 +756,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
 
     @Override
     public void lightXAppReceivedPush(final LightX lightX, final Command command, final byte[] data) {
-        Logger.d(TAG, "lightX app received push command " + command + ", buffer " + (data == null ? "is null" : "contains " + data.length + " bytes"));
+        Logger.d(TAG, "lightX app received push command " + command + ", buffer " + (data == null ? "is null" : "contains " + data.length + " bytes, donSendCallback: " + donSendCallback));
         if (mLightX != null) {
             switch (command) {
                 case AppPushANCAwarenessPreset: {
@@ -764,25 +764,36 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 }
                 break;
             }
-            if (!donSendCallback) {
-                mContext.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (onRetListener != null) {
-                            switch (command) {
-                                case AppPushANCEnable:
+
+//            if (donSendCallback) {
+//                Logger.d(TAG, "lightX app received push command, no need to send push call back.");
+//                return;
+//            }
+            mContext.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (onRetListener != null) {
+                        switch (command) {
+                            case AppPushANCEnable:
+                                try {
                                     int intValue = Utility.getInt(data, 0);
                                     onRetListener.onReceive(EnumCommands.CMD_ANC_NOTIFICATION, intValue);
-                                    break;
-                                case AppPushANCAwarenessPreset: {
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                                break;
+                            case AppPushANCAwarenessPreset: {
+                                try {
                                     int aaLevel = Utility.getInt(data, 0);
                                     onRetListener.onReceive(EnumCommands.CMD_AA_Notification, aaLevel);
+                                }catch (Exception e){
+                                    e.printStackTrace();
                                 }
                             }
                         }
                     }
-                });
-            }
+                }
+            });
         }
     }
 
@@ -1184,7 +1195,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                 if (myDevice == null && productName != null) {
                     myDevice = AppUtils.getMyDevice(productName, ConnectStatus.A2DP_UNCONNECTED, "", usbDevice.getManufacturerName());
                     devicesSet.add(myDevice);
-                    SharePreferenceUtil.saveSet(mContext, SharePreferenceUtil.PRODUCT_DEVICE_LIST_PER_KEY,devicesSet);
+                    SharePreferenceUtil.saveSet(mContext, SharePreferenceUtil.PRODUCT_DEVICE_LIST_PER_KEY, devicesSet);
                 }
                 ProductListManager.getInstance().checkConnectStatus(key, ConnectStatus.DEVICE_CONNECTED);
                 ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
@@ -1306,7 +1317,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
 
     @Override
     public void receivedResponse(@NotNull final String command, @NotNull final ArrayList<responseResult> values, @NotNull final Status status) {
-        Logger.d(TAG, "receive response, command = " + command+",value size = "+values.size() +",onRetListener = "+onRetListener);
+        Logger.d(TAG, "receive response, command = " + command + ",value size = " + values.size() + ",onRetListener = " + onRetListener);
         if (values.size() <= 0) {
             return;
         }
@@ -1348,7 +1359,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                         }
                         case AmCmds.CMD_AmbientLeveling: {
                             String ambient = values.iterator().next().getValue().toString();
-                            Logger.d(TAG,"receive response, command ambient leveling: "+ambient);
+                            Logger.d(TAG, "receive response, command ambient leveling: " + ambient);
                             onRetListener.onReceive(EnumCommands.CMD_AMBIENT_LEVELING, getUIAmbient(Integer.valueOf(ambient)));
                             break;
                         }
@@ -1397,7 +1408,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         });
     }
 
-    public int getUIAmbient(int ambient){
+    public int getUIAmbient(int ambient) {
         int ambientLeveling = 0;
         switch (ambient) {
             case 0:
