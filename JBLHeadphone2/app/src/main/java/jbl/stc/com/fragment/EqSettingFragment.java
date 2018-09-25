@@ -586,7 +586,9 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         eqParams.width = UiUtils.dip2px(context, 200);
         eq.setPadding(UiUtils.dip2px(context, 13), 0, 0, 0);
         EQModel currSelectedEq = EQSettingManager.get().getEQModelByName(PreferenceUtils.getString(PreferenceKeys.CURR_EQ_NAME, context, ""), context);
-        eq.setText(currSelectedEq.eqName);
+        if (currSelectedEq!=null){
+            eq.setText(currSelectedEq.eqName);
+        }
         eq.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
         eq.setTextColor(Color.WHITE);
         eq.setTextSize(20);
