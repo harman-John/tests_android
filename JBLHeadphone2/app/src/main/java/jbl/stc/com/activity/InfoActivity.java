@@ -2,6 +2,7 @@ package jbl.stc.com.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
@@ -78,7 +79,6 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
 //                onBackPressed();
                 View decorView = this.getWindow().getDecorView();
                 ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(decorView,"translationX",0, - decorView.getMeasuredWidth());
-                objectAnimator.setDuration(600);
                 objectAnimator.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -86,15 +86,15 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
                         finish();
                     }
                 });
-                objectAnimator.start();
 
                 Activity activity = ActivityLifecycleMgr.getInstance().getPenultimateActivity();
-                if (activity != null && !activity.isFinishing()) {
-                    View decorView1 = activity.getWindow().getDecorView();
-                    ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(decorView1,"translationX",decorView1.getMeasuredWidth(),0);
-                    objectAnimator1.setDuration(500);
-                    objectAnimator1.start();
-                }
+                View decorView1 = activity.getWindow().getDecorView();
+                ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(decorView1,"translationX",decorView1.getMeasuredWidth(),0);
+
+                AnimatorSet set = new AnimatorSet();
+                set.setDuration(500);
+                set.playTogether(objectAnimator,objectAnimator1);
+                set.start();
 
                 break;
             }
