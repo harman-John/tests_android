@@ -706,6 +706,7 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                             }
                             case App_0xB3: {
                                 if (success) {
+                                    Logger.d(TAG,"lightX app read result, App_0xb3 : true");
                                     onRetListener.onReceive(EnumCommands.CMD_App_0xB3);
                                 }
                                 break;

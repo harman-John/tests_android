@@ -18,8 +18,10 @@ import jbl.stc.com.constant.ConnectStatus;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.listener.OnHeadphoneconnectListener;
+import jbl.stc.com.logger.Logger;
 import jbl.stc.com.manager.AvneraManager;
 import jbl.stc.com.manager.CalibrationManager;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.view.AppButton;
@@ -52,6 +54,7 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calibration);
+        DeviceManager.getInstance(this).setOnRetListener(this);
         calibrationManager = CalibrationManager.getCalibrationManager(this);
         calibration = this;
 
@@ -248,6 +251,7 @@ public class CalibrationActivity extends BaseActivity implements OnHeadphoneconn
         super.onReceive(enumCommands, objects);
         switch (enumCommands) {
             case CMD_App_0xB3:
+                Logger.d(TAG,"calibrationActivity read result, App_0xb3 : true");
                 if (CalibrationActivity.getCalibration() != null)
                     CalibrationActivity.getCalibration().setIsCalibrationComplete(true);
                 break;
