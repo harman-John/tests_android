@@ -1,9 +1,11 @@
 package jbl.stc.com.activity;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -43,6 +45,9 @@ public class SplashActivity extends FragmentActivity implements SurfaceHolder.Ca
         super.onCreate(savedInstanceState);
         Logger.d(TAG,"onCreate");
         setContentView(R.layout.activity_splash);
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
         mPreview = findViewById(R.id.videoHolder);
         viewSwitcher = findViewById(R.id.viewswicther);
         boolean isShowJBLBrandManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_JBL_BRAND_FIRST_TIME,SplashActivity.this);

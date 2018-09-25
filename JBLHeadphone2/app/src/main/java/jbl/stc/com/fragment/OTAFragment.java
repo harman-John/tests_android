@@ -909,7 +909,7 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
                 case PARAM:
                     Logger.i(TAG, "ota available, onLineFwVersion is " + model.getVersion());
                     onLineFwVersion = model.getVersion();
-                    textViewUpdateStatus.setText(getString(R.string.firmware_is_available, model.getVersion()));
+                    textViewUpdateStatus.setText(getString(R.string.firmware_is_available, model.getVersion()) + "/n" + getString(R.string.current_firmware) + currentFW);
                     break;
             }
         }
