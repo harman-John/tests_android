@@ -63,6 +63,7 @@ import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.FirmwareUtil;
 import jbl.stc.com.utils.OTAUtil;
+import jbl.stc.com.utils.SharePreferenceUtil;
 import jbl.stc.com.view.AppButton;
 import jbl.stc.com.view.ShadowLayout;
 
@@ -909,7 +910,8 @@ public class OTAFragment extends BaseFragment implements View.OnClickListener, O
                 case PARAM:
                     Logger.i(TAG, "ota available, onLineFwVersion is " + model.getVersion());
                     onLineFwVersion = model.getVersion();
-                    textViewUpdateStatus.setText(getString(R.string.firmware_is_available, model.getVersion()) + "/n" + getString(R.string.current_firmware) + currentFW);
+                    String firmwareVersion = PreferenceUtils.getString(AppUtils.getModelNumber(DashboardActivity.getDashboardActivity().getApplicationContext()), PreferenceKeys.APP_VERSION, getActivity(), "");
+                    textViewUpdateStatus.setText(getString(R.string.firmware_is_available, model.getVersion()) + "\n" + getString(R.string.current_firmware,firmwareVersion));
                     break;
             }
         }

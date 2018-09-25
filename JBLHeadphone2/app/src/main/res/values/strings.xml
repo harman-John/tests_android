@@ -65,7 +65,7 @@
     <string name="firmware_is_updating_title"><b>Firmware is Updating…</b></string>
     <string name="firmware_is_updating">1.Please do not close the application.\n2.Keep the headset near the device.\n3.Pluggin in the headphones is recommended.</string>
     <string name="firmware_is_available">New software update version %1$s is available</string>
-    <string name="current_firmware">Current software version is</string>
+    <string name="current_firmware">Current software version is %1$s</string>
     <string name="firmware_is_installed">Firmware version %1$s is installed</string>
     <string name="done">Done</string>
     <string name="retry">Retry</string>
