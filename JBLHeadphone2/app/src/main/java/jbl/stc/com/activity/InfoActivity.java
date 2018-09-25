@@ -1,5 +1,9 @@
 package jbl.stc.com.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
@@ -15,6 +19,7 @@ import android.widget.TextView;
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.legal.LegalApi;
+import jbl.stc.com.swipe.activity.ActivityLifecycleMgr;
 
 
 public class InfoActivity extends BaseActivity implements View.OnClickListener {
@@ -24,9 +29,6 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_info);
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
         findViewById(R.id.text_jbl_com).setOnClickListener(this);
         findViewById(R.id.text_view_open_source_license).setOnClickListener(this);
@@ -74,8 +76,26 @@ public class InfoActivity extends BaseActivity implements View.OnClickListener {
             }
             case R.id.image_view_info_back:{
 //                onBackPressed();
-                finish();
-                overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
+                View decorView = this.getWindow().getDecorView();
+                ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(decorView,"translationX",0, - decorView.getMeasuredWidth());
+                objectAnimator.setDuration(600);
+                objectAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        finish();
+                    }
+                });
+                objectAnimator.start();
+
+                Activity activity = ActivityLifecycleMgr.getInstance().getPenultimateActivity();
+                if (activity != null && !activity.isFinishing()) {
+                    View decorView1 = activity.getWindow().getDecorView();
+                    ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(decorView1,"translationX",decorView1.getMeasuredWidth(),0);
+                    objectAnimator1.setDuration(500);
+                    objectAnimator1.start();
+                }
+
                 break;
             }
             case R.id.text_jbl_com:{

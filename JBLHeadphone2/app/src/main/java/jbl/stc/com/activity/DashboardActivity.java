@@ -1,5 +1,7 @@
 package jbl.stc.com.activity;
 
+import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -51,6 +53,7 @@ import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.swipe.activity.ActivityLifecycleMgr;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.InsertPredefinePreset;
 import jbl.stc.com.utils.SharePreferenceUtil;
@@ -318,7 +321,11 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_view_dashboard_white_menu: {
-                startActivity(new Intent(this, InfoActivity.class));
+                startActivity(new Intent(DashboardActivity.this, InfoActivity.class));
+                View decorView = this.getWindow().getDecorView();
+                ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(decorView,"translationX",0,decorView.getMeasuredWidth());
+                objectAnimator.setDuration(800);
+                objectAnimator.start();
                 break;
             }
             case R.id.image_view_dashboard_white_plus: {
@@ -460,7 +467,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             ActivityOptionsCompat options = ActivityOptionsCompat.
                     makeSceneTransitionAnimation(this, myGridAdapter.getShareView(), getString(R.string.share_element));
             startActivity(intent, options.toBundle());
-//            overridePendingTransition(R.anim.fadin, R.anim.fadeout);
         }
     }
 

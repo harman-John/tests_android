@@ -156,9 +156,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
         setContentView(R.layout.activity_home);
         DeviceManager.getInstance(this).setOnRetListener(this);
         mConnectStatus = getIntent().getIntExtra(JBLConstant.KEY_CONNECT_STATUS, -1);
