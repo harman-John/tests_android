@@ -53,8 +53,9 @@ public class InfoActivity extends SwipeBackActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
+        doFinishAnimation();
+//        super.onBackPressed();
+//        overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
     }
 
     @Override
@@ -73,26 +74,7 @@ public class InfoActivity extends SwipeBackActivity implements View.OnClickListe
                 break;
             }
             case R.id.image_view_info_back:{
-//                onBackPressed();
-                View decorView = this.getWindow().getDecorView();
-                ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(decorView,"translationX",0, - decorView.getMeasuredWidth());
-                objectAnimator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        finish();
-                    }
-                });
-
-                Activity activity = ActivityLifecycleMgr.getInstance().getPenultimateActivity();
-                View decorView1 = activity.getWindow().getDecorView();
-                ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(decorView1,"translationX",decorView1.getMeasuredWidth(),0);
-
-                AnimatorSet set = new AnimatorSet();
-                set.setDuration(500);
-                set.playTogether(objectAnimator,objectAnimator1);
-                set.start();
-
+                doFinishAnimation();
                 break;
             }
             case R.id.text_jbl_com:{
@@ -105,5 +87,26 @@ public class InfoActivity extends SwipeBackActivity implements View.OnClickListe
             }
         }
 
+    }
+
+    private void doFinishAnimation(){
+        View decorView = this.getWindow().getDecorView();
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(decorView,"translationX",0, - decorView.getMeasuredWidth());
+        objectAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                finish();
+            }
+        });
+
+        Activity activity = ActivityLifecycleMgr.getInstance().getPenultimateActivity();
+        View decorView1 = activity.getWindow().getDecorView();
+        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(decorView1,"translationX",decorView1.getMeasuredWidth(),0);
+
+        AnimatorSet set = new AnimatorSet();
+        set.setDuration(500);
+        set.playTogether(objectAnimator,objectAnimator1);
+        set.start();
     }
 }
