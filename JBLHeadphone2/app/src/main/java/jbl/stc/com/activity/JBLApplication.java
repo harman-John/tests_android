@@ -15,7 +15,7 @@ import jbl.stc.com.logger.Logger;
 import jbl.stc.com.storage.DatabaseHelper;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
-import jbl.stc.com.swipe.activity.ActivityLifecycleMgr;
+import jbl.stc.com.lifecycle.ActivityLifecycleMgr;
 
 
 public class JBLApplication extends Application {

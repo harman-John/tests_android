@@ -53,7 +53,6 @@ import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
-import jbl.stc.com.swipe.activity.ActivityLifecycleMgr;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.InsertPredefinePreset;
 import jbl.stc.com.utils.SharePreferenceUtil;

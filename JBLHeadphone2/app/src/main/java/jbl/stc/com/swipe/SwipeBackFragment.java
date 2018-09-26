@@ -1,4 +1,4 @@
-package jbl.stc.com.swipe.fragment;
+package jbl.stc.com.swipe;
 
 import android.app.Activity;
 import android.content.res.TypedArray;

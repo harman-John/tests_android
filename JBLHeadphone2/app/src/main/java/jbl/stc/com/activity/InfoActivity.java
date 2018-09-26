@@ -6,28 +6,25 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-
 import jbl.stc.com.R;
-import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.legal.LegalApi;
-import jbl.stc.com.swipe.activity.ActivityLifecycleMgr;
+import jbl.stc.com.lifecycle.ActivityLifecycleMgr;
+import jbl.stc.com.swipe.SwipeBackActivity;
 
 
-public class InfoActivity extends BaseActivity implements View.OnClickListener {
+public class InfoActivity extends SwipeBackActivity implements View.OnClickListener {
 
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_info);
         overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);

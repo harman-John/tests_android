@@ -1,4 +1,4 @@
-package jbl.stc.com.swipe.activity;
+package jbl.stc.com.lifecycle;
 
 import android.app.Activity;
 import android.app.Application;

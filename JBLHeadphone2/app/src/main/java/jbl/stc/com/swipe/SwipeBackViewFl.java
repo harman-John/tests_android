@@ -1,4 +1,4 @@
-package jbl.stc.com.swipe.fragment;
+package jbl.stc.com.swipe;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -343,7 +343,7 @@ public class SwipeBackViewFl extends FrameLayout {
             if ((mCurrentSwipeOrientation & EDGE_LEFT) != 0) {
                 mScrollPercent = Math.abs((float) left / (getWidth() + mShadowLeft.getIntrinsicWidth()));
             } else if ((mCurrentSwipeOrientation & EDGE_RIGHT) != 0) {
-                mScrollPercent = Math.abs((float) left / (mContentView.getWidth() + mShadowRight.getIntrinsicWidth()));
+                mScrollPercent = Math.abs((float) left / (mContentView.getWidth() ));
             }
             invalidate();
 

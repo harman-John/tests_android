@@ -29,7 +29,7 @@ import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
-import jbl.stc.com.swipe.fragment.BaseSwipeBackFragment;
+import jbl.stc.com.swipe.BaseSwipeBackFragment;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.UiUtils;
 

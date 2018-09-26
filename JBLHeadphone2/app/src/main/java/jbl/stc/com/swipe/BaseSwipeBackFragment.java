@@ -1,4 +1,4 @@
-package jbl.stc.com.swipe.fragment;
+package jbl.stc.com.swipe;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
