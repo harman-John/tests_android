@@ -31,6 +31,10 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -568,7 +572,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         deviceImageFl.setVisibility(View.INVISIBLE);
         mWindowLayoutParams = new WindowManager.LayoutParams();
         mWindowLayoutParams.format = PixelFormat.TRANSLUCENT;
-        mWindowLayoutParams.gravity = 51;
+        mWindowLayoutParams.gravity = Gravity.LEFT | Gravity.TOP;
         mWindowLayoutParams.x = (int) x;
         mWindowLayoutParams.y = (int) y;
         mWindowLayoutParams.alpha = 1.0f;
@@ -578,14 +582,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         ll_deviceImage = new LinearLayout(context);
         WindowManager.LayoutParams ll_params = new WindowManager.LayoutParams();
-        ll_params.gravity = 51;
+        ll_params.gravity = Gravity.LEFT | Gravity.TOP;
         ll_params.width = h;
         ll_params.height = h;
         ll_deviceImage.setLayoutParams(ll_params);
         deviceImageView = new ImageView(context);
         deviceImageView.setBackgroundResource(R.drawable.shape_dashboard_device_circle);
         WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-        params.gravity = 51;
+        params.gravity = Gravity.LEFT | Gravity.TOP;
         params.width = h;
         params.height = h;
         UiUtils.setDeviceImage(deviceName, deviceImageView);
@@ -644,6 +648,31 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
         animSetXY.start();
+
+        /*ScaleAnimation scaleAnim = new ScaleAnimation(1.0f, (float) (settingDeviceImageHeight) / (float) (h), 1.0f, (float) (settingDeviceImageHeight) / (float) (h), Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        TranslateAnimation translateAnim = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, (screenWidth - h)/2, Animation.RELATIVE_TO_PARENT, (screenWidth-settingDeviceImageHeight)/2, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 100f);
+        AnimationSet anim = new AnimationSet(false);
+        anim.addAnimation(scaleAnim);
+        anim.addAnimation(translateAnim);
+        anim.setDuration(400);
+        anim.setFillAfter(true);
+        deviceImageView.startAnimation(anim);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                switchFragment(new SettingsFragment(), JBLConstant.SLIDE_FROM_RIGHT_TO_LEFT);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });*/
     }
 
     private void showTutorial() {
@@ -1552,6 +1581,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
                 } else if (ancValue == 0) {
                     noiseCancelCb.setChecked(false);
                 }
+                ANCControlManager.getANCManager(getApplicationContext()).getAmbientLeveling();
                 break;
             }
             case CMD_AA_Notification: {
