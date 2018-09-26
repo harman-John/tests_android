@@ -27,7 +27,7 @@ import java.util.List;
 import jbl.stc.com.R;
 
 
-public class SwipeBackViewFl extends FrameLayout {
+public class SwipeBackLayout extends FrameLayout {
 
     public static final int EDGE_LEFT = ViewDragHelper.EDGE_LEFT;
 
@@ -79,15 +79,15 @@ public class SwipeBackViewFl extends FrameLayout {
 
     private List<OnSwipeListener> mListeners;
 
-    public SwipeBackViewFl(Context context) {
+    public SwipeBackLayout(Context context) {
         this(context, null);
     }
 
-    public SwipeBackViewFl(Context context, AttributeSet attrs) {
+    public SwipeBackLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SwipeBackViewFl(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeBackLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
         init();

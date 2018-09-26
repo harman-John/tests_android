@@ -14,7 +14,7 @@ import jbl.stc.com.lifecycle.ActivityLifecycleMgr;
 
 
 public class SwipeBackActivity extends FragmentActivity {
-    private SwipeBackViewFl mSwipeBackLayout;
+    private SwipeBackLayout mSwipeBackLayout;
     private final static String TAG = SwipeBackActivity.class.getSimpleName();
 
     @Override
@@ -25,15 +25,15 @@ public class SwipeBackActivity extends FragmentActivity {
     }
 
     private void init() {
-        mSwipeBackLayout = new SwipeBackViewFl(this);
+        mSwipeBackLayout = new SwipeBackLayout(this);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mSwipeBackLayout.setLayoutParams(params);
         mSwipeBackLayout.setBackgroundColor(Color.TRANSPARENT);
-        mSwipeBackLayout.setEdgeOrientation(SwipeBackViewFl.EDGE_RIGHT);
+        mSwipeBackLayout.setEdgeOrientation(SwipeBackLayout.EDGE_RIGHT);
         mSwipeBackLayout.attachToActivity(this);
-        mSwipeBackLayout.setEdgeLevel(SwipeBackViewFl.EdgeLevel.MAX);
+        mSwipeBackLayout.setEdgeLevel(SwipeBackLayout.EdgeLevel.MAX);
         mSwipeBackLayout.setEnableGesture(true);
-        mSwipeBackLayout.addSwipeListener(new SwipeBackViewFl.OnSwipeListener() {
+        mSwipeBackLayout.addSwipeListener(new SwipeBackLayout.OnSwipeListener() {
             @Override
             public void onDragStateChange(int state) {
                 if (state == ViewDragHelper.STATE_SETTLING){
