@@ -13,9 +13,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import jbl.stc.com.R;
+import jbl.stc.com.fragment.BaseFragment;
 
 
-public class SwipeBackFragment extends Fragment {
+public class SwipeBackFragment extends BaseFragment {
     private static final String FRAGMENT_STATE_SAVE_IS_HIDDEN = "FRAGMENT_STATE_SAVE_IS_HIDDEN";
     private SwipeBackLayout mSwipeBackLayout;
     private Animation mNoAnim;

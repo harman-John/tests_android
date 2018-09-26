@@ -34,7 +34,7 @@ import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.UiUtils;
 
 
-public class BaseFragment extends SwipeBackFragment implements View.OnTouchListener, AppUSBDelegate,OnRetListener {
+public class BaseFragment extends Fragment implements View.OnTouchListener, AppUSBDelegate,OnRetListener {
     protected String TAG;
     protected Context mContext = null;
     protected View rootView;

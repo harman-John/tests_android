@@ -49,12 +49,13 @@ import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.manager.ProductListManager;
 import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.storage.PreferenceUtils;
+import jbl.stc.com.swipe.SwipeBackFragment;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.UiUtils;
 
 
-public class SettingsFragment extends BaseFragment implements View.OnClickListener {
+public class SettingsFragment extends SwipeBackFragment implements View.OnClickListener {
     private static final String TAG = SettingsFragment.class.getSimpleName();
     private View view;
     private TextView autoOffTimerTextview;

@@ -296,6 +296,8 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
                         SharePreferenceUtil.saveSet(mContext, SharePreferenceUtil.PRODUCT_DEVICE_LIST_PER_KEY, devicesSet);
                     }
                 }
+
+                Logger.d(TAG, "on service connected, a2dp, deviceList = "+ deviceList);
                 ProductListManager.getInstance().checkHalfConnectDevice(devicesSet);
                 if (!isConnected && !isFound || isNeedOtaAgain) {
                     if (deviceList.size() > 0

@@ -415,7 +415,7 @@ public class MyDragGridView extends GridView {
 
 
     private boolean isInViewArea(View view, float x, float y) {
-        Logger.i(TAG, "moveX = " + x + ",moveY = " + y + ",mMenuHeight = " + relativeLayoutMenu.getMeasuredHeight());
+//        Logger.i(TAG, "moveX = " + x + ",moveY = " + y + ",mMenuHeight = " + relativeLayoutMenu.getMeasuredHeight());
         if (view == null) {
             return false;
         }
@@ -425,7 +425,7 @@ public class MyDragGridView extends GridView {
         int top = location[1] - relativeLayoutMenu.getMeasuredHeight() - dip2px(getContext(), 20);
         int right = left + view.getMeasuredWidth();
         int bottom = top + view.getMeasuredHeight();
-        Logger.i(TAG, "left = " + left + ",top = " + top + "right = " + right + ",bottom = " + bottom);
+//        Logger.i(TAG, "left = " + left + ",top = " + top + "right = " + right + ",bottom = " + bottom);
         if (y >= top && y <= bottom && x >= left
                 && x <= right) {
             return true;
