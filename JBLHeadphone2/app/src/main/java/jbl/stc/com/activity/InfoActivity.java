@@ -99,6 +99,7 @@ public class InfoActivity extends SwipeBackActivity implements View.OnClickListe
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 finish();
+                overridePendingTransition(0,0);
             }
         });
 
