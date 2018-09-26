@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -44,6 +45,7 @@ import jbl.stc.com.entity.designer_cfg;
 import jbl.stc.com.fragment.DiscoveryFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.fragment.UnableConnectFragment;
+import jbl.stc.com.lifecycle.ActivityLifecycleMgr;
 import jbl.stc.com.listener.OnCheckDevicesListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
@@ -326,10 +328,12 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.image_view_dashboard_white_menu: {
                 startActivity(new Intent(DashboardActivity.this, InfoActivity.class));
-                View decorView = this.getWindow().getDecorView();
-                ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(decorView,"translationX",0,decorView.getMeasuredWidth());
-                objectAnimator.setDuration(800);
-                objectAnimator.start();
+
+                View decorView1 = getWindow().getDecorView();
+                ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(decorView1,"translationX",0,decorView1.getMeasuredWidth());
+                objectAnimator1.setDuration(200).setStartDelay(100);
+                objectAnimator1.setInterpolator(new AccelerateInterpolator());
+                objectAnimator1.start();
                 break;
             }
             case R.id.image_view_dashboard_white_plus: {

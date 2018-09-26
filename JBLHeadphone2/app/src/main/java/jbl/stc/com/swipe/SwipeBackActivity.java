@@ -20,8 +20,12 @@ public class SwipeBackActivity extends FragmentActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        init();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        init();
     }
 
     private void init() {

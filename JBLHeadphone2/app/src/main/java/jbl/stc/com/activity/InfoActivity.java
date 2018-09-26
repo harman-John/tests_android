@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
@@ -27,7 +28,7 @@ public class InfoActivity extends SwipeBackActivity implements View.OnClickListe
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_info);
-        overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
+        overridePendingTransition(R.anim.enter_from_left_for_info, R.anim.exit_to_right_for_info);
         findViewById(R.id.text_jbl_com).setOnClickListener(this);
         findViewById(R.id.text_view_open_source_license).setOnClickListener(this);
         findViewById(R.id.text_view_eula).setOnClickListener(this);
@@ -92,6 +93,7 @@ public class InfoActivity extends SwipeBackActivity implements View.OnClickListe
     private void doFinishAnimation(){
         View decorView = this.getWindow().getDecorView();
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(decorView,"translationX",0, - decorView.getMeasuredWidth());
+        objectAnimator.setDuration(300).setStartDelay(100);
         objectAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -103,9 +105,8 @@ public class InfoActivity extends SwipeBackActivity implements View.OnClickListe
         Activity activity = ActivityLifecycleMgr.getInstance().getPenultimateActivity();
         View decorView1 = activity.getWindow().getDecorView();
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(decorView1,"translationX",decorView1.getMeasuredWidth(),0);
-
+        objectAnimator1.setDuration(300);
         AnimatorSet set = new AnimatorSet();
-        set.setDuration(500);
         set.playTogether(objectAnimator,objectAnimator1);
         set.start();
     }
