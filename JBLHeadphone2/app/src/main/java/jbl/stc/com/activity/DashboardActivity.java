@@ -1,7 +1,6 @@
 package jbl.stc.com.activity;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -79,7 +78,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.d(TAG, "on create");
-        addActivity(this);
         ProductListManager.getInstance().initDeviceSet(this);
         DeviceManager.getInstance(this).setOnCreate();
         setContentView(R.layout.activity_dashboard);
@@ -288,6 +286,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
             Logger.d(TAG, "on connect status, connected");
 
             removeAllFragment();
+
             if (!(currentActivity() instanceof DashboardActivity) && !DeviceManager.getInstance(this).isNeedOtaAgain()) {
                 currentActivity().finish();
             }

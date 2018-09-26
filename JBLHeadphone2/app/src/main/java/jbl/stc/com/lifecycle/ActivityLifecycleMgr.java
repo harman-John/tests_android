@@ -42,11 +42,22 @@ public class ActivityLifecycleMgr extends ActivityLifecycle {
         return mActivityStack.size();
     }
 
-    public Activity getAllActivity(int i) {
+    public Activity getActivityByCount(int i) {
         if (mActivityStack.size()<1){
             return null;
         }
         return mActivityStack.get(i);
     }
 
+    public Activity getCurrentActivity(){
+        return mActivityStack.lastElement();
+    }
+
+    public void remove(Activity activity){
+        mActivityStack.remove(activity);
+    }
+
+    public void clear(){
+        mActivityStack.clear();
+    }
 }

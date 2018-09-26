@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,13 +18,13 @@ import android.widget.TextView;
 import com.avnera.smartdigitalheadset.LightX;
 
 import java.io.FileNotFoundException;
-import java.util.Stack;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jbl.stc.com.R;
 import jbl.stc.com.constant.JBLConstant;
 import jbl.stc.com.entity.FirmwareModel;
 import jbl.stc.com.fragment.BaseFragment;
+import jbl.stc.com.lifecycle.ActivityLifecycleMgr;
 import jbl.stc.com.listener.AppUSBDelegate;
 import jbl.stc.com.listener.OnConnectStatusListener;
 import jbl.stc.com.listener.OnDownloadedListener;
@@ -44,7 +43,7 @@ import jbl.stc.com.utils.StatusBarUtil;
 import jbl.stc.com.utils.UiUtils;
 
 
-public class BaseActivity extends FragmentActivity implements AppUSBDelegate, View.OnTouchListener, OnDownloadedListener,OnRetListener, OnConnectStatusListener {
+public class BaseActivity extends FragmentActivity implements AppUSBDelegate, View.OnTouchListener, OnDownloadedListener, OnRetListener, OnConnectStatusListener {
     private final static String TAG = BaseActivity.class.getSimpleName() + "aa";
     protected Context mContext;
     public static boolean isOTADoing = false;
@@ -223,67 +222,39 @@ public class BaseActivity extends FragmentActivity implements AppUSBDelegate, Vi
 
     }
 
-    private static Stack<Activity> activityStack;
-
-
-    public void addActivity(Activity activity) {
-        if (activityStack == null) {
-            activityStack = new Stack<>();
-        }
-        activityStack.add(activity);
-    }
-
     public Activity currentActivity() {
-        Activity activity = activityStack.lastElement();
-        return activity;
-    }
-
-    public void finishActivity() {
-        Activity activity = activityStack.lastElement();
-        finishActivity(activity);
+        return ActivityLifecycleMgr.getInstance().getCurrentActivity();
     }
 
     public void finishActivity(Activity activity) {
         if (activity != null) {
-            activityStack.remove(activity);
+            ActivityLifecycleMgr.getInstance().remove(activity);
             activity.finish();
-            activity = null;
-        }
-    }
-
-    public void finishActivity(Class<?> cls) {
-        for (Activity activity : activityStack) {
-            if (activity.getClass().equals(cls)) {
-                finishActivity(activity);
-            }
         }
     }
 
     public void finishAllActivity() {
-        for (int i = 0, size = activityStack.size(); i < size; i++) {
-            if (null != activityStack.get(i)) {
-                activityStack.get(i).finish();
+        for (int i = 0, size = ActivityLifecycleMgr.getInstance().getActivitySize(); i < size; i++) {
+            if (null != ActivityLifecycleMgr.getInstance().getActivityByCount(i)) {
+                ActivityLifecycleMgr.getInstance().getActivityByCount(i).finish();
             }
         }
-        activityStack.clear();
+        ActivityLifecycleMgr.getInstance().clear();
     }
 
     public boolean isForeground() {
         int count = 0;
-        for (int i = 0, size = activityStack.size(); i < size; i++) {
-            if (null != activityStack.get(i)) {
-                boolean isStopped = ((BaseActivity) (activityStack.get(i))).isStopped();
-                Logger.i(TAG, "isStopped = " + isStopped + ",activity = " + activityStack.get(i));
+        for (int i = 0, size = ActivityLifecycleMgr.getInstance().getActivitySize(); i < size; i++) {
+            if (null != ActivityLifecycleMgr.getInstance().getActivityByCount(i)) {
+                boolean isStopped = ((BaseActivity) (ActivityLifecycleMgr.getInstance().getActivityByCount(i))).isStopped();
+                Logger.i(TAG, "isStopped = " + isStopped + ",activity = " + ActivityLifecycleMgr.getInstance().getActivityByCount(i));
                 if (isStopped) {
                     count++;
                 }
             }
         }
 
-        if (count == activityStack.size()) {
-            return false;
-        }
-        return true;
+        return count != ActivityLifecycleMgr.getInstance().getActivitySize();
     }
 
     public void exitApp(Context context) {

@@ -170,7 +170,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
             finish();
             return;
         }
-        addActivity(this);
         Logger.d(TAG, "onCreate");
         rootHomeRl = (RelativeLayout) findViewById(R.id.relative_layout_home_root);
         mWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
