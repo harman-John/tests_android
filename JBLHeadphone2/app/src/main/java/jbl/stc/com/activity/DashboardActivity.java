@@ -237,13 +237,19 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 if (isInBackground) {
                     isInBackground = false;
                     dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
+                }else{
+                    startScan();
                 }
             }
         } else {
-            dashboardHandler.removeMessages(MSG_START_SCAN);
-            dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
-            LiveManager.getInstance().checkPermission(this);   //start ble scan
+            startScan();
         }
+    }
+
+    private void startScan(){
+        dashboardHandler.removeMessages(MSG_START_SCAN);
+        dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
+        LiveManager.getInstance().checkPermission(this);   //start ble scan
     }
 
     @Override
