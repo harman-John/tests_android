@@ -45,7 +45,6 @@ import jbl.stc.com.entity.designer_cfg;
 import jbl.stc.com.fragment.DiscoveryFragment;
 import jbl.stc.com.fragment.TurnOnBtTipsFragment;
 import jbl.stc.com.fragment.UnableConnectFragment;
-import jbl.stc.com.lifecycle.ActivityLifecycleMgr;
 import jbl.stc.com.listener.OnCheckDevicesListener;
 import jbl.stc.com.listener.OnDownloadedListener;
 import jbl.stc.com.logger.Logger;
@@ -239,19 +238,12 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 if (isInBackground) {
                     isInBackground = false;
                     dashboardHandler.sendEmptyMessage(MSG_SHOW_MY_PRODUCTS);
-                }else{
-                    startScan();
                 }
             }
-        } else {
-            startScan();
         }
-    }
 
-    private void startScan(){
         dashboardHandler.removeMessages(MSG_START_SCAN);
         dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 100);
-        LiveManager.getInstance().checkPermission(this);   //start ble scan
     }
 
     @Override
@@ -313,7 +305,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 removeAllFragment();
                 currentActivity().finish();
             }
-            LiveManager.getInstance().checkPermission(this);
+            LiveManager.getInstance().startBleScan(this);
             myGridAdapter.setMyAdapterList();
         }
     }
@@ -350,11 +342,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             AppUtils.hideFromForeground(this);
         } else {
-//            if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-//                Logger.i(TAG, "onBackPressed MSG_START_SCAN");
-//                dashboardHandler.removeMessages(MSG_START_SCAN);
-//                dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
-//            }
             super.onBackPressed();
         }
     }
@@ -392,7 +379,6 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 case MSG_SHOW_MY_PRODUCTS: {
                     Logger.d(TAG, "handle message, show my product");
                     showMyProducts();
-                    DeviceManager.getInstance(getDashboardActivity()).startA2DPCheck();
                     dashboardHandler.removeMessages(MSG_START_SCAN);
                     dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
                     dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_HOME_FRAGMENT, 2000);
@@ -427,10 +413,8 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                     break;
                 }
                 case MSG_START_SCAN: {
-                    if (DeviceManager.getInstance(getDashboardActivity()).isConnected()) {
-                        DeviceManager.getInstance(getDashboardActivity()).startA2DPCheck();
-                    }
-                    dashboardHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
+                    DeviceManager.getInstance(getDashboardActivity()).startA2dpCycle();
+                    LiveManager.getInstance().startBleScan(DashboardActivity.this);   //start ble scan
                     break;
                 }
                 case MSG_SHOW_PLUS_ANIMATION_UP: {
@@ -457,6 +441,8 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
         dashboardHandler.removeMessages(MSG_SHOW_MY_PRODUCTS);
         dashboardHandler.removeMessages(MSG_SHOW_HOME_FRAGMENT);
         dashboardHandler.removeMessages(MSG_START_SCAN);
+        DeviceManager.getInstance(this).stopA2dp();
+        LiveManager.getInstance().stopBleScan();
         boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, getApplicationContext());
         if (!isShowTutorialManyTimes && myDevice.connectStatus == ConnectStatus.DEVICE_CONNECTED
                 && ((DeviceManager.getInstance(this).isConnected() && DeviceFeatureMap.isFeatureSupported(myDevice.deviceName, Feature.ENABLE_TRUE_NOTE))
@@ -552,7 +538,7 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                             if (ProductListManager.getInstance().getMyDeviceList().size() == 0) {
                                 dashboardHandler.sendEmptyMessageDelayed(MSG_SHOW_DISCOVERY, 2000);
                             }
-                            LiveManager.getInstance().checkPermission(DashboardActivity.this);
+                            LiveManager.getInstance().startBleScan(DashboardActivity.this);
                             break;
                         }
                         default: {

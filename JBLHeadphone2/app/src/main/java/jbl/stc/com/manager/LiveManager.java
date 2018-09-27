@@ -47,7 +47,6 @@ import jbl.stc.com.listener.OnRetListener;
 import jbl.stc.com.logger.Logger;
 import jbl.stc.com.scan.LeLollipopScanner;
 import jbl.stc.com.scan.ScanListener;
-import jbl.stc.com.storage.PreferenceKeys;
 import jbl.stc.com.utils.AppUtils;
 import jbl.stc.com.utils.EnumCommands;
 import jbl.stc.com.utils.SharePreferenceUtil;
@@ -62,6 +61,7 @@ public class LiveManager implements ScanListener, BleListener {
     private final static int MSG_START_SCAN = 0;
     private final static int MSG_DISCONNECT = 1;
     private final static int MSG_CONNECT_TIME_OUT = 2;
+    private final static int MSG_STOP_SCAN = 3;
     private LeStatus leStatus = LeStatus.START_SCAN;
 
     private static class InstanceHolder {
@@ -78,7 +78,7 @@ public class LiveManager implements ScanListener, BleListener {
         }
     }
 
-    public void checkPermission(Activity context) {
+    public void startBleScan(Activity context) {
         mContext = context;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
@@ -96,6 +96,10 @@ public class LiveManager implements ScanListener, BleListener {
                 }
             }
         }
+    }
+
+    public void stopBleScan(){
+        leHandler.sendEmptyMessage(MSG_STOP_SCAN);
     }
 
     private LocationManager manager;
@@ -129,7 +133,7 @@ public class LiveManager implements ScanListener, BleListener {
         mContext.startActivityForResult(intent, requestCode);
     }
 
-    private void startBleScan() {
+    private void initBleScan() {
         if (leLollipopScanner == null) {
             leLollipopScanner = new LeLollipopScanner(mContext);
         }
@@ -137,7 +141,6 @@ public class LiveManager implements ScanListener, BleListener {
         Logger.i(TAG, "start ble scan");
         leLollipopScanner.startScan(this);
     }
-
 
     private Set<MyDevice> devicesSet = new HashSet<>();
 
@@ -393,15 +396,19 @@ public class LiveManager implements ScanListener, BleListener {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_START_SCAN: {
-                    if (!isConnected()) {
-                        startBleScan();
+//                    if (!isConnected()) {
+                        initBleScan();
 //                        leHandler.removeMessages(MSG_START_SCAN);
 //                        leHandler.sendEmptyMessageDelayed(MSG_START_SCAN, 2000);
                         Logger.d(TAG, "handle message, in msg start scan, start scan cycle.");
-                    } else {
-                        Logger.d(TAG, "handle message, in msg start scan, stop scan.");
-                        leLollipopScanner.stopScan();
-                    }
+//                    } else {
+//                        Logger.d(TAG, "handle message, in msg start scan, stop scan.");
+//                        leLollipopScanner.stopScan();
+//                    }
+                    break;
+                }
+                case MSG_STOP_SCAN:{
+                    leLollipopScanner.stopScan();
                     break;
                 }
                 case MSG_DISCONNECT: {

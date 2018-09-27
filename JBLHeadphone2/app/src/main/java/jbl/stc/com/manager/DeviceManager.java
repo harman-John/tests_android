@@ -251,9 +251,20 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         }
     }
 
+    public void stopA2dp(){
+        isStopped = true;
+    }
+
+    private boolean isStopped = false;
     private Runnable a2dpRunnable = new Runnable() {
         @Override
         public void run() {
+
+            if (isStopped){
+                Logger.d(TAG, "a2dp runnable, stopped, return");
+                return;
+            }
+
             if (isConnected && !isNeedOtaAgain) {
                 Logger.d(TAG, "a2dp runnable, device is connected, return");
                 return;
@@ -268,7 +279,12 @@ public class DeviceManager extends BaseDeviceManager implements Bluetooth.Delega
         }
     };
 
-    public void startA2DPCheck() {
+    public void startA2dpCycle(){
+        isStopped = false;
+        mHandler.postDelayed(a2dpRunnable, 2000);
+    }
+
+    private void startA2DPCheck() {
         BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBtAdapter != null && mBtAdapter.isEnabled()) {
             mBtAdapter.getProfileProxy(JBLApplication.getJBLApplicationContext(), mListener, BluetoothProfile.A2DP);
