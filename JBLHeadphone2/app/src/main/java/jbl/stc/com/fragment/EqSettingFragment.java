@@ -132,7 +132,7 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
         if (bundle != null) {
             rawY = bundle.getFloat("rawY");
             mConnectStatus = bundle.getInt(JBLConstant.KEY_CONNECT_STATUS);
-            Logger.d(TAG, "OnCreateView:" + String.valueOf(rawY));
+            Logger.d(TAG, "OnCreateView: " + String.valueOf(rawY));
             rootView.setTranslationY(rawY);
             bundle.remove("rawY");
         }
