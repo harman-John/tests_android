@@ -166,17 +166,15 @@
         android:background="@drawable/shape_gradient_eq"
         android:visibility="invisible">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_tutorial_dialog_eq"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="24dp"
                 android:text="@string/title_eq"
                 android:textColor="@color/white"
@@ -186,34 +184,29 @@
                 android:id="@+id/view_dialog_eq_divider"
                 android:layout_width="@dimen/divider_size"
                 android:layout_height="27dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="67dp"
+                android:layout_marginStart="24dp"
                 android:background="@color/white" />
 
             <jbl.stc.com.view.CustomFontTextView
                 android:id="@+id/text_view_tutorial_dialog_eq_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="85dp"
+                android:layout_marginStart="24dp"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="@string/off"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
-            <jbl.stc.com.view.AppImageView
-                android:id="@+id/image_view_tutorial_dialog_arrow_up"
-                android:layout_width="@dimen/image_button_width_and_height"
-                android:layout_height="@dimen/image_button_width_and_height"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="22dp"
-                android:rotation="90"
-                android:src="@mipmap/white_arrow_back" />
-        </RelativeLayout>
+        </LinearLayout>
+        <jbl.stc.com.view.AppImageView
+            android:id="@+id/image_view_tutorial_dialog_arrow_up"
+            android:layout_width="@dimen/image_button_width_and_height"
+            android:layout_height="@dimen/image_button_width_and_height"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginEnd="22dp"
+            android:rotation="90"
+            android:src="@mipmap/white_arrow_back" />
     </FrameLayout>
 
     <jbl.stc.com.view.AppImageView
