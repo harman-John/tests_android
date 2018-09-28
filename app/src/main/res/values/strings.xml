@@ -6,4 +6,6 @@
     <string name="test_show_fragment">testShowFragment</string>
 
     <string name="test_bt_spp">testBtSpp</string>
+    <string name="button1Text">Add Word</string>
+    <string name="button2Text">View Poem</string>
 </resources>

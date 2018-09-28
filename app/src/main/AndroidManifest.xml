@@ -22,6 +22,7 @@
 
         <activity android:name="com.example.testcase.fragment.TestShowFragmentActivity"
             android:windowSoftInputMode="adjustResize|stateHidden">
+
         </activity>
 
         <activity android:name="com.example.testcase.binder.TestBinderClientActivity"
@@ -38,13 +39,18 @@
 
         <activity android:name="com.example.testcase.broadcast.BroadcastActivity"
             android:windowSoftInputMode="adjustResize|stateHidden">
+
+        </activity>
+        <activity android:name=".dragview.DragActivity" >
+        </activity>
+        <activity android:name=".activity.OneActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".activity.TwoActivity" />
         <service
             android:name="com.example.testcase.binder.TestBinderService"
             android:enabled="true"
