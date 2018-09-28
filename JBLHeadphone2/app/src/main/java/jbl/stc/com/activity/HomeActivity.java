@@ -724,7 +724,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
 
     private void setDeviceImageHeight() {
         int h = UiUtils.getDashboardDeviceImageHeight(this);
-        Logger.d(TAG, "height:" + h);
+        Logger.d(TAG, "height: " + h);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) deviceImage.getLayoutParams();
         params.height = h;
         params.width = h;
