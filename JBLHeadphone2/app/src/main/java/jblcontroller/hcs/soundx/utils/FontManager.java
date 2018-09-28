@@ -33,7 +33,7 @@ public class FontManager {
     public Typeface getRegularFont() {
         if (mRegularTypeface == null) {
             mRegularTypeface = Typeface.createFromAsset(mAppContext.getAssets(),
-                    "open_sans_regular.ttf");
+                    "OpenSans-Regular.ttf");
         }
         return mRegularTypeface;
     }
@@ -41,7 +41,7 @@ public class FontManager {
     public Typeface getMediumFont() {
         if (mMediumTypeface == null) {
             mMediumTypeface = Typeface.createFromAsset(mAppContext.getAssets(),
-                    "open_sans_semi_bold.ttf");
+                    "OpenSans-Semibold.ttf");
         }
         return mMediumTypeface;
     }
@@ -49,7 +49,7 @@ public class FontManager {
     public Typeface getBoldFont() {
         if (mBoldTypeface == null) {
             mBoldTypeface = Typeface.createFromAsset(mAppContext.getAssets(),
-                    "open_sans_bold.ttf");
+                    "OpenSans-Bold.ttf");
         }
         return mBoldTypeface;
     }

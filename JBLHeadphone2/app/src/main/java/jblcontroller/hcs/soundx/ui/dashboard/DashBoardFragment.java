@@ -19,7 +19,7 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import jbl.stc.com.R;
-import jblcontroller.hcs.soundx.SoundXApplication;
+import jbl.stc.com.activity.JBLApplication;
 import jblcontroller.hcs.soundx.base.SoundXBaseFragment;
 import jblcontroller.hcs.soundx.data.local.SoundXSharedPreferences;
 import jblcontroller.hcs.soundx.data.remote.api.ResponseListener;
@@ -145,9 +145,9 @@ public class DashBoardFragment extends SoundXBaseFragment implements View.OnClic
         request.setTreble(String.valueOf(mPreferredTreble));
         String[] deviceType = {"Everest Elite 750NC"}; // TODO need to change hardcode value
         request.setDeviceType(deviceType);
-        request.setListningExp(String.valueOf(SoundXSharedPreferences.getListeningExp(SoundXApplication.getAppContext())));
-        request.setYearOfBirth(String.valueOf(SoundXSharedPreferences.getYob(SoundXApplication.getAppContext())));
-        request.setGender(String.valueOf(SoundXSharedPreferences.getGender(SoundXApplication.getAppContext())));
+        request.setListningExp(String.valueOf(SoundXSharedPreferences.getListeningExp(JBLApplication.getJBLApplicationContext())));
+        request.setYearOfBirth(String.valueOf(SoundXSharedPreferences.getYob(JBLApplication.getJBLApplicationContext())));
+        request.setGender(String.valueOf(SoundXSharedPreferences.getGender(JBLApplication.getJBLApplicationContext())));
         RestClientManager restClientManager = new RestClientManager(new ResponseListener() {
             @Override
             public void onSuccess(Object response) {

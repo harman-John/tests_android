@@ -59,6 +59,12 @@ import jbl.stc.com.utils.SharePreferenceUtil;
 import jbl.stc.com.utils.UiUtils;
 import jbl.stc.com.view.EqArcView;
 import jbl.stc.com.view.MyDragGridView;
+import jblcontroller.hcs.soundx.data.local.SoundXSharedPreferences;
+import jblcontroller.hcs.soundx.ui.audioeffect.AudioEffectActivity;
+import jblcontroller.hcs.soundx.ui.dashboard.DashboardDemo;
+import jblcontroller.hcs.soundx.ui.splash.SplashScreenActivity;
+
+import static jblcontroller.hcs.soundx.utils.AppConstants.IS_SESSION_EXISTS;
 
 public class DashboardActivity extends BaseActivity implements View.OnClickListener, OnDownloadedListener, OnCheckDevicesListener {
     private static final String TAG = DashboardActivity.class.getSimpleName() + "aa";
@@ -449,19 +455,35 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
                 || LiveManager.getInstance().isConnected())) {
             if (LiveManager.getInstance().isConnected()) {
                 Logger.d(TAG, "show home activity, show VoiceAssistant activity");
-                startActivity(new Intent(this, VoiceAssistantActivity.class));
+                launchAudioEffectActivity();
             } else {
                 Logger.d(TAG, "show home activity, show calibration activity");
                 startActivity(new Intent(this, CalibrationActivity.class));
             }
         } else {
-            Intent intent = new Intent(this, HomeActivity.class);
-            intent.putExtra(JBLConstant.KEY_CONNECT_STATUS, myDevice.connectStatus);
-            myGridAdapter.getShareView().setVisibility(View.INVISIBLE);
-            ActivityOptionsCompat options = ActivityOptionsCompat.
-                    makeSceneTransitionAnimation(this, myGridAdapter.getShareView(), getString(R.string.share_element));
-            startActivity(intent, options.toBundle());
+            if (AppUtils.isOldDevice(myDevice.deviceName)) {
+                launchDashboardHome(myDevice);
+            }else{
+                if (SoundXSharedPreferences.isConfiguration(DashboardActivity.this))
+                    launchDashboardHome(myDevice);
+                else
+                    launchAudioEffectActivity();
+            }
         }
+    }
+
+    private void launchDashboardHome(MyDevice myDevice) {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra(JBLConstant.KEY_CONNECT_STATUS, myDevice.connectStatus);
+        myGridAdapter.getShareView().setVisibility(View.INVISIBLE);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, myGridAdapter.getShareView(), getString(R.string.share_element));
+        startActivity(intent, options.toBundle());
+    }
+
+    private void launchAudioEffectActivity() {
+        Intent intent = new Intent(getApplicationContext(), AudioEffectActivity.class);
+        startActivity(intent);
     }
 
     @Override

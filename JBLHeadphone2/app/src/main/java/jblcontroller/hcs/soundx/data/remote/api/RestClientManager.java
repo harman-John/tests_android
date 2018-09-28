@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import jblcontroller.hcs.soundx.SoundXApplication;
+import jbl.stc.com.activity.JBLApplication;
 import jblcontroller.hcs.soundx.data.local.SoundXSharedPreferences;
 import jblcontroller.hcs.soundx.data.remote.model.GetAudioProfile;
 import jblcontroller.hcs.soundx.data.remote.model.ProfileRequest;
@@ -24,7 +24,7 @@ public class RestClientManager {
 
     public RestClientManager(ResponseListener listener) {
         mResponseListener = listener;
-        apiService = NoAuthAPIClient.getClient(SoundXApplication.getAppContext()).create(ApiService.class);
+        apiService = NoAuthAPIClient.getClient(JBLApplication.getJBLApplicationContext()).create(ApiService.class);
     }
 
     /**
@@ -94,7 +94,7 @@ public class RestClientManager {
      * @param data - Set Audio Profile request
      */
     public void createAudioProfile(ProfileRequest data) {
-        apiService.createAudioProfile(SoundXSharedPreferences.getAuthToken(SoundXApplication.getAppContext()), data).enqueue(new Callback<Void>() {
+        apiService.createAudioProfile(SoundXSharedPreferences.getAuthToken(JBLApplication.getJBLApplicationContext()), data).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.code() == 200) {
@@ -122,7 +122,7 @@ public class RestClientManager {
      * This method is to get User Audio profile
      */
     public void getUserAudioProfile() {
-        apiService.getAudioProfile(SoundXSharedPreferences.getAuthToken(SoundXApplication.getAppContext())).enqueue(new Callback<List<GetAudioProfile>>() {
+        apiService.getAudioProfile(SoundXSharedPreferences.getAuthToken(JBLApplication.getJBLApplicationContext())).enqueue(new Callback<List<GetAudioProfile>>() {
             @Override
             public void onResponse(Call<List<GetAudioProfile>> call, Response<List<GetAudioProfile>> response) {
                 if (response.isSuccessful()) {

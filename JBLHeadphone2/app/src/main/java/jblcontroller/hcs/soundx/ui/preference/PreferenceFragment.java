@@ -6,6 +6,7 @@ import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,11 +24,22 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import jbl.stc.com.R;
+import jbl.stc.com.activity.HomeActivity;
+import jbl.stc.com.activity.JBLApplication;
+import jbl.stc.com.activity.VoiceAssistantActivity;
+import jbl.stc.com.config.DeviceFeatureMap;
+import jbl.stc.com.config.Feature;
 import jbl.stc.com.constant.ConnectStatus;
+import jbl.stc.com.constant.JBLConstant;
+import jbl.stc.com.entity.MyDevice;
 import jbl.stc.com.logger.Logger;
+import jbl.stc.com.manager.DeviceManager;
 import jbl.stc.com.manager.LiveManager;
 import jbl.stc.com.manager.ProductListManager;
+import jbl.stc.com.storage.PreferenceKeys;
+import jbl.stc.com.storage.PreferenceUtils;
 import jblcontroller.hcs.soundx.base.SoundXBaseFragment;
+import jblcontroller.hcs.soundx.data.local.SoundXSharedPreferences;
 import jblcontroller.hcs.soundx.ui.customui.FadePageTransfomer;
 import jblcontroller.hcs.soundx.ui.dashboard.DashboardDemo;
 
@@ -145,9 +157,17 @@ public class PreferenceFragment extends SoundXBaseFragment implements Preference
         mDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), DashboardDemo.class);
-                getActivity().startActivity(intent);
-                getActivity().finish();
+                boolean isShowTutorialManyTimes = PreferenceUtils.getBoolean(PreferenceKeys.SHOW_TUTORIAL_FIRST_TIME, JBLApplication.getJBLApplicationContext());
+                if (!isShowTutorialManyTimes) {
+                    startActivity(new Intent(getActivity(), VoiceAssistantActivity.class));
+                } else {
+                    Intent intent = new Intent(getActivity(), HomeActivity.class);
+                    intent.putExtra(JBLConstant.KEY_CONNECT_STATUS, ConnectStatus.DEVICE_CONNECTED);
+                    SoundXSharedPreferences.setConfigurationDone(true, getActivity());
+                    startActivity(intent);
+                }
+
+
             }
         });
 
@@ -168,7 +188,6 @@ public class PreferenceFragment extends SoundXBaseFragment implements Preference
     public void onPause() {
         super.onPause();
     }
-
 
 
     @Override
@@ -239,8 +258,7 @@ public class PreferenceFragment extends SoundXBaseFragment implements Preference
                         Log.e(TAG, "AUDIOFOCUS_LOSS");
                         try {
                             player.stop();
-                        }
-                        catch (Exception e){
+                        } catch (Exception e) {
 
                         }
 //                        stop();
@@ -251,7 +269,7 @@ public class PreferenceFragment extends SoundXBaseFragment implements Preference
 //                        pause();
                         try {
                             player.pause();
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
                         break;
