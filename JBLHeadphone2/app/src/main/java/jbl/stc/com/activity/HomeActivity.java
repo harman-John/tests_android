@@ -131,7 +131,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
     private LinearLayout batteryLl;
     private AaPopupWindow aaPopupWindow;
 
-    private RelativeLayout eqInfoBarRl;
+    private FrameLayout eqInfoBarRl;
     private String deviceName;
     private AppImageView otaDownloadIv;
     private NotConnectedPopupWindow notConnectedPopupWindow;
@@ -188,7 +188,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener, 
         deviceImageFl.setOnClickListener(this);
         deviceImage = (ImageView) findViewById(R.id.image_view_home_device_image);
         deviceNameTv = (TextView) findViewById(R.id.text_view_home_device_name);
-        eqInfoBarRl = (RelativeLayout) findViewById(R.id.relative_layout_home_eq_info);
+        eqInfoBarRl = (FrameLayout) findViewById(R.id.frame_layout_home_eq_info);
         eqInfoBarRl.setVisibility(View.VISIBLE);
         TextView titleEqText = (TextView) findViewById(R.id.titleEqText);
         if (mConnectStatus == ConnectStatus.A2DP_HALF_CONNECTED) {

@@ -182,8 +182,9 @@
             android:layout_alignParentBottom="true"
             android:visibility="visible">
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/relative_layout_home_eq_info"
+                android:gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -191,8 +192,6 @@
                     android:id="@+id/titleEqText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
                     android:layout_marginStart="24dp"
                     android:gravity="center"
                     android:text="@string/title_eq"
@@ -203,34 +202,30 @@
                     android:id="@+id/eqDividerView"
                     android:layout_width="@dimen/divider_size"
                     android:layout_height="27dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="67dp"
+                    android:layout_marginStart="24dp"
                     android:background="@color/white" />
 
                 <jbl.stc.com.view.CustomFontTextView
                     android:id="@+id/text_view_home_eq_name"
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="84dp"
+                    android:layout_marginStart="24dp"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="@string/off"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 
-                <jbl.stc.com.view.AppImageView
-                    android:id="@+id/arrowUpImage"
-                    android:layout_width="@dimen/image_button_width_and_height"
-                    android:layout_height="@dimen/image_button_width_and_height"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="21dp"
-                    android:rotation="90"
-                    android:src="@mipmap/white_arrow_back" />
-            </RelativeLayout>
+            </LinearLayout>
+
+            <jbl.stc.com.view.AppImageView
+                android:id="@+id/arrowUpImage"
+                android:layout_width="@dimen/image_button_width_and_height"
+                android:layout_height="@dimen/image_button_width_and_height"
+                android:layout_marginEnd="21dp"
+                android:layout_gravity="center_vertical|right"
+                android:rotation="90"
+                android:src="@mipmap/white_arrow_back" />
         </FrameLayout>
 
     </RelativeLayout>

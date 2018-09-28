@@ -143,8 +143,12 @@ public class EqSettingFragment extends BaseFragment implements View.OnClickListe
                     List<RetCurrentEQ> bleDesignEqs = SharePreferenceUtil.readCurrentEqSet(JBLApplication.getJBLApplicationContext(), SharePreferenceUtil.BLE_DESIGN_EQ);
                     if (bleDesignEqs == null || bleDesignEqs.size() <= 0) {
                         jbl.stc.com.logger.Logger.d(TAG, "on create, design eq is null, request again");
-                        CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
-                        LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+                        try {
+                            CmdCurrEq cmdCurrEq = new CmdCurrEq(EnumEqCategory.DESIGN_EQ);
+                            LiveManager.getInstance().reqCurrentEQ(ProductListManager.getInstance().getSelectDevice(mConnectStatus).mac, cmdCurrEq);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 }
             }).start();
