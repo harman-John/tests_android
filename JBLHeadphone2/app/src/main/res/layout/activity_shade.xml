@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/pref_screen_bg"
+    tools:context="jblcontroller.hcs.soundx.ui.preference.PreferenceEditorActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/back_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:src="@mipmap/left_grey" />
+
+            <ImageView
+                android:id="@+id/action_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:src="@mipmap/sound_x_small_edition_grey" />
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_pref_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="@dimen/margin16dp"
+        android:gravity="center"
+        android:text="@string/pref_title"
+        android:textColor="@color/slate"
+        android:textSize="@dimen/help_item_text_size" />
+
+    <RelativeLayout
+        android:id="@+id/message_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/marginTop10dp"
+        android:layout_below="@id/tv_pref_title">
+
+        <TextView
+            android:id="@+id/tv_pref_instr"
+            android:layout_width="300dp"
+            android:layout_height="42dp"
+            android:text="@string/pref_instr"
+            android:textColor="@color/slate"
+            android:textSize="@dimen/forget_password_text_size" />
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/sound_shade_pager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/message_layout"
+        android:layout_marginTop="@dimen/profile_margin20dp" />
+
+    <RelativeLayout
+        android:id="@+id/rl_done_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/margin30dp"
+        android:background="@mipmap/orange"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/tv_pref_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/profile_paddin18dp"
+            android:text="@string/done"
+            android:textColor="@color/white"
+            android:textSize="@dimen/profile_next_text_size" />
+    </RelativeLayout>
+
+</RelativeLayout>

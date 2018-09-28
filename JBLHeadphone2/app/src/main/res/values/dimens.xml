@@ -75,4 +75,99 @@
     <dimen name="button_width">230dp</dimen>
     <dimen name="button_height">50dp</dimen>
 
+
+    <!--Sound-X integration-->
+    <dimen name="itemPadding">3dp</dimen>
+    <dimen name="yob_text_size">12sp</dimen>
+    <dimen name="width">375dp</dimen>
+    <dimen name="height">142dp</dimen>
+    <dimen name="corner_radius">25dp</dimen>
+
+    <!--activity_listening_experience-->
+
+
+    <dimen name="padding_right_20dp">20dp</dimen>
+    <dimen name="marginTop10dp">10dp</dimen>
+    <dimen name="margin40dp">40dp</dimen>
+    <dimen name="margin30dp">30dp</dimen>
+    <dimen name="margin16dp">16dp</dimen>
+    <!--SoundX dimensions  -->
+    <!--login page-->
+    <dimen name="login_page_margin_left_right">24dp</dimen>
+    <dimen name="login_page_margin_top">50dp</dimen>
+    <dimen name="email_input_margin_top">70dp</dimen>
+    <dimen name="login_label_txt_size">18sp</dimen>
+    <dimen name="login_label_padding">22dp</dimen>
+    <dimen name="join_now_left_margin">80dp</dimen>
+    <dimen name="forget_margin_left">4dp</dimen>
+    <dimen name="option_layout_margin_top">15.4dp</dimen>
+    <dimen name="forget_password_text_size">13.4sp</dimen>
+    <dimen name="login_text_size">20sp</dimen>
+
+    <dimen name="login_margin_top">220dp</dimen>
+    <dimen name="already_member_margin_top">10dp</dimen>
+    <dimen name="create_account_margin_top">86.4dp</dimen>
+    <dimen name="create_account_margin_bottom">13.4dp</dimen>
+
+    <!--Home screen dimensions-->
+    <dimen name="soundx_margin_top">21dp</dimen>
+    <dimen name="description_text_size">14sp</dimen>
+
+    <!--Configure dialog dimensions-->
+    <dimen name="configure_dialog_title_text_size">17sp</dimen>
+    <dimen name="configure_dialog_msg_text_size">15.4sp</dimen>
+    <dimen name="configure_dialog_setup_margin_top">30dp</dimen>
+    <dimen name="configure_dialog_setup_margin_left">28dp</dimen>
+    <dimen name="configure_dialog_title_margin_top">20dp</dimen>
+    <dimen name="configure_dialog_msg_margin_top">10dp</dimen>
+
+    <!--noise screen dimensions-->
+    <dimen name="noise_image_margin_top">34dp</dimen>
+    <dimen name="noise_title_margin_top">140dp</dimen>
+    <dimen name="noise_title_text_size">19sp</dimen>
+    <dimen name="noise_msg_margin_top">11dp</dimen>
+    <dimen name="noise_layout_margin_top">32dp</dimen>
+    <dimen name="noise_divider_margin_top">48dp</dimen>
+    <dimen name="noise_divider_1_margin_top">30dp</dimen>
+    <dimen name="noise_waring_layout_margin_top">19dp</dimen>
+    <dimen name="noise_warning_title_margin_top">120dp</dimen>
+    <dimen name="noise_waring_move_margin_top">82dp</dimen>
+    <dimen name="soundx_logo_height">40dp</dimen>
+
+    <!--Help screen dimensions-->
+    <dimen name="help_title_margin_top">22dp</dimen>
+    <dimen name="help_title_text_size">17sp</dimen>
+    <dimen name="help_item_text_size">19sp</dimen>
+    <dimen name="help_item_margin_top">45dp</dimen>
+    <dimen name="help_close_ht_width">42dp</dimen>
+    <dimen name="help_close_margin_top">20dp</dimen>
+    <dimen name="help_close_margin_end">10dp</dimen>
+    <dimen name="help_layout_margin_left">29dp</dimen>
+    <dimen name="help_item_msg_txt_size">15.4sp</dimen>
+    <dimen name="help_item_msg_margin_top">5dp</dimen>
+
+    <!--Dashboard home dimensions-->
+    <dimen name="dashboard_title_margin_top">68dp</dimen>
+    <dimen name="dashboard_title_text_size">19sp</dimen>
+    <dimen name="dashboard_image_margin_top">8dp</dimen>
+    <dimen name="dashboard_soundx_btn_margin_top">50dp</dimen>
+    <dimen name="dashboard_soundx_enable_margin_top">106dp</dimen>
+    <dimen name="dashboard_soundx_enable_title_margin_left">20dp</dimen>
+
+    <!--Profile dimensions-->
+    <dimen name="profile_text_size">13sp</dimen>
+    <dimen name="profile_bubble_width_size">350dp</dimen>
+    <dimen name="profile_next_text_size">20sp</dimen>
+    <dimen name="profile_margin40dp">40dp</dimen>
+    <dimen name="profile_margin10dp">10dp</dimen>
+    <dimen name="profile_margin20dp">20dp</dimen>
+    <dimen name="profile_margin30dp">30dp</dimen>
+    <dimen name="profile_paddin18dp">18dp</dimen>
+    <dimen name="profile_gender_item_margin_start">16dp</dimen>
+    <dimen name="profile_gender_item_margin_top">11.6dp</dimen>
+    <dimen name="profile_gender_title_margin_top">13.4dp</dimen>
+    <dimen name="profile_gender_card_margin_top">12.2dp</dimen>
+    <dimen name="profile_card_margin_right_left">14dp</dimen>
+    <dimen name="profile_next_margin_top">24dp</dimen>
+    <dimen name="profile_seeker_margin_top">54dp</dimen>
 </resources>

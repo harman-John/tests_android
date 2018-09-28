@@ -229,4 +229,52 @@
     <string name="google_assistant_link">Go to Google assistant settings</string>
     <string name="min">min</string>
     <string name="skip">skip</string>
+
+    <string name="spoiler">Supported headphones include: Everest Elite 150NC,\nEverest Elite 750NC, Everest Elite 700, Everest\nElite 300, Everest Elite 100 and Reflect Aware</string>
+
+    <string name="pt_title_text">Please answer some basic questions about\nyourself so we can customize your sound profile.</string>
+    <string name="yob_text">Your year of birth?</string>
+    <string name="lsnexp_text">Your listening experience?</string>
+    <string name="noise_title">Make sure you are\n   in a quiet place</string>
+    <string name="noise_msg">Your headphones are detecting the ambient noise level. To accurately complete the listening test, make sure the noise level is under the line.</string>
+    <string name="pref_title">Now further personalize your SoundX profile.</string>
+    <string name="pref_instr">Swipe through these options and choose the mode that sounds best to you.</string>
+    <string name="home_message">SoundX personalization technology tailors the sound of your Harman products to your specific audio preferences with a few simple questions and a listening test. Press ‘Ready’ to get started.</string>
+    <string name="ready">Ready</string>
+
+    <string name="text17">ALREADY A MEMBER? LOGIN</string>
+    <string name="gender_txt">Your gender?</string>
+    <string name="text18">Beginner</string>
+    <string name="text19">Average</string>
+    <string name="experienced">Experienced</string>
+    <string name="trained">Trained</string>
+    <string name="beginner_msg">No formal listening training.</string>
+    <string name="avg_msg">Some familiarity with bass, treble, etc.</string>
+    <string name="alot_msg">Participated in listening tests, understand frequency, distortion.</string>
+    <string name="text25">Formal Harman How-To-Listen trained or similar university or Tonmeister training.</string>
+    <string name="listening_exp">Listening experience</string>
+    <string name="device_name">Everest Elite 750NC</string>
+    <string name="soundx_effect">SoundX\n On/Off</string>
+    <string name="warning_title">The noise level is too high. Move to a quieter space and try again</string>
+    <string name="move_next">Move to the next step anyway</string>
+    <string name="not_recommend">(Not recommended)</string>
+
+    <string name="configure_dialog_title">Replace current SoundX data?</string>
+    <string name="configure_dialog_msg">The following process will replace the current SoundX data setup before, do you want to replace them and set up new data?</string>
+
+    <!--Login page texts-->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">FORGOT PASSWORD?</string>
+    <string name="join_now">JOIN NOW</string>
+    <string name="login">Login</string>
+
+    <!--Signup page-->
+    <string name="name">Name</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="create_account">Create Account</string>
+
+    <string name="setup_new_data">Set up new data</string>
+    <string name="use_old_data">Use old data</string>
 </resources>

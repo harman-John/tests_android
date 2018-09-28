@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/black_gradient"
+    android:orientation="vertical"
+    tools:context="jblcontroller.hcs.soundx.ui.noise.NoiseMeasureActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/soundx_logo_height"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/noise_image_margin_top"
+        android:src="@mipmap/sound_x_small_edition" />
+
+    <jblcontroller.hcs.soundx.utils.JustifyTextView
+        android:id="@+id/noise_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/noise_title_margin_top"
+        android:text="@string/noise_title"
+        android:textColor="@color/white"
+        android:textSize="@dimen/noise_title_text_size" />
+
+    <jblcontroller.hcs.soundx.utils.JustifyTextView
+        android:id="@+id/noise_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/noise_title"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/profile_margin40dp"
+        android:layout_marginRight="@dimen/margin40dp"
+        android:layout_marginTop="@dimen/noise_msg_margin_top"
+        android:text="@string/noise_msg"
+        android:textColor="@color/white" />
+
+    <LinearLayout
+        android:id="@+id/noise_normal_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/noise_msg"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+
+            android:layout_marginTop="@dimen/noise_divider_margin_top"
+            android:background="@color/white"
+            android:orientation="horizontal" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/divider"
+            android:layout_marginTop="@dimen/noise_layout_margin_top"
+            android:background="@mipmap/rectangle_5">
+
+            <RelativeLayout
+                android:id="@+id/next_layout"
+                android:layout_width="@dimen/button_width"
+                android:layout_height="@dimen/button_height"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/profile_margin20dp"
+                android:background="@mipmap/orange">
+
+                <TextView
+                    android:id="@+id/nxt_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/next"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/login_text_size" />
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/warning_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/noise_msg"
+        android:layout_marginTop="@dimen/noise_waring_layout_margin_top"
+        android:background="@mipmap/warning_bag"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/divider_1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/noise_divider_1_margin_top"
+            android:background="@color/white"
+            android:orientation="horizontal" />
+
+        <jblcontroller.hcs.soundx.utils.JustifyTextView
+            android:id="@+id/warning_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/margin40dp"
+            android:layout_marginRight="@dimen/margin40dp"
+            android:layout_below="@id/divider_1"
+            android:layout_marginTop="@dimen/noise_warning_title_margin_top"
+            android:text="@string/warning_title"
+            android:textColor="@color/white"
+            android:textSize="@dimen/configure_dialog_msg_text_size" />
+
+        <jblcontroller.hcs.soundx.utils.JustifyTextView
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/warning_msg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/margin40dp"
+            android:layout_marginRight="@dimen/margin40dp"
+            android:layout_marginTop="@dimen/noise_waring_move_margin_top"
+            android:text="@string/move_next"
+            android:textColor="@color/orange_yellow" />
+        <jblcontroller.hcs.soundx.utils.JustifyTextView
+            android:id="@+id/not_recommend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/next"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/margin40dp"
+            android:layout_marginRight="@dimen/margin40dp"
+            android:text="@string/not_recommend"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/bg_copy">
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/configure_dialog_title_margin_top"
+        android:text="@string/configure_dialog_title"
+        android:textColor="@color/slate"
+        android:textSize="@dimen/configure_dialog_title_text_size" />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_marginLeft="@dimen/configure_dialog_setup_margin_left"
+        android:layout_marginRight="@dimen/configure_dialog_setup_margin_left"
+        android:layout_marginTop="@dimen/configure_dialog_msg_margin_top"
+        android:gravity="center"
+        android:text="@string/configure_dialog_msg"
+        android:textColor="@color/slate"
+        android:textSize="@dimen/configure_dialog_msg_text_size" />
+
+    <RelativeLayout
+        android:id="@+id/proceed"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_below="@id/message"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/configure_dialog_setup_margin_top"
+        android:background="@mipmap/orange">
+
+        <TextView
+            android:id="@+id/setup_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/setup_new_data"
+            android:textColor="@color/white"
+            android:textSize="@dimen/login_text_size" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/cancel"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_below="@id/proceed"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/configure_dialog_setup_margin_top"
+        android:background="@mipmap/grey">
+
+        <TextView
+            android:id="@+id/use_old_data_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/use_old_data"
+            android:textColor="@color/white"
+            android:textSize="@dimen/login_text_size" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -71,7 +72,53 @@
             android:launchMode="singleTask"
             android:theme="@style/Theme.Swipe.Back.NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="jblcontroller.hcs.soundx.ui.profile.ProfileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
+        <activity
+            android:name="jblcontroller.hcs.soundx.ui.noise.NoiseMeasureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name="jblcontroller.hcs.soundx.ui.preference.PreferenceEditorActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name="jblcontroller.hcs.soundx.ui.login.LoginActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
 
+        </activity>
+
+        <activity
+            android:name="jblcontroller.hcs.soundx.ui.splash.SplashScreenActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
+        <activity
+            android:name="jblcontroller.hcs.soundx.ui.signup.SignupActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name="jblcontroller.hcs.soundx.ui.audioeffect.AudioEffectActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name="jblcontroller.hcs.soundx.ui.profile.HelpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="jblcontroller.hcs.soundx.ui.dashboard.DashboardDemo"
+            android:screenOrientation="portrait" />
+
+        <receiver android:name="jblcontroller.hcs.soundx.utils.NetworkChangeListener">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="85241e7995db06a589e051df1defe897ead0d557" />

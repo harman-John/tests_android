@@ -41,6 +41,8 @@ public class BaseFragment extends Fragment implements View.OnTouchListener, AppU
     protected JBLApplication application;
     private OnMainAppListener onMainAppListener;
 
+    public static final String RECEIVEPUSH = "RECEIVEPUSH";
+    public static final String RECEIVE_READY = "RECEIVE_READY";
     protected static final int X_SPEED_MIN = 150;
     protected static final int Y_SPEED_MIN = 60;
     protected static final int X_DISTANCE_MIN = 150;

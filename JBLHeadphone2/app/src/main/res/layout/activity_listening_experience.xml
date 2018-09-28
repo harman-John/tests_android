@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/help_bg"
+    tools:context="jblcontroller.hcs.soundx.ui.profile.HelpActivity">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/help_title_margin_top"
+        android:text="@string/listening_exp"
+        android:textColor="@color/slate"
+        android:textSize="@dimen/help_title_text_size" />
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="@dimen/help_close_ht_width"
+        android:layout_height="@dimen/help_close_ht_width"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="@dimen/help_close_margin_end"
+        android:layout_marginTop="@dimen/help_close_margin_top"
+        android:src="@mipmap/x_grey" />
+
+    <TextView
+        android:id="@+id/beginner_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_marginLeft="@dimen/help_layout_margin_left"
+        android:layout_marginTop="@dimen/help_item_margin_top"
+        android:text="@string/text18"
+        android:textColor="@color/slate"
+        android:textSize="@dimen/help_item_text_size" />
+
+    <TextView
+        android:id="@+id/beginner_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/beginner_title"
+        android:layout_marginLeft="@dimen/help_layout_margin_left"
+        android:layout_marginTop="@dimen/help_item_msg_margin_top"
+        android:text="@string/beginner_msg"
+        android:textColor="@color/slate"
+        android:textSize="@dimen/help_item_msg_txt_size" />
+
+    <TextView
+        android:id="@+id/avg_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/beginner_msg"
+        android:layout_marginLeft="@dimen/help_layout_margin_left"
+        android:layout_marginTop="@dimen/help_item_margin_top"
+        android:text="@string/text19"
+        android:textColor="@color/slate"
+        android:textSize="@dimen/help_item_text_size" />
+
+    <TextView
+        android:id="@+id/avg_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/avg_title"
+        android:layout_marginLeft="@dimen/help_layout_margin_left"
+        android:layout_marginTop="@dimen/help_item_msg_margin_top"
+        android:text="@string/avg_msg"
+        android:textColor="@color/slate"
+        android:textSize="@dimen/help_item_msg_txt_size" />
+
+    <TextView
+        android:id="@+id/lot_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/avg_msg"
+        android:layout_marginLeft="@dimen/help_layout_margin_left"
+        android:layout_marginTop="@dimen/help_item_margin_top"
+        android:text="@string/experienced"
+        android:textColor="@color/slate"
+        android:textSize="@dimen/help_item_text_size" />
+
+    <TextView
+        android:id="@+id/alot_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lot_title"
+        android:layout_marginLeft="@dimen/help_layout_margin_left"
+        android:layout_marginTop="@dimen/help_item_msg_margin_top"
+        android:text="@string/alot_msg"
+        android:textColor="@color/slate"
+        android:textSize="@dimen/help_item_msg_txt_size" />
+
+    <TextView
+        android:id="@+id/trained_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/alot_msg"
+        android:layout_marginLeft="@dimen/help_layout_margin_left"
+        android:layout_marginTop="@dimen/help_item_margin_top"
+        android:textColor="@color/slate"
+        android:text="@string/trained"
+        android:textSize="@dimen/help_item_text_size" />
+
+    <TextView
+        android:id="@+id/trained_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/trained_title"
+        android:layout_marginLeft="@dimen/help_layout_margin_left"
+        android:layout_marginTop="@dimen/help_item_msg_margin_top"
+        android:text="@string/text25"
+        android:textColor="@color/slate"
+        android:textSize="@dimen/help_item_msg_txt_size" />
+
+</RelativeLayout>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/gray_bg"
+    tools:context="jblcontroller.hcs.soundx.ui.dashboard.DashboardDemo">
+
+
+    <FrameLayout
+        android:id="@+id/layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/illustration_icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dashboard_soundx_enable_title_margin_left"
+            android:src="@mipmap/sound_x_placeholder"
+            android:visibility="invisible" />
+
+
+        <TextView
+            android:id="@+id/enable_device_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dashboard_title_margin_top"
+            android:gravity="center_horizontal"
+            android:text="@string/device_name"
+            android:textColor="@color/char_col"
+            android:textSize="@dimen/dashboard_title_text_size" />
+
+
+        <ImageView
+            android:id="@+id/headphone_icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dashboard_soundx_enable_margin_top"
+            android:src="@mipmap/product_holder_disabled"
+            android:visibility="visible" />
+
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/soundeffect_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dashboard_soundx_btn_margin_top"
+        android:src="@mipmap/right_x_left_x_mask_selected" />
+
+    <TextView
+        android:id="@+id/enable_soundx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/soundeffect_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dashboard_image_margin_top"
+        android:text="@string/soundx_effect"
+        android:textColor="@color/sound_x_disabled_color"
+        android:textSize="@dimen/help_item_msg_txt_size" />
+
+    <TextView
+        android:id="@+id/logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/layout1"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="8dp"
+        android:text="Logout"
+        android:textColor="@color/sound_x_disabled_color"
+        android:textSize="@dimen/help_item_msg_txt_size" />
+
+
+</RelativeLayout>

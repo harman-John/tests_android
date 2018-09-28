@@ -1,1 +1,1 @@
-include ':app', ':smartdigitalheadset',':audioManager',':BesEngine'
+include ':app', ':smartdigitalheadset',':audioManager',':BesEngine',':indicatorseekbar'

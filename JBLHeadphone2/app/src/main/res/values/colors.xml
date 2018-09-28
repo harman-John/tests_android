@@ -83,4 +83,13 @@
     <color name="button_gradient_start">#FF3301</color>
     <color name="button_gradient_end">#FF6B00</color>
 
+
+    <!-- Sound-x integration-->
+    <color name="card_color">#3E424D</color>
+    <color name="silver">#C0C0C0</color>
+
+    <color name="slate">#4c596b</color>
+    <color name="orange_yellow">#ff9f00</color>
+    <color name="char_col">#3d403e</color>
+    <color name="sound_x_disabled_color">#5b697e</color>
 </resources>
