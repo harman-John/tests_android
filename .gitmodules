@@ -1,0 +1,3 @@
+[submodule "Bluetooth_BLE_A2DP_CMD_text_harman"]
+	path = Bluetooth_BLE_A2DP_CMD_text_harman
+	url = https://github.com/harman-John/Bluetooth_BLE_A2DP_CMD_text_harman.git
